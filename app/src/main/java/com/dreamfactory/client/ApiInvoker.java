@@ -184,7 +184,8 @@ public class ApiInvoker {
 				Log.d(TAG, "All parameters set up");
 				response = client.execute(post);
 				//TODO added by Brunel
-				Log.d(TAG, "Should show me");
+				Log.d(TAG, "Response: " + response.toString());
+
 			}
 			else if ("PUT".equals(method)) {
 				HttpPut put = new HttpPut(url);

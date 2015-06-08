@@ -1,19 +1,24 @@
 package com.picspy;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.dreamfactory.client.ApiInvoker;
-import com.picspy.Models.RegisterModel;
+import com.dreamfactory.model.Register;
 import com.picspy.firstapp.R;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -21,16 +26,21 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+//TODO add all strings to string file
 public class RegisterActivity extends ActionBarActivity {
 
     public final static String EXTRA_MESSAGE = "amc.myfirstapp.REGISTER_MESSAGE";
     private EditText display_name_Text, email_Text, pass1_Text, pass2_Text;
-    private String userID,userPass;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        //Create progress box for use during API connection
+        progressDialog = new ProgressDialog(RegisterActivity.this);
+        progressDialog.setMessage(getText(R.string.loading_message));
     }
 
     @Override
@@ -95,29 +105,26 @@ public class RegisterActivity extends ActionBarActivity {
             email_Text.setError("Invalid Email");
             email_Text.requestFocus();
         } else if (isValidPassword().equals("invalid_length")) {
-            pass1_Text.setError("Too Short");
+            pass1_Text.setError("Must be at least 6 characters");
             pass1_Text.requestFocus();
             pass2_Text.setText("");
             pass2_Text.setText("");
         } else if (isValidPassword().equals("invalid_match")) {
-            pass1_Text.setError("Passwords Do Not Match");
+            pass1_Text.setError("Passwords do not match");
             pass1_Text.requestFocus();
             pass2_Text.setText("");
             pass2_Text.setText("");
         } else {
             RegisterTask registerTask = new RegisterTask();
             registerTask.execute();
-
-            Toast.makeText(view.getContext(), "You have created account successfully !!",
-                    Toast.LENGTH_SHORT).show();
         }
     }
 
     //TODO: Overwrite this with needed activity
     /* Starts the next intent after user is register*/
-    private void showResults(View view, String msg) {
+    private void showResults(View view) {
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra(EXTRA_MESSAGE, msg);
+        intent.putExtra(EXTRA_MESSAGE, "Welcome!!\n Account successfuly created");
         startActivity(intent);
     }
 
@@ -130,7 +137,6 @@ public class RegisterActivity extends ActionBarActivity {
                 response = registerService();
             } catch (Exception e) {
                 response = e.getMessage();
-                //error = e.toString();
             }
             return response;
         }
@@ -140,7 +146,48 @@ public class RegisterActivity extends ActionBarActivity {
          * TODO: overwite to open different activities based on the result
          */
         protected void onPostExecute(String message) {
-            showResults(post_view, message);
+            progressDialog.cancel();
+            //if request was successfull
+           if (message.equals("true")) { //call successful: build new intent
+                //TODO: Update: Should go to main page
+               showResults(post_view);
+            } else {
+               String errorMsg = "";
+               try {
+                   JSONObject jObj = new JSONObject(message);
+                   JSONArray jArray = jObj.getJSONArray("error");
+                   JSONObject obj = jArray.getJSONObject(0);
+                   errorMsg = obj.getString("message");
+
+                    //check for email error TODO modify as needed Update: does not work
+                   String email_error_pattern = "A";
+                   Pattern pattern = Pattern.compile(email_error_pattern);
+                   Log.d("",errorMsg);
+                   Matcher matcher = pattern.matcher(errorMsg);
+                   Log.d("",errorMsg);
+                   if(matcher.matches()) {
+                       errorMsg = "Email already taken.";
+                   }
+               } catch (JSONException e) { //message is from exception
+                   //TODO customize message if an exception was thrown?
+                   errorMsg = message;
+               }
+               AlertDialog.Builder alertDialog = new AlertDialog.Builder(RegisterActivity.this);
+               //TODO modify error presentation format and possibly the error message
+               alertDialog.setTitle("Error").setMessage(errorMsg).setCancelable(false).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                   @Override
+                   public void onClick(DialogInterface dialog, int which) {
+                       dialog.cancel();
+                   }
+               });
+               alertDialog.show();
+           }
+        }
+
+        @Override
+        /* show the progress dialog (Please wait)*/
+        protected void onPreExecute() {
+            progressDialog.show();
         }
 
         /* Method to call the register service*/
@@ -148,13 +195,13 @@ public class RegisterActivity extends ActionBarActivity {
             ////////////////////ALways include/////////////////////////
             //TODO store %appname% and %dsp_url% as a global permanent variable
             String appName = "admin";
-            String dsp_url = "http://192.168.0.26:8080";
+            String dsp_url = "http://192.168.0.34:8080";
             ApiInvoker invoker  = new ApiInvoker();
             invoker.addDefaultHeader("X-DreamFactory-Application-Name", appName);
             // create path and map variables //SET accordingly
             String serviceName = "user";
             String endPoint = "register";
-            String path = new StringBuilder("/").append("rest").append("/").append(serviceName).append("/").append(endPoint).append("/").toString();
+            String path = "/" + "rest" + "/" + serviceName + "/" + endPoint + "/";
             // query params
             Map<String, String> queryParams = new HashMap<String, String>();
             queryParams.put("login","false");
@@ -162,11 +209,11 @@ public class RegisterActivity extends ActionBarActivity {
             String contentType = "application/json";
             ////////////////////////////////////////////////////////////
 
-            RegisterModel register = new RegisterModel();
+            Register register = new Register();
             register.setEmail(email_Text.getText().toString());
             register.setNew_password(pass1_Text.getText().toString());
             register.setDisplay_name(display_name_Text.getText().toString());
-        /*Set other fields later*/
+            /*Set other fields later*/
 
             String response = invoker.invokeAPI(dsp_url, path, "POST", queryParams, register, headerParams, contentType);
             //TODO can create class to ocnvert response into class model

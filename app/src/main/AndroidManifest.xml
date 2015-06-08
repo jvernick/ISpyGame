@@ -10,10 +10,20 @@
         <activity
             android:name="com.picspy.RegisterActivity"
             android:label="@string/title_activity_register" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name="com.picspy.MainActivity"
-            android:label="@string/title_activity_main" >
+            android:label="@string/title_activity_main"
+            android:parentActivityName="com.picspy.RegisterActivity"
+            android:exported="true">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.picspy.RegisterActivity" />
         </activity>
     </application>
 

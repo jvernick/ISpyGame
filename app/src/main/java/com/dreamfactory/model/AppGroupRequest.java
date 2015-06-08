@@ -47,14 +47,8 @@ public class AppGroupRequest {
 
   @Override
   public String toString()  {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class AppGroupRequest {\n");
-    sb.append("  id: ").append(id).append("\n");
-    sb.append("  name: ").append(name).append("\n");
-    sb.append("  description: ").append(description).append("\n");
-    sb.append("  apps: ").append(apps).append("\n");
-    sb.append("}\n");
-    return sb.toString();
+    return "class AppGroupRequest {\n" + "  id: " + id + "\n" + "  name: " + name + "\n" +
+            "  description: " + description + "\n" + "  apps: " + apps + "\n" + "}\n";
   }
 }
 

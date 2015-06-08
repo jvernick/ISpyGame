@@ -66,16 +66,10 @@ public class Register {
 
   @Override
   public String toString()  {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class Register {\n");
-    sb.append("  email: ").append(email).append("\n");
-    sb.append("  first_name: ").append(first_name).append("\n");
-    sb.append("  last_name: ").append(last_name).append("\n");
-    sb.append("  display_name: ").append(display_name).append("\n");
-    sb.append("  new_password: ").append(new_password).append("\n");
-    sb.append("  code: ").append(code).append("\n");
-    sb.append("}\n");
-    return sb.toString();
+    return "class Register {\n" + "  email: " + email + "\n" + "  first_name: " +
+            first_name + "\n" + "  last_name: " + last_name + "\n" + "  display_name: " +
+            display_name + "\n" + "  new_password: " + new_password + "\n" + "  code: " +
+            code + "\n" + "}\n";
   }
 }
 
