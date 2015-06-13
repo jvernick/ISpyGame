@@ -15,10 +15,12 @@ import com.dreamfactory.model.Resources;
 import com.dreamfactory.model.Success;
 import com.dreamfactory.model.ProfileRequest;
 import com.dreamfactory.model.DevicesResponse;
+import com.picspy.utils.AppConstants;
+
 import java.util.*;
 
 public class UserApi {
-	String basePath = "http://localhost/rest";
+	String basePath = AppConstants.DSP_URL;
 	String serviceName = "/user";
 	ApiInvoker apiInvoker = ApiInvoker.getInstance();
 

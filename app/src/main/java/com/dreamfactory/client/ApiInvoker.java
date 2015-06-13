@@ -49,6 +49,7 @@ public class ApiInvoker {
 	private Map<String, String> defaultHeaderMap = new HashMap<String, String>();
 
 	private HttpClient client = null;
+
 	//TODO added by Brunel
 	private static final String TAG = "MyFApp";
 
@@ -69,7 +70,7 @@ public class ApiInvoker {
 	}
 
 	public void addDefaultHeader(String key, String value) {
-		defaultHeaderMap.put(key, value);
+		defaultHeaderMap. put(key, value);
 	}
 
 	public String escapeString(String str) {

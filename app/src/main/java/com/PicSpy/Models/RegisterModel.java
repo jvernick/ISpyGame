@@ -1,8 +1,9 @@
-package com.picspy.Models;
+package com.picspy.models;
 
 /**
  * Created by BrunelAmC on 6/7/2015.
  */
+ /*TODO remove class: This is just for demosntration*/
 /*TODO Set default vaues for un-set values in model*/
 import com.fasterxml.jackson.annotation.JsonProperty;
 public class RegisterModel {

@@ -13,9 +13,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.dreamfactory.client.ApiException;
 import com.dreamfactory.client.ApiInvoker;
 import com.dreamfactory.model.Register;
 import com.picspy.firstapp.R;
+import com.picspy.utils.AppConstants;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -68,11 +70,12 @@ public class RegisterActivity extends ActionBarActivity {
     /* Validates password to have: minlength of 8 and
         verifies that both entered passwords match.
      */
+	 //TODO: Limit characters with regex?
     public String isValidPassword() {
         String pass1 = pass1_Text.getText().toString();
         String pass2 = pass2_Text.getText().toString();
         if (pass1.equals(pass2)) {
-            if (pass1 != null && pass1.length() > 6){
+            if (pass1 != null && pass1.length() >= 6){
                 return "valid";
             } else {
                 return "invalid_length";
@@ -85,9 +88,12 @@ public class RegisterActivity extends ActionBarActivity {
     private boolean isValidEmail() {
         String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                 + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+		/* trying new stuff below		
         Pattern pattern = Pattern.compile(EMAIL_PATTERN);
         Matcher matcher = pattern.matcher(email_Text.getText().toString());
-        return matcher.matches();
+        return matcher.matches();*/
+		String email = email_Text.getText().toString();
+		return email.matches(EMAIL_PATTERN);
     }
 
     //TODO review: added for convinience: find a better way to store/handle this
@@ -100,8 +106,13 @@ public class RegisterActivity extends ActionBarActivity {
         pass1_Text = (EditText) findViewById(R.id.edit_password1);
         pass2_Text = (EditText) findViewById(R.id.edit_password2);
         post_view = view;
-
-        if (!isValidEmail()) {
+		
+		
+		//TODO try .matches("") instead of .length == 0
+		//TODO add filter for valid characters?
+        if (display_name_Text.getText().toString().trim().length() == 0) {
+			display_name_Text.setError("Must enter Display Name");
+		} else if (!isValidEmail()) {
             email_Text.setError("Invalid Email");
             email_Text.requestFocus();
         } else if (isValidPassword().equals("invalid_length")) {
@@ -165,9 +176,13 @@ public class RegisterActivity extends ActionBarActivity {
                    Log.d("",errorMsg);
                    Matcher matcher = pattern.matcher(errorMsg);
                    Log.d("",errorMsg);
-                   if(matcher.matches()) {
+
+                   //TODO Challenge!! match the displayname error with a regex
+                   if (errorMsg.matches("^A registered user already exists(.*)")) {
                        errorMsg = "Email already taken.";
-                   }
+                   } else if (errorMsg.trim().contains("Display Name")) {
+					   errorMsg = "Display Name taken";
+				   }
                } catch (JSONException e) { //message is from exception
                    //TODO customize message if an exception was thrown?
                    errorMsg = message;
@@ -194,14 +209,14 @@ public class RegisterActivity extends ActionBarActivity {
         private String registerService() throws Exception {
             ////////////////////ALways include/////////////////////////
             //TODO store %appname% and %dsp_url% as a global permanent variable
-            String appName = "admin";
-            String dsp_url = "http://192.168.0.34:8080";
+            String appName = AppConstants.APP_NAME;
+            String dsp_url = AppConstants.DSP_URL;
             ApiInvoker invoker  = new ApiInvoker();
             invoker.addDefaultHeader("X-DreamFactory-Application-Name", appName);
             // create path and map variables //SET accordingly
             String serviceName = "user";
             String endPoint = "register";
-            String path = "/" + "rest" + "/" + serviceName + "/" + endPoint + "/";
+            String path = "/" + serviceName + "/" + endPoint + "/";
             // query params
             Map<String, String> queryParams = new HashMap<String, String>();
             queryParams.put("login","false");
@@ -217,11 +232,12 @@ public class RegisterActivity extends ActionBarActivity {
 
             String response = invoker.invokeAPI(dsp_url, path, "POST", queryParams, register, headerParams, contentType);
             //TODO can create class to ocnvert response into class model
-
+            //TODO line below throws an exception that is unhandled
             JSONObject object = new JSONObject(response);
 
             return object.getString("success");
         }
+
     }
 }
 
