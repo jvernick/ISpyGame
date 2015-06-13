@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
-import com.dreamfactory.client.ApiException;
 import com.dreamfactory.client.ApiInvoker;
 import com.dreamfactory.model.Register;
 import com.picspy.firstapp.R;
