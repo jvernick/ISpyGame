@@ -1,5 +1,7 @@
 package com.dreamfactory.api;
 
+import android.util.Log;
+
 import com.dreamfactory.client.ApiException;
 import com.dreamfactory.client.ApiInvoker;
 import com.dreamfactory.model.Register;
@@ -430,6 +432,7 @@ public class UserApi {
 			}
 		} catch (ApiException ex) {
 			if(ex.getCode() == 404) {
+				Log.d("userapi", "404 error");
 				return null;
 			}
 			else {

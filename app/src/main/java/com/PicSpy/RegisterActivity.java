@@ -45,13 +45,6 @@ public class RegisterActivity extends ActionBarActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_register, menu);
-        return true;
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -139,7 +132,7 @@ public class RegisterActivity extends ActionBarActivity {
     }
 
     /* Class to run network transaction in background on a new thread. This is required*/
-    class RegisterTask extends AsyncTask<Void, Void, String> {
+    private class RegisterTask extends AsyncTask<Void, Void, String> {
         @Override
         protected String doInBackground(Void... params) {
             String response;
@@ -168,13 +161,6 @@ public class RegisterActivity extends ActionBarActivity {
                    JSONArray jArray = jObj.getJSONArray("error");
                    JSONObject obj = jArray.getJSONObject(0);
                    errorMsg = obj.getString("message");
-
-                    //check for email error TODO modify as needed Update: does not work
-                   String email_error_pattern = "A";
-                   Pattern pattern = Pattern.compile(email_error_pattern);
-                   Log.d("",errorMsg);
-                   Matcher matcher = pattern.matcher(errorMsg);
-                   Log.d("",errorMsg);
 
                    //TODO Challenge!! match the displayname error with a regex
                    if (errorMsg.matches("^A registered user already exists(.*)")) {
@@ -207,7 +193,6 @@ public class RegisterActivity extends ActionBarActivity {
         /* Method to call the register service*/
         private String registerService() throws Exception {
             ////////////////////ALways include/////////////////////////
-            //TODO store %appname% and %dsp_url% as a global permanent variable
             String appName = AppConstants.APP_NAME;
             String dsp_url = AppConstants.DSP_URL;
             ApiInvoker invoker  = new ApiInvoker();

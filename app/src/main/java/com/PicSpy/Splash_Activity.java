@@ -1,8 +1,8 @@
 package com.picspy;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -15,7 +15,7 @@ import com.picspy.utils.PrefUtil;
 import java.util.Objects;
 
 
-public class Splash_Activity extends ActionBarActivity {
+public class Splash_Activity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +43,7 @@ public class Splash_Activity extends ActionBarActivity {
                     e.printStackTrace();
                     Log.d("splash", e.getMessage());
                 }
-            } else { // previously logged in, check if still valid
+            } else { //refresh session if possible
                 try {
                     UserApi userApi = new UserApi();
                     userApi.addHeader("X-DreamFactory-Applicatin-Name", AppConstants.APP_NAME);
@@ -52,23 +52,23 @@ public class Splash_Activity extends ActionBarActivity {
                     if (session != null) {
                         Log.d("sp", "session not null");
                         PrefUtil.putString(getApplicationContext(), AppConstants.SESSION_ID, session.getSession_id());
-                        validSession = true;
                     }
-                } catch (Exception e) { //TODO log exception for debugging?
+                } catch (Exception e) { //TODO log exception for debugging? Network error or expired session
                     Log.d("SplashActivity", e.getMessage());
-                    PrefUtil.putString(getApplicationContext(), AppConstants.SESSION_ID, "");
+                    //PrefUtil.putString(getApplicationContext(), AppConstants.SESSION_ID, "");
                 }
+                validSession = true;
             }
             return validSession;
         }
         @Override
         protected void onPostExecute(Boolean isValidSession) {
-            Log.d("s","shoudl print");
+            Log.d("s","should print");
             if (isValidSession) {
                 Intent intent = new Intent(Splash_Activity.this, MainActivity.class);
                 startActivity(intent);
             } else { //TODO change registeractivity to lgoin activity
-                Intent intent = new Intent(Splash_Activity.this, RegisterActivity.class);
+                Intent intent = new Intent(Splash_Activity.this, LoginActivity.class);
                 startActivity(intent);
             }
             finish();

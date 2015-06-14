@@ -10,7 +10,7 @@ public class AppConstants {
     public static final String SESSION_ID = "session_id";
     public static final String APP_NAME = "admin";
     //TODO change following constants as required (specifically just change the IP)
-    public static final String DSP_URL = "http://192.168.1.118:8080/rest";
+    public static final String DSP_URL = "http://192.168.0.14:8080/rest";
 
     private AppConstants() {};
 }
