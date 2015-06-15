@@ -59,7 +59,7 @@ public class RegisterActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /* Validates password to have: minlength of 8 and
+    /* Validates password to have: minlength of 6 and
         verifies that both entered passwords match.
      */
 	 //TODO: Limit characters with regex?
@@ -80,10 +80,6 @@ public class RegisterActivity extends ActionBarActivity {
     private boolean isValidEmail() {
         String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                 + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-		/* trying new stuff below		
-        Pattern pattern = Pattern.compile(EMAIL_PATTERN);
-        Matcher matcher = pattern.matcher(email_Text.getText().toString());
-        return matcher.matches();*/
 		String email = email_Text.getText().toString();
 		return email.matches(EMAIL_PATTERN);
     }
@@ -124,7 +120,7 @@ public class RegisterActivity extends ActionBarActivity {
     }
 
     //TODO: Overwrite this with needed activity
-    /* Starts the next intent after user is register*/
+    /* Starts the next intent after user is registered*/
     private void showResults(View view) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra(EXTRA_MESSAGE, "Welcome!!\n Account successfuly created");
@@ -163,7 +159,7 @@ public class RegisterActivity extends ActionBarActivity {
                    errorMsg = obj.getString("message");
 
                    //TODO Challenge!! match the displayname error with a regex
-                   if (errorMsg.matches("^A registered user already exists(.*)")) {
+                   if (errorMsg.matches("^Invalid user name and password combination")) {
                        errorMsg = "Email already taken.";
                    } else if (errorMsg.trim().contains("Display Name")) {
 					   errorMsg = "Display Name taken";

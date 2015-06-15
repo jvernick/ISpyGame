@@ -1,3 +1,4 @@
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -18,7 +19,7 @@
         android:minHeight="40dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="100dp"
         android:inputType="textEmailAddress"
         android:hint="@string/email_hint"
         android:layout_gravity="center" />
@@ -28,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/user_email"
         android:layout_alignRight="@id/user_email"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
         android:inputType="textPassword"
         android:layout_below="@id/user_email"
         android:maxLines="1"
@@ -42,7 +43,7 @@
         android:layout_below="@id/user_password"
         android:layout_alignLeft="@id/user_email"
         android:layout_alignRight="@id/user_email"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
         android:text="@string/button_login"
         android:onClick="login"
         android:layout_gravity="center" />
@@ -53,6 +54,25 @@
         android:layout_below="@id/button_login"
         android:layout_centerInParent="true"
         android:layout_marginTop="20dp"
-        android:text="@string/register_prompt"/>
-
+        android:text="@string/register_prompt"
+        android:clickable="true"
+        android:onClick="signUp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/info"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:textSize="18sp"
+        />
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/facebook_login_button"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_alignLeft="@+id/button_login"
+        android:layout_alignStart="@+id/button_login"
+        android:layout_alignRight="@+id/button_login"
+        android:layout_alignEnd="@+id/button_login" />
 </RelativeLayout>

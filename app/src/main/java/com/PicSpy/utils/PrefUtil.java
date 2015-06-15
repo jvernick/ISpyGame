@@ -29,4 +29,11 @@ public class PrefUtil {
         editor.putString(key, value);
         editor.apply();
     }
+
+    static public synchronized void removeString(Context context, String key) {
+        SharedPreferences settings = Prefs.get(context);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.remove(key);
+        editor.apply();
+    }
 }

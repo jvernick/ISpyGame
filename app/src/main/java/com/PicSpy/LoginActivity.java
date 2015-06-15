@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,26 +12,71 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.dreamfactory.api.UserApi;
 import com.dreamfactory.client.ApiException;
 import com.dreamfactory.model.Login;
 import com.dreamfactory.model.Session;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.picspy.firstapp.R;
 import com.picspy.utils.AppConstants;
 import com.picspy.utils.PrefUtil;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+//TODO adjust layout when keyboard is showing?
 public class LoginActivity extends Activity {
     private EditText  email_text, pass_text;
     private Button login_button;
+    private LoginButton facebook_button;
     private ProgressDialog progressDialog;
+    private View button_view = null;
+    private CallbackManager callbackManager;
+    private TextView info;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //facebook login setup
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_login);
+        info = (TextView)findViewById(R.id.info);
+        facebook_button = (LoginButton)findViewById(R.id.facebook_login_button);
+        facebook_button.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                info.setText(
+                        "User ID: "
+                                + loginResult.getAccessToken().getUserId()
+                                + "\n" +
+                                "Auth Token: "
+                                + loginResult.getAccessToken().getToken()
+                );
+            }
+
+            @Override
+            public void onCancel() {
+                info.setText("Login attempt canceled.");
+            }
+
+            @Override
+            public void onError(FacebookException e) {
+                info.setText("Login attempt failed.");
+            }
+        });
         progressDialog = new ProgressDialog(LoginActivity.this);
         progressDialog.setMessage(getText(R.string.loading_message));
 
@@ -45,6 +91,11 @@ public class LoginActivity extends Activity {
         checkFieldsForEmptyValues();
     }
 
+    //for facebok login
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
     //Validates the input To disable button if any field is empyt
     private TextWatcher textWatcher = new TextWatcher() {
         @Override
@@ -72,9 +123,51 @@ public class LoginActivity extends Activity {
         }
     }
 
+    public boolean isValidPassword() {
+        String pass = pass_text.getText().toString();;
+        if (pass_text.length() >= 6){
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+    /* Validates email with regex */
+    private boolean isValidEmail() {
+        String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+                + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+        String email = email_text.getText().toString();
+        return email.matches(EMAIL_PATTERN);
+    }
+
     public void login(View view) {
-        LoginTask loginTask = new LoginTask();
-        loginTask.execute();
+        Boolean email_state = isValidEmail();
+        Boolean pass_state = isValidPassword();
+        button_view = view;
+
+        if (email_state && pass_state) {
+            LoginTask loginTask = new LoginTask();
+            loginTask.execute();
+        } else {
+            if (!email_state) {
+                email_text.setError("Invalid Email");
+            }
+            if (!pass_state) {
+                pass_text.setError("Invalid Password");
+            }
+        }
+    }
+
+    public void signUp(View view) {
+        Log.d("login","sigup clicked");
+        Intent intent = new Intent(this, RegisterActivity.class);
+        startActivity(intent);
+    }
+
+    /* Starts the main activity after user logs in*/
+    private void showResults(View view) {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
     /* Class to run network transaction in background on a new thread. This is required*/
@@ -87,7 +180,7 @@ public class LoginActivity extends Activity {
             } catch (ApiException e) {
                 return e.getMessage();
             }
-            return null;
+            return "true";
         }
 
         @Override
@@ -97,15 +190,37 @@ public class LoginActivity extends Activity {
         protected void onPostExecute(String message) {
             Log.d("login", "network done");
             progressDialog.cancel();
+            if (message.equals("true")) { //succesful
+                showResults(button_view);
+            } else { //error, exception thrown
+                String errorMsg = "";
+                try {
+                    JSONObject jObj = new JSONObject(message);
+                    JSONArray jArray = jObj.getJSONArray("error");
+                    JSONObject obj = jArray.getJSONObject(0);
+                    errorMsg = obj.getString("message");
+
+                    //TODO Challenge!! match the displayname error with a regex
+                    if (errorMsg.matches("^A registered user already exists(.*)")) {
+                        errorMsg = "Email already taken.";
+                    } else if (errorMsg.trim().contains("Display Name")) {
+                        errorMsg = "Display Name taken";
+                    }
+                } catch (JSONException e) { //message is from exception
+                    //TODO customize message if an exception was thrown?
+                    errorMsg = message;
+                }
+                
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(LoginActivity.this);
                 //TODO modify error presentation format and possibly the error message
-                alertDialog.setTitle("Message").setMessage(message).setCancelable(false).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                alertDialog.setTitle("Message").setMessage(errorMsg).setCancelable(false).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
                     }
                 });
-            alertDialog.show();
+                alertDialog.show();
+            }
         }
 
         @Override
@@ -121,6 +236,7 @@ public class LoginActivity extends Activity {
             login.setEmail(email_text.getText().toString());
             login.setPassword(pass_text.getText().toString());
             Session session = userApi.login(login);
+            if (session == null) return null; //should never occure TODO veify and handle this
             return session.getSession_id();
         }
     }

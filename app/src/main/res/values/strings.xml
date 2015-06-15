@@ -22,4 +22,5 @@
     <string name="loading_message">Please Wait..</string>
     <string name="title_activity_splash_">Splash_Activity</string>
     <string name="title_activity_login">LoginActivity</string>
+    <string name="facebook_app_id">567017063440429</string>
 </resources>

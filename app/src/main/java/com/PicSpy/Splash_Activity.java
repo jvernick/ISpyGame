@@ -21,6 +21,8 @@ public class Splash_Activity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        //TODO: Temporary. for testing login screen (always enabling it)
+        PrefUtil.removeString(getApplicationContext(), AppConstants.SESSION_ID);
         new StartMyApp().execute();
     }
 
