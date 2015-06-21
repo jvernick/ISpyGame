@@ -1,15 +1,12 @@
 package com.picspy;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
@@ -24,11 +21,9 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 //TODO add all strings to string file
-public class RegisterActivity extends ActionBarActivity {
+public class RegisterActivity extends Activity {
 
     public final static String EXTRA_MESSAGE = "amc.myfirstapp.REGISTER_MESSAGE";
     private EditText display_name_Text, email_Text, pass1_Text, pass2_Text;
@@ -42,21 +37,6 @@ public class RegisterActivity extends ActionBarActivity {
         //Create progress box for use during API connection
         progressDialog = new ProgressDialog(RegisterActivity.this);
         progressDialog.setMessage(getText(R.string.loading_message));
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     /* Validates password to have: minlength of 6 and

@@ -9,11 +9,12 @@
 
     <string name="button_register">Register</string>
     <string name="button_login">LOG IN</string>
-    <string name="submit_sign_up">Sign Up</string>
+    <string name="submit_sign_up">SIGN UP</string>
+    <string name="login_title">Log In</string>
+    <string name="register_title">Sign Up</string>
     <string name="pass_hint1">Password</string>
     <string name="email_hint">Email</string>
-    <string name="register_prompt">Sign Up for PicSpy</string>
-    <string name="register_title">Sign Up</string>
+    <string name="signup_prompt">Forgot Password?</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_register">register</string>
     <string name="pass_hint2">Re-type Password</string>

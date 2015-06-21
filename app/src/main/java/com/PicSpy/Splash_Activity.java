@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import com.dreamfactory.api.UserApi;
 import com.dreamfactory.model.Session;
@@ -16,6 +18,7 @@ import java.util.Objects;
 
 
 public class Splash_Activity extends Activity {
+    private Button splash_login, splash_signup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,8 +26,25 @@ public class Splash_Activity extends Activity {
         setContentView(R.layout.activity_splash);
         //TODO: Temporary. for testing login screen (always enabling it)
         PrefUtil.removeString(getApplicationContext(), AppConstants.SESSION_ID);
+        splash_login = (Button) findViewById(R.id.splash_login);
+        splash_signup = (Button) findViewById(R.id.splash_signup);
+
+        //TODO change true in both lines below to false
+        splash_login.setEnabled(true);
+        splash_signup.setEnabled(true);
         new StartMyApp().execute();
     }
+
+    public void splashLogin(View view) {
+        Intent intent = new Intent(Splash_Activity.this, LoginActivity.class);
+        startActivity(intent);
+    }
+
+    public void splashSignUp(View view) {
+        Intent intent = new Intent(Splash_Activity.this, RegisterActivity.class);
+        startActivity(intent);
+    }
+
 
 
     private class StartMyApp extends AsyncTask<Void, Void, Boolean> {
@@ -64,16 +84,18 @@ public class Splash_Activity extends Activity {
             return validSession;
         }
         @Override
+        //TODO add response listener to finish activity
         protected void onPostExecute(Boolean isValidSession) {
             Log.d("s","should print");
             if (isValidSession) {
                 Intent intent = new Intent(Splash_Activity.this, MainActivity.class);
                 startActivity(intent);
-            } else { //TODO change registeractivity to lgoin activity
-                Intent intent = new Intent(Splash_Activity.this, LoginActivity.class);
-                startActivity(intent);
+            } else {
+                splash_login.setEnabled(true);
+                splash_login.setVisibility(View.VISIBLE);
+                splash_signup.setEnabled(true);
+                splash_signup.setVisibility(View.VISIBLE);
             }
-            finish();
         }
     }
 }

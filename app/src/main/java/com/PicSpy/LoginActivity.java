@@ -1,6 +1,5 @@
 package com.picspy;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -8,19 +7,20 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dreamfactory.api.UserApi;
 import com.dreamfactory.client.ApiException;
 import com.dreamfactory.model.Login;
 import com.dreamfactory.model.Session;
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -36,47 +36,50 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 //TODO adjust layout when keyboard is showing?
-public class LoginActivity extends Activity {
+public class LoginActivity extends FragmentActivity {
     private EditText  email_text, pass_text;
     private Button login_button;
-    private LoginButton facebook_button;
     private ProgressDialog progressDialog;
     private View button_view = null;
     private CallbackManager callbackManager;
-    private TextView info;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("keyhas", "tset");
+        Log.d("keyhas",this.getPackageName());
 
         //facebook login setup
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_login);
-        info = (TextView)findViewById(R.id.info);
-        facebook_button = (LoginButton)findViewById(R.id.facebook_login_button);
+        LoginButton facebook_button = (LoginButton) findViewById(R.id.facebook_login_button);
         facebook_button.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                info.setText(
-                        "User ID: "
-                                + loginResult.getAccessToken().getUserId()
-                                + "\n" +
-                                "Auth Token: "
-                                + loginResult.getAccessToken().getToken()
-                );
+                //TODO store the access token? or understand how facebook sdk stores it.
+                AccessToken s = loginResult.getAccessToken();
+                //for debuging
+                Toast.makeText(LoginActivity.this, s.getExpires().toString(),
+                        Toast.LENGTH_LONG).show();
+
+                Toast.makeText(LoginActivity.this, "Facebook Login Successful",
+                        Toast.LENGTH_SHORT).show();
+                showResults(button_view);
             }
 
             @Override
             public void onCancel() {
-                info.setText("Login attempt canceled.");
+                Toast.makeText(LoginActivity.this, "Login attempt canceled.",
+                        Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onError(FacebookException e) {
-                info.setText("Login attempt failed.");
+                Toast.makeText(LoginActivity.this, "Login attempt failed.", Toast.LENGTH_LONG).show();
             }
         });
+
         progressDialog = new ProgressDialog(LoginActivity.this);
         progressDialog.setMessage(getText(R.string.loading_message));
 
@@ -116,9 +119,11 @@ public class LoginActivity extends Activity {
 
         if (s1.equals("") || s2.equals("")) { //disables and greys out the button
             login_button.setEnabled(false);
+            login_button.setVisibility(View.INVISIBLE);
             login_button.getBackground().setColorFilter(0xff888888, PorterDuff.Mode.MULTIPLY);
         } else { //enables and ungreys out the button
             login_button.setEnabled(true);
+            login_button.setVisibility(View.VISIBLE);
             login_button.getBackground().clearColorFilter();
         }
     }
@@ -168,6 +173,7 @@ public class LoginActivity extends Activity {
     private void showResults(View view) {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+        finish();
     }
 
     /* Class to run network transaction in background on a new thread. This is required*/
