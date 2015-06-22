@@ -1,11 +1,11 @@
-package com.picspy.Adapters;
+package com.picspy.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.picspy.Fragments.BoredFragment;
-import com.picspy.Fragments.FriendsFragment;
+import com.picspy.views.Fragments.BoredFragment;
+import com.picspy.views.Fragments.FriendsFragment;
 /**
  * Created by Justin12 on 6/6/2015.
  */
@@ -17,7 +17,6 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int index) {
-
         switch (index) {
             case 0:
                 // Friends fragment activity

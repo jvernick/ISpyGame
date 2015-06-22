@@ -1,4 +1,4 @@
-package com.picspy;
+package com.picspy.views;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,8 +14,6 @@ import com.picspy.firstapp.R;
 import com.picspy.utils.AppConstants;
 import com.picspy.utils.PrefUtil;
 
-import java.util.Objects;
-
 
 public class Splash_Activity extends Activity {
     private Button splash_login, splash_signup;
@@ -25,7 +23,7 @@ public class Splash_Activity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         //TODO: Temporary. for testing login screen (always enabling it)
-        PrefUtil.removeString(getApplicationContext(), AppConstants.SESSION_ID);
+        //PrefUtil.removeString(getApplicationContext(), AppConstants.SESSION_ID);
         splash_login = (Button) findViewById(R.id.splash_login);
         splash_signup = (Button) findViewById(R.id.splash_signup);
 

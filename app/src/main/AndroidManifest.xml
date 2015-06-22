@@ -25,17 +25,17 @@
         <meta-data android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id"/>
         <activity
-            android:name="com.picspy.RegisterActivity"
+            android:name="com.picspy.views.RegisterActivity"
             android:label="@string/title_activity_register"
             android:windowSoftInputMode="adjustPan">
         </activity>
         <activity
-            android:name="com.picspy.MainActivity"
+            android:name="com.picspy.views.MainActivity"
             android:exported="true"
             android:label="@string/title_activity_main">
         </activity>
         <activity
-            android:name="com.picspy.Splash_Activity"
+            android:name="com.picspy.views.Splash_Activity"
             android:label="@string/title_activity_splash_"
             android:theme="@android:style/Theme.NoTitleBar" >
             <intent-filter>
@@ -44,7 +44,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.picspy.LoginActivity"
+            android:name="com.picspy.views.LoginActivity"
             android:label="@string/title_activity_login"
             android:windowSoftInputMode="adjustResize">
             <meta-data

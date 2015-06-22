@@ -1,4 +1,4 @@
-package com.picspy;
+package com.picspy.views;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
