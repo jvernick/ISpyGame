@@ -11,7 +11,10 @@
     <com.picspy.adapters.SlidingTabLayout
     android:id="@+id/tab"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"/>
+    android:layout_height="wrap_content"
+    android:elevation="2dp"
+    android:background="@color/ColorPrimary"
+    />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager"
@@ -38,6 +41,7 @@
         android:scaleType="fitCenter"
         android:src="@drawable/drawncamera"
         android:background="#35CCFF"
+        android:onClick="launchCamera"
         android:layout_alignParentBottom="true"
         android:layout_alignTop="@+id/bar"
         android:layout_alignBottom="@+id/bar"
@@ -72,7 +76,6 @@
         android:layout_alignParentBottom="true"
         android:layout_alignTop="@+id/bar"
         android:layout_alignBottom="@+id/bar"
-
         android:background="#35CCFF"
         android:id="@+id/settingsButton" />
     <!-- TODO removed from above because it caused an error

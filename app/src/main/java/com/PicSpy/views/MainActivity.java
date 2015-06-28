@@ -1,5 +1,6 @@
 package com.picspy.views;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -7,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.picspy.firstapp.R;
 import com.picspy.views.Fragments.FriendsFragment;
@@ -40,10 +42,8 @@ public class MainActivity extends FragmentActivity {
 
         // create a fragment list in order.
         fragments = new ArrayList<Fragment>();
-        fragments.add(new HomeFragment());
         fragments.add(new FriendsFragment());
         fragments.add(new TopFragment());
-        fragments.add(new MenuFragment());
 
         // use FragmentPagerAdapter to bind the slidingTabLayout (tabs with different titles)
         // and ViewPager (different pages of fragment) together.
@@ -52,9 +52,16 @@ public class MainActivity extends FragmentActivity {
 
         // make sure the tabs are equally spaced.
         slidingTabLayout.setDistributeEvenly(true);
+
+        // Setting custom color for scroll bar indicator
+        slidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
+            @Override
+            public int getIndicatorColor(int position) {
+                return getResources().getColor(R.color.tabsScrollColor);
+            }
+        });
+
         slidingTabLayout.setViewPager(viewPager);
-
-
     }
 
 
@@ -78,5 +85,10 @@ public class MainActivity extends FragmentActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void launchCamera(View view) {
+        Intent intent = new Intent(this, CameraActivity.class);
+        startActivity(intent);
     }
 }
