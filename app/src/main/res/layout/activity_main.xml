@@ -78,7 +78,5 @@
         android:layout_alignBottom="@+id/bar"
         android:background="#35CCFF"
         android:id="@+id/settingsButton" />
-    <!-- TODO removed from above because it caused an error
-     android:layout_align="@+id/bar" -->
 
 </RelativeLayout>

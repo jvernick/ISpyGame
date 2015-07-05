@@ -11,20 +11,25 @@
         android:layout_weight="1"
         />
 
-    <Button
+    <ImageButton
         android:id="@+id/button_capture"
-        android:text="Capture"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:background="@drawable/round_button_outline"
         android:layout_alignParentBottom="true"
-        android:layout_alignLeft="@+id/camera_preview"
+        android:layout_centerHorizontal="true"
         />
 
-    <Button
+    <ImageButton
         android:id="@+id/button_camera_switch"
-        android:text="Switch Camera"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:src="@drawable/rotatecamera"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:background="@drawable/round_button"
         android:layout_alignParentBottom="true"
         android:layout_alignRight="@+id/camera_preview"
         />

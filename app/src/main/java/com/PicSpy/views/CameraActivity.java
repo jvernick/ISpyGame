@@ -6,8 +6,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 
 import com.picspy.firstapp.R;
 
@@ -56,16 +56,8 @@ public class CameraActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
 
-        // Create an instance of Camera
-        mCamera = getCameraInstance();
-
-        // Create our Preview view and set it as the content of our activity.
-        mPreview = new CameraPreview(this, mCamera, this);
-        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
-        preview.addView(mPreview);
-
         // Add a listener to the Capture button
-        Button captureButton = (Button) findViewById(R.id.button_capture);
+        ImageButton captureButton = (ImageButton) findViewById(R.id.button_capture);
         captureButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -77,7 +69,7 @@ public class CameraActivity extends Activity {
         );
 
         // Add a listener to the switch camera button
-        Button switchButton = (Button) findViewById(R.id.button_camera_switch);
+        ImageButton switchButton = (ImageButton) findViewById(R.id.button_camera_switch);
         switchButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -86,6 +78,8 @@ public class CameraActivity extends Activity {
                     }
                 }
         );
+
+        // TODO: Maybe add a button for flash or other camera settings (i.e. touch to focus)
     }
 
     @Override
@@ -101,11 +95,53 @@ public class CameraActivity extends Activity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+        preview.removeAllViews();
+        if (mCamera == null) {
+            // Create an instance of Camera
+            if (mPreview != null) {
+                mCamera = getCameraInstance(mPreview.getCameraID());
+            }
+            else {
+                // upon first starting this activity, the back camera is opened
+                mCamera = getCameraInstance();
+            }
+        }
+        // Create our Preview view and set it as the content of our activity.
+        mPreview = new CameraPreview(this, mCamera, this);
+
+        preview.addView(mPreview);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mPreview != null) {
+            // reset the camera to be the front facing camera when the activity resumes
+            mPreview.setCameraID(Camera.CameraInfo.CAMERA_FACING_BACK);
+        }
+        super.onBackPressed();  // this exits out of the current activity
+    }
+
     /** A safe way to get an instance of the Camera object. */
     public static Camera getCameraInstance(){
         Camera c = null;
         try {
             c = Camera.open(); // attempt to get a Camera instance
+        }
+        catch (Exception e){
+            // Camera is not available (in use or does not exist)
+        }
+        return c; // returns null if camera is unavailable
+    }
+
+    /** Overloaded method that opens a camera with the given id. */
+    public static Camera getCameraInstance(int cameraID){
+        Camera c = null;
+        try {
+            c = Camera.open(cameraID); // attempt to get a Camera instance
         }
         catch (Exception e){
             // Camera is not available (in use or does not exist)

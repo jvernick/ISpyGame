@@ -47,24 +47,16 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         // If your preview can change or rotate, take care of those events here.
         // Make sure to stop the preview before resizing or reformatting it.
 
+        // stop preview before making changes
         mCamera.stopPreview();
+        // set preview size and make any resize, rotate or
+        // reformatting changes here
         setCameraDisplayOrientation(mActivity, cameraID, mCamera);
-        mCamera.startPreview();
 
         if (mHolder.getSurface() == null){
             // preview surface does not exist
             return;
         }
-
-        // stop preview before making changes
-        try {
-            mCamera.stopPreview();
-        } catch (Exception e){
-            // ignore: tried to stop a non-existent preview
-        }
-
-        // set preview size and make any resize, rotate or
-        // reformatting changes here
 
         // start preview with new settings
         try {
@@ -86,7 +78,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
                 // preview surface does exist
                 mCamera.stopPreview();
             }
-            //mCamera.stopPreview();
             mCamera.release();
 
             if (cameraID == Camera.CameraInfo.CAMERA_FACING_BACK) {
@@ -94,11 +85,11 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             } else {
                 cameraID = Camera.CameraInfo.CAMERA_FACING_BACK;
             }
+            // open the other camera
             mCamera = Camera.open(cameraID);
 
             setCameraDisplayOrientation(mActivity, cameraID, mCamera);
             try {
-
                 mCamera.setPreviewDisplay(mHolder);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -110,6 +101,10 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     public int getCameraID() {
         return cameraID;
+    }
+
+    public void setCameraID(int ID) {
+        cameraID = ID;
     }
 
     public static void setCameraDisplayOrientation(Activity activity,
