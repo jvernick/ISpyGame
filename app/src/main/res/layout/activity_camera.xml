@@ -33,4 +33,23 @@
         android:layout_alignParentBottom="true"
         android:layout_alignRight="@+id/camera_preview"
         />
+
+    <ImageView
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/round_button"
+        android:clickable="false"
+        android:layout_alignParentBottom="true"
+        />
+
+    <ImageButton
+        android:id="@+id/button_change_flash"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:background="@drawable/button_press"
+        android:layout_alignParentBottom="true"
+        />
+
 </RelativeLayout>
