@@ -111,13 +111,11 @@ public class RegisterActivity extends Activity {
     private class RegisterTask extends AsyncTask<Void, Void, String> {
         @Override
         protected String doInBackground(Void... params) {
-            String response;
             try {
-                response = registerService();
+                return registerService();
             } catch (Exception e) {
-                response = e.getMessage();
+                return e.getMessage();
             }
-            return response;
         }
 
         @Override

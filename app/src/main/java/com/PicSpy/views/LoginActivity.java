@@ -181,8 +181,9 @@ public class LoginActivity extends FragmentActivity {
         @Override
         protected String doInBackground(Void... params) {
             try {
-                String session_id = loginSercice();
-                PrefUtil.putString(getApplicationContext(), AppConstants.SESSION_ID, session_id);
+                Session session = loginSercice();
+                PrefUtil.putString(getApplicationContext(), AppConstants.SESSION_ID, session.getSession_id());
+                PrefUtil.putString(getApplicationContext(), AppConstants.USER_ID, session.getId());
             } catch (ApiException e) {
                 return e.getMessage();
             }
@@ -235,7 +236,7 @@ public class LoginActivity extends FragmentActivity {
         }
 
 
-        private String loginSercice() throws ApiException {
+        private Session loginSercice() throws ApiException {
             UserApi userApi = new UserApi();
             userApi.addHeader("X-DreamFactory-Application-Name", AppConstants.APP_NAME);
             Login login = new Login();
@@ -243,7 +244,7 @@ public class LoginActivity extends FragmentActivity {
             login.setPassword(pass_text.getText().toString());
             Session session = userApi.login(login);
             if (session == null) return null; //should never occure TODO veify and handle this
-            return session.getSession_id();
+            return session;
         }
     }
 }

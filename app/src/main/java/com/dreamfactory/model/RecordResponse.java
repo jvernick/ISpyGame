@@ -15,7 +15,7 @@ public class RecordResponse {
 	  
 	  @JsonProperty("id")
 	  private String id;
-	  
+
 	  @JsonProperty("complete")
 	  private boolean complete;
 	  

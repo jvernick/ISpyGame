@@ -1,5 +1,7 @@
 package com.dreamfactory.api;
 
+import android.util.Log;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +24,8 @@ import com.dreamfactory.model.StoredProcResponse;
 import com.dreamfactory.model.Success;
 import com.dreamfactory.model.TableSchema;
 import com.dreamfactory.model.TableSchemas;
+import com.picspy.models.DbApiRequest;
+import com.picspy.models.DbApiResponse;
 
 public class DbApi {
 	String basePath = "http://localhost/rest";
@@ -147,7 +151,9 @@ public class DbApi {
 			}
 		}
 	}
-	public RecordsResponse getRecordsByFilter (String table_name, String filter, Integer limit, Integer offset, String order, String fields, Boolean include_count, Boolean include_schema, String related) throws ApiException {
+
+	///TODO modification start
+	public <T extends DbApiResponse> T getRecordsByFilter (Class<T> cls,String table_name, String filter, Integer limit, Integer offset, String order, String fields, Boolean include_count, Boolean include_schema, String related) throws ApiException {
 		// verify required params are set
 		if(table_name == null ) {
 			throw new ApiException(400, "missing required params");
@@ -180,7 +186,7 @@ public class DbApi {
 		try {
 			String response = apiInvoker.invokeAPI(basePath, path, "GET", queryParams, null, headerParams, contentType);
 			if(response != null){
-				return (RecordsResponse) ApiInvoker.deserialize(response, "", RecordsResponse.class);
+				return (T) ApiInvoker.deserialize(response, "", cls);
 			}
 			else {
 				return null;
@@ -323,10 +329,12 @@ public class DbApi {
 				//    	  return null;
 			}
 			else {
+				Log.d("DbAPI", "Response from apiInvoker is null");
 				return null;
 			}
 		} catch (ApiException ex) {
 			if(ex.getCode() == 404) {
+				Log.d("DbAPI", "404 from server");
 				return null;
 			}
 			else {
@@ -800,7 +808,7 @@ public class DbApi {
 			}
 		}
 	}
-	public RecordResponse createRecord (String table_name, String id, RecordRequest body, String fields, String id_field, String id_type, String related) throws ApiException {
+	public <T extends DbApiResponse, P extends DbApiRequest> T createRecord (Class<T> cls,String table_name, String id, P body, String fields, String id_field, String id_type, String related) throws ApiException {
 		// verify required params are set
 		if(table_name == null || id == null || body == null ) {
 			throw new ApiException(400, "missing required params");
@@ -825,7 +833,7 @@ public class DbApi {
 		try {
 			String response = apiInvoker.invokeAPI(basePath, path, "POST", queryParams, body, headerParams, contentType);
 			if(response != null){
-				return (RecordResponse) ApiInvoker.deserialize(response, "", RecordResponse.class);
+				return (T) ApiInvoker.deserialize(response, "", cls);
 			}
 			else {
 				return null;
@@ -956,6 +964,8 @@ public class DbApi {
 			}
 		}
 	}
+
+	///TODO modification end
 	public Resources getSchemas () throws ApiException {
 		// create path and map variables
 		String path = serviceName + "/_schema".replaceAll("\\{format\\}","json");

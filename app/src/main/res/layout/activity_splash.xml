@@ -23,6 +23,7 @@
             android:text="@string/button_login"
             android:layout_weight=".5"
             android:layout_gravity="bottom"
+            android:visibility="invisible"
             android:onClick="splashLogin"/>
 
         <Button
@@ -33,6 +34,7 @@
             android:text="@string/submit_sign_up"
             android:layout_gravity="bottom"
             android:onClick="splashSignUp"
+            android:visibility="invisible"
             android:layout_weight=".5" />
 
 </LinearLayout>

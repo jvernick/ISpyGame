@@ -8,9 +8,11 @@ public class AppConstants {
     //TODO: may not need to store email
     //public static final String  EMAIL = "email";
     public static final String SESSION_ID = "session_id";
-    public static final String APP_NAME = "admin";
+    public static final String USER_ID = "user_id";
+    public static final String APP_NAME = "picspy";
+    public static final String FRIENDS_TABLE_NAME = "friends";
     //TODO change following constants as required (specifically just change the IP)
-    public static final String DSP_URL = "http://192.168.1.122:8080/rest";
+    public static final String DSP_URL = "http://10.48.10.50:8080/rest";
 
     private AppConstants() {};
 }

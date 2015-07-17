@@ -36,16 +36,15 @@
             android:name="com.picspy.views.MainActivity"
             android:exported="true"
             android:label="@string/title_activity_main">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name="com.picspy.views.Splash_Activity"
             android:label="@string/title_activity_splash_"
             android:theme="@android:style/Theme.NoTitleBar" >
-
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name="com.picspy.views.LoginActivity"

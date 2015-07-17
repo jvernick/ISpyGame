@@ -101,9 +101,9 @@ public class ApiInvoker {
 
 	public static String serialize(Object obj) throws ApiException {
 		try {
-			if (obj != null) 
+			if (obj != null) {
 				return JsonUtil.getJsonMapper().writeValueAsString(obj);
-			else 
+			} else
 				return null;
 		}
 		catch (Exception e) {
@@ -234,8 +234,9 @@ public class ApiInvoker {
 					HttpEntity resEntity = response.getEntity();
 					responseString = EntityUtils.toString(resEntity);
 				}
-				else
+				else {
 					responseString = "no data";
+				}
 				throw new ApiException(code, responseString);
 			}
 			return responseString;
