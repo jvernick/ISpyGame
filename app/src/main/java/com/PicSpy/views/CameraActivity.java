@@ -1,6 +1,8 @@
 package com.picspy.views;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Environment;
@@ -11,6 +13,7 @@ import android.widget.ImageButton;
 
 import com.picspy.firstapp.R;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -28,26 +31,17 @@ public class CameraActivity extends Activity {
     private static final String TAG = "CameraActivityError";
     private Camera mCamera;
     private CameraPreview mPreview;
+    private String flashMode = Camera.Parameters.FLASH_MODE_OFF;
+    private boolean flashEnabled = false;
     private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
 
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
 
-            File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
-            if (pictureFile == null){
-                Log.d(TAG, "Error creating media file, check storage permissions");
-                return;
-            }
-
-            try {
-                FileOutputStream fos = new FileOutputStream(pictureFile);
-                fos.write(data);
-                fos.close();
-            } catch (FileNotFoundException e) {
-                Log.d(TAG, "File not found: " + e.getMessage());
-            } catch (IOException e) {
-                Log.d(TAG, "Error accessing file: " + e.getMessage());
-            }
+            Intent intent = new Intent(getApplicationContext(), CreateChallengeActivity.class);
+            // store the data of the image for the picture taken
+            intent.putExtra("PictureTaken", data);
+            startActivity(intent);
         }
     };
 
@@ -68,6 +62,24 @@ public class CameraActivity extends Activity {
                 }
         );
 
+
+
+        final ImageButton flashButton = (ImageButton) findViewById(R.id.button_change_flash);
+        flashButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        changeFlash(v);
+                        if (flashMode != null && flashMode.equals(Camera.Parameters.FLASH_MODE_ON)) {
+                            flashEnabled = true;
+                        } else {
+                            flashEnabled = false;
+                        }
+                        flashButton.setSelected(flashEnabled);
+                    }
+                }
+        );
+
         // Add a listener to the switch camera button
         ImageButton switchButton = (ImageButton) findViewById(R.id.button_camera_switch);
         switchButton.setOnClickListener(
@@ -75,11 +87,14 @@ public class CameraActivity extends Activity {
                     @Override
                     public void onClick(View v) {
                         mCamera = mPreview.changeCamera();
+                        flashMode = mCamera.getParameters().getFlashMode();
+                        if (flashMode == null) {
+                            flashEnabled = false;
+                            flashButton.setSelected(flashEnabled);
+                        }
                     }
                 }
         );
-
-        // TODO: Maybe add a button for flash or other camera settings (i.e. touch to focus)
     }
 
     @Override
@@ -90,6 +105,7 @@ public class CameraActivity extends Activity {
 
     private void releaseCamera(){
         if (mCamera != null){
+            flashMode = mCamera.getParameters().getFlashMode(); // save the flash mode
             mCamera.release();        // release the camera for other applications
             mCamera = null;
         }
@@ -103,7 +119,14 @@ public class CameraActivity extends Activity {
         if (mCamera == null) {
             // Create an instance of Camera
             if (mPreview != null) {
+                // resume the previously opened camera upon waking
                 mCamera = getCameraInstance(mPreview.getCameraID());
+                // retain the state of the flash if the camera has it
+                if (flashMode != null) {
+                    Camera.Parameters params = mCamera.getParameters();
+                    params.setFlashMode(flashMode);
+                    mCamera.setParameters(params);
+                }
             }
             else {
                 // upon first starting this activity, the back camera is opened
@@ -183,4 +206,20 @@ public class CameraActivity extends Activity {
         return mediaFile;
     }
 
+    public void changeFlash(View view) {
+        // TODO: Is this null check needed?
+        if (mCamera != null) {
+            Camera.Parameters params = mCamera.getParameters();
+            flashMode = params.getFlashMode();
+            if (flashMode != null) {
+                if (flashMode.equals(Camera.Parameters.FLASH_MODE_OFF)) {
+                    flashMode = Camera.Parameters.FLASH_MODE_ON;
+                } else if (flashMode.equals(Camera.Parameters.FLASH_MODE_ON)) {
+                    flashMode = Camera.Parameters.FLASH_MODE_OFF;
+                }
+                params.setFlashMode(flashMode);
+                mCamera.setParameters(params);
+            }
+        }
+    }
 }
