@@ -67,33 +67,29 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
 
         @Override
         protected String doInBackground(Void... params) {
-            String session_id = PrefUtil.getString(getActivity().getApplicationContext(),
-                    AppConstants.SESSION_ID, null);
-            DbApi dbApi = new DbApi();
-            dbApi.addHeader("X-DreamFactory-Application-Name", AppConstants.APP_NAME);
-            dbApi.addHeader("X-DreamFactory-Session-Token", session_id);
-            dbApi.setBasePath(AppConstants.DSP_URL);
-            try {
-                FriendsRecord records = dbApi.getRecordsByFilter(FriendsRecord.class, AppConstants.FRIENDS_TABLE_NAME, null, -1, -1, null, null, false, false, null);
                 FriendsTableRequests request = new FriendsTableRequests(getActivity().getApplicationContext());
-                String result = request.addFriend("9");
-                Log.d("FriendsFragment",records.toString());
-                Log.d("FriendsFragment",result);
-                return result;
-            } catch (Exception e) {
-                Log.d("FriendsFragment", e.getMessage());
-            }
-            return null;
+                //String result = request.sendFriendRequest(1);
+                //FriendRecord result = request.getStats(9);
+                //String result = request.removeFriend(1);
+                //String result = request.acceptFriendRequest(10);
+                //FriendsRecord temp = request.getFriendRequests();
+                String result = request.updateStats(1,true);
+                if (result != null && result.equals("SUCCESS")) { //TODO String contains error message on error
+                    //Log.d("FriendsFragment", result.toString());
+                    return "SUCCESS";
+                } else {
+                    return "FAILED";
+                }
         }
         @Override
         protected void onPostExecute(String records) {
             if(progressDialog != null && progressDialog.isShowing()){
                 progressDialog.cancel();
             }
-            if(records != null){ // success
+            if(records.equals("Success")){ // success
                 Log.d("Friends","Success");
             }else{ // some error show dialog
-               Log.d("Friends", "ERROR");
+               Log.d("Friends", records);
             }
         }
     }

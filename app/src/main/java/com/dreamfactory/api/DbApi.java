@@ -595,7 +595,7 @@ public class DbApi {
 			}
 		}
 	}
-	public RecordsResponse updateRecords (String table_name, RecordsRequest body, String fields, String id_field, String id_type, Boolean _continue, Boolean rollback, String related) throws ApiException {
+	public <T extends DbApiResponse, P extends DbApiRequest> T  updateRecords (Class<T> cls, String table_name, P body, String fields, String id_field, String id_type, Boolean _continue, Boolean rollback, String related) throws ApiException {
 		// verify required params are set
 		if(table_name == null || body == null ) {
 			throw new ApiException(400, "missing required params");
@@ -624,7 +624,7 @@ public class DbApi {
 		try {
 			String response = apiInvoker.invokeAPI(basePath, path, "PATCH", queryParams, body, headerParams, contentType);
 			if(response != null){
-				return (RecordsResponse) ApiInvoker.deserialize(response, "", RecordsResponse.class);
+				return (T) ApiInvoker.deserialize(response, "", cls);
 			}
 			else {
 				return null;
@@ -722,7 +722,7 @@ public class DbApi {
 			}
 		}
 	}
-	public RecordsResponse deleteRecords (String table_name, RecordsRequest body, String fields, String id_field, String id_type, Boolean _continue, Boolean rollback, String filter, String ids, String related) throws ApiException {
+	public <T extends DbApiResponse, P extends DbApiRequest> T deleteRecords (Class<T> cls,String table_name, P body, String fields, String id_field, String id_type, Boolean _continue, Boolean rollback, String filter, String ids, String related) throws ApiException {
 		// verify required params are set
 		if(table_name == null || body == null ) {
 			throw new ApiException(400, "missing required params");
@@ -753,9 +753,9 @@ public class DbApi {
 		String contentType = "application/json";
 
 		try {
-			String response = apiInvoker.invokeAPI(basePath, path, "DELETE", queryParams, body, headerParams, contentType);
+			String response = apiInvoker.invokeAPI(basePath, path, "DELETE_BODY", queryParams, body, headerParams, contentType);
 			if(response != null){
-				return (RecordsResponse) ApiInvoker.deserialize(response, "", RecordsResponse.class);
+				return (T) ApiInvoker.deserialize(response, "", cls);
 			}
 			else {
 				return null;
@@ -886,7 +886,7 @@ public class DbApi {
 			}
 		}
 	}
-	public RecordResponse updateRecord (String table_name, String id, RecordRequest body, String fields, String id_field, String id_type, String related) throws ApiException {
+	public  <T extends DbApiResponse, P extends DbApiRequest> T updateRecord (Class<T> cls, String table_name, String id, P body, String fields, String id_field, String id_type, String related) throws ApiException {
 		// verify required params are set
 		if(table_name == null || id == null || body == null ) {
 			throw new ApiException(400, "missing required params");
@@ -911,7 +911,7 @@ public class DbApi {
 		try {
 			String response = apiInvoker.invokeAPI(basePath, path, "PATCH", queryParams, body, headerParams, contentType);
 			if(response != null){
-				return (RecordResponse) ApiInvoker.deserialize(response, "", RecordResponse.class);
+				return (T) ApiInvoker.deserialize(response, "", cls);
 			}
 			else {
 				return null;
@@ -1429,7 +1429,7 @@ public class DbApi {
 			}
 		}
 	}
-	public StoredProcResponse callStoredProcWithParams(String procedure_name, StoredProcRequest body, String wrapper) throws ApiException {
+	public <T extends DbApiResponse, P extends DbApiRequest> T callStoredProcWithParams(Class<T> cls, String procedure_name, P body, String wrapper) throws ApiException {
 		// verify required params are set
 		if(procedure_name == null || body == null ) {
 			throw new ApiException(400, "missing required params");
@@ -1448,7 +1448,7 @@ public class DbApi {
 		try {
 			String response = apiInvoker.invokeAPI(basePath, path, "POST", queryParams, body, headerParams, contentType);
 			if(response != null){
-				return (StoredProcResponse) ApiInvoker.deserialize(response, "", StoredProcResponse.class);
+				return (T) ApiInvoker.deserialize(response, "",cls);
 			}
 			else {
 				return null;

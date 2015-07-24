@@ -69,13 +69,16 @@ public class Splash_Activity extends Activity {
                     userApi.addHeader("X-DreamFactory-Application-Name", AppConstants.APP_NAME);
                     userApi.addHeader("X-DreamFactory-Session-Token", oldSessionKey);
                     Session session = userApi.getSession();
-                    if (session != null) {
+                    if (session != null && session.getId() != null) {
                         Log.d("sp", "session not null");
                         PrefUtil.putString(getApplicationContext(), AppConstants.SESSION_ID, session.getSession_id());
                         //TODO temp, remove line below
-                        PrefUtil.putString(getApplicationContext(), AppConstants.USER_ID, session.getId());
+                        PrefUtil.putInt(getApplicationContext(), AppConstants.USER_ID, Integer.parseInt(session.getId()));
+                    } else {
+                        return false; //This is needed since we haven't figured out a way to have infinite session duration
                     }
                 } catch (Exception e) { //TODO log exception for debugging? Network error or expired session
+                    e.printStackTrace();
                     Log.d("SplashActivity", e.getMessage());
                     //PrefUtil.putString(getApplicationContext(), AppConstants.SESSION_ID, "");
                 }
@@ -86,7 +89,6 @@ public class Splash_Activity extends Activity {
         @Override
         //TODO add response listener to finish activity
         protected void onPostExecute(Boolean isValidSession) {
-            Log.d("s","should print");
             if (isValidSession) {
                 Intent intent = new Intent(Splash_Activity.this, MainActivity.class);
                 startActivity(intent);

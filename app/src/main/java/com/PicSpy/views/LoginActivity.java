@@ -183,7 +183,7 @@ public class LoginActivity extends FragmentActivity {
             try {
                 Session session = loginSercice();
                 PrefUtil.putString(getApplicationContext(), AppConstants.SESSION_ID, session.getSession_id());
-                PrefUtil.putString(getApplicationContext(), AppConstants.USER_ID, session.getId());
+                PrefUtil.putInt(getApplicationContext(), AppConstants.USER_ID, Integer.parseInt(session.getId()));
             } catch (ApiException e) {
                 return e.getMessage();
             }

@@ -3,28 +3,14 @@ package com.dreamfactory.client;
 
 import android.util.Log;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.security.GeneralSecurityException;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.cert.X509Certificate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
+import com.dreamfactory.model.FileRequest;
+import com.fasterxml.jackson.databind.JavaType;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
@@ -40,9 +26,26 @@ import org.apache.http.impl.conn.SingleClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.util.EntityUtils;
 
-import com.dreamfactory.model.FileRequest;
-import com.fasterxml.jackson.databind.JavaType;
-import android.util.Log;
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.Socket;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.net.UnknownHostException;
+import java.security.GeneralSecurityException;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 public class ApiInvoker {
 	private static ApiInvoker INSTANCE = new ApiInvoker();
@@ -77,6 +80,23 @@ public class ApiInvoker {
 		return str;
 	}
 
+	//TODO should this be here?
+	/**
+	 * Added by Brunel F. on 7/22/15
+	 *
+	 ensures that the string parameters are encoded to be used in the url
+	 */
+	public String urlEncodeString (String input) {
+
+		try {
+			return String.valueOf(URLEncoder.encode(input, "UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace(); //TODO find a better way of handling this exception
+			return null;
+		}
+
+	}
+
 	public static Object deserialize(String json, String containerType, Class cls) throws ApiException {
 		try{
 			if("List".equals(containerType)) {
@@ -102,6 +122,8 @@ public class ApiInvoker {
 	public static String serialize(Object obj) throws ApiException {
 		try {
 			if (obj != null) {
+				//TODO for debugging, remove
+				//Log.d("ApiInvoker",JsonUtil.getJsonMapper().writeValueAsString(obj));
 				return JsonUtil.getJsonMapper().writeValueAsString(obj);
 			} else
 				return null;
@@ -135,7 +157,11 @@ public class ApiInvoker {
 					b.append("?");
 				else
 					b.append("&");
-				b.append(escapeString(key)).append("=").append(escapeString(value));
+				//TODO confiirm change
+				//new
+				b.append(escapeString(key)).append("=").append(urlEncodeString(value));
+				//old
+				//b.append(escapeString(key)).append("=").append(escapeString(value));
 			}
 		}
 		String url = host + path + b.toString();
@@ -204,6 +230,21 @@ public class ApiInvoker {
 				for(String key : headers.keySet()) {
 					delete.setHeader(key, headers.get(key));
 				}
+			}
+			/* 		TODO
+					Added by Brunel on 7-23-15
+					added to enable a body in delete requests
+				 */
+			else if ("DELETE_BODY".equals(method)) {
+				HttpDeleteWithBody delete = new HttpDeleteWithBody(url);
+				for(String key : headers.keySet()) {
+					delete.setHeader(key, headers.get(key));
+				}
+				//TODO Veriify
+				if (body != null) {
+					delete.setHeader("Content-Type", contentType);
+					delete.setEntity(new StringEntity(body, "UTF-8"));
+				}
 				response = client.execute(delete);
 			}
 			else if ("PATCH".equals(method)) {
@@ -247,6 +288,22 @@ public class ApiInvoker {
 			Log.v(TAG, e.getStackTrace().toString());
 			throw new ApiException(500, e.getMessage());
 		}
+	}
+
+	//@NotThreadSafe
+	class HttpDeleteWithBody extends HttpEntityEnclosingRequestBase {
+		public static final String METHOD_NAME = "DELETE";
+		public String getMethod() { return METHOD_NAME; }
+
+		public HttpDeleteWithBody(final String uri) {
+			super();
+			setURI(URI.create(uri));
+		}
+		public HttpDeleteWithBody(final URI uri) {
+			super();
+			setURI(uri);
+		}
+		public HttpDeleteWithBody() { super(); }
 	}
 
 	private HttpClient getClient(String host) {
