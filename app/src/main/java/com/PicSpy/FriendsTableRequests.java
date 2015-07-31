@@ -4,11 +4,8 @@ import android.content.Context;
 import android.util.Log;
 
 import com.dreamfactory.api.DbApi;
-import com.dreamfactory.model.Metadata;
-import com.dreamfactory.model.StoredProcParam;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.picspy.models.DbApiRequest;
-import com.picspy.models.DbApiResponse;
 import com.picspy.models.FriendRecord;
 import com.picspy.models.FriendsRecord;
 import com.picspy.models.StoredProcRequest;
@@ -21,9 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by BrunelAmC on 7/15/2015.

@@ -9,12 +9,13 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera" />
-    <permission android:name="android.permission.FLASHLIGHT"
+
+    <permission
+        android:name="android.permission.FLASHLIGHT"
         android:permissionGroup="android.permission-group.HARDWARE_CONTROLS"
-        android:protectionLevel="normal"/>
-
-
+        android:protectionLevel="normal" />
 
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
@@ -29,17 +30,19 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <meta-data android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"/>
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+
         <activity
             android:name="com.picspy.views.RegisterActivity"
             android:label="@string/title_activity_register"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
             android:name="com.picspy.views.MainActivity"
             android:exported="true"
-            android:label="@string/title_activity_main">
+            android:label="@string/title_activity_main" >
         </activity>
         <activity
             android:name="com.picspy.views.Splash_Activity"
@@ -47,34 +50,39 @@
             android:theme="@android:style/Theme.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name="com.picspy.views.LoginActivity"
             android:label="@string/title_activity_login"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize" >
             <meta-data
                 android:name="com.facebook.sdk.ApplicationId"
-                android:value="@string/facebook_app_id"/>
+                android:value="@string/facebook_app_id" />
         </activity>
-        <activity android:name="com.facebook.FacebookActivity"
-            android:configChanges=
-                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:label="@string/app_name" />
-
-        <activity android:name="com.picspy.views.CameraActivity"
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
-            android:screenOrientation="portrait">
-            <!-- configure this activity to use portrait orientation -->
-        </activity>
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name="com.picspy.views.CameraActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
 
+            <!-- configure these activity to use portrait orientation -->
+        </activity>
         <activity
             android:name="com.picspy.views.CreateChallengeActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name" >
         </activity>
+        <activity
+            android:name="com.picspy.FriendInfoActivity"
+            android:label="@string/title_activity_friend_info">
 
+        </activity>
     </application>
 
 </manifest>

@@ -1,0 +1,189 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.picspy.FriendInfoActivity">
+    <!--
+    TODO change colors to colors form colors resource
+    -->
+  <!--
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/tool_bar"/>
+   -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textStyle="bold"
+        android:text="@string/stats_title"
+        android:id="@+id/stats_title"
+        android:gravity="center_horizontal"
+        android:background="#AAAAFF"/>
+
+    <LinearLayout
+        android:divider="?android:listDivider"
+        android:dividerPadding="2.5dp"
+        android:showDividers="middle"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_below="@id/stats_title"
+        android:layout_centerHorizontal="true"
+        android:weightSum="3"
+        android:id="@+id/stats">
+
+        <TextView
+            style="@style/total_score_number"
+            android:id="@+id/total_won"
+            android:textColor="#00FF0A"/>
+        <TextView
+            style="@style/total_score_number"
+            android:id="@+id/total_lost"
+            android:textColor="#FF000A"/>
+        <TextView
+            style="@style/total_score_number"
+            android:id="@+id/leaderboard"
+            android:textColor="#000000"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:divider="?android:listDivider"
+        android:dividerPadding="2.5dp"
+        android:showDividers="middle"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/stats"
+        android:layout_centerHorizontal="true"
+        android:weightSum="3"
+        android:padding="5dp"
+        android:id="@+id/stats_texts">
+
+        <TextView
+            style="@style/total_score_text"
+            android:text="@string/total_won_description"
+            android:id="@+id/total_won_text"/>
+        <TextView
+            style="@style/total_score_text"
+            android:text="@string/total_won_description"
+            android:id="@+id/total_lost_text"/>
+        <TextView
+            style="@style/total_score_text"
+            android:text="@string/leaderboard_descriptiton"
+            android:id="@+id/leaderboard_text"/>
+    </LinearLayout>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textStyle="bold"
+        android:text="@string/games_sent_description"
+        android:id="@+id/sent_description"
+        android:gravity="center_horizontal"
+        android:layout_below="@id/stats_texts"
+        android:background="#AAAAFF"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="25dp"
+        android:layout_alignTop="@id/sent_description"
+        android:id="@+id/game_stats">
+
+        <SurfaceView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/surfaceView"
+            android:layout_margin="20dp"
+            android:layout_gravity="start|top"
+            android:layout_alignParentBottom="true"
+            android:layout_toLeftOf="@+id/sent_lost"
+            android:layout_toRightOf="@+id/sent_won"
+            android:layout_toEndOf="@+id/sent_won" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:id="@+id/sent_lost"
+            android:layout_marginTop="50dp"
+            android:textColor="#FF0000"
+            android:singleLine="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:text="@string/score"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:id="@+id/recieved_lost"
+            android:layout_marginBottom="50dp"
+            android:layout_alignParentBottom="true"
+            android:textColor="#FF0000"
+            android:singleLine="true"
+            android:layout_alignLeft="@id/sent_lost"
+            android:layout_alignStart="@id/sent_lost"
+            android:text="@string/score"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:id="@+id/sent_won"
+            android:layout_marginTop="50dp"
+            android:textColor="#00FF00"
+            android:singleLine="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:text="@string/score"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:id="@+id/recieved_won"
+            android:layout_marginBottom="50dp"
+            android:layout_alignParentBottom="true"
+            android:textColor="#00FF00"
+            android:singleLine="true"
+            android:layout_alignLeft="@id/sent_won"
+            android:layout_alignStart="@id/sent_won"
+            android:text="@string/score"/>
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/games_received_description"
+        android:gravity="center_horizontal"
+        android:id="@+id/received_description"
+        android:textStyle="bold"
+        android:background="#AAAAFF"
+        android:layout_alignParentBottom="true" />
+
+    <ImageButton
+        android:layout_margin="2.5dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_action"
+        android:background="@drawable/circle"
+        android:id="@+id/imageButton"
+        android:contentDescription="Start game"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:onClick="startGame"/>
+
+
+</RelativeLayout>

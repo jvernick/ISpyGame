@@ -2,6 +2,7 @@ package com.picspy.views.Fragments;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 
 import com.dreamfactory.api.DbApi;
 import com.dreamfactory.model.RecordsResponse;
+import com.picspy.FriendInfoActivity;
 import com.picspy.FriendsTableRequests;
 import com.picspy.firstapp.R;
 import com.picspy.models.FriendRecord;
@@ -22,6 +24,7 @@ import com.picspy.utils.AppConstants;
 import com.picspy.utils.PrefUtil;
 import com.picspy.views.LoginActivity;
 import com.picspy.views.MainActivity;
+import com.picspy.views.RegisterActivity;
 
 /**
  * Created by Justin12 on 6/6/2015.
@@ -37,21 +40,34 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
         progressDialog.setTitle("loading");
 
         View rootView = inflater.inflate(R.layout.fragment_friends, container, false);
-        Button b = (Button) rootView.findViewById(R.id.button);
-        b.setOnClickListener(this);
+        Button button = (Button) rootView.findViewById(R.id.button);
+        Button button2 =  (Button) rootView.findViewById(R.id.button2);
+        button.setOnClickListener(this);
+        button2.setOnClickListener(this);
         return rootView;
     }
 
-    public void testRequest (View view) {
+    public void testRequest(View view) {
         GetRecordsTask listItem = new GetRecordsTask();
         listItem.execute();
     }
 
-    @Override
+    public void testInfoPage( View view) {
+        Intent intent = new Intent(getActivity(), FriendInfoActivity.class);
+        startActivity(intent);
+    }
+
+    @Override//TODO DOcument: enables fragment to handle button
     public void onClick(View view) {
+        Log.d("FriendsFragment","onClick");
         switch (view.getId()) {
             case R.id.button:
+                Log.d("FriendsFragment","case1");
                 testRequest(view);
+                break;
+            case R.id.button2:
+                Log.d("FriendsFragment","case2");
+                testInfoPage(view);
                 break;
         }
     }

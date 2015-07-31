@@ -12,7 +12,7 @@ public class AppConstants {
     public static final String APP_NAME = "picspy";
     public static final String FRIENDS_TABLE_NAME = "friends";
     //TODO change following constants as required (specifically just change the IP)
-    public static final String DSP_URL = "http://10.48.10.79:8080/rest";
+    public static final String DSP_URL = "http://192.168.0.8:8080/rest";
 
     private AppConstants() {};
 }
