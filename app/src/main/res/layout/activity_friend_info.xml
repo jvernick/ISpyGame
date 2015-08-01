@@ -6,18 +6,20 @@
     <!--
     TODO change colors to colors form colors resource
     -->
-  <!--
+
     <include
         android:id="@+id/toolbar"
         layout="@layout/tool_bar"/>
-   -->
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_margin="5dp"
         android:textStyle="bold"
         android:text="@string/stats_title"
         android:id="@+id/stats_title"
+        android:layout_below="@id/toolbar"
         android:gravity="center_horizontal"
         android:background="#AAAAFF"/>
 
@@ -48,9 +50,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:divider="?android:listDivider"
-        android:dividerPadding="2.5dp"
-        android:showDividers="middle"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -80,6 +79,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textStyle="bold"
+        android:layout_margin="5dp"
         android:text="@string/games_sent_description"
         android:id="@+id/sent_description"
         android:gravity="center_horizontal"
@@ -92,7 +92,7 @@
         android:layout_marginTop="30dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginBottom="25dp"
+        android:layout_marginBottom="30dp"
         android:layout_alignTop="@id/sent_description"
         android:id="@+id/game_stats">
 
@@ -100,10 +100,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/surfaceView"
-            android:layout_margin="20dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="7.5dp"
+            android:layout_marginTop="2.5dp"
+            android:padding="5dp"
             android:layout_gravity="start|top"
             android:layout_alignParentBottom="true"
             android:layout_toLeftOf="@+id/sent_lost"
+            android:layout_toStartOf="@id/sent_lost"
             android:layout_toRightOf="@+id/sent_won"
             android:layout_toEndOf="@+id/sent_won" />
 
@@ -166,6 +171,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/games_received_description"
         android:gravity="center_horizontal"
+        android:layout_margin="5dp"
         android:id="@+id/received_description"
         android:textStyle="bold"
         android:background="#AAAAFF"

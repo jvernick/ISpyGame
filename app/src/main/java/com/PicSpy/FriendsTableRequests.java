@@ -27,7 +27,7 @@ public class FriendsTableRequests {
     private int user_id;
     private String session_id;
     private DbApi dbApi;
-
+    private final static String TAG = "FriendsTableRequests";
     /**
      * Constructor initializes the required settings and values from shared preferences
      * @param context The contexts that calls the method. This is needed to access the shared
@@ -52,13 +52,13 @@ public class FriendsTableRequests {
             AddFriendModel request = new AddFriendModel(user_id,friend_2_id,user_id );
             FriendRecord record = dbApi.createRecord(FriendRecord.class, AppConstants.FRIENDS_TABLE_NAME, "123", request, null, null, null, null);
             if ( record != null) {
-                Log.d("FriendsTableRequest", record.toString());
+                Log.d(TAG, record.toString());
                 return "SUCCESS";
             } else {
                 return "FAILED";
             }
         } catch (Exception e) {
-            Log.d("FriendsTableRequest", e.getMessage());
+            Log.d(TAG, e.getMessage());
             //Attempting to return only the message part of the error message
             try {
                 JSONObject jObj = new JSONObject(e.getMessage());
@@ -80,13 +80,13 @@ public class FriendsTableRequests {
             AddFriendModel request = new AddFriendModel(user_id,friend_2_id, 0);
             FriendRecord record = dbApi.updateRecord(FriendRecord.class, AppConstants.FRIENDS_TABLE_NAME, "0", request, null, null, null, null);
             if ( record != null) {
-                Log.d("FriendsTableRequest", record.toString());
+                Log.d(TAG, record.toString());
                 return "SUCCESS";
             } else {
                 return "FAILED";
             }
         } catch (Exception e) {
-            Log.d("FriendsTableRequest", e.getMessage());
+            Log.d(TAG, e.getMessage());
             //Attempting to return only the message part of the error message
             try {
                 JSONObject jObj = new JSONObject(e.getMessage());
@@ -107,10 +107,10 @@ public class FriendsTableRequests {
             String filter =" `status` != " + user_id + " AND `status` != " + 0 ;
             //TODO does limiting fields actually improve speed and peformance?
             FriendsRecord temp = dbApi.getRecordsByFilter(FriendsRecord.class, AppConstants.FRIENDS_TABLE_NAME, filter, null, null, null, null, false, false, null);
-            Log.d("FriendsTableRequest", temp.toString());
+            Log.d(TAG, temp.toString());
             return temp;
         } catch (Exception e) {
-            Log.d("FriendsTableRequest", e.getMessage());
+            Log.d(TAG, e.getMessage());
             //Attempting to return only the message part of the error message
             try {
                 JSONObject jObj = new JSONObject(e.getMessage());
@@ -141,13 +141,13 @@ public class FriendsTableRequests {
             request.addParam(new com.picspy.models.StoredProcParam("result", temp_result));
             StoredProcResponse response = dbApi.callStoredProcWithParams(StoredProcResponse.class,"update_game_stats", request, null);
             if ( response != null && response.getReturn_val() == "1") {
-                Log.d("FriendsTableRequest", response.toString());
+                Log.d(TAG, response.toString());
                 return "SUCCESS";
             } else {
                 return "FAILED";
             }
         } catch (Exception e) {
-            Log.d("FriendsTableRequest", e.getMessage());
+            Log.d(TAG, e.getMessage());
             //Attempting to return only the message part of the error message
             try {
                 JSONObject jObj = new JSONObject(e.getMessage());
@@ -169,13 +169,13 @@ public class FriendsTableRequests {
             request.addRecord(request1);
             FriendsRecord record = dbApi.deleteRecords(FriendsRecord.class, AppConstants.FRIENDS_TABLE_NAME, request, null, null, null, false, false, null, null,null);
             if ( record != null) {
-                Log.d("FriendsTableRequest", record.toString());
+                Log.d("p", record.toString());
                 return "SUCCESS";
             } else {
                 return "FAILED";
             }
         } catch (Exception e) {
-            Log.d("FriendsTableRequest", e.getMessage());
+            Log.d("n", e.getMessage());
             //Attempting to return only the message part of the error message
             try {
                 JSONObject jObj = new JSONObject(e.getMessage());
@@ -204,7 +204,7 @@ public class FriendsTableRequests {
             FriendsRecord temp = dbApi.getRecordsByFilter(FriendsRecord.class, AppConstants.FRIENDS_TABLE_NAME, filter, null, null, null, fields, false, false, null);
             return temp.getRecord().get(0);
         } catch (Exception e) {
-            Log.d("FriendsTableRequest", e.getMessage());
+            Log.d(TAG, e.getMessage());
             //Attempting to return only the message part of the error message
             try {
                 JSONObject jObj = new JSONObject(e.getMessage());

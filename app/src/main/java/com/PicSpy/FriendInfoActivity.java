@@ -2,6 +2,7 @@ package com.picspy;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -21,41 +22,50 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.picspy.firstapp.R;
+import com.picspy.views.Fragments.FriendsFragment;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class FriendInfoActivity extends ActionBarActivity implements SurfaceHolder.Callback {
 
     private static final String TAG = "FriendsInfoActivity";
-    SurfaceView frame1;
-    TextView sent_won, sent_lost, recieved_won, getReceived_lost;
-    private Toolbar toolbar;
+    private TextView sent_won, sent_lost, received_won, getReceived_lost;
+    private int friend_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        String friendUsername = intent.getStringExtra(FriendsFragment.FRIEND_USERNAME);
+        friend_id = intent.getIntExtra(FriendsFragment.FRIEND_ID, -1);
+
         setContentView(R.layout.activity_friend_info);
 
-        frame1 = (SurfaceView) findViewById(R.id.surfaceView);
+        SurfaceView frame1 = (SurfaceView) findViewById(R.id.surfaceView);
         frame1.getHolder().addCallback(this);
 
         sent_won = (TextView) findViewById(R.id.sent_won);
         sent_lost = (TextView) findViewById(R.id.sent_lost);
-        recieved_won = (TextView) findViewById(R.id.recieved_won);
+        received_won = (TextView) findViewById(R.id.recieved_won);
         getReceived_lost = (TextView) findViewById(R.id.recieved_lost);
 
-        //TODO make string always have length 3
+        //TODO make string always have length 3. lines below are for testing
         sent_lost.setText(100 + "");
         sent_won.setText(" " + 0 + " ");
-        recieved_won.setText(700 + "");
-        //getRecieved_lost.setText(" " + 0 + " ");
-        /*
-        toolbar = (Toolbar) findViewById(R.id.toolbar); // Attaching the layout to the toolbar object
+        received_won.setText(700 + "");
+        //getReceived_lost.setText(" " + 0 + " ");
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        TextView title = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        // TODO Should local db be queried here or in parent activity
+        title.setText(friendUsername);
         setSupportActionBar(toolbar);                   // Setting toolbar as the ActionBar
-       */
-      /*
-        ActionBar actionBar = getActionBar();
-        actionBar.setSubtitle("mytest");
-        actionBar.setTitle("vogella.com");*/
+        //TODO Verify contrast on back button and possibly change
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationIcon(R.drawable.ic_back);
     }
 
     @Override
@@ -80,13 +90,8 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            //TODO delete friend
-
-                            FriendsTableRequests request = new FriendsTableRequests(getApplicationContext());
-                            onBackPressed();
-                            DeleteFriendTask  deleteFriendTask = new DeleteFriendTask(3);
+                            DeleteFriendTask  deleteFriendTask = new DeleteFriendTask(friend_id);
                             deleteFriendTask.execute();
-                            Toast.makeText(FriendInfoActivity.this, "Friend removed",Toast.LENGTH_SHORT).show();
                         }
                     }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
@@ -124,9 +129,7 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
 
     }
 
-    public void tryDrawing(SurfaceHolder surfaceHolder) {
-        Log.d(TAG, "Trying to draw...");
-
+    private void tryDrawing(SurfaceHolder surfaceHolder) {
         Canvas canvas = surfaceHolder.lockCanvas();
         if (canvas == null) {
             Log.e(TAG, "Cannot draw onto the canvas as it's null");
@@ -140,22 +143,17 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
     private void drawRect(final Canvas canvas, Rect canvasRect) {
         //Rect rect = new RectF(frame1.getLeft(), frame1.getTop(), frame1.getRight(), frame1.getBottom());
         int pad = 1;
-        int width1 = canvasRect.right;
-        int height1 = canvasRect.bottom/2;
-        if (width1 - height1 < 0) {
 
-        }
-        Log.d(TAG,width1 + " " + canvasRect.toString());
-        Rect temp = new Rect(0 + pad,0 + pad,canvasRect.right - pad, canvasRect.bottom/2 - 1 - pad); //top rectangle
+        Rect temp = new Rect(pad, pad,canvasRect.right - pad, canvasRect.bottom/2 - 1 - pad); //top rectangle
         RectF rect1 = rectToSquare(temp, 2);
-        temp = new Rect(0,canvasRect.bottom/2 + 1,canvasRect.right, canvasRect.bottom); //bottom rect
+        temp = new Rect(pad,canvasRect.bottom/2 + 1 + pad,canvasRect.right - pad, canvasRect.bottom - pad); //bottom rect
         RectF rect2 = rectToSquare(temp, 2);
         Paint paint = new Paint();
         int percentage1 = 85;
         int percentage2 = 15;
 
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
-        paint.setAntiAlias(true);
+        //paint.setAntiAlias(true);
         //TODO change color so that the background is indistinguishable
         canvas.drawColor(Color.LTGRAY);
 
@@ -180,7 +178,7 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
 
         if (width  < height ) {
             left = left + pad;
-            top = top + pad + (height - width) / 2;;
+            top = top + pad + (height - width) / 2;
             right = right - pad;
             bottom = top + width - pad;
         } else {
@@ -194,7 +192,7 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
     }
 
     class DeleteFriendTask extends AsyncTask<Void, String, String> {
-        int friend_id;
+        final int friend_id;
         public DeleteFriendTask(int friend_id) {
             super();
             this.friend_id = friend_id;
@@ -212,17 +210,25 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
             if (result != null && result.equals("SUCCESS")) { //TODO String contains error message on error
                 return "SUCCESS";
             } else {
-                Log.d(TAG, result.toString());
+                Pattern p1 = Pattern.compile(".*[cC]onnection.*[rR]efused.*", Pattern.DOTALL);
+                Pattern p2 = Pattern.compile(".*timed out", Pattern.DOTALL);
+                if (result != null &&  p1.matcher(result).matches()) {
+                    Toast.makeText(FriendInfoActivity.this, "No Connection", Toast.LENGTH_LONG).show();
+                } else if (result != null && p2.matcher(result).matches()) {
+                    Toast.makeText(FriendInfoActivity.this, "Timed Out", Toast.LENGTH_LONG).show();
+                }
+                Toast.makeText(FriendInfoActivity.this, result, Toast.LENGTH_SHORT).show();
                 return "FAILED";
             }
         }
         @Override
-        protected void onPostExecute(String records) {
+        protected void onPostExecute(String result) {
 
-            if (records.equals("Success")){ // success
-                Log.d(TAG,"Success");
+            if (result.equals("SUCCESS")){
+                onBackPressed();
+                Toast.makeText(FriendInfoActivity.this, "Friend removed",Toast.LENGTH_SHORT).show();
             } else{ // some error show dialog
-                Log.d(TAG, records);
+                Log.d(TAG, result);
             }
         }
     }

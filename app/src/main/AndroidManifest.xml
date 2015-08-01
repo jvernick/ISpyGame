@@ -80,8 +80,11 @@
         </activity>
         <activity
             android:name="com.picspy.FriendInfoActivity"
-            android:label="@string/title_activity_friend_info">
-
+            android:label="@string/title_activity_friend_info"
+            android:parentActivityName="com.picspy.views.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.picspy.views.MainActivity"/>
         </activity>
     </application>
 

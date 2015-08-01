@@ -30,7 +30,8 @@ import com.picspy.views.RegisterActivity;
  * Created by Justin12 on 6/6/2015.
  */
 public class FriendsFragment extends Fragment implements View.OnClickListener {
-
+    public final static String FRIEND_USERNAME = "com.picspy.USERNAME";
+    public final static String FRIEND_ID = "com.picspy.FRIEND_ID";
     private Dialog progressDialog;
 
     @Override
@@ -54,6 +55,8 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
 
     public void testInfoPage( View view) {
         Intent intent = new Intent(getActivity(), FriendInfoActivity.class);
+        intent.putExtra(FRIEND_ID, 8);
+        intent.putExtra(FRIEND_USERNAME, "brunelamc");
         startActivity(intent);
     }
 
@@ -74,8 +77,6 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
 
 
     class GetRecordsTask extends AsyncTask<Void, String, String> {
-        private String errorMsg;
-
         @Override
         protected void onPreExecute() {
             progressDialog.show();

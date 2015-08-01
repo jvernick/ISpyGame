@@ -58,10 +58,10 @@ public class RegisterActivity extends Activity {
 
     /* Validates email with regex */
     private boolean isValidEmail() {
-        String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+        String emailPattern = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                 + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 		String email = email_Text.getText().toString();
-		return email.matches(EMAIL_PATTERN);
+		return email.matches(emailPattern);
     }
 
     //TODO review: added for convinience: find a better way to store/handle this

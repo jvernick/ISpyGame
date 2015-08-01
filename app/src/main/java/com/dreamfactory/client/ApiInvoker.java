@@ -24,6 +24,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.SingleClientConnManager;
 import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 
 import java.io.File;
@@ -306,13 +308,17 @@ public class ApiInvoker {
 		public HttpDeleteWithBody() { super(); }
 	}
 
+	//TODO Confirm modification below to add a timeout when there is no connection
 	private HttpClient getClient(String host) {
+		HttpParams httpParams = new BasicHttpParams();
+		HttpConnectionParams.setConnectionTimeout(httpParams, 10000); // 10 second timeout
+
 		if (client == null) {
 			if (ignoreSSLCertificates && ignoreSSLConnectionManager != null) {
 				// Trust self signed certificates
-				client = new DefaultHttpClient(ignoreSSLConnectionManager, new BasicHttpParams());
+				client = new DefaultHttpClient(ignoreSSLConnectionManager, httpParams);
 			} else {
-				client = new DefaultHttpClient();
+				client = new DefaultHttpClient(httpParams);
 			}
 		}
 		return client;
