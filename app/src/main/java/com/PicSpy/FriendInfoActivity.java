@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.AsyncTask;
@@ -18,21 +19,28 @@ import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.picspy.firstapp.R;
+import com.picspy.models.FriendRecord;
+import com.picspy.utils.AppConstants;
+import com.picspy.utils.PrefUtil;
 import com.picspy.views.Fragments.FriendsFragment;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
 public class FriendInfoActivity extends ActionBarActivity implements SurfaceHolder.Callback {
 
     private static final String TAG = "FriendsInfoActivity";
-    private TextView sent_won, sent_lost, received_won, getReceived_lost;
+    private TextView sent_won, sent_lost, received_won, received_lost;
+    private SurfaceView frame1;
+    private ProgressBar spinner;
     private int friend_id;
+    private int topPercentage = 50, bottomPercentage = 50;  //default percentage values
+    private boolean requestSuccessful = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,24 +48,28 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
         Intent intent = getIntent();
         String friendUsername = intent.getStringExtra(FriendsFragment.FRIEND_USERNAME);
         friend_id = intent.getIntExtra(FriendsFragment.FRIEND_ID, -1);
-
+        new getStats(friend_id).execute();
         setContentView(R.layout.activity_friend_info);
-
-        SurfaceView frame1 = (SurfaceView) findViewById(R.id.surfaceView);
-        frame1.getHolder().addCallback(this);
+        spinner = (ProgressBar)findViewById(R.id.myProgressBar);
+        //TODO Set color to theme color
+        spinner.getIndeterminateDrawable().setColorFilter(Color.BLUE, PorterDuff.Mode.SRC_IN);
 
         sent_won = (TextView) findViewById(R.id.sent_won);
         sent_lost = (TextView) findViewById(R.id.sent_lost);
         received_won = (TextView) findViewById(R.id.recieved_won);
-        getReceived_lost = (TextView) findViewById(R.id.recieved_lost);
+        received_lost = (TextView) findViewById(R.id.recieved_lost);
+
+        frame1 = (SurfaceView) findViewById(R.id.surfaceView);
+        frame1.getHolder().addCallback(this);
 
         //TODO make string always have length 3. lines below are for testing
         sent_lost.setText(100 + "");
-        sent_won.setText(" " + 0 + " ");
+        sent_won.setText("" + 0 + "");
         received_won.setText(700 + "");
-        //getReceived_lost.setText(" " + 0 + " ");
+        //received_lost.setText(" " + 0 + " ");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
         TextView title = (TextView) toolbar.findViewById(R.id.toolbar_title);
         // TODO Should local db be queried here or in parent activity
         title.setText(friendUsername);
@@ -81,7 +93,9 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
+        if (!requestSuccessful) { //Do nothing if web request was unsuccessful
+            return false;
+        }
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             AlertDialog.Builder alertDialog = new AlertDialog.Builder(FriendInfoActivity.this);
@@ -90,6 +104,8 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            //TODO ensure that on return to parent, friends list is reloaded
+                            //one way will be to return boolean to parent or always refresh
                             DeleteFriendTask  deleteFriendTask = new DeleteFriendTask(friend_id);
                             deleteFriendTask.execute();
                         }
@@ -98,7 +114,7 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
                             dialog.cancel();
                         }
                     })
-                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setIcon(android.R.drawable.ic_dialog_alert) //TODO change alert color to red?
                     .show();
             return true;
         }
@@ -111,17 +127,24 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
         Intent i = new Intent(MainActivity.this,SecondActivity.class);
                 startActivity(i);
          */
-        Toast.makeText(FriendInfoActivity.this, "Game started",Toast.LENGTH_SHORT).show();
+        /*if (!requestSuccessful) { //Do nothing if web request was unsuccessful
+            return;
+        }*/
+        Toast.makeText(FriendInfoActivity.this, "Game started", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
-        tryDrawing(surfaceHolder);
+        if (requestSuccessful) { //draw image only after data is gotten from server
+            tryDrawing(surfaceHolder, topPercentage, bottomPercentage);
+        }
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-        tryDrawing(surfaceHolder);
+        if (requestSuccessful) {
+            tryDrawing(surfaceHolder, topPercentage, bottomPercentage);
+        }
     }
 
     @Override
@@ -129,18 +152,18 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
 
     }
 
-    private void tryDrawing(SurfaceHolder surfaceHolder) {
+    private void tryDrawing(SurfaceHolder surfaceHolder, int topPercent, int bottomPercent) {
         Canvas canvas = surfaceHolder.lockCanvas();
         if (canvas == null) {
             Log.e(TAG, "Cannot draw onto the canvas as it's null");
         } else {
-            drawRect(canvas, surfaceHolder.getSurfaceFrame());
+            drawRect(canvas, surfaceHolder.getSurfaceFrame(), topPercent, bottomPercent);
             surfaceHolder.unlockCanvasAndPost(canvas);
         }
 
     }
 
-    private void drawRect(final Canvas canvas, Rect canvasRect) {
+    private void drawRect(final Canvas canvas, Rect canvasRect, int topPercent, int bottomPercent) {
         //Rect rect = new RectF(frame1.getLeft(), frame1.getTop(), frame1.getRight(), frame1.getBottom());
         int pad = 1;
 
@@ -149,20 +172,20 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
         temp = new Rect(pad,canvasRect.bottom/2 + 1 + pad,canvasRect.right - pad, canvasRect.bottom - pad); //bottom rect
         RectF rect2 = rectToSquare(temp, 2);
         Paint paint = new Paint();
-        int percentage1 = 85;
-        int percentage2 = 15;
 
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
         //paint.setAntiAlias(true);
         //TODO change color so that the background is indistinguishable
+        //idealy the same color as backgroud
+        //canvas.drawColor(Color.rgb(211,211,211));
         canvas.drawColor(Color.LTGRAY);
 
         paint.setColor(Color.RED);
         canvas.drawArc(rect1, 0, 360, true, paint);
         canvas.drawArc(rect2, 0, 360, true, paint);
         paint.setColor(Color.GREEN);
-        canvas.drawArc(rect1, 0, 360 * percentage1 / 100, true, paint);
-        canvas.drawArc(rect2, 0, 360 * percentage2 / 100, true, paint);
+        canvas.drawArc(rect1, 0, 360 * topPercent / 100, true, paint);
+        canvas.drawArc(rect2, 0, 360 * bottomPercent / 100, true, paint);
     }
 
     /**
@@ -191,16 +214,83 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
         return new RectF(left, top, right, bottom);
     }
 
-    class DeleteFriendTask extends AsyncTask<Void, String, String> {
+    private void setStats(FriendRecord record) {
+        int total1 = (record.getFriend_1_won() + record.getFriend_1_lost());
+        int total2 = (record.getFriend_2_won() + record.getFriend_2_lost());
+        total1 = total1==0? 1: total1;
+        total2 = total2==0? 1: total2;
+
+        if (friend_id < PrefUtil.getInt(getApplicationContext(), AppConstants.USER_ID)) {
+            sent_won.setText(String.valueOf(record.getFriend_1_won()));
+            sent_lost.setText(String.valueOf(record.getFriend_1_lost()));
+            received_won.setText(String.valueOf(record.getFriend_2_won()));
+            received_lost.setText(String.valueOf(record.getFriend_2_lost()));
+            topPercentage = 100 *  record.getFriend_1_won()
+                    / total1;
+            bottomPercentage = 100 *  record.getFriend_2_won()
+                    / total2;
+        } else {
+            sent_won.setText(String.valueOf(record.getFriend_2_won()));
+            sent_lost.setText(String.valueOf(record.getFriend_2_lost()));
+            received_won.setText(String.valueOf(record.getFriend_1_won()));
+            received_lost.setText(String.valueOf(record.getFriend_1_lost()));
+            bottomPercentage = 100 *  record.getFriend_1_won()
+                    / total1;
+            topPercentage = 100 *  record.getFriend_2_won()
+                    / total2;
+        }
+
+        //Set values to default(50-50) if zero
+        if (topPercentage == 0) {
+            topPercentage = 50;
+        }
+        if (bottomPercentage == 0) {
+            bottomPercentage = 50;
+        }
+
+        requestSuccessful = true;
+        View view = findViewById(R.id.page);
+        view.setVisibility(View.VISIBLE);
+        tryDrawing(frame1.getHolder(), topPercentage, bottomPercentage);
+        //TODO set user stats
+    }
+
+    private class getStats extends AsyncTask<Void, String, FriendRecord> {
         final int friend_id;
-        public DeleteFriendTask(int friend_id) {
+        public getStats(int friend_id) {
             super();
             this.friend_id = friend_id;
         }
 
         @Override
         protected void onPreExecute() {
-            //TODO add spinner
+           // spinner = (ProgressBar)findViewById(R.id.progressBar);
+            //TODO Spinner not neccessary if connecting to server is very fast. Test.
+            spinner.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected FriendRecord doInBackground(Void... params) {
+            FriendsTableRequests request = new FriendsTableRequests(getApplicationContext());
+            return request.getStats(friend_id);
+        }
+
+        @Override
+        protected void onPostExecute(FriendRecord result) {
+            spinner.setVisibility(View.GONE);
+            if (result != null){
+                setStats(result);
+            } else { // some error show dialog
+                Toast.makeText(FriendInfoActivity.this, "Network error",Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private class DeleteFriendTask extends AsyncTask<Void, String, String> {
+        final int friend_id;
+        public DeleteFriendTask(int friend_id) {
+            super();
+            this.friend_id = friend_id;
         }
 
         @Override
@@ -213,22 +303,29 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
                 Pattern p1 = Pattern.compile(".*[cC]onnection.*[rR]efused.*", Pattern.DOTALL);
                 Pattern p2 = Pattern.compile(".*timed out", Pattern.DOTALL);
                 if (result != null &&  p1.matcher(result).matches()) {
-                    Toast.makeText(FriendInfoActivity.this, "No Connection", Toast.LENGTH_LONG).show();
-                } else if (result != null && p2.matcher(result).matches()) {
-                    Toast.makeText(FriendInfoActivity.this, "Timed Out", Toast.LENGTH_LONG).show();
+                    return "No Connection";
+                } else if (result != null && p2.matcher(result).matches()) { //Should never timeout
+                   return "Timed out";
                 }
-                Toast.makeText(FriendInfoActivity.this, result, Toast.LENGTH_SHORT).show();
                 return "FAILED";
             }
         }
         @Override
         protected void onPostExecute(String result) {
-
             if (result.equals("SUCCESS")){
                 onBackPressed();
-                Toast.makeText(FriendInfoActivity.this, "Friend removed",Toast.LENGTH_SHORT).show();
-            } else{ // some error show dialog
-                Log.d(TAG, result);
+                Toast.makeText(FriendInfoActivity.this, "Friend successfully removed",Toast.LENGTH_SHORT).show();
+            } else { // some error show dialog
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(FriendInfoActivity.this);
+                //TODO modify error presentation format and possibly the error message
+                alertDialog.setTitle("Error").setMessage(result).setCancelable(false)
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                alertDialog.show();
             }
         }
     }

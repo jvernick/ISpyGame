@@ -55,12 +55,12 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
 
     public void testInfoPage( View view) {
         Intent intent = new Intent(getActivity(), FriendInfoActivity.class);
-        intent.putExtra(FRIEND_ID, 8);
+        intent.putExtra(FRIEND_ID, 9);
         intent.putExtra(FRIEND_USERNAME, "brunelamc");
         startActivity(intent);
     }
 
-    @Override//TODO DOcument: enables fragment to handle button
+    @Override//TODO Document: enables fragment to handle button
     public void onClick(View view) {
         Log.d("FriendsFragment","onClick");
         switch (view.getId()) {
@@ -90,7 +90,8 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
                 //String result = request.removeFriend(1);
                 //String result = request.acceptFriendRequest(10);
                 //FriendsRecord temp = request.getFriendRequests();
-                String result = request.updateStats(1,true);
+                String result = request.updateStats(9,true);
+                if (result != null) Log.d( "Friends", result);
                 if (result != null && result.equals("SUCCESS")) { //TODO String contains error message on error
                     //Log.d("FriendsFragment", result.toString());
                     return "SUCCESS";

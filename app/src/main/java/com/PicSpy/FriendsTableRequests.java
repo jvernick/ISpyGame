@@ -137,11 +137,12 @@ public class FriendsTableRequests {
                 request.addParam(new com.picspy.models.StoredProcParam("friend_1_id", friend_2_id));
                 request.addParam(new com.picspy.models.StoredProcParam("friend_2_id", user_id));
             }
-            int temp_result = (result == true)? 1: 0;
+            int temp_result = result? 1: 0;
             request.addParam(new com.picspy.models.StoredProcParam("result", temp_result));
             StoredProcResponse response = dbApi.callStoredProcWithParams(StoredProcResponse.class,"update_game_stats", request, null);
-            if ( response != null && response.getReturn_val() == "1") {
-                Log.d(TAG, response.toString());
+
+            Log.d(TAG, response.toString());
+            if (response.getReturn_val().equals("1")) {
                 return "SUCCESS";
             } else {
                 return "FAILED";
@@ -169,13 +170,13 @@ public class FriendsTableRequests {
             request.addRecord(request1);
             FriendsRecord record = dbApi.deleteRecords(FriendsRecord.class, AppConstants.FRIENDS_TABLE_NAME, request, null, null, null, false, false, null, null,null);
             if ( record != null) {
-                Log.d("p", record.toString());
+                Log.d(TAG, record.toString());
                 return "SUCCESS";
             } else {
                 return "FAILED";
             }
         } catch (Exception e) {
-            Log.d("n", e.getMessage());
+            Log.d(TAG, e.getMessage());
             //Attempting to return only the message part of the error message
             try {
                 JSONObject jObj = new JSONObject(e.getMessage());
@@ -201,8 +202,11 @@ public class FriendsTableRequests {
             }
            //TODO does limiting fields actually improve speed and peformance?
             String fields = "friend_1_won, friend_2_won, friend_1_lost, friend_2_lost";
-            FriendsRecord temp = dbApi.getRecordsByFilter(FriendsRecord.class, AppConstants.FRIENDS_TABLE_NAME, filter, null, null, null, fields, false, false, null);
-            return temp.getRecord().get(0);
+            FriendsRecord temp = dbApi.getRecordsByFilter(FriendsRecord.class,
+                    AppConstants.FRIENDS_TABLE_NAME, filter, null, null,
+                    null, fields, false, false, null);
+            //TODO handle null properly
+            return (temp == null)? null : temp.getRecord().get(0);
         } catch (Exception e) {
             Log.d(TAG, e.getMessage());
             //Attempting to return only the message part of the error message

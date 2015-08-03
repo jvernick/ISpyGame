@@ -43,27 +43,32 @@ public class Splash_Activity extends Activity {
         startActivity(intent);
     }
 
-
+    public void startMain() {
+        Log.d("Splash","Starting Main");
+        Intent intent = new Intent(Splash_Activity.this, MainActivity.class);
+        startActivity(intent);
+    }
 
     private class StartMyApp extends AsyncTask<Void, Void, Boolean> {
         @Override
         protected Boolean doInBackground(Void... params) {
-            boolean validSession = false;
             String oldSessionKey = PrefUtil.getString(getApplicationContext(),
                     AppConstants.SESSION_ID, null);
-            Log.d("Splash", "after getting old session" + oldSessionKey);
+            try {
+                Log.d("SplasH","sleeping");
+                Thread.sleep(2000);
+                Log.d("SplasH", "waking up");
+            } catch (InterruptedException e) {
+                //TODO: where does this print to? should not print to screen
+                e.printStackTrace();
+                Log.d("splash", e.getMessage());
+            }
+
             if (oldSessionKey == null) {
-                // show splash for 2 secs and go to login
-                try {
-                    Log.d("SplasH","sleeping");
-                    Thread.sleep(2000);
-                    Log.d("SplasH", "waking up");
-                } catch (InterruptedException e) {
-                    //TODO: where does this print to? should not print to screen
-                    e.printStackTrace();
-                    Log.d("splash", e.getMessage());
-                }
-            } else { //refresh session if possible
+                return false;
+            } else {
+                startMain();
+                //refresh session if possible
                 try {
                     UserApi userApi = new UserApi();
                     userApi.addHeader("X-DreamFactory-Application-Name", AppConstants.APP_NAME);
@@ -82,17 +87,14 @@ public class Splash_Activity extends Activity {
                     Log.d("SplashActivity", e.getMessage());
                     //PrefUtil.putString(getApplicationContext(), AppConstants.SESSION_ID, "");
                 }
-                validSession = true;
+                return false;
             }
-            return validSession;
         }
+
         @Override
         //TODO add response listener to finish activity
-        protected void onPostExecute(Boolean isValidSession) {
-            if (isValidSession) {
-                Intent intent = new Intent(Splash_Activity.this, MainActivity.class);
-                startActivity(intent);
-            } else {
+        protected void onPostExecute(Boolean isOldSession) {
+            if (!isOldSession) {
                 splash_login.setEnabled(true);
                 splash_login.setVisibility(View.VISIBLE);
                 splash_signup.setEnabled(true);
