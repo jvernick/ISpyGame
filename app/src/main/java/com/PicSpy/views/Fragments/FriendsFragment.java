@@ -6,11 +6,15 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.dreamfactory.api.DbApi;
@@ -26,15 +30,37 @@ import com.picspy.views.LoginActivity;
 import com.picspy.views.MainActivity;
 import com.picspy.views.RegisterActivity;
 
+import java.util.Arrays;
+
 /**
  * Created by Justin12 on 6/6/2015.
  */
-public class FriendsFragment extends Fragment implements View.OnClickListener {
+public class FriendsFragment extends ListFragment implements View.OnClickListener {
     public final static String FRIEND_USERNAME = "com.picspy.USERNAME";
     public final static String FRIEND_ID = "com.picspy.FRIEND_ID";
     private Dialog progressDialog;
 
+    // This is the Adapter being used to display the list's data.
+    SimpleCursorAdapter mAdapter;
+     // If non-null, this is the current filter the user has provided.
+    String mCurFilter;
+
     @Override
+     public void onActivityCreated(Bundle savedInstanceState) {
+         super.onActivityCreated(savedInstanceState);
+        setEmptyText("No friends");
+        setHasOptionsMenu(true);
+        //request list of names
+         testRequest(this.getListView());
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        // TODO implement some logic
+    }
+
+
+ /*   @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         progressDialog = new ProgressDialog(getActivity());
@@ -46,11 +72,18 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
         button.setOnClickListener(this);
         button2.setOnClickListener(this);
         return rootView;
-    }
+    }*/
 
     public void testRequest(View view) {
-        GetRecordsTask listItem = new GetRecordsTask();
-        listItem.execute();
+        //content of example list
+        String[] values = new String[] { "Android", "iPhone", "WindowsMobile",
+                 "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
+          "Linux", "OS/2" };
+        Arrays.sort(values);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_list_item_1, values);
+         setListAdapter(adapter);
+
     }
 
     public void testInfoPage( View view) {
