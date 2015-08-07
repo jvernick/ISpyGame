@@ -52,7 +52,7 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
         setContentView(R.layout.activity_friend_info);
         spinner = (ProgressBar)findViewById(R.id.myProgressBar);
         //TODO Set color to theme color
-        spinner.getIndeterminateDrawable().setColorFilter(Color.BLUE, PorterDuff.Mode.SRC_IN);
+       // spinner.getIndeterminateDrawable().setColorFilter(R.color.accent, PorterDuff.Mode.SRC_IN);
 
         sent_won = (TextView) findViewById(R.id.sent_won);
         sent_lost = (TextView) findViewById(R.id.sent_lost);
@@ -180,10 +180,12 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
         //canvas.drawColor(Color.rgb(211,211,211));
         canvas.drawColor(Color.LTGRAY);
 
-        paint.setColor(Color.RED);
+        int win_color = getApplicationContext().getResources().getColor(R.color.primary);
+        int loss_color = getApplicationContext().getResources().getColor(R.color.primary_red);
+        paint.setColor(loss_color);
         canvas.drawArc(rect1, 0, 360, true, paint);
         canvas.drawArc(rect2, 0, 360, true, paint);
-        paint.setColor(Color.GREEN);
+        paint.setColor(win_color);
         canvas.drawArc(rect1, 0, 360 * topPercent / 100, true, paint);
         canvas.drawArc(rect2, 0, 360 * bottomPercent / 100, true, paint);
     }
@@ -264,9 +266,11 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
 
         @Override
         protected void onPreExecute() {
-           // spinner = (ProgressBar)findViewById(R.id.progressBar);
+           spinner = (ProgressBar)findViewById(R.id.myProgressBar);
             //TODO Spinner not neccessary if connecting to server is very fast. Test.
-            spinner.setVisibility(View.VISIBLE);
+            if (spinner != null) {
+                spinner.setVisibility(View.VISIBLE);
+            }
         }
 
         @Override

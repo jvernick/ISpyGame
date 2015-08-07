@@ -61,6 +61,7 @@ public class MainActivity extends FragmentActivity {
             }
         });
 
+
         slidingTabLayout.setViewPager(viewPager);
     }
 
