@@ -76,15 +76,15 @@ public final class R {
 		public static final int com_facebook_tooltip_blue_bottomnub = 0x7f020046;
 		public static final int com_facebook_tooltip_blue_topnub = 0x7f020047;
 		public static final int com_facebook_tooltip_blue_xout = 0x7f020048;
-		public static final int messenger_bubble_large_blue = 0x7f020051;
-		public static final int messenger_bubble_large_white = 0x7f020052;
-		public static final int messenger_bubble_small_blue = 0x7f020053;
-		public static final int messenger_bubble_small_white = 0x7f020054;
-		public static final int messenger_button_blue_bg_round = 0x7f020055;
-		public static final int messenger_button_blue_bg_selector = 0x7f020056;
-		public static final int messenger_button_send_round_shadow = 0x7f020057;
-		public static final int messenger_button_white_bg_round = 0x7f020058;
-		public static final int messenger_button_white_bg_selector = 0x7f020059;
+		public static final int messenger_bubble_large_blue = 0x7f020052;
+		public static final int messenger_bubble_large_white = 0x7f020053;
+		public static final int messenger_bubble_small_blue = 0x7f020054;
+		public static final int messenger_bubble_small_white = 0x7f020055;
+		public static final int messenger_button_blue_bg_round = 0x7f020056;
+		public static final int messenger_button_blue_bg_selector = 0x7f020057;
+		public static final int messenger_button_send_round_shadow = 0x7f020058;
+		public static final int messenger_button_white_bg_round = 0x7f020059;
+		public static final int messenger_button_white_bg_selector = 0x7f02005a;
 	}
 	public static final class id {
 		public static final int automatic = 0x7f0a002a;
@@ -165,7 +165,7 @@ public final class R {
 		public static final int com_facebook_button_share = 0x7f0d00f2;
 		public static final int com_facebook_loginview_default_style = 0x7f0d00f3;
 		public static final int com_facebook_loginview_silver_style = 0x7f0d00f4;
-		public static final int tooltip_bubble_text = 0x7f0d00f6;
+		public static final int tooltip_bubble_text = 0x7f0d00f8;
 	}
 	public static final class styleable {
 		public static final int[] com_facebook_like_view = { 0x7f0100a9, 0x7f0100aa, 0x7f0100ab, 0x7f0100ac, 0x7f0100ad, 0x7f0100ae };

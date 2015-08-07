@@ -36,15 +36,25 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
+        <!-- TODO veriy that you can chage adjustPan to adjustResize -->
         <activity
             android:name="com.picspy.views.RegisterActivity"
+            android:configChanges="orientation"
             android:label="@string/title_activity_register"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
             android:name="com.picspy.views.MainActivity"
             android:exported="true"
             android:label="@string/title_activity_main" >
+        </activity>
+        <activity
+            android:name="com.picspy.views.Splash_Activity"
+            android:configChanges="orientation"
+            android:label="@string/title_activity_splash_"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -52,13 +62,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.picspy.views.Splash_Activity"
-            android:label="@string/title_activity_splash_"
-            android:theme="@android:style/Theme.NoTitleBar" >
-        </activity>
-        <activity
             android:name="com.picspy.views.LoginActivity"
+            android:configChanges="orientation"
             android:label="@string/title_activity_login"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" >
             <meta-data
                 android:name="com.facebook.sdk.ApplicationId"
@@ -71,6 +78,7 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name="com.picspy.views.CameraActivity"
+            android:configChanges="orientation"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
 
@@ -82,8 +90,10 @@
         </activity>
         <activity
             android:name="com.picspy.FriendInfoActivity"
+            android:configChanges="orientation"
             android:label="@string/title_activity_friend_info"
-            android:parentActivityName="com.picspy.views.MainActivity" >
+            android:parentActivityName="com.picspy.views.MainActivity"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.picspy.views.MainActivity" />

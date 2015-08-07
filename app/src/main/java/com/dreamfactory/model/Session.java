@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.*;
 
 import com.dreamfactory.model.SessionApp;
-public class Session {
+import com.picspy.models.DbApiResponse;
+
+public class Session extends DbApiResponse {
   /* Identifier for the current user. */
   @JsonProperty("id")
   private String id = null;

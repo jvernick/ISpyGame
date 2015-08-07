@@ -5,10 +5,11 @@
     android:id="@+id/relativeLayout">
 
     <com.picspy.adapters.SlidingTabLayout
-    android:id="@+id/tab"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/ColorPrimary"
+        android:id="@+id/tab"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:elevation="2dp"
+        android:background="@color/primary"
     />
 
     <android.support.v4.view.ViewPager
@@ -20,7 +21,7 @@
         android:id="@+id/bar"
         android:layout_width="fill_parent"
         android:layout_height="40dip"
-        android:background="#35CCFF"
+        android:background="@color/primary"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true">
@@ -35,7 +36,7 @@
         android:maxHeight="60dp"
         android:scaleType="fitCenter"
         android:src="@drawable/drawncamera"
-        android:background="#35CCFF"
+        android:background="@color/primary"
         android:onClick="launchCamera"
         android:layout_alignParentBottom="true"
         android:layout_alignTop="@+id/bar"
@@ -56,7 +57,8 @@
         android:layout_alignTop="@+id/bar"
         android:layout_alignBottom="@+id/bar"
         android:layout_alignRight="@+id/bar"
-        android:background="#35CCFF"
+        android:layout_alignEnd="@+id/bar"
+        android:background="@color/primary"
         android:id="@+id/inboxButton" />
 
 
@@ -71,8 +73,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignTop="@+id/bar"
         android:layout_alignBottom="@+id/bar"
-        android:background="#35CCFF"
+        android:background="@color/primary"
         android:id="@+id/menuButton" />
 
 </RelativeLayout>
-<!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/src/main/res/layout/activity_main.xml -->
+<!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/src/main/res/layout/activity_main.xml -->

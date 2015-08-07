@@ -3,8 +3,8 @@
     <item android:left="-10dp" android:right="-10dp"  android:top="-10dp"
         android:bottom="0dp">
         <shape android:shape="rectangle">
-            <stroke android:width="0.5dp" android:color="#D3D3D3" />
+            <stroke android:width="0.5dp" android:color="@color/divider" />
             <solid android:color="@color/background_material_light" />
         </shape>
     </item>
-</layer-list><!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/src/main/res/drawable/border.xml -->
+</layer-list><!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/src/main/res/drawable/border.xml -->

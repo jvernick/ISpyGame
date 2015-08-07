@@ -13,8 +13,7 @@
         android:layout_height="wrap_content"
         android:text="Enter number of Guesses"
         android:layout_alignBottom="@+id/imageView"
-        android:layout_centerHorizontal="true"
-        />
+        android:layout_centerHorizontal="true" />
 
 
 </RelativeLayout>

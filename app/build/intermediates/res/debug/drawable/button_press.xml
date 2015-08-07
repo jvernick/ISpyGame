@@ -2,4 +2,4 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@drawable/flash_on" android:state_selected="true"/>
     <item android:drawable="@drawable/flash_bolt"/>
-</selector><!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/src/main/res/drawable/button_press.xml -->
+</selector><!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/src/main/res/drawable/button_press.xml -->

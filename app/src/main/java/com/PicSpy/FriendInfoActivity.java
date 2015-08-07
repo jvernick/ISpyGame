@@ -23,7 +23,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.picspy.adapters.DatabaseHandler;
 import com.picspy.firstapp.R;
+import com.picspy.models.Friend;
 import com.picspy.models.FriendRecord;
 import com.picspy.utils.AppConstants;
 import com.picspy.utils.PrefUtil;
@@ -302,6 +304,8 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
             FriendsTableRequests request = new FriendsTableRequests(getApplicationContext());
             String result = request.removeFriend(friend_id);
             if (result != null && result.equals("SUCCESS")) { //TODO String contains error message on error
+                DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+                db.deleteFriend(new Friend(friend_id, null));
                 return "SUCCESS";
             } else {
                 Pattern p1 = Pattern.compile(".*[cC]onnection.*[rR]efused.*", Pattern.DOTALL);

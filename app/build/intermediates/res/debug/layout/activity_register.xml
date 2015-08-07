@@ -12,15 +12,9 @@
 
         <!--TODO add facebook signup here-->
         <TextView
+            style="@style/login_and_register_title"
             android:id="@+id/register_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="30dp"
-            android:text="@string/register_title"
-            android:textSize="30sp"
-            android:textStyle="bold" />
+            android:text="@string/register_title"/>
         <!--com.facebook.login.widget.LoginButton
             style="@style/login_text_style"
             android:id="@+id/facebook_login_button"
@@ -58,8 +52,10 @@
             android:layout_height="50dp"
             android:layout_gravity="bottom"
             android:layout_alignParentBottom="true"
+            android:textColor="@color/primary_text_default_material_dark"
+            android:textStyle="bold"
             android:text="@string/submit_sign_up"
             android:onClick="signUp"
-            android:background="#8800FF00"/>
+            android:background="@color/primary"/>
     </RelativeLayout>
-</ScrollView><!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/src/main/res/layout/activity_register.xml -->
+</ScrollView><!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/src/main/res/layout/activity_register.xml -->

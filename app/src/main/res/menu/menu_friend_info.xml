@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context="com.picspy.FriendInfoActivity">
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"
-        android:icon="@drawable/ic_custom_delete"
+        android:icon="@android:drawable/ic_menu_delete"
         android:orderInCategory="100"
         app:showAsAction="ifRoom" />
 </menu>

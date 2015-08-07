@@ -3,6 +3,6 @@
     android:shape="oval">
     <stroke android:width="4dp"
         android:color="#FFF" />
-    <gradient android:startColor="#35CCFF" android:endColor="#377DFF"
+    <gradient android:startColor="@color/turquoise" android:endColor="@color/accent"
         android:angle="270"/>
-</shape><!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/src/main/res/drawable/round_button_outline.xml -->
+</shape><!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/src/main/res/drawable/round_button_outline.xml -->

@@ -101,7 +101,7 @@
             <item>
                 <shape android:shape="oval">
 
-                    <solid android:color="@color/ColorPrimary" />
+                    <solid android:color="@color/accent" />
 
                 </shape>
             </item>
@@ -109,4 +109,4 @@
 
 
 </layer-list>
-<!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/src/main/res/drawable/circle.xml -->
+<!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/src/main/res/drawable/circle.xml -->

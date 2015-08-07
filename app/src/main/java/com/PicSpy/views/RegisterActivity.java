@@ -112,7 +112,9 @@ public class RegisterActivity extends Activity {
         @Override
         protected String doInBackground(Void... params) {
             try {
-                return registerService();
+                String registerResult = registerService();
+
+                return registerResult;
             } catch (Exception e) {
                 return e.getMessage();
             }

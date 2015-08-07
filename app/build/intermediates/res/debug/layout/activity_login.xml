@@ -10,15 +10,9 @@
     TODO change color of button to match theme-->
 
     <TextView
+        style="@style/login_and_register_title"
         android:id="@+id/login_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="30dp"
-        android:text="@string/login_title"
-        android:textSize="30sp"
-        android:textStyle="bold" />
+        android:text="@string/login_title" />
     <com.facebook.login.widget.LoginButton
         style="@style/login_text_style"
         android:id="@+id/facebook_login_button"
@@ -53,9 +47,11 @@
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:text="@string/button_login"
+        android:textColor="@color/primary_text_default_material_dark"
         android:onClick="login"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
+        android:textStyle="bold"
         android:visibility="gone"
-        android:background="#8800FF00"/>
-</RelativeLayout><!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/src/main/res/layout/activity_login.xml -->
+        android:background="@color/primary"/>
+</RelativeLayout><!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/src/main/res/layout/activity_login.xml -->

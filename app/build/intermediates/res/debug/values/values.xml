@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/src/main/res/values/strings_activity_settings.xml -->
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/src/main/res/values/strings_activity_settings.xml -->
     <eat-comment/>
     <string-array name="pref_example_list_titles">
         <item>Always</item>
@@ -28,7 +28,7 @@
         <item>360</item>
         <item>-1</item>
     </string-array>
-    <!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/res/values/values.xml -->
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/res/values/values.xml -->
     <eat-comment/>
     <attr format="reference" name="drawerArrowStyle"/>
     <attr format="dimension" name="height"/>
@@ -40,15 +40,15 @@
     <bool name="abc_config_actionMenuItemAllCaps">true</bool>
     <bool name="abc_config_allowActionMenuItemTextWithIcon">false</bool>
     <bool name="abc_config_showMenuShortcutsWhenKeyboardPresent">false</bool>
-    <!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/src/main/res/values/color.xml -->
-    <eat-comment/>
-    <color name="ColorPrimary">#35CCFF</color>
-    <!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/res/values/values.xml -->
-    <eat-comment/>
     <color name="abc_input_method_navigation_guard">@android:color/black</color>
     <color name="abc_search_url_text_normal">#7fa87f</color>
     <color name="abc_search_url_text_pressed">@android:color/black</color>
     <color name="abc_search_url_text_selected">@android:color/black</color>
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/src/main/res/values/color.xml -->
+    <eat-comment/>
+    <color name="accent">#448AFF</color>
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/res/values/values.xml -->
+    <eat-comment/>
     <color name="accent_material_dark">@color/material_deep_teal_200</color>
     <color name="accent_material_light">@color/material_deep_teal_500</color>
     <color name="background_floating_material_dark">#ff424242</color>
@@ -63,7 +63,7 @@
     <color name="bright_foreground_material_light">@android:color/black</color>
     <color name="button_material_dark">#ff5a595b</color>
     <color name="button_material_light">#ffd6d7d7</color>
-    <!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/build/intermediates/exploded-aar/com.facebook.android/facebook-android-sdk/4.2.0/res/values/values.xml -->
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/build/intermediates/exploded-aar/com.facebook.android/facebook-android-sdk/4.2.0/res/values/values.xml -->
     <eat-comment/>
     <color name="com_facebook_blue">#3B5998</color>
     <color name="com_facebook_button_background_color">#415dae</color>
@@ -78,16 +78,26 @@
     <color name="com_facebook_likeboxcountview_text_color">#6a7180</color>
     <color name="com_facebook_likeview_text_color">#6a7180</color>
     <color name="com_facebook_share_button_text_color">#FFFFFF</color>
-    <!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/res/values/values.xml -->
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/res/values/values.xml -->
     <eat-comment/>
     <color name="dim_foreground_disabled_material_dark">#80bebebe</color>
     <color name="dim_foreground_disabled_material_light">#80323232</color>
     <color name="dim_foreground_material_dark">#ffbebebe</color>
     <color name="dim_foreground_material_light">#ff323232</color>
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/src/main/res/values/color.xml -->
+    <eat-comment/>
+    <color name="divider">#B6B6B6</color>
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/res/values/values.xml -->
+    <eat-comment/>
     <color name="highlighted_text_material_dark">#6680cbc4</color>
     <color name="highlighted_text_material_light">#66009688</color>
     <color name="hint_foreground_material_dark">@color/bright_foreground_disabled_material_dark</color>
     <color name="hint_foreground_material_light">@color/bright_foreground_disabled_material_light</color>
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/src/main/res/values/color.xml -->
+    <eat-comment/>
+    <color name="icons">#FFFFFF</color>
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/res/values/values.xml -->
+    <eat-comment/>
     <color name="link_text_material_dark">@color/material_deep_teal_200</color>
     <color name="link_text_material_light">@color/material_deep_teal_500</color>
     <color name="material_blue_grey_800">#ff37474f</color>
@@ -95,25 +105,48 @@
     <color name="material_blue_grey_950">#ff21272b</color>
     <color name="material_deep_teal_200">#ff80cbc4</color>
     <color name="material_deep_teal_500">#ff009688</color>
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/src/main/res/values/color.xml -->
+    <eat-comment/>
+    <color name="primary">#4CAF50</color>
+    <color name="primary_dark">#388E3C</color>
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/res/values/values.xml -->
+    <eat-comment/>
     <color name="primary_dark_material_dark">#ff000000</color>
     <color name="primary_dark_material_light">#ff757575</color>
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/src/main/res/values/color.xml -->
+    <eat-comment/>
+    <color name="primary_light">#C8E6C9</color>
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/res/values/values.xml -->
+    <eat-comment/>
     <color name="primary_material_dark">#ff212121</color>
     <color name="primary_material_light">#ffbdbdbd</color>
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/src/main/res/values/color.xml -->
+    <eat-comment/>
+    <color name="primary_red">#F44366</color>
+    <color name="primary_text">#212121</color>
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/res/values/values.xml -->
+    <eat-comment/>
     <color name="primary_text_default_material_dark">#ffffffff</color>
     <color name="primary_text_default_material_light">#de000000</color>
     <color name="primary_text_disabled_material_dark">#4Dffffff</color>
     <color name="primary_text_disabled_material_light">#39000000</color>
     <color name="ripple_material_dark">#40ffffff</color>
     <color name="ripple_material_light">#40000000</color>
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/src/main/res/values/color.xml -->
+    <eat-comment/>
+    <color name="secondary_text">#727272</color>
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/res/values/values.xml -->
+    <eat-comment/>
     <color name="secondary_text_default_material_dark">#b3ffffff</color>
     <color name="secondary_text_default_material_light">#8a000000</color>
     <color name="secondary_text_disabled_material_dark">#36ffffff</color>
     <color name="secondary_text_disabled_material_light">#24000000</color>
     <color name="switch_thumb_normal_material_dark">#ffbdbdbd</color>
     <color name="switch_thumb_normal_material_light">#fff1f1f1</color>
-    <!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/src/main/res/values/color.xml -->
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/src/main/res/values/color.xml -->
     <eat-comment/>
-    <color name="tabsScrollColor">#008CBB</color>
+    <color name="tabsScrollColor">#2c7c30</color>
+    <color name="turquoise">#34DDDD</color>
     <declare-styleable name="ActionBar"><attr name="navigationMode"><enum name="normal" value="0"/><enum name="listMode" value="1"/><enum name="tabMode" value="2"/></attr><attr name="displayOptions"><flag name="none" value="0"/><flag name="useLogo" value="0x1"/><flag name="showHome" value="0x2"/><flag name="homeAsUp" value="0x4"/><flag name="showTitle" value="0x8"/><flag name="showCustom" value="0x10"/><flag name="disableHome" value="0x20"/></attr><attr name="title"/><attr format="string" name="subtitle"/><attr format="reference" name="titleTextStyle"/><attr format="reference" name="subtitleTextStyle"/><attr format="reference" name="icon"/><attr format="reference" name="logo"/><attr format="reference" name="divider"/><attr format="reference" name="background"/><attr format="reference|color" name="backgroundStacked"/><attr format="reference|color" name="backgroundSplit"/><attr format="reference" name="customNavigationLayout"/><attr name="height"/><attr format="reference" name="homeLayout"/><attr format="reference" name="progressBarStyle"/><attr format="reference" name="indeterminateProgressStyle"/><attr format="dimension" name="progressBarPadding"/><attr name="homeAsUpIndicator"/><attr format="dimension" name="itemPadding"/><attr format="boolean" name="hideOnContentScroll"/><attr format="dimension" name="contentInsetStart"/><attr format="dimension" name="contentInsetEnd"/><attr format="dimension" name="contentInsetLeft"/><attr format="dimension" name="contentInsetRight"/><attr format="dimension" name="elevation"/><attr format="reference" name="popupTheme"/></declare-styleable>
     <declare-styleable name="ActionBarLayout"><attr name="android:layout_gravity"/></declare-styleable>
     <declare-styleable name="ActionMenuItemView"><attr name="android:minWidth"/></declare-styleable>
@@ -140,7 +173,7 @@
     <declare-styleable name="com_facebook_like_view"><attr format="color" name="com_facebook_foreground_color"/><attr format="string" name="com_facebook_object_id"/><attr name="com_facebook_object_type"><enum name="unknown" value="0"/><enum name="open_graph" value="1"/><enum name="page" value="2"/></attr><attr name="com_facebook_style"><enum name="standard" value="0"/><enum name="button" value="1"/><enum name="box_count" value="2"/></attr><attr name="com_facebook_auxiliary_view_position"><enum name="bottom" value="0"/><enum name="inline" value="1"/><enum name="top" value="2"/></attr><attr name="com_facebook_horizontal_alignment"><enum name="center" value="0"/><enum name="left" value="1"/><enum name="right" value="2"/></attr></declare-styleable>
     <declare-styleable name="com_facebook_login_view"><attr format="boolean" name="com_facebook_confirm_logout"/><attr format="string" name="com_facebook_login_text"/><attr format="string" name="com_facebook_logout_text"/><attr name="com_facebook_tooltip_mode"><enum name="automatic" value="0"/><enum name="display_always" value="1"/><enum name="never_display" value="2"/></attr></declare-styleable>
     <declare-styleable name="com_facebook_profile_picture_view"><attr name="com_facebook_preset_size"><enum name="small" value="-2"/><enum name="normal" value="-3"/><enum name="large" value="-4"/></attr><attr format="boolean" name="com_facebook_is_cropped"/></declare-styleable>
-    <!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/res/values/values.xml -->
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/res/values/values.xml -->
     <eat-comment/>
     <dimen name="abc_action_bar_default_height_material">56dp</dimen>
     <dimen name="abc_action_bar_default_padding_material">4dp</dimen>
@@ -179,11 +212,11 @@
     <dimen name="abc_text_size_subtitle_material_toolbar">16dp</dimen>
     <dimen name="abc_text_size_title_material">20sp</dimen>
     <dimen name="abc_text_size_title_material_toolbar">20dp</dimen>
-    <!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/src/main/res/values/dimens.xml -->
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/src/main/res/values/dimens.xml -->
     <eat-comment/>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/build/intermediates/exploded-aar/com.facebook.android/facebook-android-sdk/4.2.0/res/values/values.xml -->
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/build/intermediates/exploded-aar/com.facebook.android/facebook-android-sdk/4.2.0/res/values/values.xml -->
     <eat-comment/>
     <dimen name="com_facebook_likeboxcountview_border_radius">3dp</dimen>
     <dimen name="com_facebook_likeboxcountview_border_width">1dp</dimen>
@@ -204,7 +237,7 @@
     <dimen name="com_facebook_share_button_padding_top">12dp</dimen>
     <dimen name="com_facebook_share_button_text_size">16.0sp</dimen>
     <dimen name="com_facebook_tooltip_horizontal_padding">10dp</dimen>
-    <!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/res/values/values.xml -->
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/res/values/values.xml -->
     <eat-comment/>
     <item name="dialog_fixed_height_major" type="dimen">80%</item>
     <item name="dialog_fixed_height_minor" type="dimen">100%</item>
@@ -238,14 +271,14 @@
     <string name="abc_shareactionprovider_share_with">Share with</string>
     <string name="abc_shareactionprovider_share_with_application">Share with %s</string>
     <string name="abc_toolbar_collapse_description">Collapse</string>
-    <!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/src/main/res/values/strings.xml -->
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/src/main/res/values/strings.xml -->
     <eat-comment/>
     <string name="action_settings">Remove Friend</string>
     <string name="app_name">My F App</string>
     <string name="button_login">LOG IN</string>
     <string name="button_register">Register</string>
     <string name="button_send">Send</string>
-    <!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/build/intermediates/exploded-aar/com.facebook.android/facebook-android-sdk/4.2.0/res/values/values.xml -->
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/build/intermediates/exploded-aar/com.facebook.android/facebook-android-sdk/4.2.0/res/values/values.xml -->
     <eat-comment/>
     <string name="com_facebook_image_download_unknown_error">Unexpected error while downloading an image.</string>
     <string name="com_facebook_internet_permission_error_message">WebView login requires INTERNET permission</string>
@@ -263,7 +296,7 @@
     <string name="com_facebook_send_button_text">Send</string>
     <string name="com_facebook_share_button_text">Share</string>
     <string name="com_facebook_tooltip_default">New! You\'re in control - choose what info you want to share with apps.</string>
-    <!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/src/main/res/values/strings.xml -->
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/src/main/res/values/strings.xml -->
     <eat-comment/>
     <string name="display_name_hint">Display Name</string>
     <string name="edit_message">Enter a message</string>
@@ -279,14 +312,14 @@
     <string name="loading_message">Please Wait..</string>
     <string name="login_title">Log In</string>
     <string name="menu_fragment">Menu</string>
-    <!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/build/intermediates/exploded-aar/com.facebook.android/facebook-android-sdk/4.2.0/res/values/values.xml -->
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/build/intermediates/exploded-aar/com.facebook.android/facebook-android-sdk/4.2.0/res/values/values.xml -->
     <eat-comment/>
     <string name="messenger_send_button_text">Send</string>
-    <!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/src/main/res/values/strings.xml -->
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/src/main/res/values/strings.xml -->
     <eat-comment/>
     <string name="pass_hint1">Password</string>
     <string name="pass_hint2">Re-type Password</string>
-    <!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/src/main/res/values/strings_activity_settings.xml -->
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/src/main/res/values/strings_activity_settings.xml -->
     <eat-comment/>
     <string name="pref_default_display_name">John Smith</string>
     <string name="pref_description_social_recommendations">Recommendations for people to contact
@@ -304,7 +337,7 @@
     <string name="pref_title_sync_frequency">Sync frequency</string>
     <string name="pref_title_system_sync_settings">System sync settings</string>
     <string name="pref_title_vibrate">Vibrate</string>
-    <!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/src/main/res/values/strings.xml -->
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/src/main/res/values/strings.xml -->
     <eat-comment/>
     <string name="register_title">Sign Up</string>
     <string name="score"> 0 </string>
@@ -317,21 +350,24 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_post_registration">PostRegistrationActivity</string>
     <string name="title_activity_register">register</string>
-    <!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/src/main/res/values/strings_activity_settings.xml -->
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/src/main/res/values/strings_activity_settings.xml -->
     <eat-comment/>
     <string name="title_activity_settings">Settings</string>
-    <!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/src/main/res/values/strings.xml -->
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/src/main/res/values/strings.xml -->
     <eat-comment/>
     <string name="title_activity_splash_">Splash_Activity</string>
     <string name="top_fragment">Open Challenges</string>
     <string name="total_lost_description">Lost</string>
     <string name="total_won_description">Won</string>
-    <!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/src/main/res/values/styles.xml -->
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/src/main/res/values/styles.xml -->
     <eat-comment/>
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
+    <!-- customize the color palette -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
     </style>
-    <!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/res/values/values.xml -->
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/res/values/values.xml -->
     <eat-comment/>
     <style name="Base.TextAppearance.AppCompat" parent="android:TextAppearance">
         <item name="android:textColor">?android:textColorPrimary</item>
@@ -1085,14 +1121,14 @@
         <item name="android:scaleType">center</item>
         <item name="android:background">?attr/selectableItemBackground</item>
     </style>
-    <!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/src/main/res/values/styles.xml -->
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/src/main/res/values/styles.xml -->
     <eat-comment/>
     <style name="Divider">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
         <item name="android:background">?android:attr/listDivider</item>
     </style>
-    <!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/build/intermediates/exploded-aar/com.facebook.android/facebook-android-sdk/4.2.0/res/values/values.xml -->
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/build/intermediates/exploded-aar/com.facebook.android/facebook-android-sdk/4.2.0/res/values/values.xml -->
     <eat-comment/>
     <style name="MessengerButton">
     <item name="android:clickable">true</item>
@@ -1152,7 +1188,7 @@
     <style name="MessengerButtonText.White.Small">
     <item name="android:drawableLeft">@drawable/messenger_bubble_small_blue</item>
   </style>
-    <!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/res/values/values.xml -->
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/res/values/values.xml -->
     <eat-comment/>
     <style name="Platform.AppCompat" parent="android:Theme">
         <item name="android:windowNoTitle">true</item>
@@ -1438,7 +1474,7 @@
     <style name="Widget.AppCompat.Spinner.DropDown.ActionBar" parent="Base.Widget.AppCompat.Spinner.DropDown.ActionBar"/>
     <style name="Widget.AppCompat.Toolbar" parent="Base.Widget.AppCompat.Toolbar"/>
     <style name="Widget.AppCompat.Toolbar.Button.Navigation" parent="Base.Widget.AppCompat.Toolbar.Button.Navigation"/>
-    <!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/build/intermediates/exploded-aar/com.facebook.android/facebook-android-sdk/4.2.0/res/values/values.xml -->
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/build/intermediates/exploded-aar/com.facebook.android/facebook-android-sdk/4.2.0/res/values/values.xml -->
     <eat-comment/>
     <style name="com_facebook_button" parent="@android:style/Widget.Button">
         <item name="android:background">@drawable/com_facebook_button_background</item>
@@ -1471,8 +1507,20 @@
         <item name="android:drawableLeft">@null</item>
         <item name="android:textColor">#4b5164</item>
     </style>
-    <!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/src/main/res/values/styles.xml -->
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/src/main/res/values/styles.xml -->
     <eat-comment/>
+    <style name="login_and_register_title">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:layout_centerInParent">true</item>
+        <item name="android:layout_marginTop">25dp</item>
+        <item name="android:textSize">30sp</item>
+        <item name="android:textColor">@color/secondary_text</item>
+        <item name="android:layout_alignParentTop">true</item>
+        <item name="android:textStyle">bold</item>
+    </style>
     <style name="login_text_style">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -1483,7 +1531,17 @@
         <item name="android:minHeight">40dp</item>
         <item name="android:maxLines">1</item>
     </style>
-    <!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/build/intermediates/exploded-aar/com.facebook.android/facebook-android-sdk/4.2.0/res/values/values.xml -->
+    <style name="score_headings">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:background">@color/accent</item>
+        <item name="android:textColor">@color/secondary_text_default_material_dark</item>
+        <item name="android:layout_margin">5dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/build/intermediates/exploded-aar/com.facebook.android/facebook-android-sdk/4.2.0/res/values/values.xml -->
     <eat-comment/>
     <style name="tooltip_bubble_text">
 	    <item name="android:textColor">@android:color/white</item>
@@ -1493,7 +1551,7 @@
 	    <item name="android:shadowRadius">0.25</item>
 	    <item name="android:shadowColor">#40000000</item>
     </style>
-    <!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/src/main/res/values/styles.xml -->
+    <!-- From: file:/C:/Users/BrunelAmC/Documents/projects/Picspy/Ispygame/app/src/main/res/values/styles.xml -->
     <eat-comment/>
     <style name="total_score_number">
         <item name="android:layout_width">1dp</item>
