@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <gradient android:startColor="#35CCFF" android:endColor="#377DFF"
+        android:angle="270"/>
+</shape><!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/src/main/res/drawable/round_button.xml -->

@@ -5,11 +5,13 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -18,6 +20,14 @@ import com.dreamfactory.model.RecordsResponse;
 import com.picspy.FriendInfoActivity;
 import com.picspy.FriendsTableRequests;
 import com.picspy.firstapp.R;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.support.v4.app.Fragment;
+
+
 import com.picspy.models.FriendRecord;
 import com.picspy.models.FriendsRecord;
 import com.picspy.utils.AppConstants;
@@ -26,31 +36,63 @@ import com.picspy.views.LoginActivity;
 import com.picspy.views.MainActivity;
 import com.picspy.views.RegisterActivity;
 
+import java.util.Arrays;
+
 /**
  * Created by Justin12 on 6/6/2015.
  */
-public class FriendsFragment extends Fragment implements View.OnClickListener {
+
+//implements View.OnClickListener
+public class FriendsFragment extends ListFragment  {
     public final static String FRIEND_USERNAME = "com.picspy.USERNAME";
     public final static String FRIEND_ID = "com.picspy.FRIEND_ID";
     private Dialog progressDialog;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setTitle("loading");
+    // This is the Adapter being used to display the list's data.
+    SimpleCursorAdapter mAdapter;
 
-        View rootView = inflater.inflate(R.layout.fragment_friends, container, false);
-        Button button = (Button) rootView.findViewById(R.id.button);
-        Button button2 =  (Button) rootView.findViewById(R.id.button2);
-        button.setOnClickListener(this);
-        button2.setOnClickListener(this);
-        return rootView;
+    // If non-null, this is the current filter the user has provided.
+    String mCurFilter;
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setEmptyText("No friends");
+        setHasOptionsMenu(true);
+        //request list of names
+        testRequest(this.getListView());
     }
 
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        // TODO implement some logic
+    }
+//    @Override
+//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+//                             Bundle savedInstanceState) {
+//        progressDialog = new ProgressDialog(getActivity());
+//        progressDialog.setTitle("loading");
+//
+//        View rootView = inflater.inflate(R.layout.fragment_friends, container, false);
+//        Button button = (Button) rootView.findViewById(R.id.button);
+//        Button button2 =  (Button) rootView.findViewById(R.id.button2);
+//        button.setOnClickListener(this);
+//        button2.setOnClickListener(this);
+//        return rootView;
+//    }
+
     public void testRequest(View view) {
-        GetRecordsTask listItem = new GetRecordsTask();
-        listItem.execute();
+//        GetRecordsTask listItem = new GetRecordsTask();
+//        listItem.execute();
+
+        //content of example list
+        String[] values = new String[] { "Android", "iPhone", "WindowsMobile",
+                "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
+                "Linux", "OS/2" };
+        Arrays.sort(values);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_list_item_1, values);
+        setListAdapter(adapter);
     }
 
     public void testInfoPage( View view) {
@@ -59,21 +101,21 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
         intent.putExtra(FRIEND_USERNAME, "brunelamc");
         startActivity(intent);
     }
-
-    @Override//TODO Document: enables fragment to handle button
-    public void onClick(View view) {
-        Log.d("FriendsFragment","onClick");
-        switch (view.getId()) {
-            case R.id.button:
-                Log.d("FriendsFragment","case1");
-                testRequest(view);
-                break;
-            case R.id.button2:
-                Log.d("FriendsFragment","case2");
-                testInfoPage(view);
-                break;
-        }
-    }
+//
+//    @Override//TODO Document: enables fragment to handle button
+//    public void onClick(View view) {
+//        Log.d("FriendsFragment","onClick");
+//        switch (view.getId()) {
+//            case R.id.button:
+//                Log.d("FriendsFragment","case1");
+//                testRequest(view);
+//                break;
+//            case R.id.button2:
+//                Log.d("FriendsFragment","case2");
+//                testInfoPage(view);
+//                break;
+//        }
+//    }
 
 
     class GetRecordsTask extends AsyncTask<Void, String, String> {
@@ -85,6 +127,7 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
         @Override
         protected String doInBackground(Void... params) {
                 FriendsTableRequests request = new FriendsTableRequests(getActivity().getApplicationContext());
+                //request.FriendsRequest =
                 //String result = request.sendFriendRequest(1);
                 //FriendRecord result = request.getStats(9);
                 //String result = request.removeFriend(1);

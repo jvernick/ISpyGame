@@ -1,0 +1,78 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/relativeLayout">
+
+    <com.picspy.adapters.SlidingTabLayout
+    android:id="@+id/tab"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/ColorPrimary"
+    />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/tab"/>
+    <View
+        android:id="@+id/bar"
+        android:layout_width="fill_parent"
+        android:layout_height="40dip"
+        android:background="#35CCFF"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
+    </View>
+
+
+    <ImageButton
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:adjustViewBounds="true"
+        android:maxWidth="60dp"
+        android:maxHeight="60dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/drawncamera"
+        android:background="#35CCFF"
+        android:onClick="launchCamera"
+        android:layout_alignParentBottom="true"
+        android:layout_alignTop="@+id/bar"
+        android:layout_alignBottom="@+id/bar"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/cameraButton"
+        />
+
+    <ImageButton
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:adjustViewBounds="true"
+        android:maxWidth="60dp"
+        android:maxHeight="60dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/inbox"
+        android:layout_alignParentBottom="true"
+        android:layout_alignTop="@+id/bar"
+        android:layout_alignBottom="@+id/bar"
+        android:layout_alignRight="@+id/bar"
+        android:background="#35CCFF"
+        android:id="@+id/inboxButton" />
+
+
+    <ImageButton
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:adjustViewBounds="true"
+        android:maxWidth="60dp"
+        android:maxHeight="60dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/menu_icon"
+        android:layout_alignParentBottom="true"
+        android:layout_alignTop="@+id/bar"
+        android:layout_alignBottom="@+id/bar"
+        android:background="#35CCFF"
+        android:id="@+id/menuButton" />
+
+</RelativeLayout>
+<!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/src/main/res/layout/activity_main.xml -->

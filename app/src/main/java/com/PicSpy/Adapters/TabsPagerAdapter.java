@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.picspy.views.Fragments.BoredFragment;
 import com.picspy.views.Fragments.FriendsFragment;
+import android.support.v4.app.Fragment;
 /**
  * Created by Justin12 on 6/6/2015.
  */

@@ -1,0 +1,41 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.firstapp.Splash_Activity"
+    android:background="@drawable/splash_image"
+    android:layout_weight="1.0">
+
+    <!--- TODO add configure splash image below and backgroud above
+    <ImageView
+        android:id="@+id/splashImage"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+          TODO To add logo
+        android:src="@drawable/Logo.txt"/> -->
+
+
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
+            android:id="@+id/splash_login"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:text="@string/button_login"
+            android:layout_weight=".5"
+            android:layout_gravity="bottom"
+            android:visibility="invisible"
+            android:onClick="splashLogin"/>
+
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
+            android:id="@+id/splash_signup"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:text="@string/submit_sign_up"
+            android:layout_gravity="bottom"
+            android:onClick="splashSignUp"
+            android:visibility="invisible"
+            android:layout_weight=".5" />
+
+</LinearLayout>
+<!-- From: file:/C:/Users/Gordon/Documents/projects/ISpyGame/app/src/main/res/layout/activity_splash.xml -->

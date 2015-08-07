@@ -1,0 +1,10 @@
+C:\Users\Gordon\Documents\projects\ISpyGame\app\build\intermediates\classes\debug
+C:\Users\Gordon\Documents\projects\ISpyGame\app\build\intermediates\pre-dexed\debug\support-annotations-22.2.1-85e79f06250d9355ca2969af7623e9f6963d365c.jar
+C:\Users\Gordon\Documents\projects\ISpyGame\app\build\intermediates\pre-dexed\debug\jackson-annotations-2.6.0-rc1-b02fa3133f3f66dd52b294ed625cf26965f2579a.jar
+C:\Users\Gordon\Documents\projects\ISpyGame\app\build\intermediates\pre-dexed\debug\bolts-android-1.2.0-2273d04d17c39a711a087179651d511c45c6b803.jar
+C:\Users\Gordon\Documents\projects\ISpyGame\app\build\intermediates\pre-dexed\debug\internal_impl-22.2.1-4252cede1bf4014834692797403d03b73842d82d.jar
+C:\Users\Gordon\Documents\projects\ISpyGame\app\build\intermediates\pre-dexed\debug\jackson-core-2.6.0-rc1-6400e5b34f11397d9df8d397fb8d0a43db04da07.jar
+C:\Users\Gordon\Documents\projects\ISpyGame\app\build\intermediates\pre-dexed\debug\classes-d13950da0faeedc0f0d92d1c59e490dd963b5e22.jar
+C:\Users\Gordon\Documents\projects\ISpyGame\app\build\intermediates\pre-dexed\debug\classes-6de48b083d70c8f3bf4336fafaf091603b6eb92c.jar
+C:\Users\Gordon\Documents\projects\ISpyGame\app\build\intermediates\pre-dexed\debug\classes-795c655c6d13188ec2f85c9c40303b639864273c.jar
+C:\Users\Gordon\Documents\projects\ISpyGame\app\build\intermediates\pre-dexed\debug\jackson-databind-2.6.0-rc1-14661e0a3163eec753ace78326fb842c60170cee.jar
