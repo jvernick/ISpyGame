@@ -37,7 +37,8 @@ import java.util.regex.Pattern;
 public class FriendInfoActivity extends ActionBarActivity implements SurfaceHolder.Callback {
 
     private static final String TAG = "FriendsInfoActivity";
-    private TextView sent_won, sent_lost, received_won, received_lost;
+    private TextView sent_won, sent_lost, received_won, received_lost, total_won, total_lost,
+                    leaderboard;
     private SurfaceView frame1;
     private ProgressBar spinner;
     private int friend_id;
@@ -60,6 +61,9 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
         sent_lost = (TextView) findViewById(R.id.sent_lost);
         received_won = (TextView) findViewById(R.id.recieved_won);
         received_lost = (TextView) findViewById(R.id.recieved_lost);
+        total_won = (TextView) findViewById(R.id.total_won);
+        total_lost = (TextView) findViewById(R.id.total_lost);
+        leaderboard = (TextView) findViewById(R.id.leaderboard);
 
         frame1 = (SurfaceView) findViewById(R.id.surfaceView);
         frame1.getHolder().addCallback(this);
@@ -221,10 +225,13 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
     private void setStats(FriendRecord record) {
         int total1 = (record.getFriend_1_won() + record.getFriend_1_lost());
         int total2 = (record.getFriend_2_won() + record.getFriend_2_lost());
-        total1 = total1==0? 1: total1;
-        total2 = total2==0? 1: total2;
+        total1 = total1==0? 1: total1; //to avoid divide by zero
+        total2 = total2==0? 1: total2; //to avoid divide by zero
 
         if (friend_id < PrefUtil.getInt(getApplicationContext(), AppConstants.USER_ID)) {
+            total_won.setText(String.valueOf(record.getUsers_by_friend_1().getTotal_won()));
+            total_lost.setText(String.valueOf(record.getUsers_by_friend_1().getTotal_lost()));
+            leaderboard.setText(String.valueOf(record.getUsers_by_friend_1().getLeaderboard()));
             sent_won.setText(String.valueOf(record.getFriend_1_won()));
             sent_lost.setText(String.valueOf(record.getFriend_1_lost()));
             received_won.setText(String.valueOf(record.getFriend_2_won()));
@@ -234,6 +241,9 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
             bottomPercentage = 100 *  record.getFriend_2_won()
                     / total2;
         } else {
+            total_won.setText(String.valueOf(record.getUsers_by_friend_2().getTotal_won()));
+            total_lost.setText(String.valueOf(record.getUsers_by_friend_2().getTotal_lost()));
+            leaderboard.setText(String.valueOf(record.getUsers_by_friend_2().getLeaderboard()));
             sent_won.setText(String.valueOf(record.getFriend_2_won()));
             sent_lost.setText(String.valueOf(record.getFriend_2_lost()));
             received_won.setText(String.valueOf(record.getFriend_1_won()));

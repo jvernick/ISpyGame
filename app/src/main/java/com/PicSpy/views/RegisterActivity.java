@@ -12,8 +12,10 @@ import android.widget.EditText;
 
 import com.dreamfactory.client.ApiInvoker;
 import com.dreamfactory.model.Register;
+import com.dreamfactory.model.Session;
 import com.picspy.firstapp.R;
 import com.picspy.utils.AppConstants;
+import com.picspy.utils.PrefUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -127,7 +129,7 @@ public class RegisterActivity extends Activity {
         protected void onPostExecute(String message) {
             progressDialog.cancel();
             //if request was successfull
-           if (message.equals("true")) { //call successful: build new intent
+           if (message.equals("SUCCESS")) { //call successful: build new intent
                 //TODO: Update: Should go to main page
                showResults(post_view);
             } else {
@@ -179,7 +181,7 @@ public class RegisterActivity extends Activity {
             String path = "/" + serviceName + "/" + endPoint + "/";
             // query params
             Map<String, String> queryParams = new HashMap<String, String>();
-            queryParams.put("login","false");
+            queryParams.put("login","true");
             Map<String, String> headerParams = new HashMap<String, String>();
             String contentType = "application/json";
             ////////////////////////////////////////////////////////////
@@ -191,11 +193,16 @@ public class RegisterActivity extends Activity {
             /*Set other fields later*/
 
             String response = invoker.invokeAPI(dsp_url, path, "POST", queryParams, register, headerParams, contentType);
-            //TODO can create class to ocnvert response into class model
-            //TODO line below throws an exception that is unhandled
-            JSONObject object = new JSONObject(response);
-
-            return object.getString("success");
+            if(response != null){
+                Session session = (Session) ApiInvoker.deserialize(response, "", Session.class);
+                PrefUtil.putString(getApplicationContext(), AppConstants.SESSION_ID, session.getSession_id());
+                PrefUtil.putInt(getApplicationContext(), AppConstants.USER_ID, Integer.parseInt(session.getId()));
+                return "SUCCESS";
+            }
+            else {
+                JSONObject object = new JSONObject(response);
+                return object.getString("FAILED");
+            }
         }
 
     }

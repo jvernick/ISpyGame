@@ -55,6 +55,34 @@ public class FriendRecord extends DbApiResponse {
     @JsonProperty("friend_2_lost")
     private int friend_2_lost;
 
+    /*
+      related record for friend_1. Not added to toString()
+     */
+    @JsonProperty
+    private UsersRecord users_by_friend_1;
+
+    /*
+    related record for friend_2. Not added to toString()
+   */
+    @JsonProperty
+    private UsersRecord users_by_friend_2;
+
+    public UsersRecord getUsers_by_friend_1() {
+        return users_by_friend_1;
+    }
+
+    public void setUsers_by_friend_1(UsersRecord users_by_friend_1) {
+        this.users_by_friend_1 = users_by_friend_1;
+    }
+
+    public UsersRecord getUsers_by_friend_2() {
+        return users_by_friend_2;
+    }
+
+    public void setUsers_by_friend_2(UsersRecord users_by_friend_2) {
+        this.users_by_friend_2 = users_by_friend_2;
+    }
+
     public int getFriend_1() {
         return friend_1;
     }
@@ -131,6 +159,9 @@ public class FriendRecord extends DbApiResponse {
                 "\n" + " friend_1_lost: "  + friend_1_lost +
                 "\n" + " friend_2_won: "  + friend_2_won +
                 "\n" + " friend_2_lost: "  + friend_2_lost +
-                "\n}";
+                "\n" + " related {" +
+                "\n" + " users_by_friend_1: "  + users_by_friend_1 +
+                "\n" + " users_by_friend_2: "  + users_by_friend_2 +
+                " }\n}";
     }
 }

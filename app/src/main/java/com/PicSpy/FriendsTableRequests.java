@@ -195,16 +195,21 @@ public class FriendsTableRequests {
     public FriendRecord getStats(int friend_2_id) {
         try {
             String filter;
+            String related;
             if (user_id < friend_2_id) {
+                related = "users_by_friend_2";
                 filter = "`friend_1` = " + user_id + " AND `friend_2` = " + friend_2_id;
             } else {
+                related = "users_by_friend_1";
                 filter = "`friend_1` = " + friend_2_id + " AND `friend_2` = " + user_id;
             }
            //TODO does limiting fields actually improve speed and peformance?
-            String fields = "friend_1_won, friend_2_won, friend_1_lost, friend_2_lost";
+           // String fields = "friend_1_won, friend_2_won, friend_1_lost, friend_2_lost";
+            // fields must be null to enable related record
+            String fields = null;
             FriendsRecord temp = dbApi.getRecordsByFilter(FriendsRecord.class,
                     AppConstants.FRIENDS_TABLE_NAME, filter, null, null,
-                    null, fields, false, false, null);
+                    null, fields, false, false, related);
             //TODO handle null properly
             return (temp == null)? null : temp.getRecord().get(0);
         } catch (Exception e) {

@@ -35,7 +35,7 @@ import java.util.Arrays;
 /**
  * Created by Justin12 on 6/6/2015.
  */
-public class FriendsFragment extends ListFragment implements View.OnClickListener {
+public class FriendsFragment extends Fragment implements View.OnClickListener {
     public final static String FRIEND_USERNAME = "com.picspy.USERNAME";
     public final static String FRIEND_ID = "com.picspy.FRIEND_ID";
     private Dialog progressDialog;
@@ -45,22 +45,21 @@ public class FriendsFragment extends ListFragment implements View.OnClickListene
      // If non-null, this is the current filter the user has provided.
     String mCurFilter;
 
-    @Override
+  /*  @Override
      public void onActivityCreated(Bundle savedInstanceState) {
          super.onActivityCreated(savedInstanceState);
         setEmptyText("No friends");
         setHasOptionsMenu(true);
         //request list of names
-         testRequest(this.getListView());
+         testRequest1(this.getListView());
     }
-
-    @Override
+      @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         // TODO implement some logic
-    }
+    }*/
 
 
- /*   @Override
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         progressDialog = new ProgressDialog(getActivity());
@@ -72,9 +71,12 @@ public class FriendsFragment extends ListFragment implements View.OnClickListene
         button.setOnClickListener(this);
         button2.setOnClickListener(this);
         return rootView;
-    }*/
+    }
 
-    public void testRequest(View view) {
+    private void testRequest(View view) {
+
+    }
+    /*public void testRequest1(View view) {
         //content of example list
         String[] values = new String[] { "Android", "iPhone", "WindowsMobile",
                  "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
@@ -84,7 +86,7 @@ public class FriendsFragment extends ListFragment implements View.OnClickListene
                 android.R.layout.simple_list_item_1, values);
          setListAdapter(adapter);
 
-    }
+    }*/
 
     public void testInfoPage( View view) {
         Intent intent = new Intent(getActivity(), FriendInfoActivity.class);
@@ -95,7 +97,7 @@ public class FriendsFragment extends ListFragment implements View.OnClickListene
 
     @Override//TODO Document: enables fragment to handle button
     public void onClick(View view) {
-        Log.d("FriendsFragment","onClick");
+        Log.d("FriendsFragment", "onClick");
         switch (view.getId()) {
             case R.id.button:
                 Log.d("FriendsFragment","case1");
@@ -107,6 +109,8 @@ public class FriendsFragment extends ListFragment implements View.OnClickListene
                 break;
         }
     }
+
+
 
 
     class GetRecordsTask extends AsyncTask<Void, String, String> {

@@ -14,13 +14,29 @@ public class UsersRecord extends DbApiResponse {
     private String username;
     //total games won
     @JsonProperty
-    private int won;
+    private int total_won;
     //total games lost
     @JsonProperty
-    private int lost;
+    private int total_lost;
     //total games featured on leaderboard
     @JsonProperty
     private int leaderboard;
+
+    public int getTotal_won() {
+        return total_won;
+    }
+
+    public void setTotal_won(int total_won) {
+        this.total_won = total_won;
+    }
+
+    public int getTotal_lost() {
+        return total_lost;
+    }
+
+    public void setTotal_lost(int total_lost) {
+        this.total_lost = total_lost;
+    }
 
     public int getId() {
         return id;
@@ -38,21 +54,7 @@ public class UsersRecord extends DbApiResponse {
         this.username = username;
     }
 
-    public int getWon() {
-        return won;
-    }
 
-    public void setWon(int won) {
-        this.won = won;
-    }
-
-    public int getLost() {
-        return lost;
-    }
-
-    public void setLost(int lost) {
-        this.lost = lost;
-    }
 
     public int getLeaderboard() {
         return leaderboard;
@@ -64,11 +66,11 @@ public class UsersRecord extends DbApiResponse {
 
     @Override
     public String toString() {
-        return "FriendRecord {" +
+        return "UserRecord {" +
                 "\n" + "id: "  + id +
                 "\n" + " username: "  + username +
-                "\n" + " won: " + won + '\'' +
-                "\n" + " lost: "  + lost +
+                "\n" + " won: " + total_won  +
+                "\n" + " lost: "  + total_lost +
                 "\n" + " leaderboard: "  + leaderboard +
                 "\n}";
     }
