@@ -35,7 +35,7 @@
         android:maxWidth="60dp"
         android:maxHeight="60dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/drawncamera"
+        android:src="@drawable/ic_action_camera"
         android:background="@color/primary"
         android:onClick="launchCamera"
         android:layout_alignParentBottom="true"
