@@ -38,9 +38,9 @@
         android:layout_below="@id/user_password"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:text="@string/signup_prompt"
+        android:text="@string/forgot_password_prompt"
         android:clickable="true"
-        android:onClick="signUp"/>
+        android:onClick="forgotPassword"/>
     <Button
         style="?android:attr/buttonBarButtonStyle"
         android:id="@+id/button_login"

@@ -14,9 +14,16 @@ import com.picspy.firstapp.R;
 import com.picspy.utils.AppConstants;
 import com.picspy.utils.PrefUtil;
 
-
+/**
+ * Splashcreen activity that displays logo and determines whether to proceed
+ * to main screen or to prompt for user login/registration. Pauses for 2seconds
+ * to display logo on startup
+ * Created by BrunelAmC on 6/9/2015.
+ */
 public class Splash_Activity extends Activity {
     private Button splash_login, splash_signup;
+    private static final int sleepTime = 2000;
+    private static final String TAG = "SlashActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,37 +40,52 @@ public class Splash_Activity extends Activity {
         new StartMyApp().execute();
     }
 
+    /**
+     * Starts the login activity
+     * @param view View to be used, from button click
+     */
     public void splashLogin(View view) {
         Intent intent = new Intent(Splash_Activity.this, LoginActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * Starts the register activity
+     * @param view View to be used, from button click
+     */
     public void splashSignUp(View view) {
         Intent intent = new Intent(Splash_Activity.this, RegisterActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * Starts the main activity
+     */
     public void startMain() {
         Log.d("Splash","Starting Main");
         Intent intent = new Intent(Splash_Activity.this, MainActivity.class);
         startActivity(intent);
+        //TODO uncomment after all testing is complete so that one never returns to splasy activity
+        //finish();
     }
 
+    /**
+     * Inner Asynctask to Attempt login by refreshing session
+     */
     private class StartMyApp extends AsyncTask<Void, Void, Boolean> {
         @Override
         protected Boolean doInBackground(Void... params) {
             String oldSessionKey = PrefUtil.getString(getApplicationContext(),
                     AppConstants.SESSION_ID, null);
+
+            //sleep to display logo
             try {
-                Log.d("SplasH","sleeping");
-                Thread.sleep(2000);
-                Log.d("SplasH", "waking up");
+                Thread.sleep(sleepTime);
             } catch (InterruptedException e) {
-                //TODO: where does this print to? should not print to screen
                 e.printStackTrace();
-                Log.d("splash", e.getMessage());
             }
 
+            // checks if sesison_id already exists
             if (oldSessionKey == null) {
                 return false;
             } else {
@@ -76,15 +98,17 @@ public class Splash_Activity extends Activity {
                     Session session = userApi.getSession();
                     if (session != null && session.getId() != null) {
                         Log.d("sp", "session not null");
-                        PrefUtil.putString(getApplicationContext(), AppConstants.SESSION_ID, session.getSession_id());
-                        //TODO temp, remove line below
-                        PrefUtil.putInt(getApplicationContext(), AppConstants.USER_ID, Integer.parseInt(session.getId()));
-                    } else {
-                        return false; //This is needed since we haven't figured out a way to have infinite session duration
+                        PrefUtil.putString(getApplicationContext(), AppConstants.SESSION_ID,
+                                session.getSession_id());
+                        PrefUtil.putInt(getApplicationContext(), AppConstants.USER_ID,
+                                Integer.parseInt(session.getId()));
+                    } else { //prompts for login/register if session refresh failed
+                        return false; //This is needed since we haven't figured out a way
+                        // to have infinite session duration
                     }
-                } catch (Exception e) { //TODO log exception for debugging? Network error or expired session
+                } catch (Exception e) {
                     e.printStackTrace();
-                    Log.d("SplashActivity", e.getMessage());
+                    Log.d(TAG, e.getMessage());
                     //PrefUtil.putString(getApplicationContext(), AppConstants.SESSION_ID, "");
                 }
                 return false;
@@ -94,6 +118,7 @@ public class Splash_Activity extends Activity {
         @Override
         //TODO add response listener to finish activity
         protected void onPostExecute(Boolean isOldSession) {
+            //if there has been no previous session.
             if (!isOldSession) {
                 splash_login.setEnabled(true);
                 splash_login.setVisibility(View.VISIBLE);

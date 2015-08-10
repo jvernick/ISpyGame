@@ -21,14 +21,15 @@ import com.picspy.adapters.SlidingTabLayout;
 import java.util.ArrayList;
 
 //TODO: this is currently modified to show the result of user registration
-/*
- * Main Page
+/**
+ * Main page activity
  */
 public class MainActivity extends FragmentActivity {
     private SlidingTabLayout slidingTabLayout;
     private ViewPager viewPager;
     private ArrayList<Fragment> fragments;
     private TabsViewPagerAdapter myViewPagerAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +42,7 @@ public class MainActivity extends FragmentActivity {
         viewPager = (ViewPager) findViewById(R.id.viewpager);
 
         // create a fragment list in order.
-        fragments = new ArrayList<Fragment>();
+        fragments = new ArrayList<>();
         fragments.add(new FriendsFragment());
         fragments.add(new TopFragment());
 
@@ -66,13 +67,7 @@ public class MainActivity extends FragmentActivity {
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
+    /* No menu for now
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -87,7 +82,12 @@ public class MainActivity extends FragmentActivity {
 
         return super.onOptionsItemSelected(item);
     }
+    */
 
+    /**
+     * Starts camera activity
+     * @param view View from button click
+     */
     public void launchCamera(View view) {
         Intent intent = new Intent(this, CameraActivity.class);
         startActivity(intent);

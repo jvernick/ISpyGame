@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.picspy.FriendInfoActivity">
+    tools:context="com.picspy.views.FriendInfoActivity">
     <!--
     TODO change colors to colors form colors resource
     is border in second listview necessary?

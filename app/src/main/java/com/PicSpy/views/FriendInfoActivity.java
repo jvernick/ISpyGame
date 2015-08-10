@@ -1,4 +1,4 @@
-package com.picspy;
+package com.picspy.views;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.AsyncTask;
@@ -23,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.picspy.FriendsTableRequests;
 import com.picspy.adapters.DatabaseHandler;
 import com.picspy.firstapp.R;
 import com.picspy.models.Friend;
@@ -33,12 +33,13 @@ import com.picspy.views.Fragments.FriendsFragment;
 
 import java.util.regex.Pattern;
 
-
+/**
+ * Activity that displays friend information
+ */
 public class FriendInfoActivity extends ActionBarActivity implements SurfaceHolder.Callback {
-
     private static final String TAG = "FriendsInfoActivity";
-    private TextView sent_won, sent_lost, received_won, received_lost, total_won, total_lost,
-                    leaderboard;
+    private TextView sent_won, sent_lost, received_won, received_lost;
+    private TextView total_won, total_lost, leaderboard, title;
     private SurfaceView frame1;
     private ProgressBar spinner;
     private int friend_id;
@@ -68,19 +69,12 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
         frame1 = (SurfaceView) findViewById(R.id.surfaceView);
         frame1.getHolder().addCallback(this);
 
-        //TODO make string always have length 3. lines below are for testing
-        sent_lost.setText(100 + "");
-        sent_won.setText("" + 0 + "");
-        received_won.setText(700 + "");
-        //received_lost.setText(" " + 0 + " ");
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        TextView title = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        title = (TextView) toolbar.findViewById(R.id.toolbar_title);
         // TODO Should local db be queried here or in parent activity
         title.setText(friendUsername);
         setSupportActionBar(toolbar);                   // Setting toolbar as the ActionBar
-        //TODO Verify contrast on back button and possibly change
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationIcon(R.drawable.ic_back);
@@ -94,6 +88,7 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
     }
 
     @Override
+    // menu dialog for deleting friends
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -124,10 +119,13 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
                     .show();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Starts a new game with this user
+     * @param v view from button click
+     */
     public void startGame(View v) {
         /*TODO Start activity to create new game
         Intent i = new Intent(MainActivity.this,SecondActivity.class);
@@ -139,25 +137,31 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
         Toast.makeText(FriendInfoActivity.this, "Game started", Toast.LENGTH_SHORT).show();
     }
 
-    @Override
+    @Override //from implenting surface view
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         if (requestSuccessful) { //draw image only after data is gotten from server
             tryDrawing(surfaceHolder, topPercentage, bottomPercentage);
         }
     }
 
-    @Override
+    @Override //from implenting surface view
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
         if (requestSuccessful) {
             tryDrawing(surfaceHolder, topPercentage, bottomPercentage);
         }
     }
 
-    @Override
+    @Override //from implenting surface view
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
 
     }
 
+    /**
+     * Attempt drawing on surface
+     * @param surfaceHolder Surface to use as canvas
+     * @param topPercent percentage to fill in the top circle
+     * @param bottomPercent percentage to fill in the bottom  circle
+     */
     private void tryDrawing(SurfaceHolder surfaceHolder, int topPercent, int bottomPercent) {
         Canvas canvas = surfaceHolder.lockCanvas();
         if (canvas == null) {
@@ -169,13 +173,24 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
 
     }
 
+    /**
+     * Draws the top and bottom rectangle for each individual circle
+     * @param canvas Canvas for drawing
+     * @param canvasRect Total rectangle representing canvas size
+     * @param topPercent percentage to fill in the top circle
+     * @param bottomPercent percentage to fill in the bottom  circle
+     */
     private void drawRect(final Canvas canvas, Rect canvasRect, int topPercent, int bottomPercent) {
-        //Rect rect = new RectF(frame1.getLeft(), frame1.getTop(), frame1.getRight(), frame1.getBottom());
+        //Rect rect = new RectF(frame1.getLeft(), frame1.getTop(), frame1.getRight(),
+        // frame1.getBottom());
         int pad = 1;
 
-        Rect temp = new Rect(pad, pad,canvasRect.right - pad, canvasRect.bottom/2 - 1 - pad); //top rectangle
+        //top rectangle
+        Rect temp = new Rect(pad, pad,canvasRect.right - pad, canvasRect.bottom/2 - 1 - pad);
         RectF rect1 = rectToSquare(temp, 2);
-        temp = new Rect(pad,canvasRect.bottom/2 + 1 + pad,canvasRect.right - pad, canvasRect.bottom - pad); //bottom rect
+        //bottom rect
+        temp = new Rect(pad,canvasRect.bottom/2 + 1 + pad,canvasRect.right - pad,
+                canvasRect.bottom - pad);
         RectF rect2 = rectToSquare(temp, 2);
         Paint paint = new Paint();
 
@@ -200,7 +215,7 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
      * Given a rectangle, returns a square within the rectangle with the specified padding
      * @param rect Original rect to modify
      * @param pad padding on all sides of returned square
-     * @return Padded square withing the rectangle
+     * @return Square withing the rectangle with some padding
      */
     private RectF rectToSquare(Rect rect, int pad) {
         int left = rect.left, right = rect.right, top = rect.top, bottom = rect.bottom;
@@ -222,13 +237,19 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
         return new RectF(left, top, right, bottom);
     }
 
+    /**
+     * Sets all the stat fields in the view
+     * @param record friend record from database containing friend stats
+     */
     private void setStats(FriendRecord record) {
         int total1 = (record.getFriend_1_won() + record.getFriend_1_lost());
         int total2 = (record.getFriend_2_won() + record.getFriend_2_lost());
         total1 = total1==0? 1: total1; //to avoid divide by zero
         total2 = total2==0? 1: total2; //to avoid divide by zero
 
+        //set values depending on who is friend_1 or friend_2
         if (friend_id < PrefUtil.getInt(getApplicationContext(), AppConstants.USER_ID)) {
+            title.setText(record.getUsers_by_friend_1().getUsername());
             total_won.setText(String.valueOf(record.getUsers_by_friend_1().getTotal_won()));
             total_lost.setText(String.valueOf(record.getUsers_by_friend_1().getTotal_lost()));
             leaderboard.setText(String.valueOf(record.getUsers_by_friend_1().getLeaderboard()));
@@ -241,6 +262,7 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
             bottomPercentage = 100 *  record.getFriend_2_won()
                     / total2;
         } else {
+            title.setText(record.getUsers_by_friend_2().getUsername());
             total_won.setText(String.valueOf(record.getUsers_by_friend_2().getTotal_won()));
             total_lost.setText(String.valueOf(record.getUsers_by_friend_2().getTotal_lost()));
             leaderboard.setText(String.valueOf(record.getUsers_by_friend_2().getLeaderboard()));
@@ -269,8 +291,12 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
         //TODO set user stats
     }
 
+    /**
+     * Clas to get stats from database
+     */
     private class getStats extends AsyncTask<Void, String, FriendRecord> {
         final int friend_id;
+
         public getStats(int friend_id) {
             super();
             this.friend_id = friend_id;
@@ -296,12 +322,15 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
             spinner.setVisibility(View.GONE);
             if (result != null){
                 setStats(result);
-            } else { // some error show dialog
+            } else { // some error, show dialog
                 Toast.makeText(FriendInfoActivity.this, "Network error",Toast.LENGTH_SHORT).show();
             }
         }
     }
 
+    /**
+     * Class to delete friend from database
+     */
     private class DeleteFriendTask extends AsyncTask<Void, String, String> {
         final int friend_id;
         public DeleteFriendTask(int friend_id) {
@@ -332,7 +361,8 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
         protected void onPostExecute(String result) {
             if (result.equals("SUCCESS")){
                 onBackPressed();
-                Toast.makeText(FriendInfoActivity.this, "Friend successfully removed",Toast.LENGTH_SHORT).show();
+                Toast.makeText(FriendInfoActivity.this, "Friend successfully removed",
+                        Toast.LENGTH_SHORT).show();
             } else { // some error show dialog
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(FriendInfoActivity.this);
                 //TODO modify error presentation format and possibly the error message

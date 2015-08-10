@@ -3,6 +3,8 @@ package com.picspy.models;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
+ * Class to model a user record from the users database. This is used as a model when
+ * returning related related records.
  * Created by BrunelAmC on 8/7/2015.
  */
 public class UsersRecord extends DbApiResponse {
@@ -21,6 +23,7 @@ public class UsersRecord extends DbApiResponse {
     //total games featured on leaderboard
     @JsonProperty
     private int leaderboard;
+
 
     public int getTotal_won() {
         return total_won;
@@ -54,8 +57,6 @@ public class UsersRecord extends DbApiResponse {
         this.username = username;
     }
 
-
-
     public int getLeaderboard() {
         return leaderboard;
     }
@@ -63,6 +64,7 @@ public class UsersRecord extends DbApiResponse {
     public void setLeaderboard(int leaderboard) {
         this.leaderboard = leaderboard;
     }
+
 
     @Override
     public String toString() {

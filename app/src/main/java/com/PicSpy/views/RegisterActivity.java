@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
+import com.dreamfactory.client.ApiException;
 import com.dreamfactory.client.ApiInvoker;
 import com.dreamfactory.model.Register;
 import com.dreamfactory.model.Session;
@@ -25,6 +26,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 //TODO add all strings to string file
+
+/**
+ * User registration activity
+ */
 public class RegisterActivity extends Activity {
 
     public final static String EXTRA_MESSAGE = "amc.myfirstapp.REGISTER_MESSAGE";
@@ -41,15 +46,18 @@ public class RegisterActivity extends Activity {
         progressDialog.setMessage(getText(R.string.loading_message));
     }
 
-    /* Validates password to have: minlength of 6 and
-        verifies that both entered passwords match.
+
+	 //TODO: Limit password characters with regex?
+    /**
+     * Validates password to have: min length of 6 and
+     * verifies that both entered passwords match.
+     * @return "valid" if email is valid otherwise error message depending on problem
      */
-	 //TODO: Limit characters with regex?
     public String isValidPassword() {
         String pass1 = pass1_Text.getText().toString();
         String pass2 = pass2_Text.getText().toString();
         if (pass1.equals(pass2)) {
-            if (pass1 != null && pass1.length() >= 6){
+            if (pass1.length() >= 6){
                 return "valid";
             } else {
                 return "invalid_length";
@@ -58,7 +66,10 @@ public class RegisterActivity extends Activity {
         return "invalid_match";
     }
 
-    /* Validates email with regex */
+    /**
+     * Validates email with regex
+     * @return true if email is valid otherwise false
+     */
     private boolean isValidEmail() {
         String emailPattern = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                 + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
@@ -76,8 +87,7 @@ public class RegisterActivity extends Activity {
         pass1_Text = (EditText) findViewById(R.id.edit_password1);
         pass2_Text = (EditText) findViewById(R.id.edit_password2);
         post_view = view;
-		
-		
+
 		//TODO try .matches("") instead of .length == 0
 		//TODO add filter for valid characters?
         if (display_name_Text.getText().toString().trim().length() == 0) {
@@ -101,8 +111,10 @@ public class RegisterActivity extends Activity {
         }
     }
 
-    //TODO: Overwrite this with needed activity
-    /* Starts the next intent after user is registered*/
+    /**
+     * Starts the main activity after a user is succesfuly registered
+     * @param view view from button click
+     */
     private void showResults(View view) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra(EXTRA_MESSAGE, "Welcome!!\n Account successfuly created");
@@ -112,28 +124,29 @@ public class RegisterActivity extends Activity {
     /* Class to run network transaction in background on a new thread. This is required*/
     private class RegisterTask extends AsyncTask<Void, Void, String> {
         @Override
+        /* show the progress dialog (Please wait)*/
+        protected void onPreExecute() {
+            progressDialog.show();
+        }
+
+        @Override
         protected String doInBackground(Void... params) {
             try {
-                String registerResult = registerService();
-
-                return registerResult;
+                return registerService();
             } catch (Exception e) {
                 return e.getMessage();
             }
         }
 
         @Override
-        /* Calls method to create new activity that displays registration response
-         * TODO: overwite to open different activities based on the result
-         */
         protected void onPostExecute(String message) {
             progressDialog.cancel();
             //if request was successfull
            if (message.equals("SUCCESS")) { //call successful: build new intent
                 //TODO: Update: Should go to main page
                showResults(post_view);
-            } else {
-               String errorMsg = "";
+            } else {                        //handles and display error
+               String errorMsg;
                try {
                    JSONObject jObj = new JSONObject(message);
                    JSONArray jArray = jObj.getJSONArray("error");
@@ -162,35 +175,36 @@ public class RegisterActivity extends Activity {
            }
         }
 
-        @Override
-        /* show the progress dialog (Please wait)*/
-        protected void onPreExecute() {
-            progressDialog.show();
-        }
 
-        /* Method to call the register service*/
-        private String registerService() throws Exception {
+
+        /**
+         * Method to call the register service
+         * @return "SUCCESS" on success otherwise error message
+         * @throws ApiException Throws ApiException when an Api error occurs
+         */
+        private String registerService() throws ApiException {
             ////////////////////ALways include/////////////////////////
             String appName = AppConstants.APP_NAME;
             String dsp_url = AppConstants.DSP_URL;
             ApiInvoker invoker  = new ApiInvoker();
             invoker.addDefaultHeader("X-DreamFactory-Application-Name", appName);
+
             // create path and map variables //SET accordingly
             String serviceName = "user";
             String endPoint = "register";
             String path = "/" + serviceName + "/" + endPoint + "/";
+
             // query params
-            Map<String, String> queryParams = new HashMap<String, String>();
+            Map<String, String> queryParams = new HashMap<>();
             queryParams.put("login","true");
-            Map<String, String> headerParams = new HashMap<String, String>();
+            Map<String, String> headerParams = new HashMap<>();
             String contentType = "application/json";
-            ////////////////////////////////////////////////////////////
 
             Register register = new Register();
             register.setEmail(email_Text.getText().toString());
             register.setNew_password(pass1_Text.getText().toString());
             register.setDisplay_name(display_name_Text.getText().toString());
-            /*Set other fields later*/
+            /*Set other fields later in user settings/profile*/
 
             String response = invoker.invokeAPI(dsp_url, path, "POST", queryParams, register, headerParams, contentType);
             if(response != null){
@@ -200,8 +214,7 @@ public class RegisterActivity extends Activity {
                 return "SUCCESS";
             }
             else {
-                JSONObject object = new JSONObject(response);
-                return object.getString("FAILED");
+                return "FAIlED: unknown error";
             }
         }
 

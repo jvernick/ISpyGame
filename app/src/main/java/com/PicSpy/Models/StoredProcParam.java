@@ -3,8 +3,9 @@ package com.picspy.models;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * TODO document this.
+ * Contains parameters for accessing the stored procedure
  * Modified the calss from the dreamfactory model to only have the required fields
+ * @see com.dreamfactory.model.StoredProcParam
  */
 public class StoredProcParam {
   /* Name of the parameter, required for OUT and INOUT types, must be the same as the stored procedure's parameter name. */

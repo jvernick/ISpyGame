@@ -5,9 +5,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.List;
 
-/**TODO Document
- * Only for my custom stored procedue response
- * Created by BrunelAmC on 7/23/2015.
+/**
+ * Provides a model for data returned from a custom stored procedure on the database
+ * Only for a custom stored procedure response
+ * The model is ass follows
+ * {
+ *     [
+ *      return_val = 0/1
+ *     ]
+ * }
+ * @see com.dreamfactory.model.StoredProcResponse
  */
 public class StoredProcResponse extends DbApiResponse {
     @JsonProperty("record")
@@ -21,11 +28,13 @@ public class StoredProcResponse extends DbApiResponse {
         return record.get(0).toString();
     }
 
+
     @Override
     public String toString() {
         return "return_val: " + record.get(0);
     }
 
+    //inner class to model the returrn_val string
     private static class ReturnVal {
         @JsonProperty
         private String return_val;

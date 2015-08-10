@@ -12,7 +12,7 @@ public class FriendContract {
     // give it an empty constructor.
     public FriendContract() {}
 
-    /* Inner class that defines the table contents */
+    /* Inner class that defines the friends table contents */
     public static abstract class FriendEntry implements BaseColumns {
         public static final String TABLE_NAME = "friends";
         public static final String COLUMN_NAME_USERNAME = "username";

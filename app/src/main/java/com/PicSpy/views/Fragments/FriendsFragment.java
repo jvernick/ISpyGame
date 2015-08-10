@@ -6,31 +6,16 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.Toast;
 
-import com.dreamfactory.api.DbApi;
-import com.dreamfactory.model.RecordsResponse;
-import com.picspy.FriendInfoActivity;
+import com.picspy.views.FriendInfoActivity;
 import com.picspy.FriendsTableRequests;
 import com.picspy.firstapp.R;
-import com.picspy.models.FriendRecord;
-import com.picspy.models.FriendsRecord;
-import com.picspy.utils.AppConstants;
-import com.picspy.utils.PrefUtil;
-import com.picspy.views.LoginActivity;
-import com.picspy.views.MainActivity;
-import com.picspy.views.RegisterActivity;
-
-import java.util.Arrays;
 
 /**
  * Created by Justin12 on 6/6/2015.

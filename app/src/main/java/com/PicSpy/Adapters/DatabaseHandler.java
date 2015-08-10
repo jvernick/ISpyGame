@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * This class handles connections to the local sqlite database and provides
+ * methods for performing CRUD operations
  * Created by BrunelAmC on 8/5/2015.
  */
 public class DatabaseHandler extends SQLiteOpenHelper{
@@ -28,6 +30,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
+
     //Creating tables
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
@@ -44,7 +47,10 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         onCreate(sqLiteDatabase);
     }
 
-    // Adding new friend
+    /**
+     * Adds a new friend to the database
+     * @param friend Friend to be added
+     */
     public void addFriend(Friend friend) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -57,7 +63,11 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
     }
 
-    //Getting a single friend
+    /**
+     * Gets a friend from the database by friend id
+     * @param friend_id id of the Friend whose record is to be retrieved
+     * @return the friend record for specified id
+     */
     public Friend getFriend(int friend_id) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -77,7 +87,10 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         return friend;
     }
 
-    // Getting All Friends
+    /**
+     * Gets a list of all friends in the database
+     * @return A list of all friend records
+     */
     public List<Friend> getAllfriends() {
         List<Friend> friendList = new ArrayList<Friend>();
         // Select All Query
@@ -101,7 +114,10 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         return friendList;
     }
 
-    // Getting friend Count
+    /**
+     * Gets the total number of friends in the database
+     * @return total number of friends
+     */
     public int getFriendCount() {
         String countQuery = "SELECT  * FROM " + FriendEntry.TABLE_NAME;
         SQLiteDatabase db = this.getReadableDatabase();
@@ -112,7 +128,11 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         return cursor.getCount();
     }
 
-    // Updating single friend
+    /**
+     * Updates the username of a friend
+     * @param friend Friend to be modified
+     * @return 1 if update was successful otherwise 0
+     */
     public int updateFriend(Friend friend) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -128,7 +148,10 @@ public class DatabaseHandler extends SQLiteOpenHelper{
                 whereArgs);
     }
 
-    // Deleting single friend
+    /**
+     * Deletes a friend fromt the database
+     * @param friend friend to be deleted
+     */
     public void deleteFriend(Friend friend) {
         SQLiteDatabase db = this.getWritableDatabase();
         String selection = FriendEntry._ID + " = ?";

@@ -7,12 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Model for data in the friends table. Used as model for returning <b> multible </b>friends from
+ * the friends database
  * Created by BrunelAmC on 7/14/2015.
  */
 public class FriendsRecord extends DbApiResponse {
-    /**
-     * List of Friend Records from GET call that retruns multiple friend records
-     */
+
+    // List of Friend Records from GET call that returns multiple friend records
     @JsonProperty("record")
     private List<FriendRecord> record = new ArrayList<>();
     /* Available metadata for the response. */
@@ -23,6 +24,7 @@ public class FriendsRecord extends DbApiResponse {
     public Metadata getMeta() {
         return meta;
     }
+
     public void setMeta(Metadata meta) {
         this.meta = meta;
     }
@@ -34,6 +36,7 @@ public class FriendsRecord extends DbApiResponse {
     public void setRecord(List<FriendRecord> record) {
         this.record = record;
     }
+
 
     @Override
     public String toString() {

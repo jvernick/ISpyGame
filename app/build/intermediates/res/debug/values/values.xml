@@ -302,6 +302,7 @@
     <string name="edit_message">Enter a message</string>
     <string name="email_hint">Email</string>
     <string name="facebook_app_id">567017063440429</string>
+    <string name="forgot_password_prompt">Forgot Password?</string>
     <string name="friends_fragment">Friends</string>
     <string name="games_received_description">Challenges to you</string>
     <string name="games_sent_description">Challenges from you</string>
@@ -341,7 +342,6 @@
     <eat-comment/>
     <string name="register_title">Sign Up</string>
     <string name="score"> 0 </string>
-    <string name="signup_prompt">Forgot Password?</string>
     <string name="stats_title">Total stats</string>
     <string name="submit_sign_up">SIGN UP</string>
     <string name="title_activity_display_message">My Message</string>

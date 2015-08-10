@@ -3,6 +3,8 @@ package com.picspy.models;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
+ * Model for retrieving data from the friends database. Contains fields for related data
+ * and for choosing the related data.
  * Created by BrunelAmC on 7/14/2015.
  */
 public class FriendRecord extends DbApiResponse {
@@ -31,39 +33,27 @@ public class FriendRecord extends DbApiResponse {
     @JsonProperty("status")
     private int status;
 
-    /*
-        The number of games FROM FRIEND_2 that friend_1 has won
-     */
+    // The number of games FROM FRIEND_2 that friend_1 has won
     @JsonProperty("friend_1_won")
     private int friend_1_won;
 
-    /*
-        The number of games FROM FRIEND_2 that friend_1 has lost
-     */
+    //The number of games FROM FRIEND_2 that friend_1 has lost
     @JsonProperty("friend_1_lost")
     private int friend_1_lost;
 
-    /*
-        The number of games FROM FRIEND_1 that friend_2 has won
-     */
+    //The number of games FROM FRIEND_1 that friend_2 has won
     @JsonProperty("friend_2_won")
     private int friend_2_won;
 
-    /*
-      The number of games FROM FRIEND_1 that friend_2 has lost
-   */
+    //The number of games FROM FRIEND_1 that friend_2 has lost
     @JsonProperty("friend_2_lost")
     private int friend_2_lost;
 
-    /*
-      related record for friend_1. Not added to toString()
-     */
+    //related record for friend_1. Not added to toString()
     @JsonProperty
     private UsersRecord users_by_friend_1;
 
-    /*
-    related record for friend_2. Not added to toString()
-   */
+    //related record for friend_2. Not added to toString()
     @JsonProperty
     private UsersRecord users_by_friend_2;
 
@@ -148,7 +138,6 @@ public class FriendRecord extends DbApiResponse {
     }
 
     @Override
-
     public String toString() {
         return "FriendRecord {" +
                 "\n" + "friend_1: "  + friend_1 +

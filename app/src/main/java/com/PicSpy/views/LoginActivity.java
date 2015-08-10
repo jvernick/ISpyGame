@@ -35,7 +35,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-//TODO adjust layout when keyboard is showing?
+/**
+ * Activity for user login
+ */
 public class LoginActivity extends FragmentActivity {
     private EditText  email_text, pass_text;
     private Button login_button;
@@ -113,31 +115,39 @@ public class LoginActivity extends FragmentActivity {
         }
     };
 
-    private  void checkFieldsForEmptyValues(){
+    /**
+     * Checks fields for empty values. Enables and dislpays login button when all fields
+     * are not empty. Otherwise disales and hides login button
+     */
+    private void checkFieldsForEmptyValues(){
         String s1 = email_text.getText().toString();
         String s2 = pass_text.getText().toString();
 
-        if (s1.equals("") || s2.equals("")) { //disables and greys out the button
+        if (s1.equals("") || s2.equals("")) {   //disables and greys out the button
             login_button.setEnabled(false);
             login_button.setVisibility(View.INVISIBLE);
             login_button.getBackground().setColorFilter(0xff888888, PorterDuff.Mode.MULTIPLY);
-        } else { //enables and ungreys out the button
+        } else {                                //enables and ungreys out the button
             login_button.setEnabled(true);
             login_button.setVisibility(View.VISIBLE);
             login_button.getBackground().clearColorFilter();
         }
     }
 
+    /**
+     * Validates password length
+     * @return true if the length is appropriate, otherwise false
+     */
     public boolean isValidPassword() {
         String pass = pass_text.getText().toString();;
-        if (pass_text.length() >= 6){
-                return true;
-            } else {
-                return false;
-            }
-        }
+        return pass_text.length() >= 6;
+    }
 
-    /* Validates email with regex */
+
+    /**
+     * Validates email with regex
+     * @return true if email is valid, otherwise false
+     */
     private boolean isValidEmail() {
         String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                 + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
@@ -145,6 +155,10 @@ public class LoginActivity extends FragmentActivity {
         return email.matches(EMAIL_PATTERN);
     }
 
+    /**
+     * Validates fields and peforms login
+     * @param view View from button click
+     */
     public void login(View view) {
         Boolean email_state = isValidEmail();
         Boolean pass_state = isValidPassword();
@@ -163,44 +177,63 @@ public class LoginActivity extends FragmentActivity {
         }
     }
 
-    public void signUp(View view) {
+    /**
+     * Starts activity to reset password
+     * @param view View from button click
+     */
+    public void forgotPassword(View view) {
         Log.d("login","sigup clicked");
+        //TODO change to password reset activity after it has been implemented
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
     }
 
-    /* Starts the main activity after user logs in*/
+    /**
+     * Starts the main activity after user logs in
+     * @param view View from button click
+     */
     private void showResults(View view) {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
     }
 
-    /* Class to run network transaction in background on a new thread. This is required*/
+    /**
+     * Class to run network transaction in background to login user.
+     */
     private class LoginTask extends AsyncTask<Void, Void, String> {
+        @Override
+        protected void onPreExecute() {
+            progressDialog.show();
+        }
+
         @Override
         protected String doInBackground(Void... params) {
             try {
                 Session session = loginSercice();
-                PrefUtil.putString(getApplicationContext(), AppConstants.SESSION_ID, session.getSession_id());
-                PrefUtil.putInt(getApplicationContext(), AppConstants.USER_ID, Integer.parseInt(session.getId()));
+                if (session != null) {
+                    PrefUtil.putString(getApplicationContext(), AppConstants.SESSION_ID,
+                            session.getSession_id());
+                    PrefUtil.putInt(getApplicationContext(), AppConstants.USER_ID,
+                            Integer.parseInt(session.getId()));
+                } else {
+                    return "FAILURE";
+                }
             } catch (ApiException e) {
                 return e.getMessage();
             }
-            return "true";
+            return "SUCCESS";
         }
 
         @Override
-        /* Calls method to create new activity that displays registration response
-         * TODO: overwite to open different activities based on the result
-         */
+        // Calls method to create new activity that displays registration response
         protected void onPostExecute(String message) {
             Log.d("login", "network done");
             progressDialog.cancel();
-            if (message.equals("true")) { //succesful
+            if (message.equals("SUCCESS")) { //successful
                 showResults(button_view);
             } else { //error, exception thrown
-                String errorMsg = "";
+                String errorMsg;
                 try {
                     JSONObject jObj = new JSONObject(message);
                     JSONArray jArray = jObj.getJSONArray("error");
@@ -230,12 +263,11 @@ public class LoginActivity extends FragmentActivity {
             }
         }
 
-        @Override
-        protected void onPreExecute() {
-            progressDialog.show();
-        }
-
-
+        /**
+         * Attmep user login
+         * @return Returns a session when login is successful
+         * @throws ApiException when an Api error occurs
+         */
         private Session loginSercice() throws ApiException {
             UserApi userApi = new UserApi();
             userApi.addHeader("X-DreamFactory-Application-Name", AppConstants.APP_NAME);
@@ -243,7 +275,7 @@ public class LoginActivity extends FragmentActivity {
             login.setEmail(email_text.getText().toString());
             login.setPassword(pass_text.getText().toString());
             Session session = userApi.login(login);
-            if (session == null) return null; //should never occure TODO veify and handle this
+            if (session == null) return null; //should never occur TODO verify and handle this
             return session;
         }
     }

@@ -1,6 +1,7 @@
 package com.picspy.models;
 
 /**
+ * Model for accessing friend records from the local sqlite database.
  * Created by BrunelAmC on 8/5/2015.
  */
 public class Friend {
@@ -8,7 +9,7 @@ public class Friend {
     private String _username;
 
     public Friend(){
-
+        super();
     }
     public Friend(int id, String username) {
         _id = id;

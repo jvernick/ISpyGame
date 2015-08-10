@@ -15,6 +15,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
+ * TODO should this class be removed since the users tabe is accesed in only one of the following
+ * two ways:
+ * 1)from insert and delete scripts in the system user table,
+ * 2)from calls to the friends table using related data
+ * Assumes usernames will never be changed*/
+
+ /**
+ * This class provides methods for accessing the UsersTable
  * Created by BrunelAmC on 8/7/2015.
  */
 public class UsersTableRequests {
