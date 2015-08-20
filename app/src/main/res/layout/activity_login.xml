@@ -1,0 +1,57 @@
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.picspy.views.LoginActivity">
+    <!--
+    TODO change backgroud above
+    TODO give login button a color to make it visible
+    TODO change color of button to match theme-->
+
+    <TextView
+        style="@style/login_and_register_title"
+        android:id="@+id/login_title"
+        android:text="@string/login_title" />
+    <com.facebook.login.widget.LoginButton
+        style="@style/login_text_style"
+        android:id="@+id/facebook_login_button"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/login_title"/>
+    <EditText
+        style="@style/login_text_style"
+        android:id="@+id/user_email"
+        android:layout_below="@id/facebook_login_button"
+        android:inputType="textEmailAddress"
+        android:hint="@string/email_hint"
+        android:layout_gravity="center" />
+    <EditText
+        style="@style/login_text_style"
+        android:id="@+id/user_password"
+        android:inputType="textPassword"
+        android:layout_below="@id/user_email"
+        android:hint="@string/pass_hint1"/>
+    <TextView
+        android:id="@+id/password_link"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/user_password"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="@string/forgot_password_prompt"
+        android:clickable="true"
+        android:onClick="forgotPassword"/>
+    <Button
+        style="?android:attr/buttonBarButtonStyle"
+        android:id="@+id/button_login"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:text="@string/button_login"
+        android:textColor="@color/primary_text_default_material_dark"
+        android:onClick="login"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:textStyle="bold"
+        android:visibility="gone"
+        android:background="@color/primary"/>
+</RelativeLayout>

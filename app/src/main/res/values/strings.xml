@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">My F App</string>
+    <string name="action_settings">Remove Friend</string>
+    <string name="edit_message">Enter a message</string>
+    <string name="button_send">Send</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_display_message">My Message</string>
+
+    <string name="button_register">Register</string>
+    <string name="button_login">LOG IN</string>
+    <string name="submit_sign_up">SIGN UP</string>
+    <string name="login_title">Log In</string>
+    <string name="register_title">Sign Up</string>
+    <string name="pass_hint1">Password</string>
+    <string name="email_hint">Email</string>
+    <string name="forgot_password_prompt">Forgot Password?</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_register">register</string>
+    <string name="pass_hint2">Re-type Password</string>
+    <string name="display_name_hint">Display Name</string>
+    <string name="title_activity_post_registration">PostRegistrationActivity</string>
+    <string name="loading_message">Please Wait..</string>
+    <string name="title_activity_splash_">Splash_Activity</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="facebook_app_id">567017063440429</string>
+
+    <string name="score"> 0 </string>
+    <string name="leaderboard_descriptiton">Leaderboard</string>
+    <string name="total_won_description">Won</string>
+    <string name="total_lost_description">Lost</string>
+    <string name="stats_title">All Time</string>
+    <string name="games_sent_description">Challenges sent to me</string>
+    <string name="games_received_description">Challenges I sent</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="home_fragment">Home</string>
+    <string name="friends_fragment">Friends</string>
+    <string name="menu_fragment">Menu</string>
+    <string name="top_fragment">Open Challenges</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_friend_info">FriendInfoActivity</string>
+</resources>
