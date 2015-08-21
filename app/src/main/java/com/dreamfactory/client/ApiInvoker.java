@@ -56,7 +56,7 @@ public class ApiInvoker {
 	private HttpClient client = null;
 
 	//TODO added by Brunel
-	private static final String TAG = "MyFApp";
+	private static final String TAG = "ApiInvoker";
 
 	private boolean ignoreSSLCertificates = false;
 

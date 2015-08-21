@@ -2,6 +2,7 @@ package com.picspy;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.dreamfactory.api.DbApi;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -213,7 +214,7 @@ public class FriendsTableRequests {
     }
 
     /**
-     * Gets the stats for a given user. This includes thier individual
+     * Gets the stats for a given user. This includes their individual
      * game stats, and stats for games between both users
      * @param friend_2_id
      * @return
@@ -236,9 +237,20 @@ public class FriendsTableRequests {
             FriendsRecord temp = dbApi.getRecordsByFilter(FriendsRecord.class,
                     AppConstants.FRIENDS_TABLE_NAME, filter, null, null,
                     null, fields, false, false, related);
+            Log.d(TAG,temp.toString());
             //TODO handle null properly
-            return (temp == null)? null : temp.getRecord().get(0);
+            if (temp != null ) {
+                //session not valid
+                //TODO handle invalid session
+                if (temp.getRecord().size() == 0) {
+                    return null;
+                } else return temp.getRecord().get(0);
+            }
+
+            return null;
+
         } catch (Exception e) {
+            Log.d(TAG, e.toString());
             Log.d(TAG, e.getMessage());
             //Attempting to return only the message part of the error message
             try {

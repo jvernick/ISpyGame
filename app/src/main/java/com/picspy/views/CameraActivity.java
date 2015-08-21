@@ -8,6 +8,7 @@ import android.graphics.RectF;
 import android.hardware.Camera;
 import android.hardware.SensorManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -16,8 +17,16 @@ import android.view.OrientationEventListener;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
+import com.dreamfactory.api.FilesApi;
+import com.dreamfactory.client.ApiException;
+import com.dreamfactory.model.FileRequest;
+import com.dreamfactory.model.FileResponse;
+import com.picspy.GamesRequests;
 import com.picspy.firstapp.R;
+import com.picspy.utils.AppConstants;
+import com.picspy.utils.PrefUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -27,6 +36,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Justin12 on 6/28/2015.
@@ -41,7 +51,7 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
 
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
-    private static final String TAG = "CameraActivityError";
+    private static final String TAG = "CameraActivity";
     private Camera mCamera;
     private CameraPreview mPreview;
     private String flashMode = Camera.Parameters.FLASH_MODE_OFF;
@@ -442,6 +452,39 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
                 params.setFlashMode(flashMode);
                 mCamera.setParameters(params);
             }
+        }
+    }
+
+    /**
+     * Class to send challenge to backend;
+     * called as follows
+     * new UploadFileTask().execute(file, params); where:
+     * file is a FileRequest object containing the filename and file path
+     * parsms isa ChallengeParams object containing challenge parameters
+     * TODO implement the above call to this class so send challenge to backend
+     */
+    class UploadFileTask extends AsyncTask<Object, Void, String> {
+        @Override
+        protected void onPreExecute() {
+            //uncomment to show a rogress bar
+            //TODO confirm/create a progress display
+            //progressDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(Object... params) {
+            GamesRequests request = new GamesRequests(getApplicationContext(), true);
+            return request.createGame((FileResponse) params[0],
+                    (GamesRequests.ChallengeParams) params[1]);
+        }
+
+        @Override
+        //TODO handle result and possible errors from server
+        protected void onPostExecute(String resp) {
+           /* if(progressDialog != null && progressDialog.isShowing()){
+                progressDialog.cancel();
+            }*/
+            Toast.makeText(getApplicationContext(), resp, Toast.LENGTH_LONG).show();
         }
     }
 }

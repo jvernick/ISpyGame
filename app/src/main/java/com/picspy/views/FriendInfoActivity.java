@@ -248,7 +248,7 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
         total1 = total1==0? 1: total1; //to avoid divide by zero
         total2 = total2==0? 1: total2; //to avoid divide by zero
 
-        //set values depending on who is friend_1 or friend_2 
+        //set values depending on who is friend_1 or friend_2
         if (friend_id < PrefUtil.getInt(getApplicationContext(), AppConstants.USER_ID)) {
             stats_title.setText(record.getUsers_by_friend_1().getUsername() + "\' all time");
             title.setText(record.getUsers_by_friend_1().getUsername());

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Model for retrieving data from the friends database. Contains fields for related data
  * and for choosing the related data.
+ * TODO remove unused getters and setter
  * Created by BrunelAmC on 7/14/2015.
  */
 public class FriendRecord extends DbApiResponse {
@@ -142,7 +143,7 @@ public class FriendRecord extends DbApiResponse {
         return "FriendRecord {" +
                 "\n" + "friend_1: "  + friend_1 +
                 "\n" + " friend_2: "  + friend_2 +
-                "\n" + " updated: " + updated + '\'' +
+                "\n" + " updated: " + updated +
                 "\n" + " status: "  + status +
                 "\n" + " friend_1_won: "  + friend_1_won +
                 "\n" + " friend_1_lost: "  + friend_1_lost +
@@ -151,6 +152,6 @@ public class FriendRecord extends DbApiResponse {
                 "\n" + " related {" +
                 "\n" + " users_by_friend_1: "  + users_by_friend_1 +
                 "\n" + " users_by_friend_2: "  + users_by_friend_2 +
-                " }\n}";
+                "\n}";
     }
 }

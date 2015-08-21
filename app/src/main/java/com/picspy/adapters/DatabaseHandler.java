@@ -7,7 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.picspy.models.Friend;
-import com.picspy.utils.FriendContract.FriendEntry;
+import com.picspy.models.Game;
+import com.picspy.utils.DbContract.FriendEntry;
+import com.picspy.utils.DbContract.GameEntry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,15 +18,25 @@ import java.util.List;
  * This class handles connections to the local sqlite database and provides
  * methods for performing CRUD operations
  * Created by BrunelAmC on 8/5/2015.
+ * TODO make sender_id related to id from friends table?
  */
 public class DatabaseHandler extends SQLiteOpenHelper{
     public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "friendsManager.db";
-    private static final String SQL_CREATE_ENTRIES = "CREATE TABLE " + FriendEntry.TABLE_NAME + "("
+    public static final String DATABASE_NAME = "dbManager.db";
+    private static final String SQL_CREATE_FRIENDS_TABLE = "CREATE TABLE " + FriendEntry.TABLE_NAME
+            + "("
             + FriendEntry._ID + " INTEGER PRIMARY KEY," + FriendEntry.COLUMN_NAME_USERNAME
             + " TEXT," + ")";
-    private static final String SQL_DELETE_ENTRIES =
+    private static final String SQL_CREATE_GAMES_TABLE = "CREATE TABLE " + GameEntry.TABLE_NAME
+            + "("
+            + GameEntry._ID + " INTEGER PRIMARY KEY," + GameEntry.COLUMN_NAME_PICTURE + " TEXT"
+            + GameEntry.COLUMN_NAME_SEL + " TEXT" + GameEntry.COLUMN_NAME_HINT + " TEXT"
+            + GameEntry.COLUMN_NAME_GUESS + " INTEGER" + GameEntry.COLUMN_NAME_TIME + " INTEGER"
+            + GameEntry.COLUMN_NAME_VOTE + " BOOLEAN" + GameEntry.COLUMN_NAME_SENDER + " TEXT";
+    private static final String SQL_DELETE_FRIENDS_TABLE =
             "DROP TABLE IF EXISTS " + FriendEntry.TABLE_NAME;
+    private static final String SQL_DELETE_GAMES_TABLE =
+            "DROP TABLE IF EXISTS " + GameEntry.TABLE_NAME;
 
     // If you change the database schema, you must increment the database version.
     public DatabaseHandler(Context context) {
@@ -34,18 +46,22 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     //Creating tables
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        String CREATE_FRIENDS_TABLE = SQL_CREATE_ENTRIES;
-       sqLiteDatabase.execSQL(CREATE_FRIENDS_TABLE);
+        sqLiteDatabase.execSQL(SQL_CREATE_FRIENDS_TABLE);
+        sqLiteDatabase.execSQL(SQL_CREATE_GAMES_TABLE);
+        //TODO add statements to fill the tables| Test
     }
 
     //Upgrading database
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         // Drop older table if existed
-       sqLiteDatabase.execSQL(SQL_DELETE_ENTRIES);
+        sqLiteDatabase.execSQL(SQL_DELETE_GAMES_TABLE);
+        sqLiteDatabase.execSQL(SQL_DELETE_FRIENDS_TABLE);
+
         // Create tables again
         onCreate(sqLiteDatabase);
     }
+
 
     /**
      * Adds a new friend to the database
@@ -58,7 +74,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         values.put(FriendEntry.COLUMN_NAME_USERNAME, friend.getUsername()); //Friend name
         values.put(FriendEntry._ID, friend.getId());   //friend_id
 
-        db.insert(FriendEntry.TABLE_NAME, FriendEntry.COlUMN_NAME_NULLABLE, values);
+        db.insert(FriendEntry.TABLE_NAME, null, values);
         db.close();
 
     }
@@ -81,9 +97,9 @@ public class DatabaseHandler extends SQLiteOpenHelper{
                 selectionArgs, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
-
+        //TODO Does the warning below need handling?
         Friend friend = new Friend(Integer.parseInt(cursor.getString(0)), cursor.getString(1));
-        db.close();
+        cursor.close();
         return friend;
     }
 
@@ -92,7 +108,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
      * @return A list of all friend records
      */
     public List<Friend> getAllfriends() {
-        List<Friend> friendList = new ArrayList<Friend>();
+        List<Friend> friendList = new ArrayList<>();
         // Select All Query
         String selectQuery = "SELECT  * FROM " + FriendEntry.TABLE_NAME;
 
@@ -109,7 +125,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
                 friendList.add(friend);
             } while (cursor.moveToNext());
         }
-
+        cursor.close();
+        db.close();
         // return friend list
         return friendList;
     }
@@ -149,7 +166,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     }
 
     /**
-     * Deletes a friend fromt the database
+     * Deletes a friend from the database
      * @param friend friend to be deleted
      */
     public void deleteFriend(Friend friend) {
@@ -159,7 +176,98 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         db.delete(
                 FriendEntry.TABLE_NAME,
                 selection,
-               selectionArgs);
+                selectionArgs);
+        db.close();
+    }
+
+    /**
+     * Adds a <b>single</b> new game to the database
+     * @param game game to be added
+     */
+    public void addGame(Game game) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        addGameHelper(game, db);
+        db.close();
+    }
+
+    /**
+     * Adds  <b>multiple</b> new games to the database
+     * @param games List of games to be added
+     */
+    public void addGames(List<Game> games) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        for(Game game: games) {
+            addGameHelper(game, db);
+        }
+        db.close();
+    }
+
+    /**
+     * Helper function to add a single game record
+     * @param game game to be added
+     * @param db current handler
+     */
+    private void addGameHelper(Game game, SQLiteDatabase db) {
+        ContentValues values = new ContentValues();
+        values.put(GameEntry._ID, game.getId());
+        values.put(GameEntry.COLUMN_NAME_PICTURE, game.getPictureName());
+        values.put(GameEntry.COLUMN_NAME_SEL, game.getSelection());
+        values.put(GameEntry.COLUMN_NAME_HINT, game.getHint());
+        values.put(GameEntry.COLUMN_NAME_GUESS, game.getGuess());
+        values.put(GameEntry.COLUMN_NAME_TIME, game.getTime());
+        values.put(GameEntry.COLUMN_NAME_VOTE, game.isVote());
+        values.put(GameEntry.COLUMN_NAME_SENDER, game.getSender());
+
+        db.insert(GameEntry.TABLE_NAME, null, values);
+    }
+
+    /**
+     * Gets a list of all games in the database
+     * @return A list of all game records
+     */
+    public List<Game> getAllGames() {
+        List<Game> gameList = new ArrayList<>();
+        // Select All Query
+        String selectQuery = "SELECT * FROM " + GameEntry.TABLE_NAME;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        // Looping through all rows and adding to list
+        if (c.moveToFirst()) {
+            do {
+                Game game = new Game();
+                game.setPictureName(c.getString(c.getColumnIndex(GameEntry.COLUMN_NAME_PICTURE)));
+                game.setSelection((c.getString(c.getColumnIndex(GameEntry.COLUMN_NAME_SEL))));
+                game.setHint((c.getString(c.getColumnIndex(GameEntry.COLUMN_NAME_HINT))));
+                game.setGuess((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_GUESS))));
+                game.setTime((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_TIME))));
+                game.setVote((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_VOTE))) != 0);
+                game.setSender((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_SENDER))));
+                game.setId(c.getInt(c.getColumnIndex(GameEntry._ID)));
+
+                // adding to list
+                gameList.add(game);
+            } while (c.moveToNext());
+        }
+
+        return gameList;
+    }
+
+    /**
+     * Deletes a game from the database
+     * @param game game to be deleted
+     */
+    public void deleteGame(Game game) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selection = GameEntry._ID + " = ?";
+        String[] selectionArgs = { String.valueOf(game.getId()) };
+        db.delete(
+                GameEntry.TABLE_NAME,
+                selection,
+                selectionArgs);
         db.close();
     }
 }

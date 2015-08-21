@@ -324,7 +324,7 @@ public class FilesApi {
 			throw new ApiException(400, "missing required params");
 		}
 		// create path and map variables
-		String path = serviceName + "/{container}/".replaceAll("\\{format\\}","json").replaceAll("\\{" + "container" + "\\}", apiInvoker.escapeString(container.toString()));
+		String path = serviceName + "/{container}/".replaceAll("\\{format\\}", "json").replaceAll("\\{" + "container" + "\\}", apiInvoker.escapeString(container.toString()));
 
 		// query params
 		Map<String, String> queryParams = new HashMap<String, String>();
@@ -537,7 +537,11 @@ public class FilesApi {
 			}
 		}
 	}
-	public FileResponse createFile (String container, String file_path, Boolean check_exist, FileRequest body) throws ApiException {
+	/*
+	 Modified by Brunel on 8/20/15
+	 - Added challengeParams parameter to enable sending challenge data as post parameters
+	 */
+	public FileResponse createFile (String container, String file_path, Boolean check_exist, FileRequest body, Map<String,String> challengeParams) throws ApiException {
 		// verify required params are set
 		if(container == null || file_path == null ) {
 			throw new ApiException(400, "missing required params");
@@ -546,7 +550,13 @@ public class FilesApi {
 		String path = serviceName + "/{container}/{file_path}".replaceAll("\\{format\\}","json").replaceAll("\\{" + "container" + "\\}", apiInvoker.escapeString(container.toString())).replaceAll("\\{" + "file_path" + "\\}", apiInvoker.escapeString(file_path.toString()));
 
 		// query params
-		Map<String, String> queryParams = new HashMap<String, String>();
+		Map<String, String> queryParams;
+		//++Addition below
+		if (challengeParams != null) {
+			queryParams = new HashMap<String, String>(challengeParams);
+		} else{
+			queryParams = new HashMap<String, String>();
+		}
 		Map<String, String> headerParams = new HashMap<String, String>();
 
 		if(!"null".equals(String.valueOf(check_exist)))

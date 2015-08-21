@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.picspy.GamesRequests;
+import com.picspy.models.UserChallengesRecord;
 import com.picspy.views.FriendInfoActivity;
 import com.picspy.FriendsTableRequests;
 import com.picspy.firstapp.R;
@@ -23,6 +25,7 @@ import com.picspy.firstapp.R;
 public class FriendsFragment extends Fragment implements View.OnClickListener {
     public final static String FRIEND_USERNAME = "com.picspy.USERNAME";
     public final static String FRIEND_ID = "com.picspy.FRIEND_ID";
+    public final static String TAG = "FriendsFragment";
     private Dialog progressDialog;
 
     // This is the Adapter being used to display the list's data.
@@ -59,7 +62,7 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
     }
 
     private void testRequest(View view) {
-
+        new GetRecordsTask().execute();
     }
     /*public void testRequest1(View view) {
         //content of example list
@@ -82,14 +85,14 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
 
     @Override//TODO Document: enables fragment to handle button
     public void onClick(View view) {
-        Log.d("FriendsFragment", "onClick");
+        Log.d(TAG, "onClick");
         switch (view.getId()) {
             case R.id.button:
-                Log.d("FriendsFragment","case1");
+                Log.d(TAG,"case1");
                 testRequest(view);
                 break;
             case R.id.button2:
-                Log.d("FriendsFragment","case2");
+                Log.d(TAG,"case2");
                 testInfoPage(view);
                 break;
         }
@@ -106,16 +109,18 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
 
         @Override
         protected String doInBackground(Void... params) {
-                FriendsTableRequests request = new FriendsTableRequests(getActivity().getApplicationContext());
+                //FriendsTableRequests request = new FriendsTableRequests(getActivity().getApplicationContext());
+            //TODO when using, must check that record field is not null
+            UserChallengesRecord response = new GamesRequests(getActivity().getApplicationContext(),
+                    false).getGamesInfo();
                 //String result = request.sendFriendRequest(1);
                 //FriendRecord result = request.getStats(9);
                 //String result = request.removeFriend(1);
                 //String result = request.acceptFriendRequest(10);
                 //FriendsRecord temp = request.getFriendRequests();
-                String result = request.updateStats(9,true);
-                if (result != null) Log.d( "Friends", result);
-                if (result != null && result.equals("SUCCESS")) { //TODO String contains error message on error
-                    //Log.d("FriendsFragment", result.toString());
+
+                if (response != null /*&& response.equals("SUCCESS")*/) { //TODO String contains error message on error
+                    //Log.d(TAG, result.toString());
                     return "SUCCESS";
                 } else {
                     return "FAILED";
@@ -127,9 +132,9 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
                 progressDialog.cancel();
             }
             if(records.equals("Success")){ // success
-                Log.d("Friends","Success");
+                Log.d(TAG,"Success");
             }else{ // some error show dialog
-               Log.d("Friends", records);
+               Log.d(TAG, records);
             }
         }
     }
