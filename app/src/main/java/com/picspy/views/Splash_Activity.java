@@ -23,7 +23,7 @@ import com.picspy.utils.PrefUtil;
 public class Splash_Activity extends Activity {
     private Button splash_login, splash_signup;
     private static final int sleepTime = 2000;
-    private static final String TAG = "SlashActivity";
+    private static final String TAG = "SplashActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +97,7 @@ public class Splash_Activity extends Activity {
                     userApi.addHeader("X-DreamFactory-Session-Token", oldSessionKey);
                     Session session = userApi.getSession();
                     if (session != null && session.getId() != null) {
-                        Log.d("sp", "session not null");
+                        Log.d(TAG, "session not null");
                         PrefUtil.putString(getApplicationContext(), AppConstants.SESSION_ID,
                                 session.getSession_id());
                         PrefUtil.putInt(getApplicationContext(), AppConstants.USER_ID,

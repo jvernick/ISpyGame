@@ -3,13 +3,16 @@ package com.picspy.adapters;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.picspy.models.Friend;
 import com.picspy.models.Game;
+import com.picspy.utils.AppConstants;
 import com.picspy.utils.DbContract.FriendEntry;
 import com.picspy.utils.DbContract.GameEntry;
+import com.picspy.utils.PrefUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,21 +29,24 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     private static final String SQL_CREATE_FRIENDS_TABLE = "CREATE TABLE " + FriendEntry.TABLE_NAME
             + "("
             + FriendEntry._ID + " INTEGER PRIMARY KEY," + FriendEntry.COLUMN_NAME_USERNAME
-            + " TEXT," + ")";
+            + " TEXT" + ")";
     private static final String SQL_CREATE_GAMES_TABLE = "CREATE TABLE " + GameEntry.TABLE_NAME
             + "("
-            + GameEntry._ID + " INTEGER PRIMARY KEY," + GameEntry.COLUMN_NAME_PICTURE + " TEXT"
-            + GameEntry.COLUMN_NAME_SEL + " TEXT" + GameEntry.COLUMN_NAME_HINT + " TEXT"
-            + GameEntry.COLUMN_NAME_GUESS + " INTEGER" + GameEntry.COLUMN_NAME_TIME + " INTEGER"
-            + GameEntry.COLUMN_NAME_VOTE + " BOOLEAN" + GameEntry.COLUMN_NAME_SENDER + " TEXT";
+            + GameEntry._ID + " INTEGER PRIMARY KEY, " + GameEntry.COLUMN_NAME_PICTURE + " TEXT, "
+            + GameEntry.COLUMN_NAME_SEL + " TEXT, " + GameEntry.COLUMN_NAME_HINT + " TEXT, "
+            + GameEntry.COLUMN_NAME_GUESS + " INTEGER, " + GameEntry.COLUMN_NAME_TIME + " INTEGER, "
+            + GameEntry.COLUMN_NAME_VOTE + " BOOLEAN, " + GameEntry.COLUMN_NAME_SENDER + " TEXT"
+            + ")";
     private static final String SQL_DELETE_FRIENDS_TABLE =
             "DROP TABLE IF EXISTS " + FriendEntry.TABLE_NAME;
     private static final String SQL_DELETE_GAMES_TABLE =
             "DROP TABLE IF EXISTS " + GameEntry.TABLE_NAME;
 
+    private Context context;
     // If you change the database schema, you must increment the database version.
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     //Creating tables
@@ -66,8 +72,10 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     /**
      * Adds a new friend to the database
      * @param friend Friend to be added
+     * @param updated The updated field of the record from the server.
+     *                Used to avoid duplicate entries
      */
-    public void addFriend(Friend friend) {
+    public void addFriend(Friend friend, String updated) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -75,6 +83,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         values.put(FriendEntry._ID, friend.getId());   //friend_id
 
         db.insert(FriendEntry.TABLE_NAME, null, values);
+        PrefUtil.putString(context, AppConstants.LAST_FRIEND_UPDATE_TIME, updated);
         db.close();
 
     }
@@ -181,26 +190,19 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     }
 
     /**
-     * Adds a <b>single</b> new game to the database
-     * @param game game to be added
-     */
-    public void addGame(Game game) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        addGameHelper(game, db);
-        db.close();
-    }
-
-    /**
      * Adds  <b>multiple</b> new games to the database
      * @param games List of games to be added
+     * @param max_user_challenge_id The max id of the record in the server. Used to limit
+     *                              downloaded content, and to avoid inserting duplicates
      */
-    public void addGames(List<Game> games) {
+    public void addGames(List<Game> games, int max_user_challenge_id) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         for(Game game: games) {
             addGameHelper(game, db);
         }
+
+        PrefUtil.putInt(context, AppConstants.LAST_USER_CHALLENGE_ID, max_user_challenge_id);
         db.close();
     }
 
@@ -227,7 +229,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
      * Gets a list of all games in the database
      * @return A list of all game records
      */
-    public List<Game> getAllGames() {
+    /*public List<Game> getAllGames() {
         List<Game> gameList = new ArrayList<>();
         // Select All Query
         String selectQuery = "SELECT * FROM " + GameEntry.TABLE_NAME;
@@ -254,6 +256,15 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         }
 
         return gameList;
+    }*/
+    //TODO test
+    public Cursor getAllGames() {
+        // Select All Query
+        String selectQuery = "SELECT * FROM " + GameEntry.TABLE_NAME;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        return cursor;
     }
 
     /**

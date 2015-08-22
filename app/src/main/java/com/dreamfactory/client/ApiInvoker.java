@@ -180,8 +180,6 @@ public class ApiInvoker {
 			}
 		}
 		headers.put("Accept", "application/json");
-		//TODO added by Brunel
-		Log.d(TAG, "Everything Setup");
 
 		HttpResponse response = null;
 		try{

@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.dreamfactory.client.ApiException;
 import com.picspy.GamesRequests;
 import com.picspy.models.UserChallengesRecord;
 import com.picspy.views.FriendInfoActivity;
@@ -111,8 +112,9 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
         protected String doInBackground(Void... params) {
                 //FriendsTableRequests request = new FriendsTableRequests(getActivity().getApplicationContext());
             //TODO when using, must check that record field is not null
-            UserChallengesRecord response = new GamesRequests(getActivity().getApplicationContext(),
-                    false).getGamesInfo();
+            try {
+                UserChallengesRecord response = new GamesRequests(getActivity().getApplicationContext(),
+                        false).getGamesInfo();
                 //String result = request.sendFriendRequest(1);
                 //FriendRecord result = request.getStats(9);
                 //String result = request.removeFriend(1);
@@ -125,6 +127,12 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
                 } else {
                     return "FAILED";
                 }
+            } catch (ApiException e) {
+                Log.d(TAG, e.getMessage());
+                //TODO handle exception
+                //toast for Internet connection error
+                return "FAILED";
+            }
         }
         @Override
         protected void onPostExecute(String records) {

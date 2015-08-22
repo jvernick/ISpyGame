@@ -92,4 +92,13 @@ public class MainActivity extends FragmentActivity {
         Intent intent = new Intent(this, CameraActivity.class);
         startActivity(intent);
     }
+
+    /**
+     * Starts challenges/updates activity
+     * @param view View from button click
+     */
+    public void launchChallenges(View view) {
+        Intent intent = new Intent(this, ChallengesActivity.class);
+        startActivity(intent);
+    }
 }

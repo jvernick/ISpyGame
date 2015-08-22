@@ -82,14 +82,14 @@ public class FriendsTableRequests {
 
     /**
      * Accepts a friend request by changing the status int to 0. Before changing, status indicates
-     * which user sent the friend request.
+     * which user sent the friend request. Don't forget to tadd the friend to the local database
      * @param friend_2_id Confirm request from freind with this friend_id
      * @return "SUCCESS" on success and "FAILEd" or Error message on failure
      */
     public String acceptFriendRequest(int friend_2_id) {
         try {
             AddFriendModel request = new AddFriendModel(user_id,friend_2_id, 0);
-            FriendRecord record = dbApi.updateRecord(FriendRecord.class, AppConstants.FRIENDS_TABLE_NAME, "0", request, null, null, null, null);
+            FriendRecord record = dbApi.updateRecord(FriendRecord.class, AppConstants.FRIENDS_TABLE_NAME, "0", request, "updated", null, null, null);
             if ( record != null) {
                 Log.d(TAG, record.toString());
                 return "SUCCESS";

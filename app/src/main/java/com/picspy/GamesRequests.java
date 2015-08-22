@@ -31,6 +31,7 @@ public class GamesRequests {
     private FilesApi fileApi;
     private int user_id;
     private final static String TAG = "GameRequests";
+    private Context context;
 
     /**
      * Constructor initializes the required settings and values from shared preferences
@@ -53,7 +54,7 @@ public class GamesRequests {
             fileApi.addHeader("X-DreamFactory-Session-Token", session_id);
             fileApi.setBasePath(AppConstants.DSP_URL);
         }
-
+        this.context = context;
     }
 
     /**
@@ -89,29 +90,21 @@ public class GamesRequests {
      * @return A list fof all pending games
      * TODO consider rethrowing exception so that caller handles it
      */
-    public UserChallengesRecord getGamesInfo() {
-        try {
-            String filter = " `user_id` = " + user_id ;
-            String related = "challenges_by_challenge_id";
-            UserChallengesRecord temp = dbApi.getRecordsByFilter(UserChallengesRecord.class,
-                    AppConstants.USER_CHALLENGES_TABLE_NAME, filter, null, null, null, null,
-                    false, false, related);
-            Log.d(TAG, temp.toString());
-            return temp;
-        } catch (Exception e) {
-            Log.d(TAG, e.getMessage());
-            //Attempting to return only the message part of the error message
-            try {
-                JSONObject jObj = new JSONObject(e.getMessage());
-                JSONArray jArray = jObj.getJSONArray("error");
-                return null;
-            } catch (JSONException ex) { //message is from exception
-                //TODO customize message if an exception was thrown while getting messeage?
-                //Currently ignoring JSONException and returning full error message
-                ex.printStackTrace();
-                return null;
-            }
+    public UserChallengesRecord getGamesInfo() throws ApiException{
+        String filter = " `user_id` = " + user_id ;
+        int max_user_challenge_id = PrefUtil.getInt(context,
+                AppConstants.LAST_USER_CHALLENGE_ID, 0);
+        //Get only records that changed between now and the most recent call
+        //TODO this idea only works if deleting the shared preferences is always simultaenos with deleting the database. Confirm
+        if (max_user_challenge_id != 0) {
+            filter = filter +  " AND `id` > " + String.valueOf(max_user_challenge_id);
         }
+        String related = "challenges_by_challenge_id";
+        UserChallengesRecord temp = dbApi.getRecordsByFilter(UserChallengesRecord.class,
+                AppConstants.USER_CHALLENGES_TABLE_NAME, filter, null, null, null, null,
+                false, false, related);
+        if (temp != null) Log.d(TAG, temp.toString());
+        return temp;
     }
 
     /**
