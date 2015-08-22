@@ -117,29 +117,39 @@ public class DatabaseHandler extends SQLiteOpenHelper{
      * Gets a list of all friends in the database
      * @return A list of all friend records
      */
-    public List<Friend> getAllfriends() {
-        List<Friend> friendList = new ArrayList<>();
+    //TODO test
+    public Cursor getAllFriends() {
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + FriendEntry.TABLE_NAME;
+        String selectQuery = "SELECT * FROM " + FriendEntry.TABLE_NAME;
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-                Friend friend = new Friend();
-                friend.setId(Integer.parseInt(cursor.getString(0)));
-                friend.setUsername(cursor.getString(1));
-                // Adding friend to list
-                friendList.add(friend);
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        db.close();
-        // return friend list
-        return friendList;
+        return cursor;
     }
+
+//    public List<Friend> getAllfriends() {
+//        List<Friend> friendList = new ArrayList<>();
+//        // Select All Query
+//        String selectQuery = "SELECT  * FROM " + FriendEntry.TABLE_NAME;
+//
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        Cursor cursor = db.rawQuery(selectQuery, null);
+//
+//        // looping through all rows and adding to list
+//        if (cursor.moveToFirst()) {
+//            do {
+//                Friend friend = new Friend();
+//                friend.setId(Integer.parseInt(cursor.getString(0)));
+//                friend.setUsername(cursor.getString(1));
+//                // Adding friend to list
+//                friendList.add(friend);
+//            } while (cursor.moveToNext());
+//        }
+//        cursor.close();
+//        db.close();
+//        // return friend list
+//        return friendList;
+//    }
 
     /**
      * Gets the total number of friends in the database
