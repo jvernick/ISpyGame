@@ -45,6 +45,7 @@ public class UserChallengeRecord extends DbApiResponse{
             game.setTime(gr.getTime());
             game.setVote(gr.isL_board());
             game.setSender(gr.getSender());
+            game.setCreated(gr.getCreated());
 
             return game;
         }

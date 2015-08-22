@@ -35,8 +35,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
             + GameEntry._ID + " INTEGER PRIMARY KEY, " + GameEntry.COLUMN_NAME_PICTURE + " TEXT, "
             + GameEntry.COLUMN_NAME_SEL + " TEXT, " + GameEntry.COLUMN_NAME_HINT + " TEXT, "
             + GameEntry.COLUMN_NAME_GUESS + " INTEGER, " + GameEntry.COLUMN_NAME_TIME + " INTEGER, "
-            + GameEntry.COLUMN_NAME_VOTE + " BOOLEAN, " + GameEntry.COLUMN_NAME_SENDER + " TEXT"
-            + ")";
+            + GameEntry.COLUMN_NAME_VOTE + " BOOLEAN, " + GameEntry.COLUMN_NAME_SENDER + " TEXT,"
+            + GameEntry.COLUMN_NAME_CREATED + " TEXT" + ")";
     private static final String SQL_DELETE_FRIENDS_TABLE =
             "DROP TABLE IF EXISTS " + FriendEntry.TABLE_NAME;
     private static final String SQL_DELETE_GAMES_TABLE =
@@ -108,6 +108,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
             cursor.moveToFirst();
         //TODO Does the warning below need handling?
         Friend friend = new Friend(Integer.parseInt(cursor.getString(0)), cursor.getString(1));
+        db.close();
         cursor.close();
         return friend;
     }
@@ -149,6 +150,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
         cursor.close();
+        db.close();
 
         // return count
         return cursor.getCount();
@@ -221,6 +223,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         values.put(GameEntry.COLUMN_NAME_TIME, game.getTime());
         values.put(GameEntry.COLUMN_NAME_VOTE, game.isVote());
         values.put(GameEntry.COLUMN_NAME_SENDER, game.getSender());
+        values.put(GameEntry.COLUMN_NAME_CREATED, game.getCreated());
 
         db.insert(GameEntry.TABLE_NAME, null, values);
     }
@@ -264,10 +267,10 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
+
         return cursor;
     }
-
-    /**
+        /**
      * Deletes a game from the database
      * @param game game to be deleted
      */

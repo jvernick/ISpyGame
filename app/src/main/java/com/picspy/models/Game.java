@@ -13,6 +13,7 @@ public class Game {
     private boolean vote;
     private int sender;
     private int id;
+    private String created;
 
     /**
      * Constructor initializes all the challenge parameters. Hence no getter and setters.
@@ -105,4 +106,13 @@ public class Game {
     public void setSender(int sender) {
         this.sender = sender;
     }
+
+    public String getCreated() {
+        return created;
+    }
+
+    public void setCreated(String created) {
+        this.created = created;
+    }
+
 }

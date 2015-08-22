@@ -30,6 +30,8 @@ public class GameRecord {
     //challenge id
     @JsonProperty
     private int id;
+    @JsonProperty
+    private String created;
 
     public String getPictureName() {
         return pictureName;
@@ -94,6 +96,14 @@ public class GameRecord {
     public void setId(int id) {
         this.id=  id;
     }
+
+    public String getCreated() {
+        return created;
+    }
+
+    public void setCreated(String created) {
+        this.created = created;
+    }
     
     @Override
     public String toString() {
@@ -106,6 +116,7 @@ public class GameRecord {
                 "\n" + " l_board: " + l_board +
                 "\n" + " sender: " + sender +
                 "\n" + " id: " + id +
+                "\n" + " created: " + created +
                 "\n}";
     }
 }

@@ -11,7 +11,7 @@ public class AppConstants {
     public static final String USER_ID = "user_id";
     public static final String APP_NAME = "picspy";
     //TODO change following constants as required (specifically just change the IP during testing)
-    public static final String DSP_URL = "http://192.168.0.14:8080/rest";
+    public static final String DSP_URL = "http://192.168.0.8:8080/rest";
     public static final String USERS_TABLE_NAME = "users";
     public static final String CONTAINER_NAME = "applications";
     public static final String FOLDER_NAME = "picspy/challenges";

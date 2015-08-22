@@ -1,45 +1,73 @@
 package com.picspy.views;
 
+import android.app.LoaderManager.LoaderCallbacks;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.database.Cursor;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dreamfactory.client.ApiException;
 import com.picspy.GamesRequests;
+import com.picspy.adapters.CursorObserver;
 import com.picspy.adapters.DatabaseHandler;
 import com.picspy.adapters.GamesCursorAdapter;
+import com.picspy.adapters.GamesCursorLoader;
 import com.picspy.firstapp.R;
 import com.picspy.models.Game;
-import com.picspy.models.GameRecord;
 import com.picspy.models.UserChallengeRecord;
 import com.picspy.models.UserChallengesRecord;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChallengesActivity extends ActionBarActivity {
+public class ChallengesActivity extends ActionBarActivity  implements LoaderCallbacks<Cursor>{
     private static final String TAG = "ChallengesActivity";
-    private GamesCursorAdapter adapter;
+    private GamesCursorAdapter cursorAdapter;
     private ListView listView;
+    private TextView toolbarTitle;
+    private DatabaseHandler dbHandler;
+    private int LOADER_ID = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_challenges);
         listView = (ListView) findViewById(R.id.challenge_list);
-        //set adapter to populate listView from database
+        //set cursorAdapter to populate listView from database
         //content observer flag makes the view auto refresh
-        adapter = new GamesCursorAdapter(getApplicationContext(), R.layout.item_challenge,
-                (new DatabaseHandler(getApplicationContext())).getAllGames(),
+
+        //dbHandler = DatabaseHandler.getInstance(this);
+        cursorAdapter = new GamesCursorAdapter(getApplicationContext(), R.layout.item_challenge,
+                dbHandler.getAllGames(),
                 GamesCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-        listView.setAdapter(adapter);
+        //cursorAdapter.notifyDataSetChanged();
+        listView.setAdapter(cursorAdapter);
 
         //update database
         (new GetChallengesTask()).execute();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbarTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        toolbarTitle.setText("Challenges");
+
+        // Setting toolbar as the ActionBar
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationIcon(R.drawable.ic_back);
+
+        //Initializing loader
+        getLoaderManager().initLoader(LOADER_ID, null, this).forceLoad();
     }
 
     @Override
@@ -58,10 +86,21 @@ public class ChallengesActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            //update database
+            (new GetChallengesTask()).execute();
+
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void startGame(View view) {
+        /*TODO Start activity to create new game
+        Intent intent = new Intent(MainActivity.this, SecondActivity.class);
+        startActivity(intent);
+         */
+        Toast.makeText(ChallengesActivity.this, "Game started", Toast.LENGTH_SHORT).show();
     }
 
     private class GetChallengesTask extends AsyncTask<Void, Void, UserChallengesRecord> {
@@ -96,10 +135,62 @@ public class ChallengesActivity extends ActionBarActivity {
                     gameList.add(record.getGame());
                 }
                 if (gameList.size() != 0) {
-                    (new DatabaseHandler(getApplicationContext())).addGames(gameList,
+                    dbHandler.addGames(gameList,
                             max_user_challenge_id);
+                    //dbHandler.close();
+                    //((GamesCursorAdapter) listView.getAdapter()).getCursor().requery();
                 }
             }
         }
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (dbHandler != null) {
+            ((GamesCursorAdapter) listView.getAdapter()).getCursor().close();
+           // cursorAdapter.getCursor().close();
+            dbHandler.close();
+        }
+    }
+
+    /*
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (dbHandler != null) {
+            cursorAdapter.getCursor().close();
+            dbHandler.close();
+        }
+    }*/
+
+    /***
+     *
+     * Loaders callback methods
+     *
+     ***/
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        Log.e(TAG, ":::: onCreateLoader");
+        return (new GamesCursorLoader(this, dbHandler));
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        Log.e(TAG, ":::: onLoadFinished");
+        cursorAdapter.swapCursor(cursor);
+
+        /**
+         * Registering content observer for this cursor, When this cursor value will be change
+         * This will notify our loader to reload its data*/
+        CursorObserver cursorObserver = new CursorObserver(new Handler(), loader);
+        cursor.registerContentObserver(cursorObserver);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        Log.e(TAG, ":::: onLoaderReset");
+        cursorAdapter.swapCursor(null);
+    }
+
 }
