@@ -5,77 +5,71 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.content.Context;
 
-import com.dreamfactory.client.ApiException;
-import com.picspy.GamesRequests;
-import com.picspy.models.UserChallengesRecord;
+import com.picspy.adapters.DatabaseHandler;
+import com.picspy.models.Friend;
 import com.picspy.views.FriendInfoActivity;
 import com.picspy.FriendsTableRequests;
 import com.picspy.firstapp.R;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by Justin12 on 6/6/2015.
  */
-public class FriendsFragment extends Fragment implements View.OnClickListener {
+public class FriendsFragment extends ListFragment  {
     public final static String FRIEND_USERNAME = "com.picspy.USERNAME";
     public final static String FRIEND_ID = "com.picspy.FRIEND_ID";
-    public final static String TAG = "FriendsFragment";
+    public DatabaseHandler db;
     private Dialog progressDialog;
 
     // This is the Adapter being used to display the list's data.
     SimpleCursorAdapter mAdapter;
-     // If non-null, this is the current filter the user has provided.
+    // If non-null, this is the current filter the user has provided.
     String mCurFilter;
-
-  /*  @Override
-     public void onActivityCreated(Bundle savedInstanceState) {
-         super.onActivityCreated(savedInstanceState);
-        setEmptyText("No friends");
-        setHasOptionsMenu(true);
-        //request list of names
-         testRequest1(this.getListView());
-    }
-      @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        // TODO implement some logic
-    }*/
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setTitle("loading");
-
-        View rootView = inflater.inflate(R.layout.fragment_friends, container, false);
-        Button button = (Button) rootView.findViewById(R.id.button);
-        Button button2 =  (Button) rootView.findViewById(R.id.button2);
-        button.setOnClickListener(this);
-        button2.setOnClickListener(this);
-        return rootView;
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setEmptyText("No friends");
+        setHasOptionsMenu(true);
+        db =  new DatabaseHandler(getActivity());
+        for(int i = 0; i < 10; i++) {
+            db.addFriend(new Friend(i,"Friend" + i),"update" + i);
+        }
+        //request list of names
+        testRequest(this.getListView());
     }
 
-    private void testRequest(View view) {
-        new GetRecordsTask().execute();
-    }
-    /*public void testRequest1(View view) {
+
+
+    public void testRequest(View view) {
         //content of example list
-        String[] values = new String[] { "Android", "iPhone", "WindowsMobile",
-                 "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
-          "Linux", "OS/2" };
-        Arrays.sort(values);
+        String[] value = new String[] { "Android", "iPhone", "WindowsMobile",
+                "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
+                "Linux", "OS/2" };
+        List <Friend> f = db.getAllfriends();
+        Friend[] arr = f.toArray(new Friend[f.size()]);
+        String[] values = new String[arr.length];
+        for(int i = 0; i < arr.length; i++)
+            values[i] = arr[i].getUsername();
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_1, values);
-         setListAdapter(adapter);
+                R.layout.fragment_friends, values);
+        setListAdapter(adapter);
 
-    }*/
+    }
 
     public void testInfoPage( View view) {
         Intent intent = new Intent(getActivity(), FriendInfoActivity.class);
@@ -84,20 +78,7 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
         startActivity(intent);
     }
 
-    @Override//TODO Document: enables fragment to handle button
-    public void onClick(View view) {
-        Log.d(TAG, "onClick");
-        switch (view.getId()) {
-            case R.id.button:
-                Log.d(TAG,"case1");
-                testRequest(view);
-                break;
-            case R.id.button2:
-                Log.d(TAG,"case2");
-                testInfoPage(view);
-                break;
-        }
-    }
+
 
 
 
@@ -110,27 +91,18 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
 
         @Override
         protected String doInBackground(Void... params) {
-                //FriendsTableRequests request = new FriendsTableRequests(getActivity().getApplicationContext());
-            //TODO when using, must check that record field is not null
-            try {
-                UserChallengesRecord response = new GamesRequests(getActivity().getApplicationContext(),
-                        false).getGamesInfo();
-                //String result = request.sendFriendRequest(1);
-                //FriendRecord result = request.getStats(9);
-                //String result = request.removeFriend(1);
-                //String result = request.acceptFriendRequest(10);
-                //FriendsRecord temp = request.getFriendRequests();
-
-                if (response != null /*&& response.equals("SUCCESS")*/) { //TODO String contains error message on error
-                    //Log.d(TAG, result.toString());
-                    return "SUCCESS";
-                } else {
-                    return "FAILED";
-                }
-            } catch (ApiException e) {
-                Log.d(TAG, e.getMessage());
-                //TODO handle exception
-                //toast for Internet connection error
+            FriendsTableRequests request = new FriendsTableRequests(getActivity().getApplicationContext());
+            //String result = request.sendFriendRequest(1);
+            //FriendRecord result = request.getStats(9);
+            //String result = request.removeFriend(1);
+            //String result = request.acceptFriendRequest(10);
+            //FriendsRecord temp = request.getFriendRequests();
+            String result = request.updateStats(9,true);
+            if (result != null) Log.d( "Friends", result);
+            if (result != null && result.equals("SUCCESS")) { //TODO String contains error message on error
+                //Log.d("FriendsFragment", result.toString());
+                return "SUCCESS";
+            } else {
                 return "FAILED";
             }
         }
@@ -140,9 +112,9 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
                 progressDialog.cancel();
             }
             if(records.equals("Success")){ // success
-                Log.d(TAG,"Success");
+                Log.d("Friends","Success");
             }else{ // some error show dialog
-               Log.d(TAG, records);
+                Log.d("Friends", records);
             }
         }
     }
