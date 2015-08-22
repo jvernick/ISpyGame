@@ -12,6 +12,7 @@ import com.dreamfactory.client.ApiException;
 import com.picspy.GamesRequests;
 import com.picspy.adapters.DatabaseHandler;
 import com.picspy.adapters.GamesCursorAdapter;
+
 import com.picspy.firstapp.R;
 import com.picspy.models.Game;
 import com.picspy.models.GameRecord;

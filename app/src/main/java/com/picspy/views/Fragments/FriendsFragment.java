@@ -14,8 +14,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.content.Context;
+import com.picspy.adapters.FriendsCursorAdapter;
 
 import com.picspy.adapters.DatabaseHandler;
+import com.picspy.adapters.GamesCursorAdapter;
 import com.picspy.models.Friend;
 import com.picspy.views.FriendInfoActivity;
 import com.picspy.FriendsTableRequests;
@@ -25,12 +27,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+
 /**
  * Created by Justin12 on 6/6/2015.
  */
 public class FriendsFragment extends ListFragment  {
     public final static String FRIEND_USERNAME = "com.picspy.USERNAME";
     public final static String FRIEND_ID = "com.picspy.FRIEND_ID";
+    private FriendsCursorAdapter adapter;
     public DatabaseHandler db;
     private Dialog progressDialog;
 
@@ -43,33 +47,39 @@ public class FriendsFragment extends ListFragment  {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setEmptyText("No friends");
-        setHasOptionsMenu(true);
-        db =  new DatabaseHandler(getActivity());
-        for(int i = 0; i < 10; i++) {
-            db.addFriend(new Friend(i,"Friend" + i),"update" + i);
-        }
-        //request list of names
-        testRequest(this.getListView());
-    }
 
-
-
-    public void testRequest(View view) {
-        //content of example list
-        String[] value = new String[] { "Android", "iPhone", "WindowsMobile",
-                "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
-                "Linux", "OS/2" };
-        List <Friend> f = db.getAllfriends();
-        Friend[] arr = f.toArray(new Friend[f.size()]);
-        String[] values = new String[arr.length];
-        for(int i = 0; i < arr.length; i++)
-            values[i] = arr[i].getUsername();
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-                R.layout.fragment_friends, values);
+        adapter = new FriendsCursorAdapter(getActivity(), R.layout.item_friends,
+                (new DatabaseHandler(getActivity())).getAllFriends(),
+                FriendsCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
         setListAdapter(adapter);
-
+        //(new GetRecordsTask()).execute();
+//        setEmptyText("No friends");
+//        setHasOptionsMenu(true);
+//        db =  new DatabaseHandler(getActivity());
+//        for(int i = 0; i < 10; i++) {
+//            db.addFriend(new Friend(i,"Friend" + i),"update" + i);
+//        }
+//        //request list of names
+//        testRequest(this.getListView());
     }
+
+
+
+//    public void testRequest(View view) {
+//        //content of example list
+//        String[] value = new String[] { "Android", "iPhone", "WindowsMobile",
+//                "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
+//                "Linux", "OS/2" };
+//        List <Friend> f = db.getAllfriends();
+//        Friend[] arr = f.toArray(new Friend[f.size()]);
+//        String[] values = new String[arr.length];
+//        for(int i = 0; i < arr.length; i++)
+//            values[i] = arr[i].getUsername();
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+//                R.layout.fragment_friends, values);
+//        setListAdapter(adapter);
+//
+//    }
 
     public void testInfoPage( View view) {
         Intent intent = new Intent(getActivity(), FriendInfoActivity.class);
