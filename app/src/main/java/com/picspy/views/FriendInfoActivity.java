@@ -348,8 +348,8 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
             FriendsTableRequests request = new FriendsTableRequests(getApplicationContext());
             String result = request.removeFriend(friend_id);
             if (result != null && result.equals("SUCCESS")) { //TODO String contains error message on error
-                DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-                db.deleteFriend(new Friend(friend_id, null));
+                DatabaseHandler dbHandler = DatabaseHandler.getInstance((getApplicationContext()));
+                dbHandler.deleteFriend(new Friend(friend_id, null));
                 return "SUCCESS";
             } else {
                 Pattern p1 = Pattern.compile(".*[cC]onnection.*[rR]efused.*", Pattern.DOTALL);

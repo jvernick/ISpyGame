@@ -15,12 +15,15 @@ import com.picspy.utils.DbContract;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
-/**
+/**TODO Document
+ * Implements a custom adapter for binding database entries to
+ * list elements
  * Created by BrunelAmC on 8/21/2015.
  */
 public class GamesCursorAdapter extends ResourceCursorAdapter {
     private static final String TAG = "GamesCursorAdapter";
 
+    //Default inherited constructor
     public GamesCursorAdapter(Context context, int layout, Cursor cursor, int flags) {
         super(context, layout, cursor, flags);
     }
@@ -35,8 +38,14 @@ public class GamesCursorAdapter extends ResourceCursorAdapter {
                 game.setSender((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_SENDER))));
                 game.setId(c.getInt(c.getColumnIndex(GameEntry._ID)));
      */
-    // The bindView method is used to bind all data to a given view
-    // such as setting the text on a TextView.
+
+    /**
+     * Binds challenge data to elements of the view
+     * such as setting the text on a TextView.
+     * @param view The view to be populated
+     * @param context The calling application context
+     * @param c Cursor containing result of database query
+     */
     @Override
     public void bindView(View view, Context context, Cursor c) {
         // Find fields to populate in inflated template
@@ -51,6 +60,12 @@ public class GamesCursorAdapter extends ResourceCursorAdapter {
                 c.getColumnIndex(DbContract.GameEntry.COLUMN_NAME_TIME))));
         guesses.setText(String.valueOf(c.getInt(
                 c.getColumnIndex(DbContract.GameEntry.COLUMN_NAME_GUESS))));
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        Log.d(TAG, "pos" + getItem(position).toString());
+        return super.getView(position, convertView, parent);
     }
 
     /**

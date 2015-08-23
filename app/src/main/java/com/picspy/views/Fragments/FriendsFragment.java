@@ -35,7 +35,7 @@ public class FriendsFragment extends ListFragment  {
     public final static String FRIEND_USERNAME = "com.picspy.USERNAME";
     public final static String FRIEND_ID = "com.picspy.FRIEND_ID";
     private FriendsCursorAdapter adapter;
-    public DatabaseHandler db;
+    public DatabaseHandler dbHandler;
     private Dialog progressDialog;
 
     // This is the Adapter being used to display the list's data.
@@ -47,17 +47,17 @@ public class FriendsFragment extends ListFragment  {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        dbHandler = DatabaseHandler.getInstance(getActivity());
         adapter = new FriendsCursorAdapter(getActivity(), R.layout.item_friends,
-                (new DatabaseHandler(getActivity())).getAllFriends(),
+                dbHandler.getAllFriends(),
                 FriendsCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
         setListAdapter(adapter);
         //(new GetRecordsTask()).execute();
 //        setEmptyText("No friends");
 //        setHasOptionsMenu(true);
-//        db =  new DatabaseHandler(getActivity());
+//        dbHandler =  new DatabaseHandler(getActivity());
 //        for(int i = 0; i < 10; i++) {
-//            db.addFriend(new Friend(i,"Friend" + i),"update" + i);
+//            dbHandler.addFriend(new Friend(i,"Friend" + i),"update" + i);
 //        }
 //        //request list of names
 //        testRequest(this.getListView());
@@ -70,7 +70,7 @@ public class FriendsFragment extends ListFragment  {
 //        String[] value = new String[] { "Android", "iPhone", "WindowsMobile",
 //                "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
 //                "Linux", "OS/2" };
-//        List <Friend> f = db.getAllfriends();
+//        List <Friend> f = dbHandler.getAllfriends();
 //        Friend[] arr = f.toArray(new Friend[f.size()]);
 //        String[] values = new String[arr.length];
 //        for(int i = 0; i < arr.length; i++)

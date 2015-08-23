@@ -43,12 +43,21 @@ public class DatabaseHandler extends SQLiteOpenHelper{
             "DROP TABLE IF EXISTS " + GameEntry.TABLE_NAME;
 
     private Context context;
+    // Database helper instance
+    private static DatabaseHandler _instance;
+
     // If you change the database schema, you must increment the database version.
-    public DatabaseHandler(Context context) {
+    private DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
     }
 
+    public static DatabaseHandler getInstance(Context context) {
+        if (null == _instance) {
+            _instance = new DatabaseHandler(context);
+        }
+        return _instance;
+    }
     //Creating tables
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
@@ -123,8 +132,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         String selectQuery = "SELECT * FROM " + FriendEntry.TABLE_NAME;
 
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
-        return cursor;
+        return db.rawQuery(selectQuery, null);
     }
 
 //    public List<Friend> getAllfriends() {

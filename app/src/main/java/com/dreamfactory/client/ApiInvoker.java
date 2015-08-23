@@ -309,7 +309,7 @@ public class ApiInvoker {
 	//TODO Confirm modification below to add a timeout when there is no connection
 	private HttpClient getClient(String host) {
 		HttpParams httpParams = new BasicHttpParams();
-		HttpConnectionParams.setConnectionTimeout(httpParams, 10000); // 10 second timeout
+		//HttpConnectionParams.setConnectionTimeout(httpParams, 10000); // 10 second timeout
 
 		if (client == null) {
 			if (ignoreSSLCertificates && ignoreSSLConnectionManager != null) {
