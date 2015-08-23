@@ -115,4 +115,18 @@ public class Game {
         this.created = created;
     }
 
+    @Override
+    public String toString() {
+        return "Game{" +
+                "pictureName='" + pictureName + '\'' +
+                ", selection='" + selection + '\'' +
+                ", hint='" + hint + '\'' +
+                ", guess=" + guess +
+                ", time=" + time +
+                ", vote=" + vote +
+                ", sender=" + sender +
+                ", id=" + id +
+                ", created='" + created + '\'' +
+                '}';
+    }
 }

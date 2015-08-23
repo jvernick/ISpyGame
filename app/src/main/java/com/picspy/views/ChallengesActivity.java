@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +25,7 @@ import com.picspy.firstapp.R;
 import com.picspy.models.Game;
 import com.picspy.models.UserChallengeRecord;
 import com.picspy.models.UserChallengesRecord;
+import com.picspy.utils.DbContract.GameEntry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +50,28 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
                 dbHandler.getAllGames(),0);
         //cursorAdapter.notifyDataSetChanged();
         listView.setAdapter(cursorAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Cursor c = (Cursor) adapterView.getItemAtPosition(i);
+                Game game = new Game();
+                game.setPictureName(c.getString(c.getColumnIndex(GameEntry.COLUMN_NAME_PICTURE)));
+                game.setSelection((c.getString(c.getColumnIndex(GameEntry.COLUMN_NAME_SEL))));
+                game.setHint((c.getString(c.getColumnIndex(GameEntry.COLUMN_NAME_HINT))));
+                game.setGuess((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_GUESS))));
+                game.setTime((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_TIME))));
+                game.setVote((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_VOTE))) != 0);
+                game.setSender((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_SENDER))));
+                game.setId(c.getInt(c.getColumnIndex(GameEntry._ID)));
+
+                Toast.makeText(ChallengesActivity.this, game.toString(), Toast.LENGTH_LONG).show();
+
+                /*TODO Start activity to display Game
+                Intent intent = new Intent(ChallengesActivity.this, SecondActivity.class);
+                startActivity(intent);
+                */
+            }
+        });
 
         //update database
         (new GetChallengesTask()).execute();
@@ -90,9 +114,9 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
         return super.onOptionsItemSelected(item);
     }
 
-    public void startGame(View view) {
+    public void launchCamera(View view) {
         /*TODO Start activity to create new game
-        Intent intent = new Intent(MainActivity.this, SecondActivity.class);
+        Intent intent = new Intent(ChallengesActivity.this, SecondActivity.class);
         startActivity(intent);
          */
         Toast.makeText(ChallengesActivity.this, "Game started", Toast.LENGTH_SHORT).show();

@@ -8,22 +8,36 @@
         layout="@layout/tool_bar"/>
     <ListView
         android:id="@+id/challenge_list"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar">
+        android:layout_below="@id/toolbar"
+        android:layout_above="@+id/bar">
     </ListView>
+    <View
+        android:id="@+id/bar"
+        android:layout_width="fill_parent"
+        android:layout_height="40dip"
+        android:background="@color/primary"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
+    </View>
+
 
     <ImageButton
-        android:layout_margin="2.5dp"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_gravity="center"
-        android:src="@drawable/ic_action"
-        android:background="@drawable/circle"
-        android:id="@+id/imageButton"
-        android:contentDescription="Start game"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:adjustViewBounds="true"
+        android:maxWidth="60dp"
+        android:maxHeight="60dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/open_camera"
+        android:background="@color/primary"
+        android:onClick="launchCamera"
         android:layout_alignParentBottom="true"
-        android:onClick="startGame"/>
+        android:layout_alignTop="@+id/bar"
+        android:layout_alignBottom="@+id/bar"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/cameraButton"
+        />
 </RelativeLayout>
