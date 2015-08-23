@@ -31,8 +31,7 @@ import java.util.Map;
  * User registration activity
  */
 public class RegisterActivity extends Activity {
-
-    public final static String EXTRA_MESSAGE = "amc.myfirstapp.REGISTER_MESSAGE";
+    public final static String EXTRA_MESSAGE = "com.picspy.firstapp.REGISTER_MESSAGE";
     private EditText display_name_Text, email_Text, pass1_Text, pass2_Text;
     private ProgressDialog progressDialog;
 

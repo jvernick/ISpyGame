@@ -1,10 +1,13 @@
 package com.picspy.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Model for accessing game records from the local sqlite database and the server.
  * Created by BrunelAmC on 8/21/2015.
  */
-public class Game {
+public class Game implements Parcelable {
     private String pictureName;
     private String selection;
     private String hint;
@@ -14,6 +17,7 @@ public class Game {
     private int sender;
     private int id;
     private String created;
+
 
     /**
      * Constructor initializes all the challenge parameters. Hence no getter and setters.
@@ -39,9 +43,39 @@ public class Game {
         this.id = id;
     }
 
+    /**
+     * Constructor from parcel, to be used in receiveing intent
+     * @param p Parcel containing game data
+     */
+    public Game(Parcel p) {
+        this.pictureName = p.readString();
+        this.selection = p.readString();
+        this.hint = p.readString();
+        this.guess = p.readInt();
+        this.time = p.readInt();
+        this.vote = Boolean.parseBoolean(p.readString());
+        this.sender = p.readInt();
+        this.id = p.readInt();
+        this.created = p.readString();
+    }
+
     public Game() {
         super();
     }
+    /**
+     * Implemented field from parcable
+     */
+    public static final Creator<Game> CREATOR = new Creator<Game>() {
+        @Override
+        public Game createFromParcel(Parcel in) {
+            return new Game(in);
+        }
+
+        @Override
+        public Game[] newArray(int size) {
+            return new Game[size];
+        }
+    };
 
     public int getId() {
         return id;
@@ -113,6 +147,24 @@ public class Game {
 
     public void setCreated(String created) {
         this.created = created;
+    }
+
+    @Override
+    public int describeContents() {
+        return hashCode();
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(pictureName);
+        parcel.writeString(selection);
+        parcel.writeString(hint);
+        parcel.writeInt(guess);
+        parcel.writeInt(time);
+        parcel.writeString(String.valueOf(vote));
+        parcel.writeInt(id);
+        parcel.writeInt(sender);
+        parcel.writeString(created);
     }
 
     @Override

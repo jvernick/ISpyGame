@@ -1,6 +1,7 @@
 package com.picspy.views;
 
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChallengesActivity extends ActionBarActivity  implements LoaderCallbacks<Cursor>{
+    public final static String EXTRA_MESSAGE = "com.picspy.firstapp.GAME";
     private static final String TAG = "ChallengesActivity";
     private GamesCursorAdapter cursorAdapter;
     private ListView listView;
@@ -48,8 +50,9 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
         dbHandler = DatabaseHandler.getInstance(this);
         cursorAdapter = new GamesCursorAdapter(getApplicationContext(), R.layout.item_challenge,
                 dbHandler.getAllGames(),0);
-        //cursorAdapter.notifyDataSetChanged();
         listView.setAdapter(cursorAdapter);
+
+        //setting listener to list item click
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -66,10 +69,18 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
 
                 Toast.makeText(ChallengesActivity.this, game.toString(), Toast.LENGTH_LONG).show();
 
-                /*TODO Start activity to display Game
+                //TODO Start activity to display Game
+                /*
+                    get game in reciepient activiy as follows:
+                    Bundle Bundle = intent.getExtras();
+                    Game game = (game) bundle.getParcelable(ChallengesActivity.EXTRA_MESSAGE);
+                 */
+                /*
                 Intent intent = new Intent(ChallengesActivity.this, SecondActivity.class);
+                intent.putExtra(EXTRA_MESSAGE, game);
                 startActivity(intent);
                 */
+
             }
         });
 
@@ -173,20 +184,16 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
      ***/
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        Log.e(TAG, ":::: onCreateLoader");
         return new GamesCursorLoader(this, dbHandler);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        Log.e(TAG, ":::: onLoadFinished");
         ((GamesCursorAdapter)listView.getAdapter()).changeCursor(cursor);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        Log.e(TAG, ":::: onLoaderReset");
-        //cursorAdapter.swapCursor(null);
         ((GamesCursorAdapter)listView.getAdapter()).changeCursor(null);
     }
 

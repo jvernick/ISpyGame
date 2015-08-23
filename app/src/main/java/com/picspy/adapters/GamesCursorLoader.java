@@ -22,31 +22,10 @@ public class GamesCursorLoader extends AsyncTaskLoader<Cursor> {
     }
 
     @Override
-    protected void onStartLoading() {
-        Log.e(TAG, ":::: onStartLoading");
-
-        super.onStartLoading();
-    }
-
-    @Override
     public Cursor loadInBackground() {
         Log.e(TAG, ":::: loadInBackground");
 
        return dbHandler.getAllGames();
     }
 
-    @Override
-    public void deliverResult(Cursor data) {
-        Log.e(TAG, ":::: deliverResult");
-
-        super.deliverResult(data);
-    }
-
-
-    @Override
-    protected void onStopLoading() {
-        Log.e(TAG, ":::: onStopLoading");
-
-        super.onStopLoading();
-    }
 }
