@@ -29,37 +29,38 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-        <!-- TODO veriy that you can chage adjustPan to adjustResize -->
+        <!--TODO veriy that you can chage adjustPan to adjustResize-->
         <activity
             android:name="com.picspy.views.RegisterActivity"
-            android:configChanges="orientation"
             android:label="@string/title_activity_register"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" >
+
+            android:windowSoftInputMode="adjustPan"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name="com.picspy.views.MainActivity"
             android:exported="true"
             android:label="@string/title_activity_main" >
-        </activity>
-        <activity
-            android:name="com.picspy.views.Splash_Activity"
-            android:configChanges="orientation"
-            android:label="@string/title_activity_splash_"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.picspy.views.LoginActivity"
+            android:name="com.picspy.views.Splash_Activity"
+            android:label="@string/title_activity_splash_"
+            android:theme="@android:style/Theme.NoTitleBar"
             android:configChanges="orientation"
+            android:screenOrientation="portrait">
+
+        </activity>
+        <activity
+            android:name="com.picspy.views.LoginActivity"
             android:label="@string/title_activity_login"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" >
+            android:windowSoftInputMode="adjustResize"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="com.facebook.sdk.ApplicationId"
                 android:value="@string/facebook_app_id" />
@@ -71,8 +72,8 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name="com.picspy.views.CameraActivity"
-            android:configChanges="orientation"
             android:label="@string/app_name"
+            android:configChanges="orientation"
             android:screenOrientation="portrait" >
 
             <!-- configure these activity to use portrait orientation -->
@@ -83,23 +84,18 @@
         </activity>
         <activity
             android:name="com.picspy.views.FriendInfoActivity"
-            android:configChanges="orientation"
             android:label="@string/title_activity_friend_info"
-            android:parentActivityName="com.picspy.views.MainActivity"
-            android:screenOrientation="portrait" >
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:parentActivityName="com.picspy.views.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.picspy.views.MainActivity" />
+                android:value="com.picspy.views.MainActivity"/>
         </activity>
         <activity
-            android:name="com.picspy.views.ChallengesActivity"
-            android:label="@string/title_activity_challenges"
-            android:configChanges="orientation"
-            android:parentActivityName="com.picspy.views.MainActivity"
-            android:screenOrientation="portrait">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.picspy.views.MainActivity" />
+            android:name="com.picspy.views.SettingsActivity"
+            android:label="title_activity_settings" >
+
         </activity>
     </application>
 
