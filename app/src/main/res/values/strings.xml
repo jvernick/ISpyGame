@@ -36,8 +36,8 @@
     <string name="games_received_description">Challenges I sent</string>
 
     <!-- item_challenge.xml-->
-    <string name="gueses_text">guesses</string>
-    <string name="challenge_time_text">seconds</string>
+    <string name="gueses_text">Guess</string>
+    <string name="challenge_time_text">Time</string>
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="home_fragment">Home</string>

@@ -1,16 +1,9 @@
 package com.picspy.views.Fragments;
 
-import android.content.AsyncTaskLoader;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -23,16 +16,8 @@ import com.picspy.models.GameRecord;
 import com.picspy.models.GamesRecord;
 
 import java.util.ArrayList;
-import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link TopFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link TopFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+//Leaderboard fragment
 public class TopFragment extends android.support.v4.app.ListFragment {
     private CustomArrayAdapter arrayAdapter;
     private static final String TAG = "TopFragment";

@@ -49,70 +49,72 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/challenge_info_description"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_centerVertical="true"
-        android:weightSum="2"
-        android:paddingRight="10dp"
-        android:paddingEnd="10dp"
-        android:paddingLeft="0dp"
-        android:paddingStart="0dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true">
-
-        <TextView
-            android:id="@+id/guesses_text"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:paddingTop="5dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textColor="@color/secondary_text"
-            android:text="@string/gueses_text"
-            />
-        <TextView
-            android:id="@+id/challengeTime_text"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
-            android:paddingTop="10dp"
-            android:layout_height="0dp"
-            android:gravity="center"
-            android:textColor="@color/secondary_text"
-            android:text="@string/challenge_time_text" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/challengeInfo"
+        android:id="@+id/game_info"
+        android:divider="?android:listDivider"
+        style="?android:buttonBarStyle"
+        android:dividerPadding="10dp"
+        android:showDividers="middle"
         android:layout_width="100dp"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_centerVertical="true"
-        android:weightSum="2"
-        android:layout_margin="5dp"
-        android:layout_toLeftOf="@id/challenge_info_description"
-        android:layout_toStartOf="@id/challenge_info_description">
+        android:orientation="horizontal"
+        android:layout_centerInParent="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:baselineAligned="false"
+        android:weightSum="2">
 
-        <TextView
-            android:id="@+id/guesses"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center|end"
-            android:textColor="@color/primary_text"
-            android:text="3" />
-        <TextView
-            android:id="@+id/challengeTime"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:layout_weight="1"
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:gravity="center|end"
-            android:textColor="@color/primary_text"
-            android:text="15" />
+        <RelativeLayout
+            android:id="@+id/guess_info"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/guesses_text"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/accent"
+                android:text="@string/gueses_text"/>
+            <TextView
+                android:id="@+id/guesses"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:layout_below="@id/guesses_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/accent"
+                android:text="3" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/time_info"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+           android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/challengeTime_text"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:textColor="@color/accent"
+                android:text="@string/challenge_time_text" />
+
+            <TextView
+                android:id="@+id/challengeTime"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_below="@id/challengeTime_text"
+                android:textColor="@color/accent"
+                android:text="15" />
+        </RelativeLayout>
     </LinearLayout>
 </RelativeLayout>
