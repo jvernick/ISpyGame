@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.util.Log;
 
 /**TODO document
+ * TODO delete, not used
  * Created by BrunelAmC on 8/22/2015.
  */
 public class CursorObserver extends ContentObserver {

@@ -26,6 +26,7 @@ import com.picspy.firstapp.R;
 import com.picspy.models.Game;
 import com.picspy.models.UserChallengeRecord;
 import com.picspy.models.UserChallengesRecord;
+import com.picspy.utils.DbContract;
 import com.picspy.utils.DbContract.GameEntry;
 
 import java.util.ArrayList;
@@ -34,7 +35,6 @@ import java.util.List;
 public class ChallengesActivity extends ActionBarActivity  implements LoaderCallbacks<Cursor>{
     public final static String EXTRA_MESSAGE = "com.picspy.firstapp.GAME";
     private static final String TAG = "ChallengesActivity";
-    private GamesCursorAdapter cursorAdapter;
     private ListView listView;
     private DatabaseHandler dbHandler;
     private int LOADER_ID = 1;
@@ -48,8 +48,8 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
         //content observer flag makes the view auto refresh
 
         dbHandler = DatabaseHandler.getInstance(this);
-        cursorAdapter = new GamesCursorAdapter(getApplicationContext(), R.layout.item_challenge,
-                dbHandler.getAllGames(),0);
+        GamesCursorAdapter cursorAdapter = new GamesCursorAdapter(getApplicationContext(), R.layout.item_challenge,
+                dbHandler.getAllGames(), 0);
         listView.setAdapter(cursorAdapter);
 
         //setting listener to list item click
@@ -64,14 +64,16 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
                 game.setGuess((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_GUESS))));
                 game.setTime((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_TIME))));
                 game.setVote((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_VOTE))) != 0);
-                game.setSender((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_SENDER))));
+                game.setSenderId((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_SENDER))));
                 game.setId(c.getInt(c.getColumnIndex(GameEntry._ID)));
+                game.setSenderUsername(c.getString(c.getColumnIndex(
+                        DbContract.FriendEntry.COLUMN_NAME_USERNAME)));
 
                 Toast.makeText(ChallengesActivity.this, game.toString(), Toast.LENGTH_LONG).show();
 
                 //TODO Start activity to display Game
                 /*
-                    get game in reciepient activiy as follows:
+                    get game in reciepient activity as follows:
                     Bundle Bundle = intent.getExtras();
                     Game game = (game) bundle.getParcelable(ChallengesActivity.EXTRA_MESSAGE);
                  */
@@ -80,7 +82,6 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
                 intent.putExtra(EXTRA_MESSAGE, game);
                 startActivity(intent);
                 */
-
             }
         });
 
@@ -107,6 +108,9 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
         return true;
     }
 
+    /*
+     * Populate the actionbar menu. Currently implements a list refresh button
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -125,12 +129,13 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Start a new game
+     * @param view View from button click
+     */
     public void launchCamera(View view) {
-        /*TODO Start activity to create new game
-        Intent intent = new Intent(ChallengesActivity.this, SecondActivity.class);
+        Intent intent = new Intent(this, ChallengesActivity.class);
         startActivity(intent);
-         */
-        Toast.makeText(ChallengesActivity.this, "Game started", Toast.LENGTH_SHORT).show();
     }
 
     private class GetChallengesTask extends AsyncTask<Void, Void, UserChallengesRecord> {

@@ -27,7 +27,7 @@ public class GamesCursorAdapter extends ResourceCursorAdapter {
     public GamesCursorAdapter(Context context, int layout, Cursor cursor, int flags) {
         super(context, layout, cursor, flags);
     }
-    /*
+    /* TODO remove
     Game game = new Game();
                 game.setPictureName(c.getString(c.getColumnIndex(GameEntry.COLUMN_NAME_PICTURE)));
                 game.setSelection((c.getString(c.getColumnIndex(GameEntry.COLUMN_NAME_SEL))));
@@ -35,7 +35,7 @@ public class GamesCursorAdapter extends ResourceCursorAdapter {
                 game.setGuess((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_GUESS))));
                 game.setTime((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_TIME))));
                 game.setVote((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_VOTE))) != 0);
-                game.setSender((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_SENDER))));
+                game.setSenderId((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_SENDER))));
                 game.setId(c.getInt(c.getColumnIndex(GameEntry._ID)));
      */
 
@@ -49,7 +49,7 @@ public class GamesCursorAdapter extends ResourceCursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor c) {
         // Find fields to populate in inflated template
-        TextView username = (TextView) view.findViewById(R.id.username);
+        TextView uname = (TextView) view.findViewById(R.id.username);
         TextView timeLength = (TextView) view.findViewById(R.id.timeLength);
         TextView challenge_time = (TextView) view.findViewById(R.id.challengeTime);
         TextView guesses = (TextView) view.findViewById(R.id.guesses);
@@ -60,12 +60,7 @@ public class GamesCursorAdapter extends ResourceCursorAdapter {
                 c.getColumnIndex(DbContract.GameEntry.COLUMN_NAME_TIME))));
         guesses.setText(String.valueOf(c.getInt(
                 c.getColumnIndex(DbContract.GameEntry.COLUMN_NAME_GUESS))));
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        Log.d(TAG, "pos" + getItem(position).toString());
-        return super.getView(position, convertView, parent);
+        uname.setText(c.getString(c.getColumnIndex(DbContract.FriendEntry.COLUMN_NAME_USERNAME)));
     }
 
     /**
@@ -73,7 +68,7 @@ public class GamesCursorAdapter extends ResourceCursorAdapter {
      * @param created creation timestamp from server
      * @return String that represents time duration
      */
-    private String processTime(String created) {
+    public static String processTime(String created) {
         Long createdTime = java.sql.Timestamp.valueOf(created).getTime();
         Calendar rightnow = Calendar.getInstance();
         Long currentTime =rightnow.getTimeInMillis();

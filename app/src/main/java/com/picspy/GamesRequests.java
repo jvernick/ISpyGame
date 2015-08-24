@@ -8,6 +8,7 @@ import com.dreamfactory.api.FilesApi;
 import com.dreamfactory.client.ApiException;
 import com.dreamfactory.model.FileRequest;
 import com.dreamfactory.model.FileResponse;
+import com.picspy.models.GamesRecord;
 import com.picspy.models.UserChallengesRecord;
 import com.picspy.utils.AppConstants;
 import com.picspy.utils.PrefUtil;
@@ -26,6 +27,7 @@ import java.util.Map;
  * class must be called from an AsyncTask, since they do network access
  */
 public class GamesRequests {
+    private static final Integer LEADERBOARD_LIMIT = 6;
     private String session_id;
     private DbApi dbApi;
     private FilesApi fileApi;
@@ -88,6 +90,7 @@ public class GamesRequests {
     /**
      * Gets all the available games. Make sure to add games to the database after getting them.
      * @return A list fof all pending games
+     * @throws ApiException on error
      * TODO consider rethrowing exception so that caller handles it
      */
     public UserChallengesRecord getGamesInfo() throws ApiException{
@@ -100,16 +103,38 @@ public class GamesRequests {
             filter = filter +  " AND `id` > " + String.valueOf(max_user_challenge_id);
         }
         String related = "challenges_by_challenge_id";
-        UserChallengesRecord temp = dbApi.getRecordsByFilter(UserChallengesRecord.class,
+        UserChallengesRecord result = dbApi.getRecordsByFilter(UserChallengesRecord.class,
                 AppConstants.USER_CHALLENGES_TABLE_NAME, filter, null, null, null, null,
                 false, false, related);
-        if (temp != null) Log.d(TAG, temp.toString());
-        return temp;
+        if (result != null) Log.d(TAG, result.toString());
+        return result;
     }
 
     /**
+     * Gets leaderboard games from server.
+     * TODO modify method to get WEEKLY/DAILY leaderboard instead of overall Leaderboard
+     * @return A record containing leaderboard games
+     * @throws ApiException on error
+     */
+    public GamesRecord getLeaderboardGames() throws ApiException {
+        //only challenges users want public
+        //TODO added for testing
+        String filter = " `leaderboard` = false";
+        //String filter = " `leaderboard` = true";
+
+        //related record to get username
+        String related = "users_by_sender";
+        //order by votes in descending, descending
+        String order = "votes desc";
+        GamesRecord result = dbApi.getRecordsByFilter(GamesRecord.class,
+                AppConstants.CHALLENGES_TABLE_NAME, filter, LEADERBOARD_LIMIT, null, order, null,
+                false, false, related);
+        return result;
+    }
+    
+    /**
      * This class is used to appropriately model and store information
-     * about a challenge (metadata). It provides a method that returns
+     * about a challenge (metadata) when creating a game. It provides a method that returns
      * the appropriate data type
      */
     public class ChallengeParams {

@@ -3,7 +3,6 @@ package com.picspy.adapters;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -14,7 +13,6 @@ import com.picspy.utils.DbContract.FriendEntry;
 import com.picspy.utils.DbContract.GameEntry;
 import com.picspy.utils.PrefUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,7 +22,7 @@ import java.util.List;
  * TODO make sender_id related to id from friends table?
  */
 public class DatabaseHandler extends SQLiteOpenHelper{
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "dbManager.db";
     private static final String SQL_CREATE_FRIENDS_TABLE = "CREATE TABLE " + FriendEntry.TABLE_NAME
             + "("
@@ -32,11 +30,18 @@ public class DatabaseHandler extends SQLiteOpenHelper{
             + " TEXT" + ")";
     private static final String SQL_CREATE_GAMES_TABLE = "CREATE TABLE " + GameEntry.TABLE_NAME
             + "("
-            + GameEntry._ID + " INTEGER PRIMARY KEY, " + GameEntry.COLUMN_NAME_PICTURE + " TEXT, "
-            + GameEntry.COLUMN_NAME_SEL + " TEXT, " + GameEntry.COLUMN_NAME_HINT + " TEXT, "
-            + GameEntry.COLUMN_NAME_GUESS + " INTEGER, " + GameEntry.COLUMN_NAME_TIME + " INTEGER, "
-            + GameEntry.COLUMN_NAME_VOTE + " BOOLEAN, " + GameEntry.COLUMN_NAME_SENDER + " TEXT,"
-            + GameEntry.COLUMN_NAME_CREATED + " TEXT" + ")";
+            + GameEntry._ID + " INTEGER PRIMARY KEY, "
+            + GameEntry.COLUMN_NAME_PICTURE + " TEXT, "
+            + GameEntry.COLUMN_NAME_SEL + " TEXT, "
+            + GameEntry.COLUMN_NAME_HINT + " TEXT, "
+            + GameEntry.COLUMN_NAME_GUESS + " INTEGER, "
+            + GameEntry.COLUMN_NAME_TIME + " INTEGER, "
+            + GameEntry.COLUMN_NAME_VOTE + " BOOLEAN, "
+            + GameEntry.COLUMN_NAME_SENDER + " INTEGER, "
+            + GameEntry.COLUMN_NAME_CREATED + " TEXT, "
+            + "FOREIGN KEY(" + GameEntry.COLUMN_NAME_SENDER + ") REFERENCES "
+            + FriendEntry.TABLE_NAME + "(" + FriendEntry._ID +")"
+            + ")";
     private static final String SQL_DELETE_FRIENDS_TABLE =
             "DROP TABLE IF EXISTS " + FriendEntry.TABLE_NAME;
     private static final String SQL_DELETE_GAMES_TABLE =
@@ -47,11 +52,17 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     private static DatabaseHandler _instance;
 
     // If you change the database schema, you must increment the database version.
+    //Default constructor
     private DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
     }
 
+    /**
+     * Public method to get DatabaseHandler Object
+     * @param context Caller context
+     * @return DatabaseHandler Object
+     */
     public static DatabaseHandler getInstance(Context context) {
         if (null == _instance) {
             _instance = new DatabaseHandler(context);
@@ -77,7 +88,15 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         onCreate(sqLiteDatabase);
     }
 
-
+    // Enable foreign key constraints to relate sender id to friend username
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        if (!db.isReadOnly()) {
+            // Enable foreign key constraints
+            db.execSQL("PRAGMA foreign_keys=ON;");
+        }
+    }
     /**
      * Adds a new friend to the database
      * @param friend Friend to be added
@@ -240,49 +259,21 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         values.put(GameEntry.COLUMN_NAME_GUESS, game.getGuess());
         values.put(GameEntry.COLUMN_NAME_TIME, game.getTime());
         values.put(GameEntry.COLUMN_NAME_VOTE, game.isVote());
-        values.put(GameEntry.COLUMN_NAME_SENDER, game.getSender());
+        values.put(GameEntry.COLUMN_NAME_SENDER, game.getSenderId());
         values.put(GameEntry.COLUMN_NAME_CREATED, game.getCreated());
 
         db.insert(GameEntry.TABLE_NAME, null, values);
     }
 
     /**
-     * Gets a list of all games in the database
-     * @return A list of all game records
+     * Gets a cursor from which all games in the database can be obtained
+     * @return A Cursor for retrieving game records
      */
-    /*public List<Game> getAllGames() {
-        List<Game> gameList = new ArrayList<>();
-        // Select All Query
-        String selectQuery = "SELECT * FROM " + GameEntry.TABLE_NAME;
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor c = db.rawQuery(selectQuery, null);
-
-        // Looping through all rows and adding to list
-        if (c.moveToFirst()) {
-            do {
-                Game game = new Game();
-                game.setPictureName(c.getString(c.getColumnIndex(GameEntry.COLUMN_NAME_PICTURE)));
-                game.setSelection((c.getString(c.getColumnIndex(GameEntry.COLUMN_NAME_SEL))));
-                game.setHint((c.getString(c.getColumnIndex(GameEntry.COLUMN_NAME_HINT))));
-                game.setGuess((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_GUESS))));
-                game.setTime((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_TIME))));
-                game.setVote((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_VOTE))) != 0);
-                game.setSender((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_SENDER))));
-                game.setId(c.getInt(c.getColumnIndex(GameEntry._ID)));
-
-                // adding to list
-                gameList.add(game);
-            } while (c.moveToNext());
-        }
-
-        return gameList;
-    }*/
-    //TODO test
     public Cursor getAllGames() {
-        // Select All Query
-        String selectQuery = "SELECT * FROM " + GameEntry.TABLE_NAME;
-
+        // Select All Query. Alos gets username from Friends table
+        String selectQuery = "SELECT * FROM " + GameEntry.TABLE_NAME + " game, "
+                + FriendEntry.TABLE_NAME + " friend WHERE game." + GameEntry.COLUMN_NAME_SENDER
+                + " = friend." + FriendEntry._ID;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 

@@ -27,28 +27,12 @@ public class UserChallengeRecord extends DbApiResponse{
     }
 
     /**
-     * Creates a game object from the obtained related data for storage in local db
-     * @return Constructed game object. Returns null is there is no related data
+     * returns a game object constructed from the Game record
+     * @return Constructed game object. Returns null is there is
+     * no related data(challenges_by_challenge_id)
      */
     public Game getGame() {
-        if (challenges_by_challenge_id == null) {
-            return null;
-        } else {
-            Game game = new Game();
-            GameRecord gr = challenges_by_challenge_id;
-
-            game.setId(gr.getId());
-            game.setPictureName(gr.getPictureName());
-            game.setSelection(gr.getSelection());
-            game.setHint(gr.getHint());
-            game.setGuess(gr.getGuess());
-            game.setTime(gr.getTime());
-            game.setVote(gr.isL_board());
-            game.setSender(gr.getSender());
-            game.setCreated(gr.getCreated());
-
-            return game;
-        }
+        return GameRecord.getGame(challenges_by_challenge_id);
     }
     public int getId() {
         return id;

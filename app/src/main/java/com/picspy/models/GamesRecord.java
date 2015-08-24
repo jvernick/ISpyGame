@@ -10,7 +10,7 @@ import java.util.List;
  * Class to model <b>multiple</b> game records from get request
  * Created by BrunelAmC on 8/21/2015.
  */
-public class GamesRecord {
+public class GamesRecord extends DbApiResponse {
     // List of Game Records from GET call that returns multiple game records
     @JsonProperty("record")
     private List<GameRecord> record = new ArrayList<>();

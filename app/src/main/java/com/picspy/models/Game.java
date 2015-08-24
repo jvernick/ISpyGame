@@ -14,9 +14,11 @@ public class Game implements Parcelable {
     private int guess;
     private int time;
     private boolean vote;
-    private int sender;
+    private int senderId;
     private int id;
     private String created;
+    //most often null
+    private String senderUsername  = null;
 
 
     /**
@@ -29,17 +31,17 @@ public class Game implements Parcelable {
      * @param guess The number of guesses allowed (1 - 5)
      * @param time The time limit (5 - 30 secs)
      * @param vote whether or not the user can vote this challenge
-     * @param sender the sender of the challenge
+     * @param senderId the senderId of the challenge
      */
     public Game(int id, String pictureName, String selection, String hint, int guess, int time,
-                boolean vote, int sender) {
+                boolean vote, int senderId) {
         this.pictureName = pictureName;
         this.selection = selection;
         this.hint = hint;
         this.guess = guess;
         this.time = time;
         this.vote = vote;
-        this.sender = sender;
+        this.senderId = senderId;
         this.id = id;
     }
 
@@ -54,16 +56,18 @@ public class Game implements Parcelable {
         this.guess = p.readInt();
         this.time = p.readInt();
         this.vote = Boolean.parseBoolean(p.readString());
-        this.sender = p.readInt();
+        this.senderId = p.readInt();
         this.id = p.readInt();
         this.created = p.readString();
+        this.senderUsername = p.readString();
     }
-
+    //Default constructor
     public Game() {
         super();
     }
+
     /**
-     * Implemented field from parcable
+     * Implemented field from parcelable
      */
     public static final Creator<Game> CREATOR = new Creator<Game>() {
         @Override
@@ -133,12 +137,12 @@ public class Game implements Parcelable {
         this.vote = vote;
     }
 
-    public int getSender() {
-        return sender;
+    public int getSenderId() {
+        return senderId;
     }
 
-    public void setSender(int sender) {
-        this.sender = sender;
+    public void setSenderId(int senderId) {
+        this.senderId = senderId;
     }
 
     public String getCreated() {
@@ -149,6 +153,9 @@ public class Game implements Parcelable {
         this.created = created;
     }
 
+    /*
+     * Implemented methods from parcelable
+     */
     @Override
     public int describeContents() {
         return hashCode();
@@ -163,8 +170,9 @@ public class Game implements Parcelable {
         parcel.writeInt(time);
         parcel.writeString(String.valueOf(vote));
         parcel.writeInt(id);
-        parcel.writeInt(sender);
+        parcel.writeInt(senderId);
         parcel.writeString(created);
+        parcel.writeString(senderUsername);
     }
 
     @Override
@@ -176,9 +184,18 @@ public class Game implements Parcelable {
                 ", guess=" + guess +
                 ", time=" + time +
                 ", vote=" + vote +
-                ", sender=" + sender +
+                ", senderId=" + senderId +
                 ", id=" + id +
                 ", created='" + created + '\'' +
+                ", senderUsername='" + senderUsername + '\'' +
                 '}';
+    }
+
+    public String getSenderUsername() {
+        return senderUsername;
+    }
+
+    public void setSenderUsername(String senderUsername) {
+        this.senderUsername = senderUsername;
     }
 }

@@ -32,6 +32,29 @@ public class GameRecord {
     private int id;
     @JsonProperty
     private String created;
+    @JsonProperty
+    private UsersRecord users_by_sender;
+
+    public static Game getGame(GameRecord gameRecord) {
+        if (gameRecord == null) {
+            return null;
+        } else {
+            Game game = new Game();
+
+            game.setId(gameRecord.getId());
+            game.setPictureName(gameRecord.getPictureName());
+            game.setSelection(gameRecord.getSelection());
+            game.setHint(gameRecord.getHint());
+            game.setGuess(gameRecord.getGuess());
+            game.setTime(gameRecord.getTime());
+            game.setVote(gameRecord.isL_board());
+            game.setSenderId(gameRecord.getSender());
+            game.setCreated(gameRecord.getCreated());
+            game.setSenderUsername(gameRecord.getUsers_by_sender().getUsername());
+
+            return game;
+        }
+    }
 
     public String getPictureName() {
         return pictureName;
@@ -104,6 +127,14 @@ public class GameRecord {
     public void setCreated(String created) {
         this.created = created;
     }
+
+    public UsersRecord getUsers_by_sender() {
+        return users_by_sender;
+    }
+
+    public void setUsers_by_sender(UsersRecord users_by_sender) {
+        this.users_by_sender = users_by_sender;
+    }
     
     @Override
     public String toString() {
@@ -117,6 +148,9 @@ public class GameRecord {
                 "\n" + " sender: " + sender +
                 "\n" + " id: " + id +
                 "\n" + " created: " + created +
+                "\n" + " users_by_sender: " + users_by_sender +
                 "\n}";
     }
+
+
 }
