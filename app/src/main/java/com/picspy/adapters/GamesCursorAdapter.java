@@ -88,7 +88,9 @@ public class GamesCursorAdapter extends ResourceCursorAdapter {
         } else if (diffInMinutes > 0) {
             return diffInMinutes + " minute" + ((diffInMinutes == 1)? "":"s") + " ago";
         } else {
-            return diffInSeconds + " seconds ago";
+            //TODO secsonds/moments ago
+            return "moments ago";
+            //return diffInSeconds + " seconds ago";
         }
     }
 

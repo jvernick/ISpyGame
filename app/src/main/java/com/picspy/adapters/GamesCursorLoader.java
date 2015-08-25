@@ -25,8 +25,6 @@ public class GamesCursorLoader extends AsyncTaskLoader<Cursor> {
 
     @Override
     public Cursor loadInBackground() {
-        Log.e(TAG, ":::: loadInBackground");
-
        return dbHandler.getAllGames();
     }
 

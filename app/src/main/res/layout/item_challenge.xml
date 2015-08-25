@@ -50,8 +50,7 @@
 
     <LinearLayout
         android:id="@+id/game_info"
-        android:divider="?android:listDivider"
-        style="?android:buttonBarStyle"
+        android:divider="@android:drawable/divider_horizontal_bright"
         android:dividerPadding="10dp"
         android:showDividers="middle"
         android:layout_width="100dp"

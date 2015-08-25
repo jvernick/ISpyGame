@@ -92,6 +92,7 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
         toolbarTitle.setText("Challenges");
 
         // Setting toolbar as the ActionBar
+        //TODO back button stopped working. temp solution in onOptionsItemSelected
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -117,13 +118,15 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             //update database
             (new GetChallengesTask()).execute();
 
             return true;
+        } else if( id == android.R.id.home) {
+            //handling back button click
+            onBackPressed();
         }
 
         return super.onOptionsItemSelected(item);
@@ -134,7 +137,7 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
      * @param view View from button click
      */
     public void launchCamera(View view) {
-        Intent intent = new Intent(this, ChallengesActivity.class);
+        Intent intent = new Intent(this, CameraActivity.class);
         startActivity(intent);
     }
 

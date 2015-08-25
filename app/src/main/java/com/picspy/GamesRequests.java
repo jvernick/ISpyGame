@@ -27,7 +27,7 @@ import java.util.Map;
  * class must be called from an AsyncTask, since they do network access
  */
 public class GamesRequests {
-    private static final Integer LEADERBOARD_LIMIT = 6;
+    private static final Integer LEADERBOARD_LIMIT = 10;
     private String session_id;
     private DbApi dbApi;
     private FilesApi fileApi;

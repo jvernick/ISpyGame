@@ -41,7 +41,6 @@ public class TopFragment extends android.support.v4.app.ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         // Insert desired behavior here.
-        Log.d("DataListFragment", "Item clicked: " + id);
         Toast.makeText(getActivity(), arrayAdapter.getItem(position).toString(),
                 Toast.LENGTH_LONG).show();
 

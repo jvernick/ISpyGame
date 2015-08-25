@@ -92,10 +92,19 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.picspy.views.MainActivity"/>
         </activity>
+
+        <activity
+            android:name="com.picspy.views.ChallengesActivity"
+            android:label="@string/title_activity_challenges"
+            android:configChanges="orientation"
+            android:parentActivityName="com.picspy.views.MainActivity"
+            android:screenOrientation="portrait"/>
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.picspy.views.MainActivity" />
         <activity
             android:name="com.picspy.views.SettingsActivity"
             android:label="title_activity_settings" >
-
         </activity>
     </application>
 
