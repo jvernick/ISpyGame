@@ -1,22 +1,36 @@
 package com.picspy.views;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.transition.Fade;
+import android.transition.TransitionManager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TableLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dreamfactory.api.FilesApi;
@@ -44,7 +58,8 @@ import java.util.Map;
 
 /**
  * The class which represents the custom camera. It has functionality such as auto-focusing,
- * switching between cameras, and changing flash modes.
+ * switching between cameras, and changing flash modes. Once a picture is taken, the layout of this
+ * activity changes to enable drawing.
  */
 // TODO: Fix the focusing to focus in on the area touched
 public class CameraActivity extends Activity implements Camera.AutoFocusCallback {
@@ -52,6 +67,7 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
     private static final String TAG = "CameraActivity";
+    private static final String DRAWING_VIEW_TAG = "DRAWING_VIEW";
     private Camera mCamera;
     private CameraPreview mPreview;
     private String flashMode = Camera.Parameters.FLASH_MODE_OFF;
@@ -62,31 +78,60 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
     private FrameLayout myFrameLayout;
     private int focusAreaSize;
     private Matrix matrix;
+    ImageButton captureButton;
+    ImageButton flashButton;
+    ImageButton switchButton;
+    ImageButton undoButton;
+    DrawingView mDrawingView;
+    RelativeLayout drawingPad;
+    boolean isPictureTaken;
     private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
 
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
+            isPictureTaken = true;
+            // Now that a picture is taken, change the layout of the screen to enable drawing
 
-            Intent intent = new Intent(CameraActivity.this, CreateChallengeActivity.class);
-            // store the URI of the image for the picture taken
-            Uri imageUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
-            try {
-                // Write the data to a file on the device
-                FileOutputStream fos = new FileOutputStream(new File(imageUri.getPath()));
-                fos.write(data);
-                fos.close();
-            } catch (FileNotFoundException e) {
-                Log.d(TAG, "File not found: " + e.getMessage());
-            } catch (IOException e) {
-                Log.d(TAG, "Error accessing file: " + e.getMessage());
-            }
-            Log.d("DIMENS", "width = " + myFrameLayout.getWidth() + " height = " + myFrameLayout.getHeight());
-            intent.putExtra("CameraID", mPreview.getCameraID());
-            intent.putExtra("deviceOrientation", deviceOrientation);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-            startActivity(intent);
+            // get the parent layout for CameraActivity
+            ViewGroup layout = (ViewGroup) findViewById(R.id.camera_activity_layout);
+
+            // remove the buttons used for taking picture
+            captureButton.setVisibility(View.GONE);
+            flashButton.setVisibility(View.GONE);
+            switchButton.setVisibility(View.GONE);
+
+            // Inflate the layout defined in drawing_pad.xml
+            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            drawingPad = (RelativeLayout) inflater.inflate(R.layout.drawing_pad, null, false);
+            // Instantiate the custom DrawingView which will allow for drawing on the screen
+            mDrawingView = new DrawingView(getApplicationContext());
+            // Distinguish the DrawingView from its relatives by setting a tag on it
+            mDrawingView.setTag(DRAWING_VIEW_TAG);
+            // add the DrawingView as the first child so all other views are overlayed on top
+            drawingPad.addView(mDrawingView, 0);
+
+            // Assign the undoButton an onClickListener
+            undoButton = (ImageButton) drawingPad.findViewById(R.id.undo_button);
+            undoButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mDrawingView.undoDrawing();
+                }
+            });
+
+            // add this new drawingPad layout as a child of the root layout for CameraActivity
+            layout.addView(drawingPad);
         }
     };
+
+    // TODO: implement this
+    public void changeBrushThickness(View view) {
+        LinearLayout brushThicknessButton = (LinearLayout) findViewById(R.id.brush_thickness_button);
+        ColorFilter filter = new LightingColorFilter( Color.RED, Color.RED );
+        for (int i = 0; i < brushThicknessButton.getChildCount(); i++) {
+            ((ImageView) brushThicknessButton.getChildAt(i)).setColorFilter(filter);
+        }
+    }
 
     /**
      * Called when the camera finishes auto-focusing.
@@ -143,12 +188,19 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
                 deviceOrientation = arg0;
             }};
 
-        // Add a listener to the Capture button
-        ImageButton captureButton = (ImageButton) findViewById(R.id.button_capture);
-        captureButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+        // Add a listener to the Capture button to depress the button and to take a picture when
+        // it is released
+        captureButton = (ImageButton) findViewById(R.id.button_capture);
+        captureButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        captureButton.setSelected(true);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        captureButton.setSelected(false);
                         // TODO: Is the below comment correct (are the dimensions guaranteed to be the same)?
                         // The dimensions (in pixels) of this screen and the next screen should be
                         // the same, so find a good picture size to use.
@@ -161,12 +213,14 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
                         setPictureSize(cameraSize.width, cameraSize.height);
                         // get an image from the camera
                         mCamera.takePicture(null, null, mPicture);
-                    }
+                        break;
                 }
-        );
+                return true;
+            }
+        });
 
         // Add a listener to the change flash button
-        final ImageButton flashButton = (ImageButton) findViewById(R.id.button_change_flash);
+        flashButton = (ImageButton) findViewById(R.id.button_change_flash);
         flashButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -179,7 +233,7 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
         );
 
         // Add a listener to the switch camera button
-        ImageButton switchButton = (ImageButton) findViewById(R.id.button_camera_switch);
+        switchButton = (ImageButton) findViewById(R.id.button_camera_switch);
         switchButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -208,58 +262,69 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
     @Override
     protected void onPause() {
         super.onPause();
-        releaseCamera();              // release the camera immediately on pause event
+        if (!isPictureTaken) {
+            releaseCamera();    // release the camera immediately on pause event
+        }
     }
 
     // Helper method to release the camera resources when no longer using it
     private void releaseCamera(){
         if (mCamera != null){
             flashMode = mCamera.getParameters().getFlashMode(); // save the flash mode
-            mCamera.release();        // release the camera for other applications
+            mCamera.release();  // release the camera for other applications
             mCamera = null;
         }
     }
 
     @Override
+    public void onBackPressed() {
+        releaseCamera();
+        // reset the static variable camera id to the back facing camera
+        mPreview.setCameraID(Camera.CameraInfo.CAMERA_FACING_BACK);
+        super.onBackPressed();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
-        myFrameLayout = (FrameLayout) findViewById(R.id.camera_preview);
-        myFrameLayout.removeAllViews();
-        Camera.Parameters params;
-        // Create an instance of Camera
-        if (mCamera == null) {
-            // This is not the first time the CameraActivity has been opened so use the previous mPreview
-            if (mPreview != null) {
-                // resume the previously opened camera upon waking
-                mCamera = getCameraInstance(mPreview.getCameraID());
-                params = mCamera.getParameters();
-                // retain the previous state of the flash if the camera had it
-                if (flashMode != null) {
-                    params.setFlashMode(flashMode);
-                    System.out.print(getSmallestPictureSize(params));
+        if (!isPictureTaken) {
+            myFrameLayout = (FrameLayout) findViewById(R.id.camera_preview);
+            myFrameLayout.removeAllViews();
+            Camera.Parameters params;
+            // Create an instance of Camera
+            if (mCamera == null) {
+                // This is not the first time the CameraActivity has been opened so use the previous mPreview
+                if (mPreview != null) {
+                    // resume the previously opened camera upon waking
+                    mCamera = getCameraInstance(mPreview.getCameraID());
+                    params = mCamera.getParameters();
+                    // retain the previous state of the flash if the camera had it
+                    if (flashMode != null) {
+                        params.setFlashMode(flashMode);
+                        System.out.print(getSmallestPictureSize(params));
+                    }
+                } else {
+                    // upon first starting this activity, the back camera is opened
+                    mCamera = getCameraInstance();
+                    params = mCamera.getParameters();
                 }
-            }
-            else {
-                // upon first starting this activity, the back camera is opened
-                mCamera = getCameraInstance();
+            } else {
+                // Get the parameters of the previous camera
                 params = mCamera.getParameters();
             }
-        } else {
-            // Get the parameters of the previous camera
-            params = mCamera.getParameters();
-        }
 
-        // Note: getSupportedFocusModes always returns a list with at least one element
-        List<String> focusModes = params.getSupportedFocusModes();
-        // Set the focus mode if it has the continuous focus option
-        if (focusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
-            params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+            // Note: getSupportedFocusModes always returns a list with at least one element
+            List<String> focusModes = params.getSupportedFocusModes();
+            // Set the focus mode if it has the continuous focus option
+            if (focusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+                params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+            }
+            mCamera.setParameters(params);
+            // Create our Preview view and set it as the content of our activity.
+            mPreview = new CameraPreview(this, mCamera, this);
+            // Add the preview to the framelayout so it will be visible
+            myFrameLayout.addView(mPreview);
         }
-        mCamera.setParameters(params);
-        // Create our Preview view and set it as the content of our activity.
-        mPreview = new CameraPreview(this, mCamera, this);
-        // Add the preview to the framelayout so it will be visible
-        myFrameLayout.addView(mPreview);
     }
 
     /**
@@ -285,7 +350,6 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
         Rect meteringRect = calculateTapArea(event.getX(), event.getY(), 1.5f);
 
         Camera.Parameters parameters = mCamera.getParameters();
-        // TODO: Is this null check needed?
         parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
         List<Camera.Area> focusAreaList = new ArrayList<Camera.Area>();
         focusAreaList.add(new Camera.Area(focusRect, 1000));
