@@ -30,8 +30,20 @@ public class CustomArrayAdapter extends ArrayAdapter<Game> {
 
     }
 
-    public void addGame(Game game) {
-        games.add(game);
+    /**
+     * Add multiple games to the adapter
+     * @param gameList list of games to be added
+     */
+    public void addGames(ArrayList<Game> gameList) {
+        games.addAll(gameList);
+    }
+
+    /** replaces the games with the new game list
+     *
+     * @param gameList new game list
+     */
+    public void replaceGames(ArrayList<Game> gameList) {
+        games = gameList;
     }
 
     /**
@@ -70,4 +82,4 @@ public class CustomArrayAdapter extends ArrayAdapter<Game> {
 
         return view;
     }
-} 
+}

@@ -119,7 +119,7 @@ public class GamesRequests {
     public GamesRecord getLeaderboardGames() throws ApiException {
         //only challenges users want public
         //TODO added for testing
-        String filter = " `leaderboard` = false";
+        String filter = " `leaderboard` = true";
         //String filter = " `leaderboard` = true";
 
         //related record to get username
