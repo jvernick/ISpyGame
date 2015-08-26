@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/icon_list"
+        android:id="@+id/list_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -14,7 +14,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:src="@drawable/round_button"/>
+        android:src="@drawable/magnifying_glass"/>
 
     <LinearLayout
         android:id="@+id/middle_text"
@@ -24,8 +24,8 @@
         android:layout_centerVertical="true"
         android:weightSum="100"
         android:layout_margin="5dp"
-        android:layout_toRightOf="@id/icon_list"
-        android:layout_toEndOf="@id/icon_list">
+        android:layout_toRightOf="@id/list_icon"
+        android:layout_toEndOf="@id/list_icon">
 
         <TextView
             android:id="@+id/username"

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.picspy.firstapp.R;
@@ -54,6 +55,9 @@ public class CustomArrayAdapter extends ArrayAdapter<Game> {
         String created = game.getCreated();
         timeLength.setText(GamesCursorAdapter.processTime(created));
         guesses.setText(String.valueOf(game.getGuess()));
+
+        //set the icon to a random color
+        GamesCursorAdapter.setIcon((ImageView) view.findViewById(R.id.list_icon));
 
         return view;
     }

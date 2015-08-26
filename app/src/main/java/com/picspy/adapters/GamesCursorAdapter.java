@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
 import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
@@ -13,6 +14,7 @@ import com.picspy.firstapp.R;
 import com.picspy.utils.DbContract;
 
 import java.util.Calendar;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /**TODO Document
@@ -22,6 +24,10 @@ import java.util.concurrent.TimeUnit;
  */
 public class GamesCursorAdapter extends ResourceCursorAdapter {
     private static final String TAG = "GamesCursorAdapter";
+    //possible challenge icons. Add as necessary.
+    private static final int[] ICONS = {R.drawable.ic_challenge_lime, R.drawable.ic_challenge_red,
+            R.drawable.ic_challenge_orange, R.drawable.ic_challenge_yellow,
+            R.drawable.ic_challenge_purple,};
 
     //Default inherited constructor
     public GamesCursorAdapter(Context context, int layout, Cursor cursor, int flags) {
@@ -61,6 +67,18 @@ public class GamesCursorAdapter extends ResourceCursorAdapter {
         guesses.setText(String.valueOf(c.getInt(
                 c.getColumnIndex(DbContract.GameEntry.COLUMN_NAME_GUESS))));
         uname.setText(c.getString(c.getColumnIndex(DbContract.FriendEntry.COLUMN_NAME_USERNAME)));
+
+        setIcon((ImageView) view.findViewById(R.id.list_icon));
+    }
+
+    /**
+     * Sets the view to a random color
+     * @param view View to be set
+     */
+    public static void setIcon(ImageView view) {
+        Random randomIndex = new Random();
+        int index = randomIndex.nextInt(ICONS.length);
+        view.setImageResource(ICONS[index]);
     }
 
     /**
