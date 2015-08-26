@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.picspy.firstapp.R;
 import com.picspy.utils.DbContract;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -25,9 +26,9 @@ import java.util.concurrent.TimeUnit;
 public class GamesCursorAdapter extends ResourceCursorAdapter {
     private static final String TAG = "GamesCursorAdapter";
     //possible challenge icons. Add as necessary.
-    private static final int[] ICONS = {R.drawable.ic_challenge_lime, R.drawable.ic_challenge_red,
+    private static final int[] ICONS = {R.drawable.ic_challenge_purple, R.drawable.ic_challenge_lime,
             R.drawable.ic_challenge_orange, R.drawable.ic_challenge_yellow,
-            R.drawable.ic_challenge_purple,};
+            R.drawable.ic_challenge_blue, R.drawable.ic_challenge_red};
 
     //Default inherited constructor
     public GamesCursorAdapter(Context context, int layout, Cursor cursor, int flags) {
@@ -68,17 +69,17 @@ public class GamesCursorAdapter extends ResourceCursorAdapter {
                 c.getColumnIndex(DbContract.GameEntry.COLUMN_NAME_GUESS))));
         uname.setText(c.getString(c.getColumnIndex(DbContract.FriendEntry.COLUMN_NAME_USERNAME)));
 
-        setIcon((ImageView) view.findViewById(R.id.list_icon));
+        int senderId = c.getInt(c.getColumnIndex(DbContract.GameEntry.COLUMN_NAME_SENDER));
+
+        setIcon((ImageView) view.findViewById(R.id.list_icon), senderId);
     }
 
     /**
      * Sets the view to a random color
      * @param view View to be set
      */
-    public static void setIcon(ImageView view) {
-        Random randomIndex = new Random();
-        int index = randomIndex.nextInt(ICONS.length);
-        view.setImageResource(ICONS[index]);
+    public static void setIcon(ImageView view, int senderId) {
+        view.setImageResource(ICONS[senderId % ICONS.length]);
     }
 
     /**

@@ -23,7 +23,8 @@ public class TopFragment extends android.support.v4.app.ListFragment {
     private static final String TAG = "TopFragment";
 
 
-    @Override public void onActivityCreated(Bundle savedInstanceState) {
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         // Initially there is no data
@@ -56,8 +57,6 @@ public class TopFragment extends android.support.v4.app.ListFragment {
                 startActivity(intent);
                 */
     }
-
-
 
     private class GetLeaderboard extends AsyncTask<Void, Void, GamesRecord> {
         @Override

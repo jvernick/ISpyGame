@@ -2,8 +2,10 @@ package com.picspy.adapters;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +27,7 @@ public class CustomArrayAdapter extends ArrayAdapter<Game> {
     public CustomArrayAdapter (Context context, int resource, ArrayList<Game> objects) {
         super(context, resource, objects);
         this.games = objects;
+
     }
 
     public void addGame(Game game) {
@@ -56,8 +59,14 @@ public class CustomArrayAdapter extends ArrayAdapter<Game> {
         timeLength.setText(GamesCursorAdapter.processTime(created));
         guesses.setText(String.valueOf(game.getGuess()));
 
-        //set the icon to a random color
-        GamesCursorAdapter.setIcon((ImageView) view.findViewById(R.id.list_icon));
+        int senderId = game.getSenderId();
+
+        GamesCursorAdapter.setIcon((ImageView) view.findViewById(R.id.list_icon), senderId);
+        /*
+        ImageView icon = (ImageView) view.findViewById(R.id.list_icon);
+        if (!Arrays.asList(GamesCursorAdapter.ICONS).contains(icon.getDrawable())) {
+            GamesCursorAdapter.setIcon((ImageView) view.findViewById(R.id.list_icon));
+        }*/
 
         return view;
     }
