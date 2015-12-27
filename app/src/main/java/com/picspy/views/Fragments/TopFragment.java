@@ -1,6 +1,5 @@
 package com.picspy.views.Fragments;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,7 +14,7 @@ import android.widget.Toast;
 
 import com.dreamfactory.client.ApiException;
 import com.picspy.GamesRequests;
-import com.picspy.adapters.CustomArrayAdapter;
+import com.picspy.adapters.TopFragmentArrayAdapter;
 import com.picspy.firstapp.R;
 import com.picspy.models.Game;
 import com.picspy.models.GameRecord;
@@ -26,10 +25,9 @@ import java.util.ArrayList;
 //Leaderboard fragment
 public class TopFragment extends android.support.v4.app.ListFragment
         implements SwipeRefreshLayout.OnRefreshListener {
-    private CustomArrayAdapter arrayAdapter;
+    private TopFragmentArrayAdapter arrayAdapter;
     private static final String TAG = "TopFragment";
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private AlertDialog alertDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -80,7 +78,7 @@ public class TopFragment extends android.support.v4.app.ListFragment
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         // Insert desired behavior here.
-        Toast.makeText(getActivity(), arrayAdapter.getItem(position).toString(),
+        Toast.makeText(getActivity().getApplicationContext(), arrayAdapter.getItem(position).toString(),
                 Toast.LENGTH_LONG).show();
 
         //TODO Start activity to display Game
@@ -102,6 +100,7 @@ public class TopFragment extends android.support.v4.app.ListFragment
         (new GetLeaderboard(true)).execute();
     }
 
+
     private class GetLeaderboard extends AsyncTask<Void, Void, GamesRecord> {
         private final boolean refresh;
 
@@ -117,7 +116,8 @@ public class TopFragment extends android.support.v4.app.ListFragment
         @Override
         protected GamesRecord doInBackground(Void... voids) {
             try {
-                GamesRequests gamesRequests = new GamesRequests(getActivity(), false);
+                //TODO this sometimes causes a null pointer. verify
+                GamesRequests gamesRequests = new GamesRequests(getActivity().getApplicationContext(), false);
                 GamesRecord result =  gamesRequests.getLeaderboardGames();
                 if (result != null) Log.d(TAG,result.toString());
                 return result;
@@ -138,7 +138,7 @@ public class TopFragment extends android.support.v4.app.ListFragment
                 if (gameList.size() != 0) {
                     if (refresh) {
                         if (arrayAdapter == null) {
-                            arrayAdapter = new CustomArrayAdapter(getActivity(), R.layout.item_challenge,
+                            arrayAdapter = new TopFragmentArrayAdapter(getActivity().getApplicationContext(), R.layout.item_challenge,
                                     gameList);
                             setListAdapter(arrayAdapter);
                         } else {
@@ -148,7 +148,7 @@ public class TopFragment extends android.support.v4.app.ListFragment
                     } else {
                         //TODO move these next two lines to the asynctask post
                         // Create an empty adapter we will use to display the loaded data.
-                        arrayAdapter = new CustomArrayAdapter(getActivity(), R.layout.item_challenge,
+                        arrayAdapter = new TopFragmentArrayAdapter(getActivity().getApplicationContext(), R.layout.item_challenge,
                                 gameList);
                         setListAdapter(arrayAdapter);
                     }

@@ -49,7 +49,7 @@ public class FriendsTableRequests {
     /**
      * Queries the database and attempts to add a friend
      * @param friend_2_id display_name of friend to add
-     * @return "SUCCESS" on success and "FAILEd" or Error message on failure
+     * @return "SUCCESS" on success and "FAILED" or Error message on failure
      */
     public String sendFriendRequest(int friend_2_id) {
         try {

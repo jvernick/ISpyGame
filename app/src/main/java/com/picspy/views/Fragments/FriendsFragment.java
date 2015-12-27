@@ -1,104 +1,139 @@
 package com.picspy.views.Fragments;
 
-import android.app.Dialog;
-import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.support.v4.widget.SimpleCursorAdapter;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.content.Context;
-import com.picspy.adapters.FriendsCursorAdapter;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.FilterQueryProvider;
+import android.widget.ListView;
+import android.widget.TextView;
 
-import com.picspy.adapters.DatabaseHandler;
-import com.picspy.adapters.GamesCursorAdapter;
-import com.picspy.models.Friend;
-import com.picspy.views.FriendInfoActivity;
 import com.picspy.FriendsTableRequests;
+import com.picspy.adapters.DatabaseHandler;
+import com.picspy.adapters.FriendsCursorAdapter;
 import com.picspy.firstapp.R;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import com.picspy.views.FriendInfoActivity;
 
 /**
  * Created by Justin12 on 6/6/2015.
  */
-public class FriendsFragment extends ListFragment  {
-    public final static String FRIEND_USERNAME = "com.picspy.USERNAME";
-    public final static String FRIEND_ID = "com.picspy.FRIEND_ID";
+public class FriendsFragment extends ListFragment {
     private FriendsCursorAdapter adapter;
-    public DatabaseHandler dbHandler;
-    private Dialog progressDialog;
+    private View listHeader;
+    private EditText searchField;
 
-    // This is the Adapter being used to display the list's data.
-    SimpleCursorAdapter mAdapter;
-    // If non-null, this is the current filter the user has provided.
-    String mCurFilter;
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        listHeader = inflater.inflate(R.layout.friend_list_header, null);
+        return inflater.inflate(R.layout.fragment_friends, container, false);
+    }
 
+    /**
+     * Called when the fragment's activity has been created and this
+     * fragment's view hierarchy instantiated.  It can be used to do final
+     * initialization once these pieces are in place, such as retrieving
+     * views or restoring state.  It is also useful for fragments that use
+     * {@link #setRetainInstance(boolean)} to retain their instance,
+     * as this callback tells the fragment when it is fully associated with
+     * the new activity instance.  This is called after {@link #onCreateView}
+     * and before {@link #onViewStateRestored(Bundle)}.
+     *
+     * @param savedInstanceState If the fragment is being re-created from
+     *                           a previous saved state, this is the state.
+     */
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        dbHandler = DatabaseHandler.getInstance(getActivity());
-        adapter = new FriendsCursorAdapter(getActivity(), R.layout.item_friends,
-                dbHandler.getAllFriends(),
-                FriendsCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-        setListAdapter(adapter);
-        //(new GetRecordsTask()).execute();
-//        setEmptyText("No friends");
-//        setHasOptionsMenu(true);
-//        dbHandler =  new DatabaseHandler(getActivity());
-//        for(int i = 0; i < 10; i++) {
-//            dbHandler.addFriend(new Friend(i,"Friend" + i),"update" + i);
-//        }
-//        //request list of names
-//        testRequest(this.getListView());
-    }
 
+        //in this method because it requires the activity context
 
-
-//    public void testRequest(View view) {
-//        //content of example list
-//        String[] value = new String[] { "Android", "iPhone", "WindowsMobile",
-//                "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
-//                "Linux", "OS/2" };
-//        List <Friend> f = dbHandler.getAllfriends();
-//        Friend[] arr = f.toArray(new Friend[f.size()]);
-//        String[] values = new String[arr.length];
-//        for(int i = 0; i < arr.length; i++)
-//            values[i] = arr[i].getUsername();
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-//                R.layout.fragment_friends, values);
-//        setListAdapter(adapter);
-//
-//    }
-
-    public void testInfoPage( View view) {
-        Intent intent = new Intent(getActivity(), FriendInfoActivity.class);
-        intent.putExtra(FRIEND_ID, 9);
-        intent.putExtra(FRIEND_USERNAME, "brunelamc");
-        startActivity(intent);
-    }
-
-
-
-
-
-
-    class GetRecordsTask extends AsyncTask<Void, String, String> {
-        @Override
-        protected void onPreExecute() {
-            progressDialog.show();
+        (new GetRecordsTask()).execute();
+        if (listHeader != null) {
+            getListView().addHeaderView(listHeader);
         }
 
+
+        DatabaseHandler dbHandler = DatabaseHandler.getInstance(getActivity());
+        if (adapter == null) {
+            adapter = new FriendsCursorAdapter(getActivity().getApplicationContext(), R.layout.item_friends,
+                    dbHandler.getAllFriends(),
+                    FriendsCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+            setListAdapter(adapter);
+        }
+
+        adapter.setFilterQueryProvider(new FilterQueryProvider() {
+            public Cursor runQuery(CharSequence constraint) {
+                // Search for states whose names begin with the specified letters.
+                Cursor cursor =  DatabaseHandler.getInstance(getActivity()
+                        .getApplicationContext()).getMatchingFriends(
+                        (constraint != null ? constraint.toString() : null));
+                return cursor;
+            }
+        });
+
+
+        View rootView = getListView().findViewWithTag("searchBox");
+        if (rootView != null) {
+            searchField = (EditText) rootView.findViewWithTag("searchField");
+            Log.d("FriendsFragment: ", "Found search box");
+        }
+        if (searchField != null) {
+            Log.d("FriendsFragment: ", "Found search field");
+            setSearchFieldFilter(searchField);
+        }
+    }
+
+    private void setSearchFieldFilter (final EditText searchText) {
+        searchText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence cs, int start, int before, int count) {
+                if (cs.length() == 0) {
+                    searchText.clearFocus();
+                    InputMethodManager mgr = (InputMethodManager)
+                            getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    mgr.hideSoftInputFromWindow(searchText.getWindowToken(), 0);
+                }
+                    adapter.getFilter().filter(cs);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+    }
+
+    /**
+     * Called when the fragment is visible to the user and actively running.
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        //clear search field
+        if (searchField != null && searchField.getText().length() == 0) {
+            searchField.clearFocus();
+            searchField.setText("");
+        }
+    }
+
+    class GetRecordsTask extends AsyncTask<Void, String, String> {
         @Override
         protected String doInBackground(Void... params) {
             FriendsTableRequests request = new FriendsTableRequests(getActivity().getApplicationContext());
@@ -118,9 +153,6 @@ public class FriendsFragment extends ListFragment  {
         }
         @Override
         protected void onPostExecute(String records) {
-            if(progressDialog != null && progressDialog.isShowing()){
-                progressDialog.cancel();
-            }
             if(records.equals("Success")){ // success
                 Log.d("Friends","Success");
             }else{ // some error show dialog

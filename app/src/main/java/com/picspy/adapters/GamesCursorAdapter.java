@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
@@ -13,9 +12,7 @@ import android.widget.TextView;
 import com.picspy.firstapp.R;
 import com.picspy.utils.DbContract;
 
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /**TODO Document
@@ -55,23 +52,35 @@ public class GamesCursorAdapter extends ResourceCursorAdapter {
      */
     @Override
     public void bindView(View view, Context context, Cursor c) {
-        // Find fields to populate in inflated template
-        TextView uname = (TextView) view.findViewById(R.id.username);
-        TextView timeLength = (TextView) view.findViewById(R.id.timeLength);
-        TextView challenge_time = (TextView) view.findViewById(R.id.challengeTime);
-        TextView guesses = (TextView) view.findViewById(R.id.guesses);
+        final ViewHolder viewHolder = (ViewHolder) view.getTag();
 
         String created = c.getString(c.getColumnIndex(DbContract.GameEntry.COLUMN_NAME_CREATED));
-        timeLength.setText(processTime(created));
-        challenge_time.setText(String.valueOf(c.getInt(
+        viewHolder.timeLength.setText(processTime(created));
+        viewHolder.challengeTime.setText(String.valueOf(c.getInt(
                 c.getColumnIndex(DbContract.GameEntry.COLUMN_NAME_TIME))));
-        guesses.setText(String.valueOf(c.getInt(
+        viewHolder.guesses.setText(String.valueOf(c.getInt(
                 c.getColumnIndex(DbContract.GameEntry.COLUMN_NAME_GUESS))));
-        uname.setText(c.getString(c.getColumnIndex(DbContract.FriendEntry.COLUMN_NAME_USERNAME)));
+        viewHolder.uname.setText(c.getString(c.getColumnIndex(DbContract.FriendEntry.COLUMN_NAME_USERNAME)));
 
         int senderId = c.getInt(c.getColumnIndex(DbContract.GameEntry.COLUMN_NAME_SENDER));
 
         setIcon((ImageView) view.findViewById(R.id.list_icon), senderId);
+    }
+
+    //initialize viewHolder
+    @Override
+    public View newView(Context context, Cursor cursor, ViewGroup parent) {
+        View view = super.newView(context, cursor, parent);
+        ViewHolder viewHolder = new ViewHolder();
+
+        viewHolder.uname = (TextView) view.findViewById(R.id.sender_username);
+        viewHolder.timeLength = (TextView) view.findViewById(R.id.timeLength);
+        viewHolder.challengeTime = (TextView) view.findViewById(R.id.challengeTime);
+        viewHolder.guesses = (TextView) view.findViewById(R.id.guesses);
+
+        view.setTag(viewHolder);
+
+        return view;
     }
 
     /**
@@ -118,5 +127,12 @@ public class GamesCursorAdapter extends ResourceCursorAdapter {
         Log.d(TAG, "content changes");
         super.onContentChanged();
         notifyDataSetChanged();
+    }
+
+    private class ViewHolder {
+        public TextView uname;
+        public TextView timeLength;
+        public TextView challengeTime;
+        public TextView guesses;
     }
 }

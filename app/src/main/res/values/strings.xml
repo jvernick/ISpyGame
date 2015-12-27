@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">My F App</string>
+    <string name="app_name">Picspy</string>
     <string name="action_settings">Menu</string>
     <string name="friend_action_settings">Remove Friend</string>
     <string name="challenge_action_settings">Refresh </string>
@@ -27,6 +27,7 @@
     <string name="title_activity_login">LoginActivity</string>
     <string name="facebook_app_id">567017063440429</string>
 
+    <!-- activity_friend_info.xml-->
     <string name="score"> 0 </string>
     <string name="leaderboard_descriptiton">Leaderboard</string>
     <string name="total_won_description">Won</string>
@@ -39,6 +40,9 @@
     <string name="gueses_text">Guess</string>
     <string name="challenge_time_text">Time</string>
 
+    <!-- no_connection_dialog.xml-->
+    <string name="connectivity_dialog_text">No internet connectivity</string>
+    <string name="connectivity_dialog_button"> OK </string>
 <!-- TODO: Remove or change this placeholder text -->
     <string name="home_fragment">Home</string>
     <string name="friends_fragment">Friends</string>
@@ -49,4 +53,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_friend_info">FriendInfoActivity</string>
     <string name="title_activity_challenges">ChallengesActivity</string>
+
+    <!-- friend_fragment> -->
+    <string name="search_friend_hint">Search friends </string>
 </resources>

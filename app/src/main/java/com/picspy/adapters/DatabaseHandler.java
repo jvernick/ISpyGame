@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.picspy.models.Friend;
 import com.picspy.models.Game;
@@ -152,6 +153,27 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         SQLiteDatabase db = this.getWritableDatabase();
         return db.rawQuery(selectQuery, null);
+    }
+
+    public Cursor getMatchingFriends(String constraint) {
+        if (constraint == null || constraint.length() == 0) return getAllFriends();
+        Cursor cursor;
+        Log.d("DatabaseHandler:: ", "filtering");
+        SQLiteDatabase db = this.getWritableDatabase();
+        String[] columns = {FriendEntry._ID, FriendEntry.COLUMN_NAME_USERNAME};
+
+        String selection = FriendEntry.COLUMN_NAME_USERNAME + " like '%" + constraint + "%'";
+        cursor = db.query(
+                FriendEntry.TABLE_NAME,
+                columns,
+                selection,
+                null, null, null, null, null);
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+        return cursor;
+
     }
 
 //    public List<Friend> getAllfriends() {

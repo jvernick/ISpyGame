@@ -29,7 +29,6 @@ import com.picspy.models.Friend;
 import com.picspy.models.FriendRecord;
 import com.picspy.utils.AppConstants;
 import com.picspy.utils.PrefUtil;
-import com.picspy.views.Fragments.FriendsFragment;
 
 import java.util.regex.Pattern;
 
@@ -37,6 +36,8 @@ import java.util.regex.Pattern;
  * Activity that displays friend information
  */
 public class FriendInfoActivity extends ActionBarActivity implements SurfaceHolder.Callback {
+    public final static String FRIEND_USERNAME = "com.picspy.USERNAME";
+    public final static String FRIEND_ID = "com.picspy.FRIEND_ID";
     private static final String TAG = "FriendsInfoActivity";
     private TextView sent_won, sent_lost, received_won, received_lost;
     private TextView total_won, total_lost, leaderboard, toolbarTitle, stats_title;
@@ -50,8 +51,8 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        String friendUsername = intent.getStringExtra(FriendsFragment.FRIEND_USERNAME);
-        friend_id = intent.getIntExtra(FriendsFragment.FRIEND_ID, -1);
+        friend_id = intent.getIntExtra(FRIEND_ID, -1);
+        //TODO get username form inteint
         new getStats(friend_id).execute();
         setContentView(R.layout.activity_friend_info);
         spinner = (ProgressBar)findViewById(R.id.myProgressBar);

@@ -16,13 +16,13 @@ import com.picspy.utils.PrefUtil;
 
 /**
  * Splashcreen activity that displays logo and determines whether to proceed
- * to main screen or to prompt for user login/registration. Pauses for 2seconds
+ * to main screen or to prompt for user login/registration. Pauses for 2 seconds
  * to display logo on startup
  * Created by BrunelAmC on 6/9/2015.
  */
 public class Splash_Activity extends Activity {
     private Button splash_login, splash_signup;
-    private static final int sleepTime = 2000;
+    private static final int SLEEP_TIME = 2000;
     private static final String TAG = "SplashActivity";
 
     @Override
@@ -80,15 +80,16 @@ public class Splash_Activity extends Activity {
 
             //sleep to display logo
             try {
-                Thread.sleep(sleepTime);
+                Thread.sleep(SLEEP_TIME);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
             // checks if sesison_id already exists
-            if (oldSessionKey == null) {
+            if (oldSessionKey == null) { //User has never logged in before
                 return false;
-            } else {
+            } else { //User has logged in before. Start main activity
+                //TODO session may have expired
                 startMain();
                 //refresh session if possible
                 try {
@@ -96,7 +97,7 @@ public class Splash_Activity extends Activity {
                     userApi.addHeader("X-DreamFactory-Application-Name", AppConstants.APP_NAME);
                     userApi.addHeader("X-DreamFactory-Session-Token", oldSessionKey);
                     Session session = userApi.getSession();
-                    if (session != null && session.getId() != null) {
+                    if (session != null && session.getId() != null) { //session not null
                         Log.d(TAG, "session not null");
                         PrefUtil.putString(getApplicationContext(), AppConstants.SESSION_ID,
                                 session.getSession_id());
@@ -111,7 +112,7 @@ public class Splash_Activity extends Activity {
                     Log.d(TAG, e.getMessage());
                     //PrefUtil.putString(getApplicationContext(), AppConstants.SESSION_ID, "");
                 }
-                return false;
+                return true;
             }
         }
 
