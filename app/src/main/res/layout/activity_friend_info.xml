@@ -9,8 +9,8 @@
     -->
 
     <include
-        android:id="@+id/toolbar"
-        layout="@layout/tool_bar"/>
+        android:id="@+id/friend_info_toolbar"
+        layout="@layout/custom_tool_bar"/>
 
     <ProgressBar
         android:id="@+id/myProgressBar"
@@ -26,7 +26,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
+        android:layout_below="@id/friend_info_toolbar"
         android:visibility="gone"
         android:id="@+id/page">
 
@@ -55,7 +55,7 @@
             <TextView
                 style="@style/total_score_number"
                 android:id="@+id/total_lost"
-                android:textColor="@color/primary_red"/>
+                android:textColor="@color/red_500"/>
             <TextView
                 style="@style/total_score_number"
                 android:id="@+id/leaderboard"
@@ -127,7 +127,7 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:id="@+id/sent_lost"
                 android:layout_marginTop="50dp"
-                android:textColor="@color/primary_red"
+                android:textColor="@color/red_500"
                 android:gravity="center"
                 android:singleLine="true"
                 android:layout_alignParentTop="true"
@@ -142,7 +142,7 @@
                 android:id="@+id/recieved_lost"
                 android:layout_marginBottom="50dp"
                 android:layout_alignParentBottom="true"
-                android:textColor="@color/primary_red"
+                android:textColor="@color/red_500"
                 android:gravity="center"
                 android:singleLine="true"
                 android:layout_alignLeft="@id/sent_lost"
@@ -191,7 +191,7 @@
             android:layout_height="70dp"
             android:layout_gravity="center"
             android:src="@drawable/ic_action"
-            android:background="@drawable/circle"
+            android:background="@drawable/floating_circle"
             android:id="@+id/imageButton"
             android:contentDescription="Start game"
             android:layout_alignParentRight="true"

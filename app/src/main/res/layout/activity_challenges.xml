@@ -4,13 +4,13 @@
     tools:context="com.picspy.views.ChallengesActivity">
 
     <include
-        android:id="@+id/toolbar"
-        layout="@layout/tool_bar"/>
+        android:id="@+id/challenges_toolbar"
+        layout="@layout/custom_tool_bar"/>
     <ListView
         android:id="@+id/challenge_list"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
+        android:layout_below="@id/challenges_toolbar"
         android:layout_above="@+id/bar">
     </ListView>
 
@@ -23,7 +23,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true">
     </View>
-
 
     <ImageButton
         android:layout_height="wrap_content"
@@ -39,6 +38,5 @@
         android:layout_alignTop="@+id/bar"
         android:layout_alignBottom="@+id/bar"
         android:layout_centerHorizontal="true"
-        android:id="@+id/cameraButton"
-        />
+        android:id="@+id/cameraButton" />
 </RelativeLayout>

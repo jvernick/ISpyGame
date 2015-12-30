@@ -21,15 +21,13 @@ import com.picspy.models.Game;
  * Created by BrunelAmC on 8/23/2015.
  */
 public class TopFragmentArrayAdapter extends ArrayAdapter<Game> {
-
     private final Context context;
     private ArrayList<Game> games;
 
-    public TopFragmentArrayAdapter(Context context, int resource, ArrayList<Game> objects) {
-        super(context, resource, objects);
-        this.games = objects;
+    public TopFragmentArrayAdapter(Context context, int resource, ArrayList<Game> games) {
+        super(context, resource, games);
+        this.games = games;
         this.context = context;
-
     }
 
     /**
@@ -51,7 +49,8 @@ public class TopFragmentArrayAdapter extends ArrayAdapter<Game> {
     /**
      * Populate new items in the list.
      */
-    @Override public View getView(int position, View convertView, ViewGroup parent) {
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
 
         if (convertView == null) {

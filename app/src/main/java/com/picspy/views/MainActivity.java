@@ -9,25 +9,15 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.picspy.firstapp.R;
 import com.picspy.views.Fragments.FriendsFragment;
-import com.picspy.views.Fragments.HomeFragment;
-import com.picspy.views.Fragments.MenuFragment;
-import com.picspy.views.Fragments.TabsViewPagerAdapter;
+import com.picspy.adapters.TabsViewPagerAdapter;
 import com.picspy.views.Fragments.TopFragment;
 import com.picspy.adapters.SlidingTabLayout;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 
 //TODO: this is currently modified to show the result of user registration

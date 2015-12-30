@@ -58,6 +58,18 @@ public class FriendRecord extends DbApiResponse {
     @JsonProperty
     private UsersRecord users_by_friend_2;
 
+    /**
+     * Return the other user's record
+     * @param myId current userID
+     * @return other user id
+     */
+    public UsersRecord getOtherUserRecord(int myId) {
+        if (myId != this.friend_1) {
+            return users_by_friend_1;
+        } else {
+            return users_by_friend_2;
+        }
+    }
     public UsersRecord getUsers_by_friend_1() {
         return users_by_friend_1;
     }

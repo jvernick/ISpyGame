@@ -10,9 +10,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
         android:textColor="@color/primary_text_default_material_dark"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_gravity="center"
+        android:layout_gravity="center_vertical"
         android:id="@+id/toolbar_title" />
 </android.support.v7.widget.Toolbar>

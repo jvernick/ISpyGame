@@ -5,11 +5,15 @@
     <color name="primary_dark">#388E3C</color>
     <color name="primary_light">#C8E6C9</color>
     <color name="accent">#448AFF</color>
+    <color name="accent_light">#82B1FF</color>
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#757575</color>
     <color name="icons">#FFFFFF</color>
     <color name="divider">#B6B6B6</color>
     <color name="tabsScrollColor">#2c7c30</color>
     <color name="turquoise">#34DDDD</color>
-    <color name="primary_red">#F44366</color>
+    <color name="red_500">#F44336</color>
+    <color name="grey_400">#BDBDBD</color>
+    <color name="find_friend_btn_pressed">#6184bf</color>
+    <color name="white">#FFFFFF</color>
 </resources>

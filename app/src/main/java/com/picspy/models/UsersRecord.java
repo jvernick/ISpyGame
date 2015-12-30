@@ -24,7 +24,9 @@ public class UsersRecord extends DbApiResponse {
     @JsonProperty
     private int leaderboard;
 
-
+    public Friend getRecordToFriend() {
+        return new Friend(id, username);
+    }
     public int getTotal_won() {
         return total_won;
     }

@@ -37,7 +37,7 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
     private static final String TAG = "ChallengesActivity";
     private ListView listView;
     private DatabaseHandler dbHandler;
-    private int LOADER_ID = 1;
+    private final static int LOADER_ID = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +87,7 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
 
         //update database
         (new GetChallengesTask()).execute();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.challenges_toolbar);
         TextView toolbarTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         toolbarTitle.setText("Challenges");
 
@@ -96,7 +96,7 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationIcon(R.drawable.ic_back);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
 
         //Initializing loader
         getLoaderManager().initLoader(LOADER_ID, null, this).forceLoad();

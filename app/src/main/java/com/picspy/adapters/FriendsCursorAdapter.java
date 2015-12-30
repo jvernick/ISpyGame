@@ -41,18 +41,16 @@ public class FriendsCursorAdapter extends ResourceCursorAdapter {
 
         viewHolder.unameTextView.setText(
                 c.getString(c.getColumnIndex(DbContract.FriendEntry.COLUMN_NAME_USERNAME)));
+
+        //Start friendInfoActivity when friend username clicked
         viewHolder.unameTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, FriendInfoActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra(FriendInfoActivity.FRIEND_USERNAME,
-                        ((TextView) view).getText().toString());
-                view.getContext().startActivity(intent);
+                startFriendInfoActivity(view);
             }
         });
 
-       /* //start a new game with this friend
+        //start a new game with this friend
         viewHolder.newGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -61,7 +59,15 @@ public class FriendsCursorAdapter extends ResourceCursorAdapter {
                 //TODO change intent extra to appropriate value if any
                 view.getContext().startActivity(intent);
             }
-        });*/
+        });
+
+        //Start friendInfoActivity when friend icon clicked
+        viewHolder.friendIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startFriendInfoActivity(view);
+            }
+        });
     }
 
     //initialize viewHolder
@@ -71,16 +77,24 @@ public class FriendsCursorAdapter extends ResourceCursorAdapter {
         ViewHolder viewHolder = new ViewHolder();
 
         viewHolder.unameTextView = (TextView) view.findViewById(R.id.friend_username);
-        //viewHolder.newGameButton = (Button) view.findViewById(R.id.startGame);
+        viewHolder.newGameButton = (ImageView) view.findViewById(R.id.game_start);
+        viewHolder.friendIcon = (ImageView) view.findViewById(R.id.friend_icon);
 
         view.setTag(viewHolder);
 
         return view;
     }
 
+    public static void startFriendInfoActivity(View view) {
+        Intent intent = new Intent(view.getContext(), FriendInfoActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        //TODO change intent extra to appropriate value if any
+        view.getContext().startActivity(intent);
+    }
 
     private class ViewHolder {
         TextView unameTextView;//username
-        Button newGameButton; // new game TODO add this button
+        ImageView newGameButton; // new game TODO add this button
+        ImageView friendIcon;
     }
 }

@@ -4,19 +4,69 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <!--TODO Should the following divider be added after header?
+        android:background="@drawable/horizontal_divider"-->
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:paddingRight="8dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:id="@+id/friend_list_header">
+
+        <ImageView
+            android:id="@+id/find_friend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_add_friend"
+            android:layout_margin="4dp"
+            android:padding="8dp"
+            android:contentDescription="@string/find_button_description"
+            android:background="@drawable/selector_find_friend_btn"/>
+
+        <com.picspy.adapters.SearchEditText
+            android:id="@+id/search_box"
+            android:tag="searchBox"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@id/find_friend"
+            android:layout_toStartOf="@id/find_friend"/>
+
+        <TextView
+            android:id="@+id/friend_request_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10+"
+            android:padding="2dp"
+            android:textColor="#FFFFFF"
+            android:layout_alignTop="@+id/find_friend"
+            android:layout_alignRight="@+id/find_friend"
+            android:layout_alignEnd="@+id/find_friend"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textSize="8sp"
+            android:textStyle="bold"
+            android:background="@drawable/notification_badge"/>
+
+    </RelativeLayout>
 
     <ListView
         android:id="@id/android:list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:headerDividersEnabled="false">
-    </ListView>
+        android:layout_below="@id/friend_list_header"
+        android:headerDividersEnabled="true"/>
 
     <TextView
-        android:id="@+id/android:empty"
+        android:id="@+id/add_friend_box"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Tap to add friends"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/android:list"
+        android:text="Tap to add friendList"
         android:textColor="#00FF00"/>
-
 </RelativeLayout>

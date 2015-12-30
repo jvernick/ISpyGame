@@ -23,6 +23,9 @@ public class AppConstants {
     public static final String LAST_USER_CHALLENGE_ID = "last_user_challenge_id";
     public static final String LAST_FRIEND_UPDATE_TIME = "last_friend_update_time";
 
+    public static final String FRIEND_REQUEST_COUNT = "friend_request_count";
+    public static final String CHALLENGE_REQUEST_COUNT = "challenge_request_count";
+
     // To prevent someone from accidentally instantiating the AppConstants class,
     // give it an empty constructor.
     private AppConstants() {};

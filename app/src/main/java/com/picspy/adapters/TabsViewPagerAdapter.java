@@ -1,4 +1,4 @@
-package com.picspy.views.Fragments;
+package com.picspy.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

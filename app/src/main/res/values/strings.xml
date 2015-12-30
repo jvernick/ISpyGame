@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- ToDO verify and apply these naming prefixes convention
+        cd      : content description
+        btn     : Button text
+        tx      : text
+        tittle  : title
+        hint    : EditText hint
+
+    -->
     <string name="app_name">Picspy</string>
     <string name="action_settings">Menu</string>
     <string name="friend_action_settings">Remove Friend</string>
@@ -55,5 +63,21 @@
     <string name="title_activity_challenges">ChallengesActivity</string>
 
     <!-- friend_fragment> -->
-    <string name="search_friend_hint">Search friends </string>
+    <string name="search_friend_hint">Search friendList </string>
+    <string name="find_button_description">Find new friendList and see requests</string>
+    <string name="title_activity_find_friend">FindFriendActivity</string>
+
+    <!-- activity_find_friend -->
+    <string name="edt_search_hint">Search by Username</string>
+    <string name="btn_search">Add</string>
+    <string name="tx_empty_list">No new requests! Add new friends below.</string>
+    <string name="title_list_header">FRIEND REQUESTS</string>
+
+    <!-- item_friend_request -->
+    <string name="btn_accept">Confirm</string>
+    <string name="btn_decline">Delete</string>
+    <string name="cd_user_icon">User icon</string>
+
+    <!-- multiple -->
+    <string name="cd_start_game">Start new game</string>
 </resources>

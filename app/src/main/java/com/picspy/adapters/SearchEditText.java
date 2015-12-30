@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -37,8 +38,9 @@ public class SearchEditText extends RelativeLayout {
 
     private void initViews() {
         inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(R.layout.search_edit_text, this, true);
+        inflater.inflate(R.layout.custom_search_edit_text, this, true);
         searchText = (EditText) findViewById(R.id.clearable_edit);
+        searchText.clearFocus();
         btn_clear = (Button) findViewById(R.id.clearable_button_clear);
         btn_clear.setVisibility(RelativeLayout.INVISIBLE);
         initButtonListiner();
@@ -63,6 +65,7 @@ public class SearchEditText extends RelativeLayout {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Log.d("SearchEditText", "textChanged:" + s);
                 if (s.length() > 0)
                     btn_clear.setVisibility(RelativeLayout.VISIBLE);
                 else

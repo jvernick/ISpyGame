@@ -4,7 +4,7 @@
     android:layout_height="48dp">
 
     <TextView
-        android:id="@+id/add_friend"
+        android:id="@+id/find_friend"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
@@ -15,14 +15,14 @@
         android:text="ADD_FRIEnD"/>
 
     <com.picspy.adapters.SearchEditText
-        android:id="@+id/search_box"
+        android:id="@+id/searchbox"
         android:tag="searchBox"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@id/add_friend"
-        android:layout_toStartOf="@id/add_friend"/>
+        android:layout_toLeftOf="@id/find_friend"
+        android:layout_toStartOf="@id/find_friend"/>
 
 
     <ImageView

@@ -15,14 +15,14 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FilterQueryProvider;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.picspy.FriendsTableRequests;
 import com.picspy.adapters.DatabaseHandler;
 import com.picspy.adapters.FriendsCursorAdapter;
 import com.picspy.firstapp.R;
-import com.picspy.views.FriendInfoActivity;
+import com.picspy.views.FindFriendsActivity;
 
 /**
  * Created by Justin12 on 6/6/2015.
@@ -35,8 +35,16 @@ public class FriendsFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        listHeader = inflater.inflate(R.layout.friend_list_header, null);
-        return inflater.inflate(R.layout.fragment_friends, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_friends, container, false);
+        ImageView findFriend = (ImageView) rootView.findViewById(R.id.find_friend);
+        findFriend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity().getApplicationContext(), FindFriendsActivity.class);
+                startActivity(intent);
+            }
+        });
+        return rootView;
     }
 
     /**
@@ -59,10 +67,6 @@ public class FriendsFragment extends ListFragment {
         //in this method because it requires the activity context
 
         (new GetRecordsTask()).execute();
-        if (listHeader != null) {
-            getListView().addHeaderView(listHeader);
-        }
-
 
         DatabaseHandler dbHandler = DatabaseHandler.getInstance(getActivity());
         if (adapter == null) {
@@ -74,16 +78,32 @@ public class FriendsFragment extends ListFragment {
 
         adapter.setFilterQueryProvider(new FilterQueryProvider() {
             public Cursor runQuery(CharSequence constraint) {
-                // Search for states whose names begin with the specified letters.
-                Cursor cursor =  DatabaseHandler.getInstance(getActivity()
-                        .getApplicationContext()).getMatchingFriends(
-                        (constraint != null ? constraint.toString() : null));
-                return cursor;
+            // Search for friends whose names begin with the specified letters.
+            Cursor cursor =  DatabaseHandler.getInstance(getActivity()
+                    .getApplicationContext()).getMatchingFriends(
+                    (constraint != null ? constraint.toString() : null));
+            return cursor;
             }
         });
 
+        listHeader = getView().findViewById(R.id.friend_list_header);
+        if (listHeader != null) {
+            View searchBox = listHeader.findViewById(R.id.search_box);
+            if (searchBox != null) {
+                searchField = (EditText) searchBox.findViewById(R.id.clearable_edit);
+                Log.d("FriendsFragment: ", "Found search box");
+            } else {
+                Log.d("FriendsFragment: ", "searchbox null");
+            }
+            if (searchField != null) {
+                Log.d("FriendsFragment: ", "Found search field");
+                setSearchFieldFilter(searchField);
+            }
+        } else {
+            Log.d("FriendsFragment: ", "ListHeader null");
+        }
 
-        View rootView = getListView().findViewWithTag("searchBox");
+       /* View rootView = getListView().findViewWithTag("searchBox");
         if (rootView != null) {
             searchField = (EditText) rootView.findViewWithTag("searchField");
             Log.d("FriendsFragment: ", "Found search box");
@@ -91,10 +111,12 @@ public class FriendsFragment extends ListFragment {
         if (searchField != null) {
             Log.d("FriendsFragment: ", "Found search field");
             setSearchFieldFilter(searchField);
-        }
+        }*/
     }
 
     private void setSearchFieldFilter (final EditText searchText) {
+
+        Log.d("OnTextChanged", "setSearchFieldFilter");
         searchText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -103,13 +125,16 @@ public class FriendsFragment extends ListFragment {
 
             @Override
             public void onTextChanged(CharSequence cs, int start, int before, int count) {
+                Log.d("FriendsFragment", "textChanged: " + cs);
+
                 if (cs.length() == 0) {
                     searchText.clearFocus();
+                    if (getView() != null) getView().requestFocus();
                     InputMethodManager mgr = (InputMethodManager)
                             getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                     mgr.hideSoftInputFromWindow(searchText.getWindowToken(), 0);
                 }
-                    adapter.getFilter().filter(cs);
+                adapter.getFilter().filter(cs);
             }
 
             @Override
