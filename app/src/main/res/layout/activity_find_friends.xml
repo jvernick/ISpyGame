@@ -1,0 +1,53 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.picspy.views.FindFriendsActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/relativeLayout">
+
+    <include
+        android:id="@+id/find_friend_toolbar"
+        layout="@layout/custom_tool_bar"/>
+
+    <com.picspy.adapters.SlidingTabLayout
+        android:id="@+id/find_friends_tab"
+        android:layout_width="fill_parent"
+        android:layout_height="48dp"
+        android:layout_below="@id/find_friend_toolbar"
+        android:elevation="2dp"
+        android:background="@color/primary" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/find_friends_tab"
+        android:layout_above="@id/bar"/>
+
+    <View
+        android:id="@+id/bar"
+        android:layout_width="fill_parent"
+        android:layout_height="40dip"
+        android:background="@color/primary"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
+    </View>
+
+    <ImageButton
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:adjustViewBounds="true"
+        android:maxWidth="60dp"
+        android:maxHeight="60dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_open_camera"
+        android:background="@color/primary"
+        android:onClick="launchCamera"
+        android:layout_alignParentBottom="true"
+        android:layout_alignTop="@+id/bar"
+        android:layout_alignBottom="@+id/bar"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/cameraButton"
+        android:contentDescription="@string/cd_start_game" />
+</RelativeLayout>

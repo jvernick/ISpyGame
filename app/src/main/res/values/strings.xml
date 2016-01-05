@@ -63,13 +63,16 @@
     <string name="title_activity_challenges">ChallengesActivity</string>
 
     <!-- friend_fragment> -->
-    <string name="search_friend_hint">Search friendList </string>
+    <string name="search_friend_hint">Search friends </string>
     <string name="find_button_description">Find new friendList and see requests</string>
     <string name="title_activity_find_friend">FindFriendActivity</string>
+    <string name="friends_fragment_empty_search">No friend with entered username</string>
+    <string name="friends_fragment_no_friends">Picspy is more fun with friends.
+        Tap the blue button to find friends</string>
 
     <!-- activity_find_friend -->
     <string name="edt_search_hint">Search by Username</string>
-    <string name="btn_search">Add</string>
+    <string name="btn_search">Search</string>
     <string name="tx_empty_list">No new requests! Add new friends below.</string>
     <string name="title_list_header">FRIEND REQUESTS</string>
 
@@ -78,6 +81,14 @@
     <string name="btn_decline">Delete</string>
     <string name="cd_user_icon">User icon</string>
 
+    <!-- item_add_friend -->
+    <string name="btn_send_request">Send request</string>
+
     <!-- multiple -->
     <string name="cd_start_game">Start new game</string>
+    <string name="title_activity_find_friends">FindFriendsActivity</string>
+
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
 </resources>

@@ -1,50 +1,56 @@
 package com.picspy.adapters;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.picspy.firstapp.R;
-import com.picspy.models.Friend;
+import com.picspy.models.UserRecord;
+import com.picspy.utils.AppConstants;
 
 import java.util.List;
 
 /**
  * Created by BrunelAmC on 12/28/2015.
  */
-public class FindFriendsArrayAdapter extends ArrayAdapter<Friend>{
+public class FindFriendArrayAdapter extends ArrayAdapter<UserRecord>{
     private final LayoutInflater inflater;
 
-    public FindFriendsArrayAdapter(Context context, List<Friend> requests) {
-        super(context,0, requests);
+    public  FindFriendArrayAdapter(Context context, int resource) {
+        super(context, resource);
         inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
+
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
 
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.item_friend_request, parent, false);
+            convertView = inflater.inflate(R.layout.item_addfriend, parent, false);
             viewHolder = new ViewHolder();
 
-            viewHolder.friendIcon = (ImageView) convertView.findViewById(R.id.request_icon);
-            viewHolder.friendUsername = (TextView) convertView.findViewById(R.id.request_username);
-            viewHolder.acceptFriend = (Button) convertView.findViewById(R.id.accept_friend);
-            viewHolder.declineFriend = (Button) convertView.findViewById(R.id.decline_friend);
+            viewHolder.userIcon = (ImageView) convertView.findViewById(R.id.user_icon);
+            viewHolder.userUsername = (TextView) convertView.findViewById(R.id.user_username);
+            //viewHolder.acceptFriend = (Button) convertView.findViewById(R.id.accept_friend);
+            //viewHolder.declineFriend = (Button) convertView.findViewById(R.id.decline_friend);
 
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        final Friend requestor = getItem(position);
-        viewHolder.friendUsername.setText(requestor.getUsername());
-        viewHolder.acceptFriend.setOnClickListener(new View.OnClickListener() {
+        final UserRecord userRecord = getItem(position);
+
+        Log.d("arrayAdapter", getCount() + "   " + position);
+        viewHolder.userUsername.setText(userRecord.getUsername());
+        /*viewHolder.acceptFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {//delay for state animation
@@ -70,25 +76,31 @@ public class FindFriendsArrayAdapter extends ArrayAdapter<Friend>{
                 notifyDataSetChanged();
                 //TODO Send response to server
             }
-        });
+        });*/
 
-        viewHolder.friendUsername.setOnClickListener(new View.OnClickListener() {
+        viewHolder.userUsername.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FriendsCursorAdapter.startFriendInfoActivity(view);
+                FriendsCursorAdapter.startFriendInfoActivity(view, false,
+                        userRecord.getUsername(), userRecord.getId());
             }
         });
 
-        viewHolder.friendIcon.setOnClickListener(new View.OnClickListener() {
+
+        Drawable background = viewHolder.userIcon.getBackground();
+        ((GradientDrawable)background).setColor(AppConstants.COLOR_ARRAY_LIST[userRecord.getId() %
+                AppConstants.COLOR_ARRAY_LIST.length]);
+        viewHolder.userIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FriendsCursorAdapter.startFriendInfoActivity(view);
+                FriendsCursorAdapter.startFriendInfoActivity(view, false,
+                        userRecord.getUsername(), userRecord.getId());
             }
         });
         return convertView;
     }
 
-    public void setData(List<Friend> data) {
+    public void setData(List<UserRecord> data) {
         clear();
         if (data != null) {
             addAll(data);
@@ -97,10 +109,10 @@ public class FindFriendsArrayAdapter extends ArrayAdapter<Friend>{
     }
 
     private class ViewHolder {
-        public ImageView friendIcon;
-        public TextView friendUsername;
-        public Button acceptFriend;
-        public Button declineFriend;
+        public ImageView userIcon;
+        public TextView userUsername;
+        //public Button acceptFriend;
+       // public Button declineFriend;
 
     }
 }

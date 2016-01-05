@@ -27,7 +27,7 @@
             android:contentDescription="@string/find_button_description"
             android:background="@drawable/selector_find_friend_btn"/>
 
-        <com.picspy.adapters.SearchEditText
+        <com.picspy.views.SearchEditTextView
             android:id="@+id/search_box"
             android:tag="searchBox"
             android:layout_width="wrap_content"
@@ -44,9 +44,9 @@
             android:text="10+"
             android:padding="2dp"
             android:textColor="#FFFFFF"
-            android:layout_alignTop="@+id/find_friend"
-            android:layout_alignRight="@+id/find_friend"
-            android:layout_alignEnd="@+id/find_friend"
+            android:layout_alignTop="@id/find_friend"
+            android:layout_alignRight="@id/find_friend"
+            android:layout_alignEnd="@id/find_friend"
             android:gravity="center"
             android:singleLine="true"
             android:textSize="8sp"
@@ -59,14 +59,19 @@
         android:id="@id/android:list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/friend_list_header"
-        android:headerDividersEnabled="true"/>
+        android:layout_below="@id/friend_list_header"/>
 
     <TextView
-        android:id="@+id/add_friend_box"
+        android:id="@+id/android:empty"
+        android:tag="friends_fragment_empty_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/android:list"
-        android:text="Tap to add friendList"
-        android:textColor="#00FF00"/>
+        android:layout_below="@id/friend_list_header"
+        android:minHeight="32dp"
+        android:layout_margin="8dp"
+        android:padding="4dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/secondary_text"
+        android:gravity="center"
+        android:text="@string/friends_fragment_empty_search"/>
 </RelativeLayout>

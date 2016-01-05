@@ -64,7 +64,7 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
                 game.setGuess((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_GUESS))));
                 game.setTime((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_TIME))));
                 game.setVote((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_VOTE))) != 0);
-                game.setSenderId((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_SENDER))));
+                game.setSenderId((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_SENDER_ID))));
                 game.setId(c.getInt(c.getColumnIndex(GameEntry._ID)));
                 game.setSenderUsername(c.getString(c.getColumnIndex(
                         DbContract.FriendEntry.COLUMN_NAME_USERNAME)));

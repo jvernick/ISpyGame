@@ -1,81 +1,43 @@
 package com.picspy.models;
 
+import com.dreamfactory.model.Metadata;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Class to model a user record from the users database. This is used as a model when
- * returning related related records.
- * Created by BrunelAmC on 8/7/2015.
+ * Created by BrunelAmC on 12/30/2015.
  */
-public class UsersRecord extends DbApiResponse {
-    //user_id
-    @JsonProperty
-    private int id;
-    //dispaly_name
-    @JsonProperty
-    private String username;
-    //total games won
-    @JsonProperty
-    private int total_won;
-    //total games lost
-    @JsonProperty
-    private int total_lost;
-    //total games featured on leaderboard
-    @JsonProperty
-    private int leaderboard;
+public class UsersRecord extends DbApiResponse{
+    // List of Friend Records from GET call that returns multiple friend records
+    @JsonProperty("record")
+    private List<UserRecord> record = new ArrayList<>();
+    /* Available metadata for the response. */
+    @JsonProperty("meta")
+    private Metadata meta = null;
 
-    public Friend getRecordToFriend() {
-        return new Friend(id, username);
-    }
-    public int getTotal_won() {
-        return total_won;
+    public Metadata getMeta() {
+        return meta;
     }
 
-    public void setTotal_won(int total_won) {
-        this.total_won = total_won;
+    public void setMeta(Metadata meta) {
+        this.meta = meta;
     }
 
-    public int getTotal_lost() {
-        return total_lost;
+    public List<UserRecord> getRecord() {
+        return record;
     }
 
-    public void setTotal_lost(int total_lost) {
-        this.total_lost = total_lost;
+    public void setRecord(List<UserRecord> record) {
+        this.record = record;
     }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public int getLeaderboard() {
-        return leaderboard;
-    }
-
-    public void setLeaderboard(int leaderboard) {
-        this.leaderboard = leaderboard;
-    }
-
 
     @Override
     public String toString() {
-        return "UserRecord {" +
-                "\n" + "id: "  + id +
-                "\n" + " username: "  + username +
-                "\n" + " won: " + total_won  +
-                "\n" + " lost: "  + total_lost +
-                "\n" + " leaderboard: "  + leaderboard +
+        return "FriendsRecord {" +
+                "\n" + "  record: " + record +
+                "\n" + "  meta: " + meta +
                 "\n}";
     }
 }

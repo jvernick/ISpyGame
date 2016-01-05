@@ -1,8 +1,8 @@
 package com.picspy;
 
 import android.content.Context;
+import android.os.Parcel;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.dreamfactory.api.DbApi;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -31,6 +31,7 @@ public class FriendsTableRequests {
     private String session_id;
     private DbApi dbApi;
     private final static String TAG = "FriendsTableRequests";
+    private final int getFriendLimit = 20;
 
     /**
      * Constructor initializes the required settings and values from shared preferences
@@ -47,6 +48,38 @@ public class FriendsTableRequests {
     }
 
     /**
+     * Retrieves friends from the backend in groups and in a given range. This is used to get and
+     * display friends in groups when the user scrolls through the friend list.
+     * @param recordID The minimum record ID to retrieve
+     * @param limit The maximum number of records to retrieve
+     * @return Friend records from the server
+     */
+    public FriendsRecord getFriends(int recordID, Integer limit) {
+        try {
+            // "(`friend_1` = " + user_id + " OR `friend_2` = " + user_id + "): This filter is already implicitly defined
+            String filter =" `id` > " + recordID;
+            //TODO does limiting fields actually improve speed and peformance?
+            FriendsRecord temp = dbApi.getRecordsByFilter(FriendsRecord.class, AppConstants.FRIENDS_TABLE_NAME, filter, limit, null, null, null, false, false, "*");
+            Log.d(TAG, temp.toString());
+            return temp;
+        } catch (Exception e) {
+            Log.d(TAG, e.getMessage());
+            //Attempting to return only the message part of the error message
+            try {
+                JSONObject jObj = new JSONObject(e.getMessage());
+                JSONArray jArray = jObj.getJSONArray("error");
+                JSONObject obj = jArray.getJSONObject(0);
+                return null;
+            } catch (JSONException ex) { //message is from exception
+                //TODO customize message if an exception was thrown while getting messeage?
+                //Currently ignoring JSONException and returning full error message
+                ex.printStackTrace();
+                return null;
+            }
+        }
+    }
+
+    /**
      * Queries the database and attempts to add a friend
      * @param friend_2_id display_name of friend to add
      * @return "SUCCESS" on success and "FAILED" or Error message on failure
@@ -54,7 +87,38 @@ public class FriendsTableRequests {
     public String sendFriendRequest(int friend_2_id) {
         try {
             AddFriendModel request = new AddFriendModel(user_id,friend_2_id,user_id );
-            FriendRecord record = dbApi.createRecord(FriendRecord.class, AppConstants.FRIENDS_TABLE_NAME, "123", request, null, null, null, null);
+            FriendRecord record = dbApi.createRecord(FriendRecord.class, AppConstants.FRIENDS_TABLE_NAME, "123", request, null, null, null, "*");
+            if ( record != null) {
+                Log.d(TAG, record.toString());
+                return "SUCCESS";
+            } else {
+                return "FAILED";
+            }
+        } catch (Exception e) {
+            Log.d(TAG, e.getMessage());
+            //Attempting to return only the message part of the error message
+            try {
+                JSONObject jObj = new JSONObject(e.getMessage());
+                JSONArray jArray = jObj.getJSONArray("error");
+                JSONObject obj = jArray.getJSONObject(0);
+                return obj.getString("message");
+            } catch (JSONException ex) { //message is from exception
+                //TODO customize message if an exception was thrown while getting messeage?
+                //Currently ignoring JSONException and returning full error message
+                return e.getMessage();
+            }
+        }
+    }
+
+    /**
+     * Queries the database and attempts to add a friend
+     * @param friend2_username display_name of friend to add
+     * @return "SUCCESS" on success and "FAILED" or Error message on failure
+     */
+    public String sendFriendRequest(String friend2_username) {
+        try {
+            FriendRequest2 request2 = new FriendRequest2(friend2_username);
+            FriendRecord record = dbApi.createRecord(FriendRecord.class, AppConstants.FRIENDS_TABLE_NAME, "123", request2, null, null, null, null);
             if ( record != null) {
                 Log.d(TAG, record.toString());
                 return "SUCCESS";
@@ -121,7 +185,7 @@ public class FriendsTableRequests {
             // "(`friend_1` = " + user_id + " OR `friend_2` = " + user_id + "): This filter is already implicitly defined
             String filter =" `status` != " + user_id + " AND `status` != " + 0 ;
             //TODO does limiting fields actually improve speed and peformance?
-            FriendsRecord temp = dbApi.getRecordsByFilter(FriendsRecord.class, AppConstants.FRIENDS_TABLE_NAME, filter, null, null, null, null, false, false, null);
+            FriendsRecord temp = dbApi.getRecordsByFilter(FriendsRecord.class, AppConstants.FRIENDS_TABLE_NAME, filter, null, null, null, null, false, false, "*");
             Log.d(TAG, temp.toString());
             return temp;
         } catch (Exception e) {
@@ -267,6 +331,22 @@ public class FriendsTableRequests {
         }
     }
 
+
+    private class FriendRequest2 extends DbApiRequest {
+        @JsonProperty
+        private String friend_username;
+
+        public FriendRequest2(String friend_username) {
+            this.friend_username = friend_username;
+        }
+
+        @Override
+        public String toString() {
+            return "FriendRequest2{" +
+                    "friend_username='" + friend_username + '\'' +
+                    '}';
+        }
+    }
 
     /**
      * Private class containing basic fields for all api calls. All classes to be used in

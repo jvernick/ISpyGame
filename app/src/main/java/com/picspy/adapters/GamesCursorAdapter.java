@@ -33,13 +33,13 @@ public class GamesCursorAdapter extends ResourceCursorAdapter {
     }
     /* TODO remove
     Game game = new Game();
-                game.setPictureName(c.getString(c.getColumnIndex(GameEntry.COLUMN_NAME_PICTURE)));
+                game.setPicture_name(c.getString(c.getColumnIndex(GameEntry.COLUMN_NAME_PICTURE)));
                 game.setSelection((c.getString(c.getColumnIndex(GameEntry.COLUMN_NAME_SEL))));
                 game.setHint((c.getString(c.getColumnIndex(GameEntry.COLUMN_NAME_HINT))));
                 game.setGuess((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_GUESS))));
                 game.setTime((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_TIME))));
                 game.setVote((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_VOTE))) != 0);
-                game.setSenderId((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_SENDER))));
+                game.setSenderId((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_SENDER_ID))));
                 game.setId(c.getInt(c.getColumnIndex(GameEntry._ID)));
      */
 
@@ -62,7 +62,7 @@ public class GamesCursorAdapter extends ResourceCursorAdapter {
                 c.getColumnIndex(DbContract.GameEntry.COLUMN_NAME_GUESS))));
         viewHolder.uname.setText(c.getString(c.getColumnIndex(DbContract.FriendEntry.COLUMN_NAME_USERNAME)));
 
-        int senderId = c.getInt(c.getColumnIndex(DbContract.GameEntry.COLUMN_NAME_SENDER));
+        int senderId = c.getInt(c.getColumnIndex(DbContract.GameEntry.COLUMN_NAME_SENDER_ID));
 
         setIcon((ImageView) view.findViewById(R.id.list_icon), senderId);
     }

@@ -18,7 +18,7 @@ public class Game implements Parcelable {
     private int id;
     private String created;
     //most often null
-    private String senderUsername  = null;
+    private String senderUsername;
 
 
     /**

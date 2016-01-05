@@ -44,11 +44,6 @@
             android:label="@string/title_activity_main"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateUnchanged" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name="com.picspy.views.Splash_Activity"
@@ -56,6 +51,11 @@
             android:label="@string/title_activity_splash_"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
+            <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
         </activity>
         <activity
             android:name="com.picspy.views.LoginActivity"
@@ -88,11 +88,7 @@
             android:name="com.picspy.views.FriendInfoActivity"
             android:configChanges="orientation"
             android:label="@string/title_activity_friend_info"
-            android:parentActivityName="com.picspy.views.MainActivity"
             android:screenOrientation="portrait" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.picspy.views.MainActivity" />
         </activity>
         <activity
             android:name="com.picspy.views.ChallengesActivity"
@@ -111,9 +107,13 @@
         </activity>
         <activity
             android:name="com.picspy.views.FindFriendsActivity"
-            android:label="@string/title_activity_find_friend"
+            android:label="@string/title_activity_find_friends"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateUnchanged">
+            android:windowSoftInputMode="adjustNothing"
+            android:parentActivityName="com.picspy.views.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.picspy.views.MainActivity" />
         </activity>
     </application>
 

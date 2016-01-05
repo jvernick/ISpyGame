@@ -30,36 +30,38 @@ import com.picspy.models.FriendRecord;
 import com.picspy.utils.AppConstants;
 import com.picspy.utils.PrefUtil;
 
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 /**
  * Activity that displays friend information
  * When starting activity, pass the following informtion to the intent:
  *      FRIEND_ID && FRIEND_USERNAME : if this is for a friend
- *      FRIEND_REQUEST : if this for a friend request
+ *      FOR_FRIEND : if this for a friend request
  *      Nothing : if this is for self.
  */
 public class FriendInfoActivity extends ActionBarActivity implements SurfaceHolder.Callback {
     public final static String FRIEND_USERNAME = "com.picspy.USERNAME";
     public final static String FRIEND_ID = "com.picspy.FRIEND_ID";
-    public final static String FRIEND_REQUEST = "com.picspy.FRIEND_REQUEST";
+    public final static String FOR_FRIEND = "com.picspy.FRIEND_REQUEST";
     private static final String TAG = "FriendsInfoActivity";
     private TextView sent_won, sent_lost, received_won, received_lost;
     private TextView total_won, total_lost, leaderboard, toolbarTitle, stats_title;
     private SurfaceView frame1;
     private ProgressBar spinner;
     private int friend_id;
+    private String friend_username;
     private int topPercentage = 50, bottomPercentage = 50;  //default percentage values
     private boolean requestSuccessful = false;
     private boolean forFriend = false;
-    private boolean forFriendRequest = false;
+    private boolean surfaceDrawn = false;
+    private ArrayList<AlertDialog> alertDialogs = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = getIntent();
-        friend_id = intent.getIntExtra(FRIEND_ID, -1);
-        //TODO get username form intent
+        processIntent();
+
         new getStats(friend_id).execute();
         setContentView(R.layout.activity_friend_info);
         spinner = (ProgressBar)findViewById(R.id.myProgressBar);
@@ -69,9 +71,12 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
         initializeViews();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.friend_info_toolbar);
-
         toolbarTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
-        stats_title = (TextView) findViewById(R.id.stats_title);
+
+        if (friend_username != null) {
+            stats_title.setText(friend_username + "\' all time");
+            toolbarTitle.setText(friend_username);
+        }
         // TODO Should local db be queried here or in parent activity
 
         // Setting toolbar as the ActionBar
@@ -79,6 +84,15 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
+    }
+
+    private void processIntent() {
+        Intent intent = getIntent();
+        friend_id = intent.getIntExtra(FRIEND_ID, -1);
+        friend_username = intent.getStringExtra(FRIEND_USERNAME);
+        forFriend = intent.getBooleanExtra(FOR_FRIEND, false);
+
+        //TODO get username form intent
     }
 
     private void initializeViews() {
@@ -89,10 +103,13 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
         total_won = (TextView) findViewById(R.id.total_won);
         total_lost = (TextView) findViewById(R.id.total_lost);
         leaderboard = (TextView) findViewById(R.id.leaderboard);
+        stats_title = (TextView) findViewById(R.id.stats_title);
 
         if (forFriend) {
             frame1 = (SurfaceView) findViewById(R.id.surfaceView);
             frame1.getHolder().addCallback(this);
+        } else {
+            if (requestSuccessful) findViewById(R.id.joint_stats).setVisibility(View.GONE);
         }
     }
 
@@ -100,7 +117,7 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_friend_info, menu);
-        return true;
+        return forFriend;
     }
 
     @Override
@@ -110,32 +127,37 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (!requestSuccessful) { //Do nothing if web request was unsuccessful
-            return false;
-        }
-
-        if (id == R.id.action_settings) {
-            AlertDialog.Builder alertDialog = new AlertDialog.Builder(FriendInfoActivity.this);
-            alertDialog.setTitle("Remove Friend")
-                    .setMessage("Are you sure you want to remove this" + " user?")
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            //TODO ensure that on return to parent, friends list is reloaded
-                            //one way will be to return boolean to parent or always refresh
-                            DeleteFriendTask  deleteFriendTask = new DeleteFriendTask(friend_id);
-                            deleteFriendTask.execute();
-                        }
-                    }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    })
-                    .setIcon(android.R.drawable.ic_dialog_alert) //TODO change alert color to red?
-                    .show();
+        switch (id) {
+            case (android.R.id.home):
+                onBackPressed();
+            case (R.id.action_settings):
+                if (!requestSuccessful) { //Do nothing if web request was unsuccessful
+                    return false;
+                }
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(FriendInfoActivity.this);
+                alertDialogs.add(
+                alertDialog.setTitle("Remove Friend")
+                        .setMessage("Are you sure you want to remove this" + " user?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //TODO ensure that on return to parent, friends list is reloaded
+                                //one way will be to return boolean to parent or always refresh
+                                DeleteFriendTask  deleteFriendTask = new DeleteFriendTask(friend_id);
+                                deleteFriendTask.execute();
+                            }
+                        }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        dialog.dismiss();
+                    }
+                })
+                        .setIcon(android.R.drawable.ic_dialog_alert) //TODO change alert color to red?
+                        .show()
+                );
+                return true;
+            }
             return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -155,21 +177,20 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
 
     @Override //from implenting surface view
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
-        if (requestSuccessful) { //draw image only after data is gotten from server
-            tryDrawing(surfaceHolder, topPercentage, bottomPercentage);
+        if (requestSuccessful && forFriend) { //draw image only after data is gotten from server
+            surfaceDrawn = tryDrawing(surfaceHolder, topPercentage, bottomPercentage);
         }
     }
 
     @Override //from implenting surface view
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-        if (requestSuccessful) {
-            tryDrawing(surfaceHolder, topPercentage, bottomPercentage);
+        if (requestSuccessful && forFriend) {
+            surfaceDrawn = tryDrawing(surfaceHolder, topPercentage, bottomPercentage);
         }
     }
 
     @Override //from implenting surface view
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-
     }
 
     /**
@@ -178,13 +199,16 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
      * @param topPercent percentage to fill in the top floating_circle
      * @param bottomPercent percentage to fill in the bottom  floating_circle
      */
-    private void tryDrawing(SurfaceHolder surfaceHolder, int topPercent, int bottomPercent) {
+    private boolean tryDrawing(SurfaceHolder surfaceHolder, int topPercent, int bottomPercent) {
         Canvas canvas = surfaceHolder.lockCanvas();
         if (canvas == null) {
             Log.e(TAG, "Cannot draw onto the canvas as it's null");
+            return false;
         } else {
-            drawRect(canvas, surfaceHolder.getSurfaceFrame(), topPercent, bottomPercent);
-            surfaceHolder.unlockCanvasAndPost(canvas);
+            if (drawRect(canvas, surfaceHolder.getSurfaceFrame(), topPercent, bottomPercent)) {
+                surfaceHolder.unlockCanvasAndPost(canvas);
+            }
+            return true;
         }
 
     }
@@ -196,7 +220,7 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
      * @param topPercent percentage to fill in the top floating_circle
      * @param bottomPercent percentage to fill in the bottom  floating_circle
      */
-    private void drawRect(final Canvas canvas, Rect canvasRect, int topPercent, int bottomPercent) {
+    private boolean drawRect(final Canvas canvas, Rect canvasRect, int topPercent, int bottomPercent) {
         //Rect rect = new RectF(frame1.getLeft(), frame1.getTop(), frame1.getRight(),
         // frame1.getBottom());
         int pad = 1;
@@ -225,6 +249,7 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
         paint.setColor(win_color);
         canvas.drawArc(rect1, 0, 360 * topPercent / 100, true, paint);
         canvas.drawArc(rect2, 0, 360 * bottomPercent / 100, true, paint);
+        return true;
     }
 
     /**
@@ -255,6 +280,7 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
 
     private void setUserStats(FriendRecord record) {
         //set values depending on who is friend_1 or friend_2
+        //TODO move renaming of toolbar to onCreate
         if (friend_id < PrefUtil.getInt(getApplicationContext(), AppConstants.USER_ID)) {
             stats_title.setText(record.getUsers_by_friend_1().getUsername() + "\' all time");
             toolbarTitle.setText(record.getUsers_by_friend_1().getUsername());
@@ -309,10 +335,8 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
             }
         }
 
-        requestSuccessful = true;
-        View view = findViewById(R.id.page);
-        view.setVisibility(View.VISIBLE);
-        tryDrawing(frame1.getHolder(), topPercentage, bottomPercentage);
+        findViewById(R.id.joint_stats).setVisibility(View.VISIBLE);
+        if (! surfaceDrawn) tryDrawing(frame1.getHolder(), topPercentage, bottomPercentage);
         //TODO set user stats
     }
 
@@ -345,8 +369,10 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
         protected void onPostExecute(FriendRecord result) {
             spinner.setVisibility(View.GONE);
             if (result != null){
-                setFriendStats(result);
+                findViewById(R.id.page).setVisibility(View.VISIBLE);
+                if(forFriend) setFriendStats(result);
                 setUserStats(result);
+                requestSuccessful = true;
             } else { // some error, show dialog
                 Toast.makeText(FriendInfoActivity.this, "Network error",Toast.LENGTH_SHORT).show();
             }
@@ -369,7 +395,9 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
             String result = request.removeFriend(friend_id);
             if (result != null && result.equals("SUCCESS")) { //TODO String contains error message on error
                 DatabaseHandler dbHandler = DatabaseHandler.getInstance((getApplicationContext()));
-                dbHandler.deleteFriend(new Friend(friend_id, null));
+                if (dbHandler.getFriend(friend_id) != null) {
+                    dbHandler.deleteFriend(new Friend(friend_id, null));
+                }
                 return "SUCCESS";
             } else {
                 Pattern p1 = Pattern.compile(".*[cC]onnection.*[rR]efused.*", Pattern.DOTALL);
@@ -398,8 +426,16 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
                                 dialog.cancel();
                             }
                         });
-                alertDialog.show();
+                alertDialogs.add(alertDialog.show());
             }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        for (AlertDialog d: alertDialogs) {
+            if (d.isShowing()) d.dismiss();
         }
     }
 }

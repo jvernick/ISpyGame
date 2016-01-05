@@ -23,12 +23,13 @@ import java.util.List;
  * TODO make sender_id related to id from friends table?
  */
 public class DatabaseHandler extends SQLiteOpenHelper{
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 4;
     public static final String DATABASE_NAME = "dbManager.db";
     private static final String SQL_CREATE_FRIENDS_TABLE = "CREATE TABLE " + FriendEntry.TABLE_NAME
             + "("
-            + FriendEntry._ID + " INTEGER PRIMARY KEY," + FriendEntry.COLUMN_NAME_USERNAME
-            + " TEXT" + ")";
+            + FriendEntry._ID + " INTEGER PRIMARY KEY,"
+            + FriendEntry.COLUMN_NAME_USERNAME + " TEXT"
+            + ")";
     private static final String SQL_CREATE_GAMES_TABLE = "CREATE TABLE " + GameEntry.TABLE_NAME
             + "("
             + GameEntry._ID + " INTEGER PRIMARY KEY, "
@@ -38,10 +39,9 @@ public class DatabaseHandler extends SQLiteOpenHelper{
             + GameEntry.COLUMN_NAME_GUESS + " INTEGER, "
             + GameEntry.COLUMN_NAME_TIME + " INTEGER, "
             + GameEntry.COLUMN_NAME_VOTE + " BOOLEAN, "
-            + GameEntry.COLUMN_NAME_SENDER + " INTEGER, "
+            + GameEntry.COLUMN_NAME_SENDER_ID + " INTEGER, "
             + GameEntry.COLUMN_NAME_CREATED + " TEXT, "
-            + "FOREIGN KEY(" + GameEntry.COLUMN_NAME_SENDER + ") REFERENCES "
-            + FriendEntry.TABLE_NAME + "(" + FriendEntry._ID +")"
+            + GameEntry.COLUMN_NAME_SENDER_NAME + "TEXT"
             + ")";
     private static final String SQL_DELETE_FRIENDS_TABLE =
             "DROP TABLE IF EXISTS " + FriendEntry.TABLE_NAME;
@@ -75,6 +75,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(SQL_CREATE_FRIENDS_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_GAMES_TABLE);
+        Log.d("dbHandler", "oncreate");
         //TODO add statements to fill the tables| Test
     }
 
@@ -135,10 +136,12 @@ public class DatabaseHandler extends SQLiteOpenHelper{
                 selectionArgs, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
-        //TODO Does the warning below need handling?
-        Friend friend = new Friend(Integer.parseInt(cursor.getString(0)), cursor.getString(1));
+        Friend friend = null;
+        if (cursor != null) {
+            friend = new Friend(Integer.parseInt(cursor.getString(0)), cursor.getString(1));
+            cursor.close();
+        }
         db.close();
-        cursor.close();
         return friend;
     }
 
@@ -158,7 +161,6 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     public Cursor getMatchingFriends(String constraint) {
         if (constraint == null || constraint.length() == 0) return getAllFriends();
         Cursor cursor;
-        Log.d("DatabaseHandler:: ", "filtering");
         SQLiteDatabase db = this.getWritableDatabase();
         String[] columns = {FriendEntry._ID, FriendEntry.COLUMN_NAME_USERNAME};
 
@@ -258,12 +260,14 @@ public class DatabaseHandler extends SQLiteOpenHelper{
      */
     public void addGames(List<Game> games, int max_user_challenge_id) {
         SQLiteDatabase db = this.getWritableDatabase();
-
+        long errorCheck = 0;
         for(Game game: games) {
-            addGameHelper(game, db);
+           if (addGameHelper(game, db) == -1) errorCheck = -1;
         }
 
-        PrefUtil.putInt(context, AppConstants.LAST_USER_CHALLENGE_ID, max_user_challenge_id);
+        if (errorCheck != -1) {
+            PrefUtil.putInt(context, AppConstants.LAST_USER_CHALLENGE_ID, max_user_challenge_id);
+        }
         db.close();
     }
 
@@ -272,7 +276,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
      * @param game game to be added
      * @param db current handler
      */
-    private void addGameHelper(Game game, SQLiteDatabase db) {
+    private long addGameHelper(Game game, SQLiteDatabase db) {
         ContentValues values = new ContentValues();
         values.put(GameEntry._ID, game.getId());
         values.put(GameEntry.COLUMN_NAME_PICTURE, game.getPictureName());
@@ -281,10 +285,11 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         values.put(GameEntry.COLUMN_NAME_GUESS, game.getGuess());
         values.put(GameEntry.COLUMN_NAME_TIME, game.getTime());
         values.put(GameEntry.COLUMN_NAME_VOTE, game.isVote());
-        values.put(GameEntry.COLUMN_NAME_SENDER, game.getSenderId());
+        values.put(GameEntry.COLUMN_NAME_SENDER_ID, game.getSenderId());
         values.put(GameEntry.COLUMN_NAME_CREATED, game.getCreated());
+        values.put(GameEntry.COLUMN_NAME_SENDER_NAME, game.getSenderUsername());
 
-        db.insert(GameEntry.TABLE_NAME, null, values);
+        return db.insert(GameEntry.TABLE_NAME, null, values);
     }
 
     /**
@@ -292,9 +297,9 @@ public class DatabaseHandler extends SQLiteOpenHelper{
      * @return A Cursor for retrieving game records
      */
     public Cursor getAllGames() {
-        // Select All Query. Alos gets username from Friends table
+        // Select All Query. Also gets username from Friends table
         String selectQuery = "SELECT * FROM " + GameEntry.TABLE_NAME + " game, "
-                + FriendEntry.TABLE_NAME + " friend WHERE game." + GameEntry.COLUMN_NAME_SENDER
+                + FriendEntry.TABLE_NAME + " friend WHERE game." + GameEntry.COLUMN_NAME_SENDER_ID
                 + " = friend." + FriendEntry._ID;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);

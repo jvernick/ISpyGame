@@ -17,6 +17,17 @@ public class UserChallengeRecord extends DbApiResponse{
     //Related record to retrieve challenge
     @JsonProperty
     private GameRecord challenges_by_challenge_id;
+    //Related record to retrieve sender
+    @JsonProperty
+    private UserRecord users_by_user_id;
+
+    public UserRecord getUsers_by_user_id() {
+        return users_by_user_id;
+    }
+
+    public void setUsers_by_user_id(UserRecord users_by_user_id) {
+        this.users_by_user_id = users_by_user_id;
+    }
 
     public GameRecord getChallenges_by_challenge_id() {
         return challenges_by_challenge_id;
@@ -32,7 +43,9 @@ public class UserChallengeRecord extends DbApiResponse{
      * no related data(challenges_by_challenge_id)
      */
     public Game getGame() {
-        return GameRecord.getGame(challenges_by_challenge_id);
+        Game temp = GameRecord.getGame(challenges_by_challenge_id);
+        temp.setSenderUsername(users_by_user_id.getUsername());
+        return temp;
     }
     public int getId() {
         return id;
@@ -60,11 +73,12 @@ public class UserChallengeRecord extends DbApiResponse{
 
     @Override
     public String toString() {
-        return "UserChallengesRequest {" +
+        return "UserChallengeRequest {" +
                 "\n" + " challenge_id: " + challenge_id +
                 "\n" + " user_id: " + user_id +
-                "\n" + " GameRecord: {" +
-                "}\n}";
+                "\n" + " GameRecord: {" + challenges_by_challenge_id +
+                "\n" + " UserRecord: {" + users_by_user_id +
+                "\n} } }";
     }
 }
 

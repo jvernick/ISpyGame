@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:padding="4dp">
+
+    <ImageView
+        android:id="@+id/user_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:padding="4dp"
+        android:src="@drawable/ic_friend"
+        android:background="@drawable/bg_friend_icon_circle" />
+
+    <Button
+        android:id="@+id/send_request"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_above="@id/bar"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@id/user_icon"
+        android:layout_alignBottom="@id/user_icon"
+        android:layout_margin="4dp"
+        android:padding="4dp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/btn_send_request"
+        android:background="@drawable/selector_friend_add_btn"/>
+
+    <TextView
+        android:id="@+id/user_username"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_toRightOf="@id/user_icon"
+        android:layout_toEndOf="@id/user_icon"
+        android:layout_alignTop="@id/user_icon"
+        android:layout_toLeftOf="@id/send_request"
+        android:layout_toStartOf="@id/send_request"
+        android:layout_alignBottom="@id/user_icon"
+        android:layout_marginLeft="8dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/primary_text"
+        android:gravity="center_vertical"
+        android:padding="8dp"/>
+</RelativeLayout>

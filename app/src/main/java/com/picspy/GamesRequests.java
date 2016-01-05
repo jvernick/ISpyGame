@@ -102,10 +102,9 @@ public class GamesRequests {
         if (max_user_challenge_id != 0) {
             filter = filter +  " AND `id` > " + String.valueOf(max_user_challenge_id);
         }
-        String related = "challenges_by_challenge_id";
         UserChallengesRecord result = dbApi.getRecordsByFilter(UserChallengesRecord.class,
                 AppConstants.USER_CHALLENGES_TABLE_NAME, filter, null, null, null, null,
-                false, false, related);
+                false, false, "*");
         if (result != null) Log.d(TAG, result.toString());
         return result;
     }

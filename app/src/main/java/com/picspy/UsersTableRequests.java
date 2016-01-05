@@ -6,6 +6,7 @@ import android.util.Log;
 import com.dreamfactory.api.DbApi;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.picspy.models.DbApiRequest;
+import com.picspy.models.UserRecord;
 import com.picspy.models.UsersRecord;
 import com.picspy.utils.AppConstants;
 import com.picspy.utils.PrefUtil;
@@ -14,8 +15,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
 /**
- * TODO should this class be removed since the users tabe is accesed in only one of the following
  * two ways:
  * 1)from insert and delete scripts in the system user table,
  * 2)from calls to the friends table using related data
@@ -37,10 +39,44 @@ public class UsersTableRequests {
         dbApi.setBasePath(AppConstants.DSP_URL);
     }
 
+     /**
+      * Searches for a user with the given username on the server
+      * @param username username to be searched
+      * @return UserRecord if user found, otherwise null
+      */
+     public UserRecord findUser(String username) {
+         try {
+             String filter =" `username` = \"" + username + " \"";
+             UsersRecord record = dbApi.getRecordsByFilter(UsersRecord.class, AppConstants.USERS_TABLE_NAME, filter, null, null, null, null, false, false, null);
+             if (record != null) {
+                 Log.d(TAG, record.toString());
+                 List<UserRecord> records= record.getRecord();
+                 if(records != null && records.size() == 1) {
+                     return records.get(0);
+                 }
+             } else {
+                 Log.d(TAG, "RecordNull");
+                 return null;
+             }
+         } catch (Exception e) {
+             Log.d(TAG, e.getMessage());
+             //Attempting to return only the message part of the error message
+             try {
+                 JSONObject jObj = new JSONObject(e.getMessage());
+                 JSONArray jArray = jObj.getJSONArray("error");
+                 JSONObject obj = jArray.getJSONObject(0);
+             } catch (JSONException ex) { //message is from exception
+                 //Currently ignoring JSONException and returning full error message
+             }
+         }
+         return null;
+     }
+
     public String addUser(int id, String username) {
         try {
             AddUser request = new AddUser(id, username );
-            UsersRecord record = dbApi.createRecord(UsersRecord.class, AppConstants.USERS_TABLE_NAME, "123", request, null, null, null, null);
+            UserRecord record = dbApi.createRecord(UserRecord.class,
+                    AppConstants.USERS_TABLE_NAME, "123", request, null, null, null, null);
             if ( record != null) {
                 Log.d(TAG, record.toString());
                 return "SUCCESS";

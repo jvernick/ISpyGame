@@ -25,10 +25,7 @@ import java.util.ArrayList;
  * Main page activity
  */
 public class MainActivity extends FragmentActivity {
-    private SlidingTabLayout slidingTabLayout;
     private ViewPager viewPager;
-    private ArrayList<Fragment> fragments;
-    private TabsViewPagerAdapter myViewPagerAdapter;
 
     private static final int SELECT_PICTURE = 1;
     private String selectedImagePath;
@@ -41,22 +38,22 @@ public class MainActivity extends FragmentActivity {
         // Define SlidingTabLayout (shown at top)
         // and ViewPager (shown at bottom) in the layout.
         // Get their instances.
-        slidingTabLayout = (SlidingTabLayout) findViewById(R.id.tab);
+        SlidingTabLayout slidingTabLayout = (SlidingTabLayout) findViewById(R.id.tab);
         viewPager = (ViewPager) findViewById(R.id.viewpager);
 
         // create a fragment list in order.
-        fragments = new ArrayList<>();
+        ArrayList<Fragment> fragments = new ArrayList<>();
         fragments.add(new FriendsFragment());
         fragments.add(new TopFragment());
 
         // use FragmentPagerAdapter to bind the slidingTabLayout (tabs with different titles)
         // and ViewPager (different pages of fragment) together.
-        myViewPagerAdapter = new TabsViewPagerAdapter(getSupportFragmentManager(), fragments);
+        TabsViewPagerAdapter myViewPagerAdapter = new TabsViewPagerAdapter(
+                getSupportFragmentManager(), fragments);
         viewPager.setAdapter(myViewPagerAdapter);
 
         // make sure the tabs are equally spaced.
         slidingTabLayout.setDistributeEvenly(true);
-
         // Setting custom color for scroll bar indicator
         slidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
             @Override
@@ -64,8 +61,6 @@ public class MainActivity extends FragmentActivity {
                 return getResources().getColor(R.color.tabsScrollColor);
             }
         });
-
-
         slidingTabLayout.setViewPager(viewPager);
     }
 

@@ -52,37 +52,37 @@ public class FriendRecord extends DbApiResponse {
 
     //related record for friend_1. Not added to toString()
     @JsonProperty
-    private UsersRecord users_by_friend_1;
+    private UserRecord users_by_friend_1;
 
     //related record for friend_2. Not added to toString()
     @JsonProperty
-    private UsersRecord users_by_friend_2;
+    private UserRecord users_by_friend_2;
 
     /**
      * Return the other user's record
      * @param myId current userID
      * @return other user id
      */
-    public UsersRecord getOtherUserRecord(int myId) {
+    public UserRecord getOtherUserRecord(int myId) {
         if (myId != this.friend_1) {
             return users_by_friend_1;
         } else {
             return users_by_friend_2;
         }
     }
-    public UsersRecord getUsers_by_friend_1() {
+    public UserRecord getUsers_by_friend_1() {
         return users_by_friend_1;
     }
 
-    public void setUsers_by_friend_1(UsersRecord users_by_friend_1) {
+    public void setUsers_by_friend_1(UserRecord users_by_friend_1) {
         this.users_by_friend_1 = users_by_friend_1;
     }
 
-    public UsersRecord getUsers_by_friend_2() {
+    public UserRecord getUsers_by_friend_2() {
         return users_by_friend_2;
     }
 
-    public void setUsers_by_friend_2(UsersRecord users_by_friend_2) {
+    public void setUsers_by_friend_2(UserRecord users_by_friend_2) {
         this.users_by_friend_2 = users_by_friend_2;
     }
 

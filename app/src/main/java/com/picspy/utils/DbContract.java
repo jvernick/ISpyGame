@@ -27,7 +27,8 @@ public class DbContract {
          public static final String COLUMN_NAME_GUESS = "guess";
          public static final String COLUMN_NAME_VOTE = "vote";
          public static final String COLUMN_NAME_PICTURE = "picture_name";
-         public static final String COLUMN_NAME_SENDER = "sender";
+         public static final String COLUMN_NAME_SENDER_ID = "sender";
+         public static final String COLUMN_NAME_SENDER_NAME = "sender_name";
          public static final String COLUMN_NAME_CREATED = "created";
      }
 

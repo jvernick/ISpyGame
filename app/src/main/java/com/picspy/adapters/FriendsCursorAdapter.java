@@ -3,17 +3,18 @@ package com.picspy.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Typeface;
-import android.util.Log;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
 import com.picspy.firstapp.R;
+import com.picspy.utils.AppConstants;
 import com.picspy.utils.DbContract;
 import com.picspy.views.CameraActivity;
 import com.picspy.views.FriendInfoActivity;
@@ -38,15 +39,17 @@ public class FriendsCursorAdapter extends ResourceCursorAdapter {
     public void bindView(View view, final Context context, Cursor c) {
         // Find fields to populate in inflated template
         final ViewHolder viewHolder = (ViewHolder) view.getTag();
+        final String friendUsername = c.getString(c.getColumnIndex(
+                DbContract.FriendEntry.COLUMN_NAME_USERNAME));
+        final int userId = c.getInt(c.getColumnIndex(DbContract.FriendEntry._ID));
 
-        viewHolder.unameTextView.setText(
-                c.getString(c.getColumnIndex(DbContract.FriendEntry.COLUMN_NAME_USERNAME)));
+        viewHolder.unameTextView.setText(friendUsername);
 
         //Start friendInfoActivity when friend username clicked
         viewHolder.unameTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startFriendInfoActivity(view);
+                startFriendInfoActivity(view, true, friendUsername, userId);
             }
         });
 
@@ -61,11 +64,14 @@ public class FriendsCursorAdapter extends ResourceCursorAdapter {
             }
         });
 
+        Drawable background = viewHolder.friendIcon.getBackground();
+        ((GradientDrawable)background).setColor(
+                AppConstants.COLOR_ARRAY_LIST[userId % AppConstants.COLOR_ARRAY_LIST.length]);
         //Start friendInfoActivity when friend icon clicked
         viewHolder.friendIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startFriendInfoActivity(view);
+                startFriendInfoActivity(view, true, friendUsername, userId);
             }
         });
     }
@@ -85,16 +91,25 @@ public class FriendsCursorAdapter extends ResourceCursorAdapter {
         return view;
     }
 
-    public static void startFriendInfoActivity(View view) {
+    /**
+     * Method to start the FriendInfoActivity with appropriate intent bundles.
+     * @param view Context view
+     * @param isFriend is the activity for a fiend?
+     * @param uname friend username
+     * @param id friend id
+     */
+    public static void startFriendInfoActivity(View view, boolean isFriend, String uname, int id) {
         Intent intent = new Intent(view.getContext(), FriendInfoActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        //TODO change intent extra to appropriate value if any
+        intent.putExtra(FriendInfoActivity.FOR_FRIEND, isFriend);
+        intent.putExtra(FriendInfoActivity.FRIEND_USERNAME, uname);
+        intent.putExtra(FriendInfoActivity.FRIEND_ID, id);
         view.getContext().startActivity(intent);
     }
 
     private class ViewHolder {
-        TextView unameTextView;//username
-        ImageView newGameButton; // new game TODO add this button
-        ImageView friendIcon;
+        public TextView unameTextView;//username
+        public ImageView newGameButton; // new game TODO add this button
+        public ImageView friendIcon;
     }
 }
