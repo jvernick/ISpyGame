@@ -80,6 +80,10 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="create_challenge" parent="Theme.AppCompat.Light.NoActionBar" >
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
 
 
 </resources>

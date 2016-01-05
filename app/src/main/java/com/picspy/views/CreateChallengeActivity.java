@@ -1,184 +1,156 @@
 package com.picspy.views;
 
 import android.app.Activity;
-import android.content.ClipData;
-import android.content.ClipDescription;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.Point;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
+import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.ImageView;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.picspy.firstapp.R;
 
-import java.io.File;
-
 /**
- * Created by Justin12 on 7/12/2015.
+ * Created by Justin12 on 01/01/2016.
  */
 
 /**
- * The Activity where the user draws their selection of the hidden object in the image they chose.
+ * The Activity where the user enters information about the challenge they want to create. This info
+ * includes the hint, the number of guesses, the time for guessing, and the option to send it to
+ * leader-boards.
  */
 public class CreateChallengeActivity extends Activity {
 
-    ImageView imageView;
-    Bitmap myBitmap;
-    Matrix matrix;
-    FrameLayout mDrawingPad;
-    ImageButton imageButton;
+    // TODO: add time part of the challenge
+    // TODO: fix lagginess of this activity when using the style defined in the manifest
+    private Button cancelButton;
+    private Button okButton;
+    private TextView hint;
+    private EditText hintInput;
+    private TextView guesses;
+    private TextView numOfGuesses;
+    private Button upButton;
+    private Button downButton;
+    private TextView time;
+    private TextView leaderboards;
+    private CheckBox checkBox;
+    public final static int DEFAULT_GUESSES = 3;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_challenge);
 
-        DrawingView mDrawingView=new DrawingView(this);
+        // use this if the window should look like a pop-up
+//        DisplayMetrics display = new DisplayMetrics();
+//        getWindowManager().getDefaultDisplay().getMetrics(display);
+//        int width = display.widthPixels;
+//        int height = display.heightPixels;
+//        getWindow().setLayout((int)(width*.9), (int)(height*.9));
 
-        mDrawingPad = (FrameLayout)findViewById(R.id.view_drawing_pad);
-        imageButton = (ImageButton)findViewById(R.id.colors_button);
-        imageButton.setTag("COLOR_PALETTE");
-        // Insert the Drawing View before the ImageButton so that the button overlays the canvas
-        mDrawingPad.addView(mDrawingView, 0);
+        hint = (TextView) findViewById(R.id.hint);
+        Typeface customFont = Typeface.createFromAsset(getAssets(), "fonts/ld_childish.ttf");
+        hint.setTypeface(customFont);
 
-        // Sets a long click listener for the View using an anonymous listener object that
-        // implements the OnLongClickListener interface
-        imageButton.setOnLongClickListener(new View.OnLongClickListener() {
+        guesses = (TextView) findViewById(R.id.guesses);
+        guesses.setTypeface(customFont);
 
-            // Defines the one method for the interface, which is called when the View is long-clicked
-            public boolean onLongClick(View v) {
+        numOfGuesses = (TextView) findViewById(R.id.number_of_guesses);
+        numOfGuesses.setText(DEFAULT_GUESSES + "");
+        numOfGuesses.setTypeface(customFont);
 
-                // Create a new ClipData.
-                // This is done in two steps to provide clarity. The convenience method
-                // ClipData.newPlainText() can create a plain text ClipData in one step.
-
-                // Create a new ClipData.Item from the ImageView object's tag
-                ClipData.Item item = new ClipData.Item((String) v.getTag());
-
-                // Create a new ClipData using the tag as a label, the plain text MIME type, and
-                // the already-created item. This will create a new ClipDescription object within the
-                // ClipData, and set its MIME type entry to "text/plain"
-                ClipData dragData = new ClipData((String) v.getTag(), new String[]{ClipDescription.MIMETYPE_TEXT_PLAIN}, item);
-
-                // Instantiates the drag shadow builder.
-                View.DragShadowBuilder myShadow = new MyDragShadowBuilder(imageView);
-
-                // Starts the drag
-
-                v.startDrag(dragData,  // the data to be dragged
-                        myShadow,  // the drag shadow builder
-                        null,      // no need to use local data
-                        0          // flags (not currently used, set to 0)
-                );
-                return true;
+        upButton = (Button) findViewById(R.id.up_button);
+        upButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int current_guesses = Integer.valueOf(numOfGuesses.getText().toString());
+                if (current_guesses < 5) {
+                    numOfGuesses.setText((current_guesses + 1) + "");
+                }
             }
         });
 
-        imageView = (ImageView)findViewById(R.id.imageView);
-        int cameraID = getIntent().getExtras().getInt("CameraID");
-        matrix = new Matrix();
-
-        if (cameraID == 1) {
-            // Mirror the image for the 'selfie' camera so it is displayed properly
-            matrix.preScale(-1, 1);
-        }
-        // TODO: Ensure that this rotation value applies for all devices
-        //set image rotation value to 90 degrees in matrix.
-        matrix.postRotate(90);
-
-        final int[] dimens = new int[2]; // height = 0, width = 1
-        // The view tree listener is needed in order to get the dimensions of the Views
-        ViewTreeObserver vto = imageView.getViewTreeObserver();
-        vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            public boolean onPreDraw() {
-                // Remove after the first run so it doesn't fire forever
-                imageView.getViewTreeObserver().removeOnPreDrawListener(this);
-                // TODO: These dimensions may be needed in the future
-                dimens[0] = imageView.getMeasuredHeight();
-                dimens[1] = imageView.getMeasuredWidth();
-                // Adjust the bitmap accordingly based on the matrix
-                Bitmap rotatedBitmap = Bitmap.createBitmap(myBitmap, 0, 0, myBitmap.getWidth(), myBitmap.getHeight(), matrix, true);
-                imageView.setImageBitmap(rotatedBitmap);
-                // TODO: leave for now for debugging purposes
-                System.out.println("drawpad height = " + mDrawingPad.getHeight() + " drawpad width = " + mDrawingPad.getWidth());
-                System.out.println("imageButton height = " + mDrawingPad.getChildAt(1).getHeight() + "imageButton width = " + mDrawingPad.getChildAt(1).getWidth());
-                System.out.println("canvas height = " + ((DrawingView) mDrawingPad.getChildAt(0)).mCanvas.getHeight() + "canvas width = " + ((DrawingView) mDrawingPad.getChildAt(0)).mCanvas.getWidth());
-                return true;
+        downButton = (Button) findViewById(R.id.down_button);
+        // rotate the button 180 degrees so it is upside down
+        Animation rotation = AnimationUtils.loadAnimation(this, R.anim.rotation);
+        downButton.startAnimation(rotation);
+        downButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int current_guesses = Integer.valueOf(numOfGuesses.getText().toString());
+                if (current_guesses > 1) {
+                    numOfGuesses.setText((current_guesses - 1) + "");
+                }
             }
         });
 
-        // Retrieve the image file from the Intent
-        Uri imageUri = (Uri) getIntent().getExtras().get(MediaStore.EXTRA_OUTPUT);
-        File imgFile = new File(imageUri.getPath());
-        if (imgFile.exists()) {
-            // Convert the file to a Bitmap
-            myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-        }
+        time = (TextView) findViewById(R.id.time);
+        time.setTypeface(customFont);
 
-        // TODO: Add UI for brush settings
+        leaderboards = (TextView) findViewById(R.id.leaderboard);
+        leaderboards.setTypeface(customFont);
+
+        checkBox = (CheckBox) findViewById(R.id.checkbox);
+
+        hintInput = (EditText) findViewById(R.id.hint_input);
+        hintInput.setTypeface(customFont);
+        hintInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+        hintInput.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                // Do not treat the enter key as a carriage return but rather complete the form
+                if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    ((RelativeLayout) v.getParent()).requestFocus();
+                    return true;
+                }
+                // handle all other events
+                return onKeyDown(keyCode, event);
+            }
+        });
+
+        cancelButton = (Button) findViewById(R.id.cancel_button);
+        cancelButton.setTypeface(customFont);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent result = new Intent();
+                setResult(RESULT_CANCELED, result);
+                finish();
+            }
+        });
+        // TODO: make ok and cancel button text bigger
+        okButton = (Button) findViewById(R.id.ok_button);
+        okButton.setTypeface(customFont);
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent result = new Intent();
+                result.putExtra(CameraActivity.HINT, hintInput.getText()); // store the hint
+                result.putExtra(CameraActivity.GUESSES, Integer.valueOf(numOfGuesses.getText().toString()));
+                result.putExtra(CameraActivity.LEADERBOARDS, checkBox.isEnabled());
+                setResult(RESULT_OK, result);
+                finish();
+            }
+        });
+
     }
 
-    // An inner class used for the drag shadow of the brush settings
-    // TODO: Change this once the brush settings UI is done
-    private static class MyDragShadowBuilder extends View.DragShadowBuilder {
-
-        // The drag shadow image, defined as a drawable thing
-        private static Drawable shadow;
-
-        // Defines the constructor for myDragShadowBuilder
-        public MyDragShadowBuilder(View v) {
-
-            // Stores the View parameter passed to myDragShadowBuilder.
-            super(v);
-
-            // Creates a draggable image that will fill the Canvas provided by the system.
-            shadow = new ColorDrawable(Color.LTGRAY);
-        }
-
-        // Defines a callback that sends the drag shadow dimensions and touch point back to the
-        // system.
-        @Override
-        public void onProvideShadowMetrics(Point size, Point touch) {
-            // Defines local variables
-            int width, height;
-
-            // Sets the width of the shadow to half the width of the original View
-            width = getView().getWidth() / 2;
-
-            // Sets the height of the shadow to half the height of the original View
-            height = getView().getHeight() / 2;
-
-            // The drag shadow is a ColorDrawable. This sets its dimensions to be the same as the
-            // Canvas that the system will provide. As a result, the drag shadow will fill the
-            // Canvas.
-            shadow.setBounds(0, 0, width, height);
-
-            // Sets the size parameter's width and height values. These get back to the system
-            // through the size parameter.
-            size.set(width, height);
-
-            // Sets the touch point's position to be in the middle of the drag shadow
-            touch.set(width / 2, height / 2);
-        }
-
-        // Defines a callback that draws the drag shadow in a Canvas that the system constructs
-        // from the dimensions passed in onProvideShadowMetrics().
-        @Override
-        public void onDrawShadow(Canvas canvas) {
-
-            // Draws the ColorDrawable in the Canvas passed in from the system.
-            shadow.draw(canvas);
-        }
+    private void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

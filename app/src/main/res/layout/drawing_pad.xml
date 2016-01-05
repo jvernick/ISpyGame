@@ -21,42 +21,8 @@
             android:background="@android:color/transparent"
             android:adjustViewBounds="true"/>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:id="@+id/brush_thickness_button"
-            android:onClick="changeBrushThickness">
-
-            <ImageView
-                android:id="@+id/small_thickness"
-                android:layout_width="10dp"
-                android:layout_height="10dp"
-                android:scaleType="fitCenter"
-                android:padding="0dp"
-                android:src="@drawable/round_button"
-                android:adjustViewBounds="true" />
-
-            <ImageView
-                android:id="@+id/medium_thickness"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:scaleType="fitCenter"
-                android:padding="0dp"
-                android:src="@drawable/round_button"
-                android:adjustViewBounds="true" />
-
-            <ImageView
-                android:id="@+id/large_thickness"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:scaleType="fitCenter"
-                android:padding="0dp"
-                android:src="@drawable/round_button"
-                android:adjustViewBounds="true" />
-        </LinearLayout>
-
         <ImageButton
+            android:contentDescription="Click this button to enter details about the challenge"
             android:id="@+id/undo_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -69,6 +35,16 @@
             android:adjustViewBounds="true" />
 
     </LinearLayout>
+
+    <Button
+        android:visibility="invisible"
+        android:id="@+id/finish_button"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="@drawable/create_challenge_button"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"/>
 
 
 </RelativeLayout>

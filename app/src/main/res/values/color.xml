@@ -16,4 +16,9 @@
     <color name="grey_400">#BDBDBD</color>
     <color name="find_friend_btn_pressed">#6184bf</color>
     <color name="white">#FFFFFF</color>
+    <color name="primary_red">#F44366</color>
+    <color name="palette_orange">#FF6A00</color>
+    <color name="palette_purple">#B200FF</color>
+    <color name="yellow">#ffff00</color>
+
 </resources>

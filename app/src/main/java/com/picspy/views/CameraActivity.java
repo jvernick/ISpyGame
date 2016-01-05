@@ -9,48 +9,32 @@ import android.graphics.LightingColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.transition.Fade;
-import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TableLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.dreamfactory.api.FilesApi;
-import com.dreamfactory.client.ApiException;
-import com.dreamfactory.model.FileRequest;
 import com.dreamfactory.model.FileResponse;
 import com.picspy.GamesRequests;
 import com.picspy.firstapp.R;
-import com.picspy.utils.AppConstants;
-import com.picspy.utils.PrefUtil;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Justin12 on 6/28/2015.
@@ -67,7 +51,13 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
     private static final String TAG = "CameraActivity";
-    private static final String DRAWING_VIEW_TAG = "DRAWING_VIEW";
+    public static final String DRAWING_VIEW_TAG = "DRAWING_VIEW";
+    public static final String FINISH_BUTTON_TAG = "FINISH_BUTTON";
+    public static final String HINT = "HINT";
+    public static final String GUESSES = "GUESSES";
+    public static final String TIME = "TIME";
+    public static final String LEADERBOARDS = "LEADERBOARDS";
+    public static final int CHALLENGE_INFO_REQUEST = 2;
     private Camera mCamera;
     private CameraPreview mPreview;
     private String flashMode = Camera.Parameters.FLASH_MODE_OFF;
@@ -78,18 +68,30 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
     private FrameLayout myFrameLayout;
     private int focusAreaSize;
     private Matrix matrix;
-    ImageButton captureButton;
-    ImageButton flashButton;
-    ImageButton switchButton;
-    ImageButton undoButton;
-    DrawingView mDrawingView;
-    RelativeLayout drawingPad;
-    boolean isPictureTaken;
+    private ImageButton captureButton;
+    private ImageButton flashButton;
+    private ImageButton switchButton;
+    private ImageButton undoButton;
+    private ImageButton brushColorButton;
+    private Button finishButton;
+    private DrawingView mDrawingView;
+    private RelativeLayout drawingPad;
+    private boolean isPictureTaken;
+    private static int[] colors = new int[6];
+    private static int currColor;
     private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
 
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
             isPictureTaken = true;
+
+            // Initialize the array of colors
+            colors[0] = Color.RED;
+            colors[1] = getResources().getColor(R.color.palette_orange);
+            colors[2] = Color.YELLOW;
+            colors[3] = Color.GREEN;
+            colors[4] = Color.BLUE;
+            colors[5] = getResources().getColor(R.color.palette_purple);
             // Now that a picture is taken, change the layout of the screen to enable drawing
 
             // get the parent layout for CameraActivity
@@ -115,7 +117,34 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
             undoButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mDrawingView.undoDrawing();
+                      mDrawingView.undoDrawing();
+                }
+            });
+
+            brushColorButton = (ImageButton) drawingPad.findViewById(R.id.brush_colors);
+            brushColorButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    currColor = (currColor+1) % colors.length;
+                    int colorToUse = colors[currColor];
+                    mDrawingView.setBrushColor(colorToUse);
+                    // change the color of the palette button
+                    ColorFilter filter = new LightingColorFilter(colorToUse,colorToUse);
+                    brushColorButton.setColorFilter(filter);
+                }
+            });
+
+            finishButton = (Button) drawingPad.findViewById(R.id.finish_button);
+            finishButton.setTag(FINISH_BUTTON_TAG); // distinguish the finish button
+            finishButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mDrawingView.isDoneDrawing()) {
+                        // TODO: do I want to call startActivity() instead?
+                        // create and launch an activity to prompt the user for info about the challenge
+                        Intent intent = new Intent(getApplicationContext(), CreateChallengeActivity.class);
+                        startActivityForResult(intent, CHALLENGE_INFO_REQUEST);
+                    }
                 }
             });
 
@@ -124,12 +153,15 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
         }
     };
 
-    // TODO: implement this
-    public void changeBrushThickness(View view) {
-        LinearLayout brushThicknessButton = (LinearLayout) findViewById(R.id.brush_thickness_button);
-        ColorFilter filter = new LightingColorFilter( Color.RED, Color.RED );
-        for (int i = 0; i < brushThicknessButton.getChildCount(); i++) {
-            ((ImageView) brushThicknessButton.getChildAt(i)).setColorFilter(filter);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == CHALLENGE_INFO_REQUEST) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                String hint = data.getStringExtra(HINT);
+                // TODO: handle the data received
+            }
         }
     }
 
@@ -265,6 +297,7 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
         if (!isPictureTaken) {
             releaseCamera();    // release the camera immediately on pause event
         }
+        // TODO: should the camera be released if a picture is taken and the user moves on to the createchallenge screen?
     }
 
     // Helper method to release the camera resources when no longer using it
@@ -278,10 +311,29 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
 
     @Override
     public void onBackPressed() {
-        releaseCamera();
-        // reset the static variable camera id to the back facing camera
-        mPreview.setCameraID(Camera.CameraInfo.CAMERA_FACING_BACK);
-        super.onBackPressed();
+        if (!isPictureTaken) {
+            releaseCamera();
+            // reset the static variable camera id to the back facing camera
+            mPreview.setCameraID(Camera.CameraInfo.CAMERA_FACING_BACK);
+            super.onBackPressed();
+        } else {
+            // restore the camera layout so a new picture can be taken
+            ViewGroup layout = (ViewGroup) findViewById(R.id.camera_activity_layout);
+            layout.removeView(drawingPad);
+            drawingPad = null;
+            mDrawingView = null;
+            undoButton = null;
+            finishButton = null;
+
+            // remove the buttons used for taking picture
+            captureButton.setVisibility(View.VISIBLE);
+            flashButton.setVisibility(View.VISIBLE);
+            switchButton.setVisibility(View.VISIBLE);
+
+            isPictureTaken = false; // reset the boolean flag
+            // restore the camera preview with a call to onResume
+            onResume();
+        }
     }
 
     @Override
@@ -324,6 +376,8 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
             mPreview = new CameraPreview(this, mCamera, this);
             // Add the preview to the framelayout so it will be visible
             myFrameLayout.addView(mPreview);
+        } else {
+            // TODO: what to do if the user backs out of creating a challenge?
         }
     }
 
@@ -530,7 +584,7 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
     class UploadFileTask extends AsyncTask<Object, Void, String> {
         @Override
         protected void onPreExecute() {
-            //uncomment to show a rogress bar
+            //uncomment to show a progress bar
             //TODO confirm/create a progress display
             //progressDialog.show();
         }

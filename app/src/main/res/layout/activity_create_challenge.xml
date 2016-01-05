@@ -1,31 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent" android:layout_height="fill_parent" android:orientation="vertical">
+    android:layout_width="fill_parent" android:layout_height="fill_parent"
+    android:layout_gravity="center"
+    android:background="@color/primary"
+    android:clickable="true"
+    android:focusableInTouchMode="true">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:adjustViewBounds="true"
-        android:scaleType="fitXY"
-        android:layout_alignParentBottom="true"
-        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/hint"
+        android:text="Hint:"
+        android:textColor="@color/yellow"
+        android:paddingTop="15dp"
+        android:textSize="@android:dimen/app_icon_size" />
 
-    <FrameLayout
-        android:id="@+id/view_drawing_pad"
+    <EditText
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <ImageButton
-            android:id="@+id/colors_button"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@drawable/palette_with_color"
-            android:scaleType="fitCenter"
-            android:adjustViewBounds="true"
-            />
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:id="@+id/hint_input"
+        android:layout_below="@+id/hint"
+        android:layout_centerHorizontal="true"
+        android:background="#ffffffff"
+        android:maxLength="50"
+        android:layout_marginBottom="40dp"
+        android:textColor="@android:color/black"
+        android:textSize="30sp"
+        android:inputType="text"/>
 
-    </FrameLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/guesses"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/yellow"
+        android:textSize="@android:dimen/app_icon_size"
+        android:layout_below="@+id/hint_input"
+        android:text="Guesses:"/>
 
+   <LinearLayout
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:id="@+id/custom_num_picker"
+       android:layout_toRightOf="@id/guesses"
+       android:layout_toEndOf="@+id/guesses"
+       android:layout_below="@+id/hint_input"
+       android:orientation="horizontal"
+       android:gravity="center"
+       android:layout_marginLeft="30dp"
+       android:layout_marginStart="30dp">
+       
+       <TextView
+           android:layout_width="30dp"
+           android:layout_height="60dp"
+           android:textColor="@color/yellow"
+           android:textSize="@android:dimen/app_icon_size"
+           android:id="@+id/number_of_guesses" />
+
+       <LinearLayout
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:paddingLeft="20dp"
+           android:paddingStart="20dp"
+           android:paddingEnd="20dp"
+           android:orientation="vertical">
+
+           <Button
+               android:layout_width="50dp"
+               android:layout_height="50dp"
+               android:id="@+id/up_button"
+               android:background="@drawable/num_picker_button" />
+
+           <Button
+               android:layout_width="50dp"
+               android:layout_height="50dp"
+               android:background="@drawable/num_picker_button"
+               android:id="@+id/down_button" />
+
+       </LinearLayout>
+       
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/time"
+        android:textColor="@color/yellow"
+        android:textSize="@android:dimen/app_icon_size"
+        android:layout_below="@+id/custom_num_picker"
+        android:text="Time:"
+        android:paddingTop="20dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/leaderboard"
+        android:textColor="@color/yellow"
+        android:textSize="@android:dimen/app_icon_size"
+        android:layout_below="@+id/time"
+        android:text="Leaderboards:"
+        android:paddingTop="20dp"/>
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/checkbox"
+        android:layout_alignBottom="@+id/leaderboard"
+        android:layout_alignLeft="@+id/ok_button"
+        android:layout_alignStart="@+id/ok_button"
+        android:checked="false" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:id="@+id/cancel_button"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textStyle="bold" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="OK"
+        android:id="@+id/ok_button"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:textStyle="bold" />
 
 </RelativeLayout>

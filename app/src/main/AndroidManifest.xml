@@ -82,6 +82,8 @@
         </activity>
         <activity
             android:name="com.picspy.views.CreateChallengeActivity"
+            android:parentActivityName="com.picspy.views.CameraActivity"
+            android:theme="@style/create_challenge"
             android:label="@string/app_name" >
         </activity>
         <activity
