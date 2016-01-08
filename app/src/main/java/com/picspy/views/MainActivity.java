@@ -10,12 +10,13 @@ import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 
 import com.picspy.firstapp.R;
-import com.picspy.views.Fragments.FriendsFragment;
+import com.picspy.views.fragments.FriendsFragment;
 import com.picspy.adapters.TabsViewPagerAdapter;
-import com.picspy.views.Fragments.TopFragment;
+import com.picspy.views.fragments.TopFragment;
 import com.picspy.adapters.SlidingTabLayout;
 
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class MainActivity extends FragmentActivity {
 
         // create a fragment list in order.
         ArrayList<Fragment> fragments = new ArrayList<>();
-        fragments.add(new FriendsFragment());
+        fragments.add(FriendsFragment.newInstance(0));
         fragments.add(new TopFragment());
 
         // use FragmentPagerAdapter to bind the slidingTabLayout (tabs with different titles)
@@ -51,6 +52,7 @@ public class MainActivity extends FragmentActivity {
         TabsViewPagerAdapter myViewPagerAdapter = new TabsViewPagerAdapter(
                 getSupportFragmentManager(), fragments);
         viewPager.setAdapter(myViewPagerAdapter);
+        Log.d("mainactivity", "onCreate");
 
         // make sure the tabs are equally spaced.
         slidingTabLayout.setDistributeEvenly(true);

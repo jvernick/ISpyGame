@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--<?xml version="1.0" encoding="utf-8"?>
 
 <android.support.v7.widget.Toolbar
-    android:layout_height="48dp"
+    android:layout_height="?actionBarSize"
     android:layout_width="match_parent"
     android:elevation="4dp"
     android:id="@+id/myToolbar"
@@ -10,8 +11,30 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/primary_text_default_material_dark"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_gravity="center_vertical"
+        android:textColor="@color/white"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:visibility="gone"
         android:id="@+id/toolbar_title" />
+</android.support.v7.widget.Toolbar>
+-->
+
+<android.support.v7.widget.Toolbar
+    android:layout_height="?actionBarSize"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/myToolbar"
+    android:background="@color/primary"
+    app:titleTextAppearance="?android:attr/textAppearanceLarge"
+    app:navigationIcon="@drawable/ic_chevron_left"
+    app:theme="@style/ActionBarTheme"
+    android:theme="@style/ActionBarTheme"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textColor="@color/primary_text_default_material_dark"
+    android:textAppearance="?android:attr/textAppearanceLarge"
+    android:layout_gravity="center_vertical"
+    android:id="@+id/toolbar_title" />
 </android.support.v7.widget.Toolbar>

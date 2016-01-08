@@ -24,8 +24,11 @@ public class AppConstants {
     public static final String USER_CHALLENGES_TABLE_NAME = "user_challenges";
     public static final String CHALLENGES_TABLE_NAME = "challenges";
 
-    public static final String LAST_USER_CHALLENGE_ID = "last_user_challenge_id";
+    public static final String MAX_USER_CHALLENGE_ID = "last_user_challenge_id";
+    @Deprecated //use largest record id
     public static final String LAST_FRIEND_UPDATE_TIME = "last_friend_update_time";
+    public static final String MAX_FRIEND_RECORD_ID = "max_friend_record_id";
+
 
     public static final String FRIEND_REQUEST_COUNT = "friend_request_count";
     public static final String CHALLENGE_REQUEST_COUNT = "challenge_request_count";

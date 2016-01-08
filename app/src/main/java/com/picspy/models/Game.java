@@ -19,6 +19,7 @@ public class Game implements Parcelable {
     private String created;
     //most often null
     private String senderUsername;
+    private int userChallengeId;
 
 
     /**
@@ -173,6 +174,7 @@ public class Game implements Parcelable {
         parcel.writeInt(senderId);
         parcel.writeString(created);
         parcel.writeString(senderUsername);
+        parcel.writeInt(userChallengeId);
     }
 
     @Override
@@ -188,6 +190,7 @@ public class Game implements Parcelable {
                 ", id=" + id +
                 ", created='" + created + '\'' +
                 ", senderUsername='" + senderUsername + '\'' +
+                ", userChallengeId= " + userChallengeId + '\'' +
                 '}';
     }
 
@@ -197,5 +200,13 @@ public class Game implements Parcelable {
 
     public void setSenderUsername(String senderUsername) {
         this.senderUsername = senderUsername;
+    }
+
+    public int getUserChallengeId() {
+        return userChallengeId;
+    }
+
+    public void setUserChallengeId(int userChallengeId) {
+        this.userChallengeId = userChallengeId;
     }
 }

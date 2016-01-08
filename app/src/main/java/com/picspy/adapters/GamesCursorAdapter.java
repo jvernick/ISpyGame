@@ -60,7 +60,8 @@ public class GamesCursorAdapter extends ResourceCursorAdapter {
                 c.getColumnIndex(DbContract.GameEntry.COLUMN_NAME_TIME))));
         viewHolder.guesses.setText(String.valueOf(c.getInt(
                 c.getColumnIndex(DbContract.GameEntry.COLUMN_NAME_GUESS))));
-        viewHolder.uname.setText(c.getString(c.getColumnIndex(DbContract.FriendEntry.COLUMN_NAME_USERNAME)));
+        viewHolder.uname.setText(c.getString(c.getColumnIndex(
+                DbContract.GameEntry.COLUMN_NAME_SENDER_NAME)));
 
         int senderId = c.getInt(c.getColumnIndex(DbContract.GameEntry.COLUMN_NAME_SENDER_ID));
 

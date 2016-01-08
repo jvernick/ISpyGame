@@ -8,6 +8,14 @@ public class Friend {
     private int id;
     private String _username;
 
+    public Friend(int id, String _username, int recordId) {
+        this.id = id;
+        this._username = _username;
+        this.recordId = recordId;
+    }
+
+    private int recordId;
+
     public Friend(){
         super();
     }
@@ -29,5 +37,13 @@ public class Friend {
 
     public void setUsername(String _username) {
         this._username = _username;
+    }
+
+    public int getRecordId() {
+        return recordId;
+    }
+
+    public void setRecordId(int recordId) {
+        this.recordId = recordId;
     }
 }

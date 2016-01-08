@@ -13,10 +13,6 @@ import com.picspy.models.UserChallengesRecord;
 import com.picspy.utils.AppConstants;
 import com.picspy.utils.PrefUtil;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -94,14 +90,11 @@ public class GamesRequests {
      * TODO consider rethrowing exception so that caller handles it
      */
     public UserChallengesRecord getGamesInfo() throws ApiException{
-        String filter = " `user_id` = " + user_id ;
-        int max_user_challenge_id = PrefUtil.getInt(context,
-                AppConstants.LAST_USER_CHALLENGE_ID, 0);
         //Get only records that changed between now and the most recent call
         //TODO this idea only works if deleting the shared preferences is always simultaenos with deleting the database. Confirm
-        if (max_user_challenge_id != 0) {
-            filter = filter +  " AND `id` > " + String.valueOf(max_user_challenge_id);
-        }
+        String filter = " `user_id` = " + user_id  + " AND `id` > " + PrefUtil.getInt(context,
+                AppConstants.MAX_USER_CHALLENGE_ID, 0);
+
         UserChallengesRecord result = dbApi.getRecordsByFilter(UserChallengesRecord.class,
                 AppConstants.USER_CHALLENGES_TABLE_NAME, filter, null, null, null, null,
                 false, false, "*");
@@ -125,10 +118,9 @@ public class GamesRequests {
         String related = "users_by_sender";
         //order by votes in descending, descending
         String order = "votes desc";
-        GamesRecord result = dbApi.getRecordsByFilter(GamesRecord.class,
+        return dbApi.getRecordsByFilter(GamesRecord.class,
                 AppConstants.CHALLENGES_TABLE_NAME, filter, LEADERBOARD_LIMIT, null, order, null,
                 false, false, related);
-        return result;
     }
     
     /**

@@ -35,6 +35,8 @@
             android:gravity="center_vertical"
             android:layout_weight="85"
             android:textColor="@color/primary_text"
+            android:ellipsize="end"
+            android:singleLine="true"
             android:text="Username"/>
         <TextView
             android:id="@+id/timeLength"

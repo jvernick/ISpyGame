@@ -142,7 +142,7 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
                     if (mDrawingView.isDoneDrawing()) {
                         // TODO: do I want to call startActivity() instead?
                         // create and launch an activity to prompt the user for info about the challenge
-                        Intent intent = new Intent(getApplicationContext(), CreateChallengeActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), SendChallenge.class);
                         startActivityForResult(intent, CHALLENGE_INFO_REQUEST);
                     }
                 }

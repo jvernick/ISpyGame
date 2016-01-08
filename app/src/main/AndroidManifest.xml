@@ -52,10 +52,10 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
             <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name="com.picspy.views.LoginActivity"
@@ -82,9 +82,9 @@
         </activity>
         <activity
             android:name="com.picspy.views.CreateChallengeActivity"
+            android:label="@string/app_name"
             android:parentActivityName="com.picspy.views.CameraActivity"
-            android:theme="@style/create_challenge"
-            android:label="@string/app_name" >
+            android:theme="@style/create_challenge" >
         </activity>
         <activity
             android:name="com.picspy.views.FriendInfoActivity"
@@ -110,12 +110,24 @@
         <activity
             android:name="com.picspy.views.FindFriendsActivity"
             android:label="@string/title_activity_find_friends"
+            android:parentActivityName="com.picspy.views.MainActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustNothing"
-            android:parentActivityName="com.picspy.views.MainActivity" >
+            android:windowSoftInputMode="adjustNothing" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.picspy.views.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.picspy.views.SendChallenge"
+            android:label="@string/title_activity_send_challenge"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
         </activity>
     </application>
 

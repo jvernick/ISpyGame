@@ -9,10 +9,25 @@
     <ListView
         android:id="@+id/challenge_list"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/challenges_toolbar"
         android:layout_above="@+id/bar">
     </ListView>
+
+
+    <TextView
+        android:id="@+id/empty_list"
+        android:layout_alignParentTop="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="40dp"
+        android:layout_margin="8dp"
+        android:padding="8dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/primary_text"
+        android:text="@string/tx_empty_list_challenges"
+        android:gravity="center"
+        android:visibility="gone"/>
 
     <View
         android:id="@+id/bar"
@@ -39,4 +54,16 @@
         android:layout_alignBottom="@+id/bar"
         android:layout_centerHorizontal="true"
         android:id="@+id/cameraButton" />
+
+    <!-- TODO modify location-->
+    <ProgressBar
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:id="@+id/challenges_progressBar"
+        android:layout_below="@id/challenge_list"
+        android:layout_above="@id/bar"
+        android:layout_centerHorizontal="true"
+        android:progressDrawable="@drawable/circular_progress_bar"
+        android:visibility="gone"/>
 </RelativeLayout>

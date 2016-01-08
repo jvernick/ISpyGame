@@ -32,6 +32,8 @@ public class GameRecord {
     private int id;
     @JsonProperty
     private String created;
+    @JsonProperty
+    private UserRecord users_by_sender;
 
     public static Game getGame(GameRecord gameRecord) {
         if (gameRecord == null) {
@@ -48,6 +50,8 @@ public class GameRecord {
             game.setVote(gameRecord.isL_board());
             game.setSenderId(gameRecord.getSender());
             game.setCreated(gameRecord.getCreated());
+            if (gameRecord.users_by_sender != null)
+            game.setSenderUsername(gameRecord.getUsers_by_sender().getUsername());
 
             return game;
         }
@@ -140,5 +144,9 @@ public class GameRecord {
                 "\n}";
     }
 
+
+    public UserRecord getUsers_by_sender() {
+        return users_by_sender;
+    }
 
 }

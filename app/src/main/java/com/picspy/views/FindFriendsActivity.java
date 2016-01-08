@@ -1,33 +1,24 @@
 package com.picspy.views;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 import android.content.Intent;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.picspy.adapters.SlidingTabLayout;
 import com.picspy.firstapp.R;
-import com.picspy.views.Fragments.FriendRequestsFragment;
-import com.picspy.views.Fragments.FriendSearchFragment;
-import com.picspy.views.Fragments.FriendsFragment;
-import com.picspy.views.Fragments.TopFragment;
+import com.picspy.views.fragments.FriendRequestsFragment;
+import com.picspy.views.fragments.FriendSearchFragment;
 
 public class FindFriendsActivity extends ActionBarActivity {
 
@@ -90,7 +81,7 @@ public class FindFriendsActivity extends ActionBarActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
+        toolbar.setNavigationIcon(R.drawable.ic_chevron_left);
     }
 
 

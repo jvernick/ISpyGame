@@ -1,4 +1,4 @@
-package com.picspy.views.Fragments;
+package com.picspy.views.fragments;
 
 import android.content.Context;
 import android.os.AsyncTask;

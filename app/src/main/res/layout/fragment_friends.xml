@@ -74,4 +74,12 @@
         android:textColor="@color/secondary_text"
         android:gravity="center"
         android:text="@string/friends_fragment_empty_search"/>
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:layout_below="@+id/android:list"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

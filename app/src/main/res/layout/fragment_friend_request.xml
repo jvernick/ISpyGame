@@ -1,13 +1,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" tools:context="com.picspy.views.Fragments.FriendRequestsFragment">
+    android:layout_height="match_parent" tools:context="com.picspy.views.fragments.FriendRequestsFragment">
 
     <ProgressBar
-        android:id="@+id/progressBar"
-        style="@android:style/Widget.ProgressBar.Small"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"/>
+        android:id="@+id/challenges_progressBar"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_centerInParent="true"
+        android:progressDrawable="@drawable/circular_progress_bar"/>
 
     <ListView
         android:id="@id/android:list"

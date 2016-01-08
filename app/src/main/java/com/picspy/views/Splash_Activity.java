@@ -103,7 +103,7 @@ public class Splash_Activity extends Activity {
                                 session.getSession_id());
                         PrefUtil.putInt(getApplicationContext(), AppConstants.USER_ID,
                                 Integer.parseInt(session.getId()));
-                        startMain();
+                        //startMain();
                     } else { //prompts for login/register if session refresh failed
                         return false; //This is needed since we haven't figured out a way
                         // to have infinite session duration

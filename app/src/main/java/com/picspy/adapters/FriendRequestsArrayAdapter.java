@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.picspy.FriendsTableRequests;
 import com.picspy.firstapp.R;
 import com.picspy.models.Friend;
 import com.picspy.utils.AppConstants;
+import com.picspy.utils.PrefUtil;
 
 import java.util.List;
 
@@ -59,6 +61,7 @@ public class FriendRequestsArrayAdapter extends ArrayAdapter<Friend>{
         viewHolder.acceptFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("RequestArrayAdapter", requestor.getRecordId() + "");
                 try {//delay for state animation
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -67,6 +70,7 @@ public class FriendRequestsArrayAdapter extends ArrayAdapter<Friend>{
                 //TODO verify for success or error
                 (new RequestResponse(view.getContext(), requestor.getId(), true)).execute();
 
+
                 remove(getItem(position));
                 notifyDataSetChanged();
             }
@@ -74,6 +78,7 @@ public class FriendRequestsArrayAdapter extends ArrayAdapter<Friend>{
         viewHolder.declineFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("RequestArrayAdapter", "decline");
                 try {//delay for state animation
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -146,8 +151,9 @@ public class FriendRequestsArrayAdapter extends ArrayAdapter<Friend>{
         @Override
         protected String doInBackground(Void... voids) {
             if (accept) {
-                return (new FriendsTableRequests(context)).acceptFriendRequest(id);
+                return (new FriendsTableRequests(context)).acceptFriendRequest(id, PrefUtil.getInt(context, AppConstants.USER_ID));
             } else {
+                Log.d("RequestArrayAdapter", "decline in background");
                 return (new FriendsTableRequests(context)).removeFriend(id);
             }
         }

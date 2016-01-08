@@ -1,6 +1,7 @@
 package com.dreamfactory.client;
 
 
+import android.content.Entity;
 import android.util.Log;
 
 import com.dreamfactory.model.FileRequest;
@@ -23,6 +24,7 @@ import org.apache.http.entity.FileEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.SingleClientConnManager;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
@@ -50,7 +52,8 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 public class ApiInvoker {
-	private static ApiInvoker INSTANCE = new ApiInvoker();
+
+	private static ApiInvoker INSTANCE;
 	private Map<String, String> defaultHeaderMap = new HashMap<String, String>();
 
 	private HttpClient client = null;
@@ -67,6 +70,9 @@ public class ApiInvoker {
 	}
 
 	public static ApiInvoker getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new ApiInvoker();
+		}
 		return INSTANCE;
 	}
 
@@ -280,6 +286,8 @@ public class ApiInvoker {
 				}
 				throw new ApiException(code, responseString);
 			}
+			//TODO added by Brunel on 1/5/16
+			response.getEntity().consumeContent();
 			return responseString;
 		}
 		catch(IOException e) {
@@ -316,7 +324,10 @@ public class ApiInvoker {
 				// Trust self signed certificates
 				client = new DefaultHttpClient(ignoreSSLConnectionManager, httpParams);
 			} else {
-				client = new DefaultHttpClient(httpParams);
+				//client = new DefaultHttpClient(httpParams);
+				//TODO modified by Brunel
+				client = new DefaultHttpClient(new ThreadSafeClientConnManager(httpParams,
+						ignoreSSLConnectionManager.getSchemeRegistry()), httpParams);
 			}
 		}
 		return client;

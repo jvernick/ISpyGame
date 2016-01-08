@@ -1,4 +1,4 @@
-package com.picspy.views.Fragments;
+package com.picspy.views.fragments;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -13,30 +16,49 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.FilterQueryProvider;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.picspy.FriendsTableRequests;
 import com.picspy.adapters.DatabaseHandler;
-import com.picspy.adapters.FriendsArrayAdapter;
 import com.picspy.adapters.FriendsCursorAdapter;
 import com.picspy.firstapp.R;
+import com.picspy.models.Friend;
+import com.picspy.models.FriendRecord;
+import com.picspy.models.FriendsRecord;
+import com.picspy.utils.AppConstants;
+import com.picspy.utils.PrefUtil;
 import com.picspy.views.FindFriendsActivity;
 import com.picspy.views.SearchEditTextView;
+
+import java.util.ArrayList;
 
 /**
  * Created by Justin12 on 6/6/2015.
  */
-public class FriendsFragment extends ListFragment {
+public class FriendsFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>{
     private static final String TAG = "FriendsFragment";
+    private static final int LOADER_ID = 0;
     private FriendsCursorAdapter cursorAdapter;
-    private FriendsArrayAdapter arrayAdapter;
     private View listHeader;
     private EditText searchField;
+    ProgressBar progressSpinner;
 
+    /**
+     * Static factory method that takes an int parameter,
+     * initializes the fragment's arguments, and returns the
+     * new fragment to the client.
+     */
+    public static FriendsFragment newInstance(int index) {
+        FriendsFragment f = new FriendsFragment();
+        Bundle args = new Bundle();
+        args.putInt("index", index);
+        f.setArguments(args);
+        return f;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -50,6 +72,9 @@ public class FriendsFragment extends ListFragment {
                 startActivity(intent);
             }
         });
+
+        progressSpinner = (ProgressBar) rootView.findViewById(R.id.progressBar);
+        progressSpinner.setVisibility(View.GONE);
         return rootView;
     }
 
@@ -69,40 +94,19 @@ public class FriendsFragment extends ListFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        final LoaderManager.LoaderCallbacks<Cursor> callback = this;
 
         //in this method because it requires the activity context
-
-        (new GetRecordsTask()).execute();
+        (new GetFriends(getActivity())).execute();
 
         DatabaseHandler dbHandler = DatabaseHandler.getInstance(getActivity());
         if (cursorAdapter == null) {
-            cursorAdapter = new FriendsCursorAdapter(getActivity().getApplicationContext(), R.layout.item_friends,
-                    dbHandler.getAllFriends(),
-                    FriendsCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+            cursorAdapter = new FriendsCursorAdapter(getActivity().getApplicationContext(),
+                    R.layout.item_friends,
+                    null, 0);
             setListAdapter(cursorAdapter);
         }
 
-        getListView().setOnScrollListener(new AbsListView.OnScrollListener() {
-
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-
-            }
-
-            public void onScroll(AbsListView view, int firstVisibleItem,
-                                 int visibleItemCount, int totalItemCount) {
-
-                if (firstVisibleItem + visibleItemCount == totalItemCount && totalItemCount != 0) {
-                   /* if (flag_loading == false) {
-                        flag_loading = true;
-                        additems();
-                    }*/
-                    Log.d("friendsFragment", "Loading");
-                }
-            }
-        });
-
-        //TODO replace with filter on database.
         cursorAdapter.setFilterQueryProvider(new FilterQueryProvider() {
             public Cursor runQuery(CharSequence constraint) {
                 // Search for friends whose names begin with the specified letters.
@@ -113,15 +117,14 @@ public class FriendsFragment extends ListFragment {
             }
         });
 
-        listHeader = getView().findViewById(R.id.friend_list_header);
+        if (getView() !=  null) listHeader = getView().findViewById(R.id.friend_list_header);
         if (listHeader != null) {
             View searchBox = listHeader.findViewById(R.id.search_box);
-            //next two lines for testing
+            //TODO remove. next two lines for testing
             SearchEditTextView searchEditTextView = (SearchEditTextView) listHeader.findViewById(R.id.search_box);
             searchEditTextView.setButtonClickListener(new SearchEditTextView.OnButtonClickListener() {
                 @Override
                 public void onEvent() {
-                    Log.d(TAG, "button pressed");
                 }
             });
             if (searchBox != null) {
@@ -144,22 +147,18 @@ public class FriendsFragment extends ListFragment {
                 }
             }
         }
+
+        getLoaderManager().restartLoader(LOADER_ID, null, callback).forceLoad();
     }
 
     private void setSearchFieldFilter (final EditText searchText) {
-
-        Log.d("OnTextChanged", "setSearchFieldFilter");
         searchText.addTextChangedListener(new TextWatcher() {
-            private boolean emptyTextChanged = false;
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence cs, int start, int before, int count) {
-                Log.d("FriendsFragment", "textChanged: " + cs);
-
                 if (cs.length() == 0) {
                     searchText.clearFocus();
                     if (getView() != null) getView().requestFocus();
@@ -191,31 +190,99 @@ public class FriendsFragment extends ListFragment {
         }
     }
 
-    class GetRecordsTask extends AsyncTask<Void, String, String> {
+    /**
+     * Instantiate and return a new Loader for the given ID.
+     *
+     * @param id   The ID whose loader is to be created.
+     * @param args Any arguments supplied by the caller.
+     * @return Return a new Loader instance that is ready to start loading.
+     */
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        progressSpinner.setVisibility(View.VISIBLE);
+        return new FriendLoader(getActivity());
+    }
+
+    /**
+     * @param loader The Loader that has finished.
+     * @param data   The data generated by the Loader.
+     */
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        ((FriendsCursorAdapter) getListAdapter()).changeCursor(data);
+        ((FriendsCursorAdapter) getListAdapter()).notifyDataSetChanged();
+        progressSpinner.setVisibility(View.GONE);
+    }
+
+    /**
+     * Called when a previously created loader is being reset, and thus
+     * making its data unavailable.  The application should at this point
+     * remove any references it has to the Loader's data.
+     *
+     * @param loader The Loader that is being reset.
+     */
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        ((FriendsCursorAdapter) getListAdapter()).changeCursor(null);
+    }
+
+    private static class FriendLoader extends AsyncTaskLoader<Cursor> {
+
+        public FriendLoader(Context context) {
+            super(context);
+        }
+
         @Override
-        protected String doInBackground(Void... params) {
-            FriendsTableRequests request = new FriendsTableRequests(getActivity().getApplicationContext());
-            //String result = request.sendFriendRequest(1);
-            //FriendRecord result = request.getStats(9);
-            //String result = request.removeFriend(1);
-            //String result = request.acceptFriendRequest(10);
-            //FriendsRecord temp = request.getFriendRequests();
-            String result = request.updateStats(9,true);
-            if (result != null) Log.d( "Friends", result);
-            if (result != null && result.equals("SUCCESS")) { //TODO String contains error message on error
-                //Log.d("FriendsFragment", result.toString());
-                return "SUCCESS";
-            } else {
-                return "FAILED";
+        public Cursor loadInBackground() {
+           return  DatabaseHandler.getInstance(getContext()).getAllFriends();
+        }
+    }
+
+    private class GetFriends extends AsyncTask<Void,Void,Boolean> {
+
+        private final Context context;
+
+        public GetFriends(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            try {
+                FriendsRecord result = (new FriendsTableRequests(context))
+                        .getFriends(PrefUtil.getInt(context, AppConstants.MAX_FRIEND_RECORD_ID));
+                ArrayList<Friend> friends = new ArrayList<>();
+                int myUserId = PrefUtil.getInt(context, AppConstants.USER_ID, -1);
+                if (result != null) {
+                    for (FriendRecord friendRecord : result.getRecord()) {
+                        friends.add(friendRecord.getFriend(myUserId));
+                    }
+                }
+                if (friends.size() != 0)
+                    DatabaseHandler.getInstance(context).addFriends(friends);
+                return friends.size() !=0;
+            } catch (Exception ex) { //TODO handle exceptions better
+                Log.d(TAG + "test", ex.getMessage());
+                //TODO handle exception
+                //toast for Internet connection error
+                return null;
             }
         }
+
         @Override
-        protected void onPostExecute(String records) {
-            if(records.equals("Success")){ // success
-                Log.d("Friends","Success");
-            }else{ // some error show dialog
-                Log.d("Friends", records);
+        protected void onPostExecute(Boolean foundFriend) {
+            if (foundFriend) {
+                Log.d(TAG, "notifying");
+                ((FriendsCursorAdapter) getListAdapter())
+                        .changeCursor(DatabaseHandler.getInstance(context).getAllFriends());
+                ((FriendsCursorAdapter) getListAdapter()).notifyDataSetChanged();
             }
         }
     }
 }
+

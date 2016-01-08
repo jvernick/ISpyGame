@@ -7,6 +7,7 @@ import android.util.Log;
 import com.dreamfactory.api.DbApi;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.picspy.models.DbApiRequest;
+import com.picspy.models.DbApiResponse;
 import com.picspy.models.FriendRecord;
 import com.picspy.models.FriendsRecord;
 import com.picspy.models.StoredProcRequest;
@@ -47,19 +48,13 @@ public class FriendsTableRequests {
         dbApi.setBasePath(AppConstants.DSP_URL);
     }
 
-    /**
-     * Retrieves friends from the backend in groups and in a given range. This is used to get and
-     * display friends in groups when the user scrolls through the friend list.
-     * @param recordID The minimum record ID to retrieve
-     * @param limit The maximum number of records to retrieve
-     * @return Friend records from the server
-     */
-    public FriendsRecord getFriends(int recordID, Integer limit) {
+    public FriendsRecord getFriends(int maxFriendRecordId) {
         try {
-            // "(`friend_1` = " + user_id + " OR `friend_2` = " + user_id + "): This filter is already implicitly defined
-            String filter =" `id` > " + recordID;
+            // "(`friend_1` = " + user_id + " OR `friend_2` = " + user_id + "): This filter is already implicitly defined TODO check
+            String filter ="`status` = " + 0 + " AND `id` > " + maxFriendRecordId ;
             //TODO does limiting fields actually improve speed and peformance?
-            FriendsRecord temp = dbApi.getRecordsByFilter(FriendsRecord.class, AppConstants.FRIENDS_TABLE_NAME, filter, limit, null, null, null, false, false, "*");
+            FriendsRecord temp = dbApi.getRecordsByFilter(FriendsRecord.class,
+                    AppConstants.FRIENDS_TABLE_NAME, filter, null, null, null, null, false, false, "*");
             Log.d(TAG, temp.toString());
             return temp;
         } catch (Exception e) {
@@ -150,14 +145,19 @@ public class FriendsTableRequests {
      * @param friend_2_id Confirm request from freind with this friend_id
      * @return "SUCCESS" on success and "FAILEd" or Error message on failure
      */
-    public String acceptFriendRequest(int friend_2_id) {
+    public String acceptFriendRequest(int friend_2_id, int user_id) {
         try {
-            AddFriendModel request = new AddFriendModel(user_id,friend_2_id, 0);
-            FriendRecord record = dbApi.updateRecord(FriendRecord.class, AppConstants.FRIENDS_TABLE_NAME, "0", request, "updated", null, null, null);
+            ArrayList<UpdateRecord> records = new ArrayList<>();
+            records.add(new UpdateRecord(friend_2_id, user_id, 0));
+            UpdateRecordsModel request = new UpdateRecordsModel(records);
+            UpdateResponseModel record = dbApi.updateRecords(UpdateResponseModel.class, AppConstants.FRIENDS_TABLE_NAME, request, null, null, null, false, false, null);
             if ( record != null) {
                 Log.d(TAG, record.toString());
-                return "SUCCESS";
+                if (record.getRecord() != null) {
+                    return "SUCCESS";
+                } else return  "FAILED";
             } else {
+                Log.d(TAG, "acceptFriendRequest failed");
                 return "FAILED";
             }
         } catch (Exception e) {
@@ -280,8 +280,8 @@ public class FriendsTableRequests {
     /**
      * Gets the stats for a given user. This includes their individual
      * game stats, and stats for games between both users
-     * @param friend_2_id
-     * @return
+     * @param friend_2_id id of friend whos's stats are to be retrieved
+     * @return friend record of friendship
      */
     public FriendRecord getStats(int friend_2_id) {
         try {
@@ -448,4 +448,86 @@ public class FriendsTableRequests {
         }
     }
 
+    private class UpdateRecord {
+        @JsonProperty
+        private int friend_1;
+        @JsonProperty
+        private int friend_2;
+        @JsonProperty
+        private int status;
+
+        @Override
+        public String toString() {
+            return "UpdateRecord{" +
+                    "friend_1=" + friend_1 +
+                    ", friend_2=" + friend_2 +
+                    ", status=" + status +
+                    '}';
+        }
+
+        public UpdateRecord(int id1, int id2, int status) {
+            if (id1 < id2) {
+                this.friend_1 = id1;
+                this.friend_2 = id2;
+            } else {
+                this.friend_1 = id2;
+                this.friend_2 = id1;
+            }
+            this.status = status;
+
+
+        }
+    }
+    private class UpdateRecordsModel  extends DbApiRequest{
+        @JsonProperty
+        List<UpdateRecord> record;
+
+        public UpdateRecordsModel(List<UpdateRecord> record) {
+            this.record = record;
+        }
+
+        @Override
+        public String toString() {
+            return "UpdateRecordsModel{" +
+                    "record=" + record +
+                    '}';
+        }
+    }
+
+    private class UpdateResponseModel extends DbApiResponse {
+        public List<UpdateResponse> getRecord() {
+            return record;
+        }
+
+        public void setRecord(List<UpdateResponse> record) {
+            this.record = record;
+        }
+
+        @JsonProperty
+
+        List<UpdateResponse> record;
+
+        public UpdateResponseModel(List<UpdateResponse> record) {
+            this.record = record;
+        }
+
+        @Override
+        public String toString() {
+            return "UpdateResponseModel{" +
+                    "record=" + record +
+                    '}';
+        }
+    }
+
+    private class UpdateResponse {
+        @JsonProperty
+        private int friend_1;
+        @JsonProperty
+        private int friend_2;
+
+        public UpdateResponse(int friend_1, int friend_2) {
+            this.friend_1 = friend_1;
+            this.friend_2 = friend_2;
+        }
+    }
 }

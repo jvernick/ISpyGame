@@ -33,8 +33,6 @@
         android:layout_alignRight="@+id/camera_preview"
         />
 
-
-
     <ImageButton
         android:id="@+id/button_change_flash"
         android:layout_width="70dp"

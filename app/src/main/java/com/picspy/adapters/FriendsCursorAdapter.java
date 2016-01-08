@@ -37,43 +37,45 @@ public class FriendsCursorAdapter extends ResourceCursorAdapter {
      */
     @Override
     public void bindView(View view, final Context context, Cursor c) {
-        // Find fields to populate in inflated template
-        final ViewHolder viewHolder = (ViewHolder) view.getTag();
-        final String friendUsername = c.getString(c.getColumnIndex(
-                DbContract.FriendEntry.COLUMN_NAME_USERNAME));
-        final int userId = c.getInt(c.getColumnIndex(DbContract.FriendEntry._ID));
+        if (c != null) {
+            // Find fields to populate in inflated template
+            final ViewHolder viewHolder = (ViewHolder) view.getTag();
+            final String friendUsername = c.getString(c.getColumnIndex(
+                    DbContract.FriendEntry.COLUMN_NAME_USERNAME));
+            final int userId = c.getInt(c.getColumnIndex(DbContract.FriendEntry._ID));
 
-        viewHolder.unameTextView.setText(friendUsername);
+            viewHolder.unameTextView.setText(friendUsername);
 
-        //Start friendInfoActivity when friend username clicked
-        viewHolder.unameTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startFriendInfoActivity(view, true, friendUsername, userId);
-            }
-        });
+            //Start friendInfoActivity when friend username clicked
+            viewHolder.unameTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startFriendInfoActivity(view, true, friendUsername, userId);
+                }
+            });
 
-        //start a new game with this friend
-        viewHolder.newGameButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, CameraActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                //TODO change intent extra to appropriate value if any
-                view.getContext().startActivity(intent);
-            }
-        });
+            //start a new game with this friend
+            viewHolder.newGameButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, CameraActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    //TODO change intent extra to appropriate value if any
+                    view.getContext().startActivity(intent);
+                }
+            });
 
-        Drawable background = viewHolder.friendIcon.getBackground();
-        ((GradientDrawable)background).setColor(
-                AppConstants.COLOR_ARRAY_LIST[userId % AppConstants.COLOR_ARRAY_LIST.length]);
-        //Start friendInfoActivity when friend icon clicked
-        viewHolder.friendIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startFriendInfoActivity(view, true, friendUsername, userId);
-            }
-        });
+            Drawable background = viewHolder.friendIcon.getBackground();
+            ((GradientDrawable) background).setColor(
+                    AppConstants.COLOR_ARRAY_LIST[userId % AppConstants.COLOR_ARRAY_LIST.length]);
+            //Start friendInfoActivity when friend icon clicked
+            viewHolder.friendIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startFriendInfoActivity(view, true, friendUsername, userId);
+                }
+            });
+        }
     }
 
     //initialize viewHolder

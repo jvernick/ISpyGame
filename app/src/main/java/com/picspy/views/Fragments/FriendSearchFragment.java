@@ -1,4 +1,4 @@
-package com.picspy.views.Fragments;
+package com.picspy.views.fragments;
 
 import android.support.v4.content.AsyncTaskLoader;
 import android.content.Context;
@@ -49,7 +49,7 @@ public class FriendSearchFragment extends Fragment implements LoaderManager.Load
         mgr.showSoftInput(unameField, InputMethodManager.SHOW_IMPLICIT);
         responseText = (TextView) rootView.findViewById(R.id.message);
 
-        progressSpinner = (ProgressBar) rootView.findViewById(R.id.progressBar);
+        progressSpinner = (ProgressBar) rootView.findViewById(R.id.challenges_progressBar);
         progressSpinner.setVisibility(View.GONE);
         return rootView;
     }

@@ -5,6 +5,7 @@
     tools:context="com.picspy.views.FriendInfoActivity">
     <!--
     TODO change colors to colors form colors resource
+    TODO remove floating action button or replace with camera
     is border in second listview necessary?
     -->
 
@@ -15,8 +16,8 @@
     <ProgressBar
         android:id="@+id/myProgressBar"
         style="?android:attr/progressBarStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:progressDrawable="@drawable/circular_progress_bar"/>
@@ -203,7 +204,7 @@
                 android:src="@drawable/ic_action"
                 android:background="@drawable/floating_circle"
                 android:id="@+id/imageButton"
-                android:contentDescription="Start game"
+                android:contentDescription="@string/cd_start_game"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"

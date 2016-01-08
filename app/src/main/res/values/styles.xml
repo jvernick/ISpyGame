@@ -8,6 +8,24 @@
         <item name="colorAccent">@color/accent</item>
     </style>
 
+    <!-- Toolbar theme-->
+    <style name="ActionBarTheme" parent="Theme.AppCompat">
+        <item name="android:textCursorDrawable">?android:attr/hint</item>
+        <item name="android:textColorPrimary">@color/grey_100</item>
+        <item name="actionButtonStyle">@style/ActionButtonStyle</item>
+        <item name="homeAsUpIndicator">@drawable/ic_chevron_left</item>
+        <item name="selectableItemBackground">?android:selectableItemBackground</item>
+        <item name="selectableItemBackgroundBorderless">?android:selectableItemBackground</item>
+    </style>
+
+    <!-- Toolbar button theme -->
+    <style name="ActionButtonStyle" parent="@android:style/Widget.Holo.Light.ActionButton">
+        <item name="android:minWidth">0dip</item>
+        <item name="android:paddingLeft">0dip</item>
+        <item name="android:paddingRight">0dip</item>
+        <item name="android:layout_marginRight">10dip</item>
+    </style>
+
     <!--theme for texts used during login/signup-->
     <style name="login_text_style">
         <item name="android:layout_width">match_parent</item>

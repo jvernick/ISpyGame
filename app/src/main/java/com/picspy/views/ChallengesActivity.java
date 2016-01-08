@@ -1,6 +1,8 @@
 package com.picspy.views;
 
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.AsyncTaskLoader;
+import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
@@ -14,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,12 +24,10 @@ import com.dreamfactory.client.ApiException;
 import com.picspy.GamesRequests;
 import com.picspy.adapters.DatabaseHandler;
 import com.picspy.adapters.GamesCursorAdapter;
-import com.picspy.adapters.GamesCursorLoader;
 import com.picspy.firstapp.R;
 import com.picspy.models.Game;
 import com.picspy.models.UserChallengeRecord;
 import com.picspy.models.UserChallengesRecord;
-import com.picspy.utils.DbContract;
 import com.picspy.utils.DbContract.GameEntry;
 
 import java.util.ArrayList;
@@ -38,18 +39,22 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
     private ListView listView;
     private DatabaseHandler dbHandler;
     private final static int LOADER_ID = 1;
+    ProgressBar progressSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_challenges);
         listView = (ListView) findViewById(R.id.challenge_list);
+        progressSpinner = (ProgressBar) findViewById(R.id.challenges_progressBar);
+        progressSpinner.setVisibility(View.GONE);
         //set cursorAdapter to populate listView from database
         //content observer flag makes the view auto refresh
 
         dbHandler = DatabaseHandler.getInstance(this);
-        GamesCursorAdapter cursorAdapter = new GamesCursorAdapter(getApplicationContext(), R.layout.item_challenge,
-                dbHandler.getAllGames(), 0);
+        GamesCursorAdapter cursorAdapter = new GamesCursorAdapter(getApplicationContext(),
+                R.layout.item_challenge,
+                null, 0);
         listView.setAdapter(cursorAdapter);
 
         //setting listener to list item click
@@ -67,7 +72,7 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
                 game.setSenderId((c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_SENDER_ID))));
                 game.setId(c.getInt(c.getColumnIndex(GameEntry._ID)));
                 game.setSenderUsername(c.getString(c.getColumnIndex(
-                        DbContract.FriendEntry.COLUMN_NAME_USERNAME)));
+                        GameEntry.COLUMN_NAME_SENDER_NAME)));
 
                 Toast.makeText(ChallengesActivity.this, game.toString(), Toast.LENGTH_LONG).show();
 
@@ -88,15 +93,13 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
         //update database
         (new GetChallengesTask()).execute();
         Toolbar toolbar = (Toolbar) findViewById(R.id.challenges_toolbar);
-        TextView toolbarTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
-        toolbarTitle.setText("Challenges");
 
         // Setting toolbar as the ActionBar
         //TODO back button stopped working. temp solution in onOptionsItemSelected
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setTitle("Challenges");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
+        toolbar.setNavigationIcon(R.drawable.ic_chevron_left);
 
         //Initializing loader
         getLoaderManager().initLoader(LOADER_ID, null, this).forceLoad();
@@ -122,7 +125,6 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
         if (id == R.id.action_settings) {
             //update database
             (new GetChallengesTask()).execute();
-
             return true;
         } else if( id == android.R.id.home) {
             //handling back button click
@@ -141,45 +143,56 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
         startActivity(intent);
     }
 
-    private class GetChallengesTask extends AsyncTask<Void, Void, UserChallengesRecord> {
+    private class GetChallengesTask extends AsyncTask<Void, Void, Boolean> {
+
         @Override
-        protected UserChallengesRecord doInBackground(Void... voids) {
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressSpinner.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
             try {
-                GamesRequests gamesRequests = new GamesRequests(getApplicationContext(), false);
-                return gamesRequests.getGamesInfo();
+                UserChallengesRecord userChallengesRecord =
+                        (new GamesRequests(getApplicationContext(), false)).getGamesInfo();
+                if (userChallengesRecord != null && userChallengesRecord.getRecord() != null
+                        && userChallengesRecord.getRecord().size() != 0) {
+                    List<Game> gameList = new ArrayList<>();
+                    int max_user_challenge_id = 0;
+                    for (UserChallengeRecord record: userChallengesRecord.getRecord()) {
+
+                        if (record.getId() > max_user_challenge_id) {
+                            max_user_challenge_id = record.getId();
+                        }
+                        gameList.add(record.getGame());
+                    }
+                    if (gameList.size() != 0) {
+                        dbHandler.addGames(gameList,
+                                max_user_challenge_id);
+                        //dbHandler.close();
+                        return true;
+                    }
+                }
             } catch (ApiException ex) {
                 Log.d(TAG + "test", ex.getMessage());
                 //TODO handle exception
                 //toast for Internet connection error
-                return null;
             }
+            return false;
         }
 
         /**
          * Attempts to add challenges from server to local database
-         * @param challenges Challenges from server
+         * @param foundChallenge True if new challenge was added, otherwise false
          */
         @Override
-        protected void onPostExecute(UserChallengesRecord challenges) {
-            if (challenges != null && challenges.getRecord() != null
-                    && challenges.getRecord().size() != 0) {
-                List<Game> gameList = new ArrayList<>();
-                int max_user_challenge_id = 0;
-                for (UserChallengeRecord record: challenges.getRecord()) {
-
-                    if (record.getId() > max_user_challenge_id) {
-                        max_user_challenge_id = record.getId();
-                    }
-                    gameList.add(record.getGame());
-                }
-                if (gameList.size() != 0) {
-                    dbHandler.addGames(gameList,
-                            max_user_challenge_id);
-                    //dbHandler.close();
-                    Log.d(TAG, "notifying");
-                    //((GamesCursorAdapter) listView.getAdapter()).notifyDataSetChanged();
-                    ((GamesCursorAdapter) listView.getAdapter()).changeCursor(dbHandler.getAllGames());
-                }
+        protected void onPostExecute(Boolean foundChallenge) {
+            progressSpinner.setVisibility(View.GONE);
+            if (foundChallenge) {
+                Log.d(TAG, "notifying");
+                ((GamesCursorAdapter) listView.getAdapter()).changeCursor(dbHandler.getAllGames());
+                ((GamesCursorAdapter) listView.getAdapter()).notifyDataSetChanged();
             }
         }
     }
@@ -192,12 +205,15 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
      ***/
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        Log.d(TAG, "onCreateLoader");
         return new GamesCursorLoader(this, dbHandler);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         ((GamesCursorAdapter)listView.getAdapter()).changeCursor(cursor);
+        ((GamesCursorAdapter)listView.getAdapter()).notifyDataSetChanged();
+        listView.setEmptyView(findViewById(R.id.empty_list));
     }
 
     @Override
@@ -205,4 +221,22 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
         ((GamesCursorAdapter)listView.getAdapter()).changeCursor(null);
     }
 
+    /**
+     * Cursor loader to get games from sqlite in background
+     */
+    public static class GamesCursorLoader extends AsyncTaskLoader<Cursor> {
+        private DatabaseHandler dbHandler;
+
+        //Default constructor
+        public GamesCursorLoader(Context context, DatabaseHandler dbHandler) {
+            super(context);
+            this.dbHandler = dbHandler;
+        }
+
+        @Override
+        public Cursor loadInBackground() {
+           return dbHandler.getAllGames();
+        }
+
+    }
 }

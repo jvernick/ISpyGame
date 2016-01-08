@@ -58,6 +58,10 @@ public class FriendRecord extends DbApiResponse {
     @JsonProperty
     private UserRecord users_by_friend_2;
 
+    //record id
+    @JsonProperty
+    private int id;
+
     /**
      * Return the other user's record
      * @param myId current userID
@@ -70,6 +74,17 @@ public class FriendRecord extends DbApiResponse {
             return users_by_friend_2;
         }
     }
+
+    public Friend getFriend(int myId){
+        UserRecord record = getOtherUserRecord(myId);
+        if (record != null) {
+            Friend friend = new Friend(record.getId(), record.getUsername());
+            friend.setRecordId(id);
+            return friend;
+        }
+        return null;
+    }
+
     public UserRecord getUsers_by_friend_1() {
         return users_by_friend_1;
     }

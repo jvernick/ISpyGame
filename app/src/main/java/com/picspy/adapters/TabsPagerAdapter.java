@@ -4,8 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.picspy.views.Fragments.FriendSearchFragment;
-import com.picspy.views.Fragments.FriendsFragment;
+import com.picspy.views.fragments.FriendSearchFragment;
+import com.picspy.views.fragments.FriendsFragment;
 /**
  * Created by Justin12 on 6/6/2015.
  */

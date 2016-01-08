@@ -1,4 +1,4 @@
-package com.picspy.views.Fragments;
+package com.picspy.views.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -59,7 +59,7 @@ public class FriendRequestsFragment extends ListFragment implements LoaderManage
         getLoaderManager().initLoader(LOADER_ID, null, this).forceLoad();
 
         if (getView() != null) {
-            progressSpinner = (ProgressBar) getView().findViewById(R.id.progressBar);
+            progressSpinner = (ProgressBar) getView().findViewById(R.id.challenges_progressBar);
             progressSpinner.setVisibility(View.VISIBLE);
         }
     }
@@ -119,11 +119,7 @@ public class FriendRequestsFragment extends ListFragment implements LoaderManage
 
         @Override
         public List<Friend> loadInBackground() {
-            final String[] animals = new String[] { "Ape", "Bird","Lizard"};
             final List<Friend> requestList = new ArrayList<>();
-            for (int i = 0; i < animals.length; ++i) {
-                requestList.add(new Friend(i,animals[i]));
-            }
 
             FriendsRecord records = (new FriendsTableRequests(getContext())).getFriendRequests();
             if (records != null) {

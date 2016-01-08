@@ -84,6 +84,9 @@
     <!-- item_add_friend -->
     <string name="btn_send_request">Send request</string>
 
+    <!-- activity_challenges -->
+    <string name="tx_empty_list_challenges">No new challenges</string>
+
     <!-- multiple -->
     <string name="cd_start_game">Start new game</string>
     <string name="title_activity_find_friends">FindFriendsActivity</string>
@@ -91,4 +94,6 @@
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>
+    <string name="title_activity_send_challenge">SendChallenge</string>
+    <string name="search_hint">Search</string>
 </resources>

@@ -83,7 +83,7 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
+        toolbar.setNavigationIcon(R.drawable.ic_chevron_left);
     }
 
     private void processIntent() {

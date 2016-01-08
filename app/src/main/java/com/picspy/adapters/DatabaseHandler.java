@@ -23,7 +23,7 @@ import java.util.List;
  * TODO make sender_id related to id from friends table?
  */
 public class DatabaseHandler extends SQLiteOpenHelper{
-    public static final int DATABASE_VERSION = 4;
+    public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "dbManager.db";
     private static final String SQL_CREATE_FRIENDS_TABLE = "CREATE TABLE " + FriendEntry.TABLE_NAME
             + "("
@@ -41,7 +41,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
             + GameEntry.COLUMN_NAME_VOTE + " BOOLEAN, "
             + GameEntry.COLUMN_NAME_SENDER_ID + " INTEGER, "
             + GameEntry.COLUMN_NAME_CREATED + " TEXT, "
-            + GameEntry.COLUMN_NAME_SENDER_NAME + "TEXT"
+            + GameEntry.COLUMN_NAME_SENDER_NAME + " TEXT"
             + ")";
     private static final String SQL_DELETE_FRIENDS_TABLE =
             "DROP TABLE IF EXISTS " + FriendEntry.TABLE_NAME;
@@ -75,7 +75,6 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(SQL_CREATE_FRIENDS_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_GAMES_TABLE);
-        Log.d("dbHandler", "oncreate");
         //TODO add statements to fill the tables| Test
     }
 
@@ -252,6 +251,28 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         db.close();
     }
 
+    public void addFriends(List<Friend> friends) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int maxFriendId = PrefUtil.getInt(context, AppConstants.MAX_FRIEND_RECORD_ID);
+
+        for(Friend friend: friends) {
+            if (addFriendHelper(friend, db) == -1) {
+                if (maxFriendId < friend.getRecordId()) maxFriendId = friend.getRecordId();
+            }
+        }
+        PrefUtil.putInt(context, AppConstants.MAX_FRIEND_RECORD_ID, maxFriendId);
+
+        db.close();
+    }
+
+    private long addFriendHelper(Friend friend, SQLiteDatabase db) {
+        ContentValues values = new ContentValues();
+        values.put(FriendEntry.COLUMN_NAME_USERNAME, friend.getUsername()); //Friend name
+        values.put(FriendEntry._ID, friend.getId());   //friend_id
+
+        return db.insert(FriendEntry.TABLE_NAME, null, values);
+    }
+
     /**
      * Adds  <b>multiple</b> new games to the database
      * @param games List of games to be added
@@ -260,13 +281,13 @@ public class DatabaseHandler extends SQLiteOpenHelper{
      */
     public void addGames(List<Game> games, int max_user_challenge_id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        long errorCheck = 0;
+        int errorCheck = 0;
         for(Game game: games) {
            if (addGameHelper(game, db) == -1) errorCheck = -1;
         }
 
         if (errorCheck != -1) {
-            PrefUtil.putInt(context, AppConstants.LAST_USER_CHALLENGE_ID, max_user_challenge_id);
+            PrefUtil.putInt(context, AppConstants.MAX_USER_CHALLENGE_ID, max_user_challenge_id);
         }
         db.close();
     }
@@ -298,13 +319,9 @@ public class DatabaseHandler extends SQLiteOpenHelper{
      */
     public Cursor getAllGames() {
         // Select All Query. Also gets username from Friends table
-        String selectQuery = "SELECT * FROM " + GameEntry.TABLE_NAME + " game, "
-                + FriendEntry.TABLE_NAME + " friend WHERE game." + GameEntry.COLUMN_NAME_SENDER_ID
-                + " = friend." + FriendEntry._ID;
+        String selectQuery = "SELECT * FROM " + GameEntry.TABLE_NAME;
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
-
-        return cursor;
+       return db.rawQuery(selectQuery, null);
     }
         /**
      * Deletes a game from the database
