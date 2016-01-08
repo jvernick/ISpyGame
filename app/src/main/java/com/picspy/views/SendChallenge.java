@@ -46,7 +46,6 @@ public class SendChallenge extends ActionBarActivity implements
             //TODO back button stopped working. temp solution in onOptionsItemSelected
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(true);
-            getSupportActionBar().setTitle("Test");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             toolbar.setNavigationIcon(R.drawable.ic_chevron_left);
 
@@ -55,7 +54,6 @@ public class SendChallenge extends ActionBarActivity implements
                     .add(R.id.fragment_container, firstFragment).commit();
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -82,5 +80,10 @@ public class SendChallenge extends ActionBarActivity implements
     @Override //TODO process message from fragment 2
     public void onFragmentInteraction(String id) {
 
+    }
+
+    @Override
+    public void setToolbarTitle(String title) {
+        getSupportActionBar().setTitle(title);
     }
 }

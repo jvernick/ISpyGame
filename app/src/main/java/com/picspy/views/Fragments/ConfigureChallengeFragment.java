@@ -46,6 +46,8 @@ public class ConfigureChallengeFragment extends Fragment {
                 transaction.commit();
             }
         });
+
+        mListener.setToolbarTitle("Options..");
         return  rootView;
     }
     
@@ -78,6 +80,6 @@ public class ConfigureChallengeFragment extends Fragment {
      */
     public interface F1FragmentInteractionListener {
         // TODO: Update argument type and name
-        public void onFragmentInteraction(String id);
+        void setToolbarTitle(String title);
     }
 }

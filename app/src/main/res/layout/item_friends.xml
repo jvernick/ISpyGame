@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:padding="4dp">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="8dp"
+    android:paddingTop="8dp">
 
     <ImageView
+        style="@style/friend_icon"
         android:id="@+id/friend_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:padding="4dp"
-        android:src="@drawable/ic_friend"
-        android:background="@drawable/bg_friend_icon_circle" />
+        android:contentDescription="@string/cd_user_icon"/>
 
     <ImageView
         android:id="@+id/game_start"
@@ -19,23 +16,19 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:padding="4dp"
-        android:layout_marginRight="8dp"
-        android:src="@drawable/ic_new_game" />
+        android:layout_centerVertical="true"
+        android:padding="12dp"
+        android:focusable="true"
+        android:src="@drawable/ic_camera_green_small"
+        android:contentDescription="@string/cd_start_game"/>
 
     <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
+        style="@style/friend_name"
+        android:id="@+id/friend_username"
         android:layout_toRightOf="@id/friend_icon"
-        android:layout_toEndOf="@+id/friend_icon"
-        android:layout_alignTop="@+id/friend_icon"
+        android:layout_toEndOf="@id/friend_icon"
+        android:layout_alignTop="@id/friend_icon"
         android:layout_toLeftOf="@id/game_start"
         android:layout_toStartOf="@id/game_start"
-        android:layout_alignBottom="@+id/friend_icon"
-        android:layout_marginLeft="8dp"
-        android:id="@+id/friend_username"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/primary_text"
-        android:gravity="center_vertical"
-        android:padding="8dp"/>
+        android:layout_alignBottom="@id/friend_icon"/>
 </RelativeLayout>

@@ -7,9 +7,102 @@
     tools:context="com.picspy.views.fragments.ConfigureChallengeFragment">
 
     <TextView
-        android:text="@string/hello_world"
+        style="@style/configure_challenge_textViews"
+        android:id="@+id/hint"
+        android:text="Hint:" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:id="@+id/hint_input"
+        android:layout_below="@+id/hint"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/search_field_style"
+        android:maxLength="50"
+        android:maxLines="3"
+        android:ellipsize="end"
+        android:padding="8dp"
+        android:hint="max 50 characters"
+        android:textColor="@color/secondary_text"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:id="@+id/custom_num_picker"
+        android:layout_below="@+id/hint_input"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_margin="4dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/yellow"
+            android:padding="4dp"
+            android:layout_margin="4dp"
+            android:text="8"
+            android:textSize="@android:dimen/app_icon_size"
+            android:id="@+id/number_of_guesses" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:layout_margin="4dp"
+            android:orientation="vertical">
+
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:id="@+id/up_button"
+                android:background="@drawable/num_picker_button" />
+
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/num_picker_button"
+                android:id="@+id/down_button" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        style="@style/configure_challenge_textViews"
+        android:id="@+id/guesses"
+        android:layout_alignTop="@id/custom_num_picker"
+        android:layout_alignBottom="@id/custom_num_picker"
+        android:gravity="center_vertical"
+        android:layout_below="@+id/hint_input"
+        android:text="Guesses:"/>
+
+    <TextView
+        style="@style/configure_challenge_textViews"
+        android:id="@+id/time"
+        android:layout_below="@+id/custom_num_picker"
+        android:text="Time:"/>
+
+    <TextView
+        style="@style/configure_challenge_textViews"
+        android:id="@+id/leaderboard"
+        android:layout_below="@+id/time"
+        android:text="Leaderboards:"/>
+
+    <CheckBox
+        android:id="@+id/checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:padding="4dp"
+        android:gravity="center"
+        android:layout_alignBottom="@+id/leaderboard"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true" />
 
     <Button
         android:id="@+id/next_button"

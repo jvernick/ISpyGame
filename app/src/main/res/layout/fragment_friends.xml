@@ -59,7 +59,11 @@
         android:id="@id/android:list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/friend_list_header"/>
+        android:layout_below="@id/friend_list_header"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="16dp"
+        android:divider="@drawable/list_divider_inset"
+        android:dividerHeight="1px"/>
 
     <TextView
         android:id="@+id/android:empty"
@@ -67,8 +71,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/friend_list_header"
-        android:minHeight="32dp"
-        android:layout_margin="8dp"
+        android:minHeight="48dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp"
         android:padding="4dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/secondary_text"

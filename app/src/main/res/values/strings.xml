@@ -79,7 +79,6 @@
     <!-- item_friend_request -->
     <string name="btn_accept">Confirm</string>
     <string name="btn_decline">Delete</string>
-    <string name="cd_user_icon">User icon</string>
 
     <!-- item_add_friend -->
     <string name="btn_send_request">Send request</string>
@@ -89,8 +88,8 @@
 
     <!-- multiple -->
     <string name="cd_start_game">Start new game</string>
+    <string name="cd_user_icon">User icon</string>
     <string name="title_activity_find_friends">FindFriendsActivity</string>
-
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>

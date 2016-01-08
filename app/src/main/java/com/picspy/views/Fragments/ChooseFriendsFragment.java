@@ -110,6 +110,7 @@ public class ChooseFriendsFragment extends ListFragment implements
         data.putBoolean(ChooseFriendsFragment.ARG_IS_SEARCH, false);
         getLoaderManager().restartLoader(LOADER_ID, data, callback).forceLoad();
 
+        mListener.setToolbarTitle("Send to..");
         return inflater.inflate(R.layout.fragment_choose_friends_list, container, false);
     }
 
@@ -199,7 +200,7 @@ public class ChooseFriendsFragment extends ListFragment implements
         View searchplate = searchView.findViewById(android.support.v7.appcompat.R.id.search_plate);
         if (searchplate != null) {
             Log.d("chooseFriend", "Searchplate not null");
-            searchplate.setBackgroundResource(0);
+            searchplate.setBackgroundResource(R.drawable.horizontal_divider);
         }
         // Change close icon color
         ImageView searchCloseIcon = (ImageView)searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
@@ -243,15 +244,6 @@ public class ChooseFriendsFragment extends ListFragment implements
         super.onDetach();
         mListener = null;
     }
-/*
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (null != mListener) {
-            // Notify the active callbacks interface (the activity, if the
-            // fragment is attached to one) that an item has been selected.
-            mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
-        }
-    }*/
 
     /**
      * Instantiate and return a new Loader for the given ID.
@@ -319,11 +311,12 @@ public class ChooseFriendsFragment extends ListFragment implements
      */
     public interface F2FragmentInteractionListener {
         // TODO: Update argument type and name
-        public void onFragmentInteraction(String id);
+        void onFragmentInteraction(String id);
+
+        void setToolbarTitle(String title);
     }
 
     public static class FriendLoader extends AsyncTaskLoader<Cursor> {
-
         private final boolean isSearch;
         private final String constraint;
 

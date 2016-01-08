@@ -46,7 +46,7 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
     public final static String FOR_FRIEND = "com.picspy.FRIEND_REQUEST";
     private static final String TAG = "FriendsInfoActivity";
     private TextView sent_won, sent_lost, received_won, received_lost;
-    private TextView total_won, total_lost, leaderboard, toolbarTitle, stats_title;
+    private TextView total_won, total_lost, leaderboard, stats_title;
     private SurfaceView frame1;
     private ProgressBar spinner;
     private int friend_id;
@@ -71,19 +71,18 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
         initializeViews();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.friend_info_toolbar);
-        toolbarTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
 
-        if (friend_username != null) {
-            stats_title.setText(friend_username + "\' all time");
-            toolbarTitle.setText(friend_username);
-        }
+
         // TODO Should local db be queried here or in parent activity
 
         // Setting toolbar as the ActionBar
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationIcon(R.drawable.ic_chevron_left);
+        if (friend_username != null) {
+            stats_title.setText(friend_username + "\' all time");
+            getSupportActionBar().setTitle(friend_username);
+        }
     }
 
     private void processIntent() {
@@ -283,13 +282,13 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
         //TODO move renaming of toolbar to onCreate
         if (friend_id < PrefUtil.getInt(getApplicationContext(), AppConstants.USER_ID)) {
             stats_title.setText(record.getUsers_by_friend_1().getUsername() + "\' all time");
-            toolbarTitle.setText(record.getUsers_by_friend_1().getUsername());
+            getSupportActionBar().setTitle(record.getUsers_by_friend_1().getUsername());
             total_won.setText(String.valueOf(record.getUsers_by_friend_1().getTotal_won()));
             total_lost.setText(String.valueOf(record.getUsers_by_friend_1().getTotal_lost()));
             leaderboard.setText(String.valueOf(record.getUsers_by_friend_1().getLeaderboard()));
         } else {
             stats_title.setText(record.getUsers_by_friend_2().getUsername() + "\' all time");
-            toolbarTitle.setText(record.getUsers_by_friend_2().getUsername());
+            getSupportActionBar().setTitle(record.getUsers_by_friend_2().getUsername());
             total_won.setText(String.valueOf(record.getUsers_by_friend_2().getTotal_won()));
             total_lost.setText(String.valueOf(record.getUsers_by_friend_2().getTotal_lost()));
             leaderboard.setText(String.valueOf(record.getUsers_by_friend_2().getLeaderboard()));

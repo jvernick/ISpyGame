@@ -52,7 +52,7 @@
        android:gravity="center"
        android:layout_marginLeft="30dp"
        android:layout_marginStart="30dp">
-       
+
        <TextView
            android:layout_width="30dp"
            android:layout_height="60dp"
@@ -81,7 +81,7 @@
                android:id="@+id/down_button" />
 
        </LinearLayout>
-       
+
     </LinearLayout>
 
     <TextView

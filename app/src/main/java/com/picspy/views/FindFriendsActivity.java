@@ -74,12 +74,10 @@ public class FindFriendsActivity extends ActionBarActivity {
         slidingTabLayout.setViewPager(mViewPager);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.find_friend_toolbar);
-        TextView toolbarTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
-        toolbarTitle.setText("Find Friends");
 
         //Setting toolbar as the ActionBar
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setTitle("Find Friends");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationIcon(R.drawable.ic_chevron_left);
     }

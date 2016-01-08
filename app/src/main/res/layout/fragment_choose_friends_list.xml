@@ -8,9 +8,10 @@
         android:id="@android:id/list"
         android:layout_marginLeft="16dp"
         android:layout_marginBottom="16dp"
-        android:layout_marginRight="16dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:divider="@drawable/list_divider_inset"
+        android:dividerHeight="1px"/>
 
     <TextView
         android:id="@android:id/empty"
