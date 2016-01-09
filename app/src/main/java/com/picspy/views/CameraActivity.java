@@ -3,6 +3,8 @@ package com.picspy.views;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
@@ -11,9 +13,11 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.hardware.Camera;
 import android.hardware.SensorManager;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -23,6 +27,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -30,7 +35,11 @@ import com.dreamfactory.model.FileResponse;
 import com.picspy.GamesRequests;
 import com.picspy.firstapp.R;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -57,6 +66,8 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
     public static final String GUESSES = "GUESSES";
     public static final String TIME = "TIME";
     public static final String LEADERBOARDS = "LEADERBOARDS";
+    public static final String IMAGE_PATH = "IMAGE_PATH";
+    public static final String SELECTION = "SELECTION";
     public static final int CHALLENGE_INFO_REQUEST = 2;
     private Camera mCamera;
     private CameraPreview mPreview;
@@ -79,6 +90,7 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
     private boolean isPictureTaken;
     private static int[] colors = new int[6];
     private static int currColor;
+    private File imageFile;
     private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
 
         @Override
@@ -139,17 +151,67 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
             finishButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mDrawingView.isDoneDrawing()) {
-                        // TODO: do I want to call startActivity() instead?
+                    if (mDrawingView.isDoneDrawing() && imageFile.exists()) {
+                        // TODO: do we want to call startActivity() instead?
+                        // retrieve the coordinates of the selection the user drew
+                        ArrayList<float[]> selection = mDrawingView.getSelection();
+                        DisplayMetrics display = new DisplayMetrics();
+                        getWindowManager().getDefaultDisplay().getMetrics(display);
+                        // Get the width and height of the canvas that the user drew on
+                        int width = mDrawingView.getWidth();
+                        int height = mDrawingView.getHeight();
                         // create and launch an activity to prompt the user for info about the challenge
                         Intent intent = new Intent(getApplicationContext(), SendChallenge.class);
-                        startActivityForResult(intent, CHALLENGE_INFO_REQUEST);
+                        intent.putExtra(IMAGE_PATH, imageFile.getAbsolutePath());
+                        ExifInterface exif = null;
+                        try {
+                            exif = new ExifInterface(imageFile.getAbsolutePath());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        if (exif != null) {
+                            // Use the exif interface to retrieve the actual width and height of the image
+                            // The width and length are actually the height and width, respectively
+                            int imageWidth = exif.getAttributeInt(ExifInterface.TAG_IMAGE_LENGTH, -1);
+                            int imageLength = exif.getAttributeInt(ExifInterface.TAG_IMAGE_WIDTH, -1);
+                            float scalingY = (float) imageLength / height;
+                            float scalingX = (float) imageWidth / width;
+                            // apply the scaling to the selection so that it is normalized to the true image size
+                            selection = ImageViewer.applyScalingToSelection(selection, scalingX, scalingY);
+                            // put the selection array as a string as the extra
+                            intent.putExtra(SELECTION, selection);
+                            intent.putExtra("CameraID", mPreview.getCameraID());
+                            // TODO: determine where to delete the image
+                            // TODO: apply the selfie flip here, rather than in the imageviewer
+                            startActivityForResult(intent, CHALLENGE_INFO_REQUEST);
+                        }
                     }
                 }
             });
 
             // add this new drawingPad layout as a child of the root layout for CameraActivity
             layout.addView(drawingPad);
+
+            // save the image temporarily in the app's local directory
+            imageFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
+
+            // TODO: the image should be deleted if the user does not continue on however
+            OutputStream outputStream = null;
+            try {
+                outputStream = new BufferedOutputStream(new FileOutputStream(imageFile));
+                outputStream.write(data);   // write the image to the outputStream
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                // Always close the outputStream
+                try {
+                    if (outputStream != null) {
+                        outputStream.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     };
 
@@ -526,7 +588,7 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
     private File getOutputMediaFile(int type){
 
         // Get the internal storage directory for this app
-        File mediaStorageDir = CameraActivity.this.getFilesDir();
+        File mediaStorageDir = getFilesDir();
 
         // Create the storage directory if it does not exist
         if (!mediaStorageDir.exists()){
@@ -539,6 +601,7 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
         // Create a unique media file name based on the current time stamp
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         File mediaFile;
+        // TODO: change the filename to include the user ID
         if (type == MEDIA_TYPE_IMAGE){
             mediaFile = new File(mediaStorageDir.getPath() + File.separator +
                     "IMG_"+ timeStamp + ".jpg");
@@ -592,8 +655,8 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
         @Override
         protected String doInBackground(Object... params) {
             GamesRequests request = new GamesRequests(getApplicationContext(), true);
-            return request.createGame((FileResponse) params[0],
-                    (GamesRequests.ChallengeParams) params[1]);
+            //return request.createGame((FileResponse) params[0], (GamesRequests.ChallengeParams) params[1]);
+            return "SFDFDGFD";  // TODO: Brunel I think you need to fix the above return statement
         }
 
         @Override

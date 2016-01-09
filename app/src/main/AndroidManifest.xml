@@ -86,6 +86,9 @@
             android:parentActivityName="com.picspy.views.CameraActivity"
             android:theme="@style/create_challenge" >
         </activity>
+        <activity android:name="com.picspy.views.ImageViewer"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name="com.picspy.views.FriendInfoActivity"
             android:configChanges="orientation"

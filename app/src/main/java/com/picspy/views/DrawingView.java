@@ -307,6 +307,7 @@ class DrawingView extends View {
                     break;
                 case MotionEvent.ACTION_MOVE:
                     // TODO: do not think shape is drawn when two points are slowly drawn in sequence
+                    // TODO: should we limit how many coordinates can be drawn?
                     double xDistance = Math.abs(startCoordinates[0] - x);
                     double yDistance = Math.abs(startCoordinates[1] - y);
                     double radiusFromCenter = Math.sqrt(xDistance * xDistance + yDistance * yDistance);
@@ -381,6 +382,14 @@ class DrawingView extends View {
     public void setBrushColor(int newColor) {
         currColor = newColor;
         mPaint.setColor(currColor);
+    }
+
+    // Returns the most previous valid drawing. If no valid drawing is drawn yet, return null.
+    public ArrayList<float[]> getSelection() {
+        if (isShapeDrawn) {
+            return coordsOfPastDrawings.peek();
+        }
+        return null;
     }
 
     // Helper method to undo the previous drawing. This is accomplished by essentially retracing
