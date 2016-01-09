@@ -9,8 +9,7 @@
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#757575</color>
     <color name="icons">#FFFFFF</color>
-    <color name="list_item_selected">#E0E0E0</color>
-    <color name="divider">#E0E0E0</color>
+    <color name="grey_300">#E0E0E0</color>
     <color name="tabsScrollColor">#2c7c30</color>
     <color name="turquoise">#34DDDD</color>
     <color name="red_500">#F44336</color>

@@ -2,14 +2,11 @@ package com.picspy.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
@@ -49,15 +46,8 @@ public class ChooseFriendsCursorAdapter extends ResourceCursorAdapter {
 
             //set name and check value
             viewHolder.username.setText(friendUsername);
-            viewHolder.checkBox.setChecked(getCheckedFriends().contains(userId));
+            setView(userId, view, viewHolder.checkBox);
 
-            viewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    //toggleChecked(userId);
-
-                }
-            });
 
             //configure user_icon
             Drawable background = viewHolder.friendIcon.getBackground();
@@ -106,7 +96,7 @@ public class ChooseFriendsCursorAdapter extends ResourceCursorAdapter {
     /**
      * Toggles whether or not a friend has been selected
      * @param userId The id of the friend to be toggled
-     * @param view
+     * @param view friend item view
      */
     public void toggleSelected(int userId, View view){
         if(checkedFriends.contains(userId)){
@@ -114,7 +104,24 @@ public class ChooseFriendsCursorAdapter extends ResourceCursorAdapter {
             view.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
         }else{
             checkedFriends.add(userId);
-            view.setBackgroundColor(context.getResources().getColor(R.color.list_item_selected));
+            view.setBackgroundColor(context.getResources().getColor(R.color.grey_300));
+        }
+    }
+
+    /**
+     * binds the view with the checkbox
+     * @param userId friend user id
+     * @param view friend item view
+     * @param checkBox checkbox to be toggled
+     */
+    public void setView (int userId, View view, CheckBox checkBox) {
+        if (checkedFriends.contains((userId))) {
+            checkBox.setChecked(true);
+            view.setBackgroundColor(context.getResources()
+                    .getColor(R.color.grey_300));
+        } else {
+            checkBox.setChecked(false);
+            view.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
         }
     }
 }

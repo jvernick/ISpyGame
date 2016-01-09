@@ -70,6 +70,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         }
         return _instance;
     }
+
     //Creating tables
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
@@ -89,14 +90,20 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         onCreate(sqLiteDatabase);
     }
 
-    // Enable foreign key constraints to relate sender id to friend username
-    @Override
-    public void onOpen(SQLiteDatabase db) {
-        super.onOpen(db);
-        if (!db.isReadOnly()) {
-            // Enable foreign key constraints
-            db.execSQL("PRAGMA foreign_keys=ON;");
+    public boolean isEmpty() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        boolean isEmpty = true;
+        Cursor cursor = db.rawQuery("SELECT EXISTS (select 1 from "
+                + FriendEntry.TABLE_NAME + ")", null);
+        if (cursor != null) {
+            cursor.moveToFirst();                       // Always one row returned.
+            isEmpty =  cursor.getInt (0) == 0;          // Zero count means empty table.
+            Log.d("DbHandler_isEmpty", cursor.getInt(0)+ "");
+            cursor.close();
         }
+
+        db.close();
+        return isEmpty;
     }
     /**
      * Adds a new friend to the database

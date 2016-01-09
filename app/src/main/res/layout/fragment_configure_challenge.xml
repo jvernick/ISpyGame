@@ -1,116 +1,138 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:divider="@drawable/horizontal_divider"
+    android:showDividers="middle"
     tools:context="com.picspy.views.fragments.ConfigureChallengeFragment">
 
-    <TextView
-        style="@style/configure_challenge_textViews"
+    <RelativeLayout
         android:id="@+id/hint"
-        android:text="Hint:" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:id="@+id/hint_input"
-        android:layout_below="@+id/hint"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/search_field_style"
-        android:maxLength="50"
-        android:maxLines="3"
-        android:ellipsize="end"
-        android:padding="8dp"
-        android:hint="max 50 characters"
-        android:textColor="@color/secondary_text"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/custom_num_picker"
-        android:layout_below="@+id/hint_input"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_margin="4dp">
+        android:padding="8dp">
+        <TextView
+            style="@style/configure_challenge_textViews"
+            android:id="@+id/hint_title"
+            android:text="@string/hint_title" />
+
+        <EditText
+            android:id="@+id/hint_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="2dp"
+            android:layout_below="@id/hint_title"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/search_field_style"
+            android:maxLength="50"
+            android:maxLines="3"
+            android:ellipsize="end"
+            android:padding="8dp"
+            android:hint="@string/hint_input_hint"
+            android:textColor="@color/secondary_text"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/guess"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+        <TextView
+            style="@style/configure_challenge_textViews"
+            android:id="@+id/guesses_title"
+            android:text="@string/guess_title"/>
+
+        <HorizontalScrollView
+            android:id="@+id/guess_picker"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_below="@id/guesses_title"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="end"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="4dp"
+            android:fillViewport="true"
+            android:scrollbars="none" >
+            <RadioGroup
+                android:id="@+id/guesses_radio_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:divider="@drawable/radio_group_divider"
+                android:showDividers="middle">
+            </RadioGroup>
+        </HorizontalScrollView>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+        <TextView
+            style="@style/configure_challenge_textViews"
+            android:id="@+id/time_title"
+            android:text="@string/time_title"/>
+
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:id="@+id/time_picker"
+            android:layout_below="@id/time_title"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="4dp"
+            android:layout_gravity="center_horizontal"
+            android:fillViewport="true"
+            android:scrollbars="none" >
+            <RadioGroup
+                android:id="@+id/time_radio_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:divider="@drawable/radio_group_divider"
+                android:showDividers="middle">
+            </RadioGroup>
+        </HorizontalScrollView>
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+        <CheckBox
+            android:id="@+id/checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:button="@drawable/selector_checkbox" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/yellow"
-            android:padding="4dp"
-            android:layout_margin="4dp"
-            android:text="8"
-            android:textSize="@android:dimen/app_icon_size"
-            android:id="@+id/number_of_guesses" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="4dp"
-            android:layout_margin="4dp"
-            android:orientation="vertical">
-
-            <Button
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:id="@+id/up_button"
-                android:background="@drawable/num_picker_button" />
-
-            <Button
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@drawable/num_picker_button"
-                android:id="@+id/down_button" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <TextView
-        style="@style/configure_challenge_textViews"
-        android:id="@+id/guesses"
-        android:layout_alignTop="@id/custom_num_picker"
-        android:layout_alignBottom="@id/custom_num_picker"
-        android:gravity="center_vertical"
-        android:layout_below="@+id/hint_input"
-        android:text="Guesses:"/>
-
-    <TextView
-        style="@style/configure_challenge_textViews"
-        android:id="@+id/time"
-        android:layout_below="@+id/custom_num_picker"
-        android:text="Time:"/>
-
-    <TextView
-        style="@style/configure_challenge_textViews"
-        android:id="@+id/leaderboard"
-        android:layout_below="@+id/time"
-        android:text="Leaderboards:"/>
-
-    <CheckBox
-        android:id="@+id/checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:padding="4dp"
-        android:gravity="center"
-        android:layout_alignBottom="@+id/leaderboard"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true" />
+            style="@style/configure_challenge_textViews"
+            android:id="@+id/leaderboard_title"
+            android:layout_toLeftOf="@id/checkbox"
+            android:layout_toStartOf="@id/checkbox"
+            android:text="@string/leaderboard_title"/>
+    </RelativeLayout>
 
     <Button
         android:id="@+id/next_button"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:background="@drawable/create_challenge_button"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"/>
+        android:layout_gravity="end|bottom"/>
 
-</RelativeLayout>
+</LinearLayout>

@@ -14,8 +14,29 @@
         android:dividerHeight="1px"/>
 
     <TextView
-        android:id="@android:id/empty"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center" />
+        android:id="@+id/search_empty"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_margin="4dp"
+        android:padding="4dp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/secondary_text"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/no_friends"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_margin="4dp"
+        android:padding="4dp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/secondary_text"
+        android:text="@string/no_friends"
+        android:visibility="gone"/>
 </FrameLayout>

@@ -4,7 +4,7 @@
     tools:context="com.picspy.views.ChallengesActivity">
     <item android:id="@+id/action_settings"
         android:title="@string/challenge_action_settings"
-        android:icon="@drawable/ic_menu_refresh"
+        android:icon="@drawable/ic_refresh"
         android:orderInCategory="100"
         app:showAsAction="ifRoom" />
 </menu>

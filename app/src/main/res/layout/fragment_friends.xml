@@ -66,7 +66,7 @@
         android:dividerHeight="1px"/>
 
     <TextView
-        android:id="@+id/android:empty"
+        android:id="@+id/search_empty"
         android:tag="friends_fragment_empty_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -79,13 +79,28 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/secondary_text"
         android:gravity="center"
-        android:text="@string/friends_fragment_empty_search"/>
+        android:text="@string/friends_fragment_empty_search"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/no_friends"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/friend_list_header"
+        android:minHeight="48dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp"
+        android:padding="4dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/secondary_text"
+        android:gravity="center"
+        android:text="@string/friends_fragment_no_friends"
+        android:visibility="gone"/>
 
     <ProgressBar
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/progressSpinner"
         android:id="@+id/progressBar"
-        android:layout_below="@+id/android:list"
-        android:layout_centerHorizontal="true" />
+        android:visibility="visible"
+        android:layout_below="@id/android:list" />
 </RelativeLayout>

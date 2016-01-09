@@ -55,11 +55,11 @@ public class CreateChallengeActivity extends Activity {
 //        int height = display.heightPixels;
 //        getWindow().setLayout((int)(width*.9), (int)(height*.9));
 
-        hint = (TextView) findViewById(R.id.hint);
+        hint = (TextView) findViewById(R.id.hint_title);
         Typeface customFont = Typeface.createFromAsset(getAssets(), "fonts/ld_childish.ttf");
         hint.setTypeface(customFont);
 
-        guesses = (TextView) findViewById(R.id.guesses);
+        guesses = (TextView) findViewById(R.id.guesses_title);
         guesses.setTypeface(customFont);
 
         numOfGuesses = (TextView) findViewById(R.id.number_of_guesses);

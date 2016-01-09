@@ -3,21 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.picspy.views.fragments.ChooseFriendsFragment">
 
-    <!--TODO get title from resource -->
     <item
         android:id="@+id/search"
         android:orderInCategory="1"
-        android:title="Search Friend"
+        android:title="@string/search_title"
         app:queryHint="Search by Username"
         android:icon="@drawable/ic_search"
-        app:showAsAction="collapseActionView|ifRoom"
+        app:showAsAction="collapseActionView|always"
         android:actionViewClass="android.widget.SearchView"
         app:actionViewClass="android.support.v7.widget.SearchView" />
-
-    <item
-        android:id="@+id/action_settings"
-        android:title="@string/challenge_action_settings"
-        android:icon="@drawable/ic_add_friend"
-        android:orderInCategory="2"
-        app:showAsAction="always" />
 </menu>

@@ -78,7 +78,7 @@
                 android:textColor="@color/accent"
                 android:text="@string/gueses_text"/>
             <TextView
-                android:id="@+id/guesses"
+                android:id="@+id/guesses_title"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:layout_below="@id/guesses_text"
                 android:layout_width="match_parent"

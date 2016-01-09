@@ -2,10 +2,8 @@ package com.picspy.adapters;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,7 +59,7 @@ public class TopFragmentArrayAdapter extends ArrayAdapter<Game> {
             viewHolder.username = (TextView) convertView.findViewById(R.id.sender_username);
             viewHolder.timeLength = (TextView) convertView.findViewById(R.id.timeLength);
             viewHolder.challenge_time = (TextView) convertView.findViewById(R.id.challengeTime);
-            viewHolder.guesses = (TextView) convertView.findViewById(R.id.guesses);
+            viewHolder.guesses = (TextView) convertView.findViewById(R.id.guesses_title);
             viewHolder.list_icon = (ImageView) convertView.findViewById(R.id.list_icon);
             
             convertView.setTag(viewHolder);

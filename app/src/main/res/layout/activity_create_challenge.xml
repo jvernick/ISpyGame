@@ -10,7 +10,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/hint"
+        android:id="@+id/hint_title"
         android:text="Hint:"
         android:textColor="@color/yellow"
         android:paddingTop="15dp"
@@ -22,7 +22,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:id="@+id/hint_input"
-        android:layout_below="@+id/hint"
+        android:layout_below="@+id/hint_title"
         android:layout_centerHorizontal="true"
         android:background="#ffffffff"
         android:maxLength="50"
@@ -34,7 +34,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/guesses"
+        android:id="@+id/guesses_title"
         android:layout_marginTop="20dp"
         android:textColor="@color/yellow"
         android:textSize="@android:dimen/app_icon_size"
@@ -44,9 +44,9 @@
    <LinearLayout
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
-       android:id="@+id/custom_num_picker"
-       android:layout_toRightOf="@id/guesses"
-       android:layout_toEndOf="@+id/guesses"
+       android:id="@+id/time_picker"
+       android:layout_toRightOf="@id/guesses_title"
+       android:layout_toEndOf="@+id/guesses_title"
        android:layout_below="@+id/hint_input"
        android:orientation="horizontal"
        android:gravity="center"
@@ -90,7 +90,7 @@
         android:id="@+id/time"
         android:textColor="@color/yellow"
         android:textSize="@android:dimen/app_icon_size"
-        android:layout_below="@+id/custom_num_picker"
+        android:layout_below="@+id/time_picker"
         android:text="Time:"
         android:paddingTop="20dp"/>
 

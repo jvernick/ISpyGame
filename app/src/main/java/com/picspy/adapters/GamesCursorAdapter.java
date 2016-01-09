@@ -77,7 +77,7 @@ public class GamesCursorAdapter extends ResourceCursorAdapter {
         viewHolder.uname = (TextView) view.findViewById(R.id.sender_username);
         viewHolder.timeLength = (TextView) view.findViewById(R.id.timeLength);
         viewHolder.challengeTime = (TextView) view.findViewById(R.id.challengeTime);
-        viewHolder.guesses = (TextView) view.findViewById(R.id.guesses);
+        viewHolder.guesses = (TextView) view.findViewById(R.id.guesses_title);
 
         view.setTag(viewHolder);
 
