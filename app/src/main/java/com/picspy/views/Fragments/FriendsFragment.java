@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
@@ -19,6 +20,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FilterQueryProvider;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -35,6 +37,7 @@ import com.picspy.views.FindFriendsActivity;
 import com.picspy.views.SearchEditTextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Justin12 on 6/6/2015.
@@ -45,7 +48,12 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
     private FriendsCursorAdapter cursorAdapter;
     private View listHeader;
     private EditText searchField;
-    ProgressBar progressSpinner;
+    private ProgressBar progressSpinner;
+    private boolean firstQuery = true;
+    private boolean noFriend = false;
+
+    private TextView emptySearchView;
+    private TextView noFriendView;
 
     /**
      * Static factory method that takes an int parameter,
@@ -59,10 +67,37 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
         f.setArguments(args);
         return f;
     }
+
+    /**
+     * Called to do initial creation of a fragment.  This is called after
+     *  #onAttach(Activity)} and before
+     * {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * <p/>
+     * <p>Note that this can be called while the fragment's activity is
+     * still in the process of being created.  As such, you can not rely
+     * on things like the activity's content view hierarchy being initialized
+     * at this point.  If you want to do work once the activity itself is
+     * created, see {@link #onActivityCreated(Bundle)}.
+     *
+     * @param savedInstanceState If the fragment is being re-created from
+     *                           a previous saved state, this is the state.
+     */
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        cursorAdapter = new FriendsCursorAdapter(getActivity(), R.layout.item_friends, null, 0);
+        setListAdapter(cursorAdapter);
+        (new GetFriends(getActivity())).execute();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_friends, container, false);
+
+        noFriendView = (TextView) rootView.findViewById(R.id.no_friends);
+        emptySearchView = (TextView) rootView.findViewById(R.id.search_empty);
+
         ImageView findFriend = (ImageView) rootView.findViewById(R.id.find_friend);
         findFriend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,6 +112,7 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
         progressSpinner.setVisibility(View.GONE);
         return rootView;
     }
+
 
     /**
      * Called when the fragment's activity has been created and this
@@ -95,17 +131,6 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         final LoaderManager.LoaderCallbacks<Cursor> callback = this;
-
-        //in this method because it requires the activity context
-        (new GetFriends(getActivity())).execute();
-
-        DatabaseHandler dbHandler = DatabaseHandler.getInstance(getActivity());
-        if (cursorAdapter == null) {
-            cursorAdapter = new FriendsCursorAdapter(getActivity().getApplicationContext(),
-                    R.layout.item_friends,
-                    null, 0);
-            setListAdapter(cursorAdapter);
-        }
 
         cursorAdapter.setFilterQueryProvider(new FilterQueryProvider() {
             public Cursor runQuery(CharSequence constraint) {
@@ -136,7 +161,7 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
         }
 
 
-        //change list empty text if the list is empty. Default values relates to empty searches
+       /* //change list empty text if the list is empty. Default values relates to empty searches
         if (cursorAdapter.isEmpty()){
             View rootview = getView();
             if ( rootview != null) {
@@ -146,7 +171,7 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
                     emptyText.setText(R.string.friends_fragment_no_friends);
                 }
             }
-        }
+        }*/
 
         getLoaderManager().restartLoader(LOADER_ID, null, callback).forceLoad();
     }
@@ -209,8 +234,20 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
      */
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        ((FriendsCursorAdapter) getListAdapter()).changeCursor(data);
-        ((FriendsCursorAdapter) getListAdapter()).notifyDataSetChanged();
+        cursorAdapter.changeCursor(data);
+        cursorAdapter.notifyDataSetChanged();
+        if (firstQuery) {
+            Log.d(TAG, "firstQuery " + data.getCount());
+            ListView listView = getListView();
+
+            firstQuery = false;
+            if(data.getCount() == 0) {
+                noFriend = true;
+                listView.setEmptyView(noFriendView);
+            } else {
+                listView.setEmptyView(emptySearchView);
+            }
+        }
         progressSpinner.setVisibility(View.GONE);
     }
 

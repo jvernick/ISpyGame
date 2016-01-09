@@ -24,6 +24,12 @@ public class FileResponse {
 	/* A GMT date timestamp of when the file was last modified. */
 	@JsonProperty("last_modified")
 	private String last_modified = null;
+
+	public FileResponse(String path, String name) {
+		this.path = path;
+		this.name = name;
+	}
+
 	public String getName() {
 		return name;
 	}

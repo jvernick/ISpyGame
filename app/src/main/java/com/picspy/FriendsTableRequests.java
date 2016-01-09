@@ -1,7 +1,6 @@
 package com.picspy;
 
 import android.content.Context;
-import android.os.Parcel;
 import android.util.Log;
 
 import com.dreamfactory.api.DbApi;

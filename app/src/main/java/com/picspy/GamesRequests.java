@@ -1,6 +1,7 @@
 package com.picspy;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.dreamfactory.api.DbApi;
@@ -57,20 +58,21 @@ public class GamesRequests {
 
     /**
      * Creates new game on backend
-     * @param fileToUpload Object containing file name and file path
+     * @param imageFileName  file name
+     * @param imageAbsolutePath absolute file path
      * @param params Challenge parameters including hint, time etc
      * @return "Success" on successful upload. Returns error message when
      * exception is thrown, otherwise returns "Failed" on error
      * TODO veryfiy return type
      */
-    public String createGame(FileResponse fileToUpload, ChallengeParams params) {
+    public String createGame(String imageFileName, String imageAbsolutePath, ChallengeParams params) {
         // where to upload on server
         String containerName = AppConstants.CONTAINER_NAME;
         String filePathOnServer = AppConstants.FOLDER_NAME + "/";
 
         FileRequest request = new FileRequest();
-        request.setName(fileToUpload.getName());  // this will be stored file name on server
-        request.setPath(fileToUpload.getPath());
+        request.setName(imageFileName);  // this will be stored file name on server
+        request.setPath(imageAbsolutePath);
         try {
             FileResponse resp = fileApi.createFile(containerName, filePathOnServer, false,
                     request, params.getParams());
@@ -128,7 +130,7 @@ public class GamesRequests {
      * about a challenge (metadata) when creating a game. It provides a method that returns
      * the appropriate data type
      */
-    public class ChallengeParams {
+    public static class ChallengeParams {
         private Map<String,String> params;
 
         /**
@@ -155,12 +157,39 @@ public class GamesRequests {
             params.put("friends", Arrays.toString(friends));
         }
 
+        public ChallengeParams(Bundle bundle) {
+            params = new HashMap<>();
+            params.put(GAME_LABEL.SELECTION, bundle.getString(GAME_LABEL.SELECTION));
+            params.put(GAME_LABEL.HINT, bundle.getString(GAME_LABEL.HINT));
+            params.put(GAME_LABEL.GUESSES, String.valueOf(bundle.getInt(GAME_LABEL.GUESSES)));
+            params.put(GAME_LABEL.TIME, String.valueOf(bundle.getInt(GAME_LABEL.TIME)));
+            params.put(GAME_LABEL.LEADERBOARD,
+                    String.valueOf(bundle.getBoolean(GAME_LABEL.LEADERBOARD)));
+            params.put(GAME_LABEL.FRIENDS,
+                    Arrays.toString(bundle.getIntArray(GAME_LABEL.FRIENDS)));
+        }
+
         /**
          * @return returns the parameters as a map
          */
         public Map<String, String> getParams() {
             return params;
         }
+    }
+
+    /**
+     * Class representing and storing server Table column names
+     */
+    public static class GAME_LABEL {
+        public static final String HINT = "hint";
+        public static final String SELECTION = "selection";
+        public static final String GUESSES = "guess";
+        public static final String TIME = "time";
+        public static final String LEADERBOARD = "l_board";
+        public static final String FRIENDS = "friends";
+        //extra for sendChallengeActivity
+        public static final String FILE_NAME = "file_name";
+        public static final java.lang.String FILE_NAME_PATH = "file_path";
     }
 
 }

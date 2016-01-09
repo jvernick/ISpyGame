@@ -20,19 +20,20 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.picspy.GamesRequests;
 import com.picspy.adapters.ChooseFriendsCursorAdapter;
 import com.picspy.adapters.DatabaseHandler;
 import com.picspy.firstapp.R;
 import com.picspy.views.SendChallenge;
 
-import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 
 /**
  * A fragment representing a list of Items.
@@ -48,35 +49,41 @@ public class ChooseFriendsFragment extends ListFragment implements
         SearchView.OnQueryTextListener,
         SearchView.OnCloseListener {
 
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_HINT = "hint";
+    private static final String ARG_GUESSES = "guesses";
+
     public static final String ARG_POSITION = "position";
-    private static final String ARG_IS_SEARCH = "isSearch?";
-    private static final String ARG_SEARCH_STRING = "searchString";
+    private static final String BDL_IS_SEARCH = "isSearch?";
+    private static final String BDL_SEARCH_STRING = "searchString";
+    private static final String TAG = "ChooseFriends";
     private static  LoaderManager.LoaderCallbacks<Cursor> callback;
     private static final int LOADER_ID = 0;
     private SearchView searchView;
+    private TextView emptySearchView;
+    private TextView noFriendView;
+    private boolean firstQuery = true;
+    private boolean noFriends = false;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    //bundle received from ConfigureChallengeFragment that stores game options
+    //ie: hint, time, guesses, leaderboard?
+    private Bundle gameOptionsBundle;
+    //bundle received from forwarded from ConfigureChallengeFragment that store picture options
+    //ie: file_name and selction.
+    private Bundle pictureOptionsBundle;
 
     private F2FragmentInteractionListener mListener;
 
-    /**
-     * The Adapter which will be used to populate the ListView/GridView with
-     * Views.
-     */
+    //list adapter
     private ChooseFriendsCursorAdapter cursorAdapter;
 
-    // TODO: Rename and change types of parameters
-    public static ChooseFriendsFragment newInstance(String param1, String param2) {
+    public static ChooseFriendsFragment newInstance(Bundle gameOptionsBundle,
+                                                    Bundle pictureOptionsBundle) {
         ChooseFriendsFragment fragment = new ChooseFriendsFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putBundle(SendChallenge.BDL_GAME_OPTIONS, gameOptionsBundle);
+        args.putBundle(SendChallenge.BDL_PICTURE_OPTIONS, pictureOptionsBundle);
+
         fragment.setArguments(args);
         return fragment;
     }
@@ -93,8 +100,8 @@ public class ChooseFriendsFragment extends ListFragment implements
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            gameOptionsBundle = getArguments().getBundle(SendChallenge.BDL_GAME_OPTIONS);
+            pictureOptionsBundle = getArguments().getBundle(SendChallenge.BDL_PICTURE_OPTIONS);
         }
 
         cursorAdapter = new ChooseFriendsCursorAdapter(getActivity(),
@@ -105,13 +112,16 @@ public class ChooseFriendsFragment extends ListFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         setListAdapter(cursorAdapter);
+        View rootView = inflater.inflate(R.layout.fragment_choose_friends_list, container, false);
+        noFriendView = (TextView) rootView.findViewById(R.id.no_friends);
+        emptySearchView = (TextView) rootView.findViewById(R.id.search_empty);
+
         callback = this;
         Bundle data = new Bundle();
-        data.putBoolean(ChooseFriendsFragment.ARG_IS_SEARCH, false);
+        data.putBoolean(ChooseFriendsFragment.BDL_IS_SEARCH, false);
         getLoaderManager().restartLoader(LOADER_ID, data, callback).forceLoad();
-
         mListener.setToolbarTitle("Send to..");
-        return inflater.inflate(R.layout.fragment_choose_friends_list, container, false);
+        return rootView;
     }
 
     /**
@@ -185,6 +195,26 @@ public class ChooseFriendsFragment extends ListFragment implements
         }
     }
 
+    private void createGame() {
+        Bundle finalBundle = new Bundle();
+        int[] friendIds = new int[cursorAdapter.getCheckedFriends().size()];
+        int i = 0;
+        for (Integer friend_id: cursorAdapter.getCheckedFriends()) {
+            friendIds[i] = friend_id;
+            i++;
+        }
+
+        finalBundle.putAll(gameOptionsBundle);
+        finalBundle.putAll(pictureOptionsBundle);
+        finalBundle.putIntArray(GamesRequests.GAME_LABEL.FRIENDS, friendIds);
+
+        boolean result = mListener.startGame(finalBundle);
+        if (result) {
+            Log.d(TAG, "Game sent successfully");
+        } else {
+            Log.d(TAG, "Error sending game");
+        }
+    }
     private void setupSearchView() {
         SearchManager searchManager = (SearchManager)
                 getActivity().getSystemService(Context.SEARCH_SERVICE);
@@ -199,13 +229,11 @@ public class ChooseFriendsFragment extends ListFragment implements
         // Change background line
         View searchplate = searchView.findViewById(android.support.v7.appcompat.R.id.search_plate);
         if (searchplate != null) {
-            Log.d("chooseFriend", "Searchplate not null");
-            searchplate.setBackgroundResource(R.drawable.horizontal_divider);
+            searchplate.setBackgroundResource(R.drawable.horizontal_divider_transparent);
         }
         // Change close icon color
         ImageView searchCloseIcon = (ImageView)searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
         if (searchCloseIcon != null) {
-            Log.d("chooseFriend", "searchCloseIcon not null");
             searchCloseIcon.setImageResource(R.drawable.ic_close_white);
         }
 
@@ -256,17 +284,26 @@ public class ChooseFriendsFragment extends ListFragment implements
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         //TODO add spinner?
         return new FriendLoader(getActivity(), 
-                args.getBoolean(ChooseFriendsFragment.ARG_IS_SEARCH),
-                args.getString(ChooseFriendsFragment.ARG_SEARCH_STRING, null));
+                args.getBoolean(ChooseFriendsFragment.BDL_IS_SEARCH),
+                args.getString(ChooseFriendsFragment.BDL_SEARCH_STRING, null));
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         ((ChooseFriendsCursorAdapter) getListAdapter()).changeCursor(data);
         ((ChooseFriendsCursorAdapter) getListAdapter()).notifyDataSetChanged();
+        if (firstQuery) {
+            firstQuery = false;
+            ListView listView = getListView();
+            if (data.getCount() == 0) {
+                listView.setEmptyView(noFriendView);
+                noFriends = true;
+            } else {
+                listView.setEmptyView(emptySearchView);
+            }
+        }
     }
 
-    //TODO implement
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         ((ChooseFriendsCursorAdapter) getListAdapter()).changeCursor(null);
@@ -275,17 +312,20 @@ public class ChooseFriendsFragment extends ListFragment implements
     @Override
     public boolean onQueryTextSubmit(String s) {
         Bundle data = new Bundle();
-        data.putBoolean(ChooseFriendsFragment.ARG_IS_SEARCH, true);
-        data.putString(ChooseFriendsFragment.ARG_SEARCH_STRING, s);
+        data.putBoolean(ChooseFriendsFragment.BDL_IS_SEARCH, true);
+        data.putString(ChooseFriendsFragment.BDL_SEARCH_STRING, s);
         getLoaderManager().restartLoader(LOADER_ID, data, callback).forceLoad();
         return false;
     }
 
     @Override
     public boolean onQueryTextChange(String s) {
+        if (!noFriends) {
+            emptySearchView.setText( "\"" +s + "\" not found");
+        }
         Bundle data = new Bundle();
-        data.putBoolean(ChooseFriendsFragment.ARG_IS_SEARCH, true);
-        data.putString(ChooseFriendsFragment.ARG_SEARCH_STRING, s);
+        data.putBoolean(ChooseFriendsFragment.BDL_IS_SEARCH, true);
+        data.putString(ChooseFriendsFragment.BDL_SEARCH_STRING, s);
         getLoaderManager().restartLoader(LOADER_ID, data, callback).forceLoad();
         return false;
     }
@@ -293,7 +333,7 @@ public class ChooseFriendsFragment extends ListFragment implements
     @Override
     public boolean onClose() {
         Bundle data = new Bundle();
-        data.putBoolean(ChooseFriendsFragment.ARG_IS_SEARCH, false);
+        data.putBoolean(ChooseFriendsFragment.BDL_IS_SEARCH, false);
         getLoaderManager().restartLoader(LOADER_ID, data, callback).forceLoad();
         return false;
     }
@@ -310,10 +350,8 @@ public class ChooseFriendsFragment extends ListFragment implements
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface F2FragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(String id);
-
         void setToolbarTitle(String title);
+        boolean startGame(Bundle finalBundle);
     }
 
     public static class FriendLoader extends AsyncTaskLoader<Cursor> {
