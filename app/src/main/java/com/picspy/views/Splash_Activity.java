@@ -6,7 +6,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 
 import com.dreamfactory.api.UserApi;
 import com.dreamfactory.model.Session;
@@ -22,7 +24,8 @@ import com.picspy.utils.PrefUtil;
  */
 public class Splash_Activity extends Activity {
     private Button splash_login, splash_signup;
-    private static final int SLEEP_TIME = 2000;
+    private View buttons;
+    private static final int SLEEP_TIME = 1000;
     private static final String TAG = "SplashActivity";
 
     @Override
@@ -33,6 +36,7 @@ public class Splash_Activity extends Activity {
         //PrefUtil.removeString(getApplicationContext(), AppConstants.SESSION_ID);
         splash_login = (Button) findViewById(R.id.splash_login);
         splash_signup = (Button) findViewById(R.id.splash_signup);
+        buttons = findViewById(R.id.buttons);
 
         //TODO change true in both lines below to false
         splash_login.setEnabled(false);
@@ -126,6 +130,7 @@ public class Splash_Activity extends Activity {
                 splash_login.setVisibility(View.VISIBLE);
                 splash_signup.setEnabled(true);
                 splash_signup.setVisibility(View.VISIBLE);
+                buttons.setVisibility(View.VISIBLE);
             }
         }
     }

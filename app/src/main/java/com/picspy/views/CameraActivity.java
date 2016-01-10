@@ -3,8 +3,6 @@ package com.picspy.views;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
@@ -15,7 +13,6 @@ import android.hardware.Camera;
 import android.hardware.SensorManager;
 import android.media.ExifInterface;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -27,11 +24,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
-import com.dreamfactory.model.FileResponse;
 import com.picspy.GamesRequests;
 import com.picspy.firstapp.R;
 
@@ -160,9 +154,13 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
                         // Get the width and height of the canvas that the user drew on
                         int width = mDrawingView.getWidth();
                         int height = mDrawingView.getHeight();
+
                         // create and launch an activity to prompt the user for info about the challenge
+                        Bundle pictureOptionsBundle = new Bundle();
+                        pictureOptionsBundle.putString(GamesRequests.GAME_LABEL.FILE_NAME_PATH,
+                                imageFile.getAbsolutePath());
                         Intent intent = new Intent(getApplicationContext(), SendChallenge.class);
-                        intent.putExtra(IMAGE_PATH, imageFile.getAbsolutePath());
+
                         ExifInterface exif = null;
                         try {
                             exif = new ExifInterface(imageFile.getAbsolutePath());
@@ -178,11 +176,29 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
                             float scalingX = (float) imageWidth / width;
                             // apply the scaling to the selection so that it is normalized to the true image size
                             selection = ImageViewer.applyScalingToSelection(selection, scalingX, scalingY);
-                            // put the selection array as a string as the extra
-                            intent.putExtra(SELECTION, selection);
-                            intent.putExtra("CameraID", mPreview.getCameraID());
+
+                            //For testing
+                            /*
+                            Log.d(TAG, "uncompressed");
+                            Log.d(TAG, "size: " + selection.size());
+                            Log.d(TAG, "string size: " + selectionToString(selection).length());
+                            Log.d(TAG, "compressed");
+
+                            Log.d(TAG, "size: " + compressSelection(selection).size());
+                            Log.d(TAG, "string size: " + selectionToString2(compressSelection(selection)).length());
+
+                            Log.d(TAG, "uncompressed: " + selectionToString(selection));
+                            Log.d(TAG, "compressed: " + selectionToString2(compressSelection(selection)));*/
+
+                            // put the selection array as a string as a string
+                            pictureOptionsBundle.putString(GamesRequests.GAME_LABEL.SELECTION, selectionToString2(compressSelection(selection)));
+                            pictureOptionsBundle.putString(GamesRequests.GAME_LABEL.FILE_NAME, imageFile.getName());
+                            Log.d(TAG, "CameraID: " + mPreview.getCameraID());
+                            //intent.putExtra("CameraID", mPreview.getCameraID());
                             // TODO: determine where to delete the image
                             // TODO: apply the selfie flip here, rather than in the imageviewer
+
+                            intent.putExtra(SendChallenge.BDL_PICTURE_OPTIONS, pictureOptionsBundle);
                             startActivityForResult(intent, CHALLENGE_INFO_REQUEST);
                         }
                     }
@@ -477,6 +493,7 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
             parameters.setMeteringAreas(meteringAreaList);
         }
 
+        //TODO sometimes causes an exception
         mCamera.setParameters(parameters);
         mCamera.autoFocus(this);
 
@@ -636,36 +653,37 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
         }
     }
 
-    /**
-     * Class to send challenge to backend;
-     * called as follows
-     * new UploadFileTask().execute(file, params); where:
-     * file is a FileRequest object containing the filename and file path
-     * parsms isa ChallengeParams object containing challenge parameters
-     * TODO implement the above call to this class so send challenge to backend
-     */
-    class UploadFileTask extends AsyncTask<Object, Void, String> {
-        @Override
-        protected void onPreExecute() {
-            //uncomment to show a progress bar
-            //TODO confirm/create a progress display
-            //progressDialog.show();
+    private String selectionToString(ArrayList<float[]> selection) {
+        String s = "{ Length: " + selection.size() + "\n";
+        for (float[] floatArray: selection) {
+            s += "[" + floatArray[0] + "," + floatArray[1] + "],"; // Arrays.toString(floatArray) + ", ";
         }
-
-        @Override
-        protected String doInBackground(Object... params) {
-            GamesRequests request = new GamesRequests(getApplicationContext(), true);
-            //return request.createGame((FileResponse) params[0], (GamesRequests.ChallengeParams) params[1]);
-            return "SFDFDGFD";  // TODO: Brunel I think you need to fix the above return statement
-        }
-
-        @Override
-        //TODO handle result and possible errors from server
-        protected void onPostExecute(String resp) {
-           /* if(progressDialog != null && progressDialog.isShowing()){
-                progressDialog.cancel();
-            }*/
-            Toast.makeText(getApplicationContext(), resp, Toast.LENGTH_LONG).show();
-        }
+        s += "P";
+        s = s.replace(",P","\n}");
+        return s;
     }
+
+    private String selectionToString2(ArrayList<int[]> selection) {
+        String s = "{ Length: " + selection.size() + "\n";
+        for (int[] floatArray: selection) {
+            s += "[" + floatArray[0] + "," + floatArray[1] + "],"; // Arrays.toString(floatArray) + ", ";
+        }
+        s += "P";
+        s = s.replace(",P","\n}");
+        return s;
+    }
+
+
+    public ArrayList<int[]> compressSelection(ArrayList<float[]> sel) {
+        ArrayList<int[]> newSel = new ArrayList<>();
+        int[] temp = {(int)sel.get(0)[0],(int)sel.get(0)[1]};
+        newSel.add(temp);
+        for (int i = 1; i < sel.size() - 1; i++) {
+            float[] curr = sel.get(i);
+            float[] next = sel.get(i+1);
+            newSel.add(new int[]{(int) (next[0] - curr[0]), (int) (next[1] - curr[1])});
+        }
+        return newSel;
+    }
+
 }

@@ -30,6 +30,9 @@ public class FileResponse {
 		this.name = name;
 	}
 
+	public FileResponse() {
+	}
+
 	public String getName() {
 		return name;
 	}

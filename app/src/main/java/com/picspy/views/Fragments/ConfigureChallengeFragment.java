@@ -11,7 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -90,17 +92,21 @@ public class ConfigureChallengeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        //TODO configure custome font
         View rootView = inflater.inflate(R.layout.fragment_configure_challenge, container, false);
+        final CheckBox checkBox = (CheckBox) rootView.findViewById(R.id.checkbox);
+        final EditText hintBox = (EditText) rootView.findViewById(R.id.hint_input);
+        final RadioGroup timeBox = (RadioGroup) rootView.findViewById(R.id.time_radio_group);
+        final RadioGroup guessBox = (RadioGroup) rootView.findViewById(R.id.guesses_radio_group);
         Button nextButton = (Button) rootView.findViewById(R.id.next_button);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO check if next fragment is needed
                 Bundle gameOptions = new Bundle();
-                gameOptions.putInt(GamesRequests.GAME_LABEL.GUESSES, configuredGuesses);
-                gameOptions.putInt(GamesRequests.GAME_LABEL.TIME, configuredTime);
-                gameOptions.putString(GamesRequests.GAME_LABEL.HINT, configuredHint);
-                gameOptions.putBoolean(GamesRequests.GAME_LABEL.LEADERBOARD, configuredLeaderboard);
+                gameOptions.putInt(GamesRequests.GAME_LABEL.GUESSES, guessBox.getCheckedRadioButtonId());
+                gameOptions.putInt(GamesRequests.GAME_LABEL.TIME, timeBox.getCheckedRadioButtonId());
+                gameOptions.putString(GamesRequests.GAME_LABEL.HINT, hintBox.getText().toString());
+                gameOptions.putBoolean(GamesRequests.GAME_LABEL.LEADERBOARD, checkBox.isChecked());
 
                 //user already selected friends
                 if (friendOptionsBundle != null) {
@@ -110,6 +116,8 @@ public class ConfigureChallengeFragment extends Fragment {
                 }
             }
         });
+
+
 
         final int checked_color_selected = getResources().getColor(R.color.primary_text);
         final int checked_color_unselected = getResources().getColor(R.color.grey_400);

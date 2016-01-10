@@ -142,31 +142,35 @@ public class GamesRequests {
          * @param time The time limit (5 - 30 secs)
          * @param leaderboard True if challenge is elected for leaderboard, otherwise false
          * @param friends list of recipients as friend_ids
+         * @deprecated  DO NOT USE
          */
         public ChallengeParams(String selection, String hint, int guess, int time,
                                boolean leaderboard, int[] friends) {
             params = new HashMap<>();
-            params.put("selection", selection);
-            params.put("hint", hint);
+            params.put(GAME_LABEL.SELECTION, selection);
+            params.put(GAME_LABEL.HINT, hint);
             guess = (guess < 1 || guess > 5)? 3: guess;
-            params.put("guess", String.valueOf(guess));
+            params.put(GAME_LABEL.GUESSES, String.valueOf(guess));
             time = (time < 5 || time > 30) ? 5 : time;
-            params.put("time", String.valueOf(time));
-            params.put("l_board", String.valueOf(leaderboard));
+            params.put(GAME_LABEL.TIME, String.valueOf(time));
+            params.put(GAME_LABEL.LEADERBOARD, String.valueOf(leaderboard));
             //TODO since this has brackets around it, javascript may already interpret it as an array. Verify and test
-            params.put("friends", Arrays.toString(friends));
+            params.put(GAME_LABEL.FRIENDS, Arrays.toString(friends));
         }
 
         public ChallengeParams(Bundle bundle) {
             params = new HashMap<>();
-            params.put(GAME_LABEL.SELECTION, bundle.getString(GAME_LABEL.SELECTION));
+            params.put(GAME_LABEL.SELECTION, "sel too long");//bundle.getString(GAME_LABEL.SELECTION));
             params.put(GAME_LABEL.HINT, bundle.getString(GAME_LABEL.HINT));
             params.put(GAME_LABEL.GUESSES, String.valueOf(bundle.getInt(GAME_LABEL.GUESSES)));
             params.put(GAME_LABEL.TIME, String.valueOf(bundle.getInt(GAME_LABEL.TIME)));
             params.put(GAME_LABEL.LEADERBOARD,
                     String.valueOf(bundle.getBoolean(GAME_LABEL.LEADERBOARD)));
-            params.put(GAME_LABEL.FRIENDS,
-                    Arrays.toString(bundle.getIntArray(GAME_LABEL.FRIENDS)));
+            String s = Arrays.toString(bundle.getIntArray(GAME_LABEL.FRIENDS));
+            s = s.replace('[', ' ');
+            s = s.replace(']', ' ');
+            s = s.replaceAll("\\s+","");
+            params.put(GAME_LABEL.FRIENDS, s);
         }
 
         /**
@@ -175,17 +179,28 @@ public class GamesRequests {
         public Map<String, String> getParams() {
             return params;
         }
+
+        @Override
+        public String toString() {
+            String s = "{ \n";
+            for (Map.Entry<String,String> entry: params.entrySet()) {
+                s += "\t" + entry.getKey() + ": " + entry.getValue() + "\n";
+            }
+
+            return s + "}";
+        }
     }
 
     /**
      * Class representing and storing server Table column names
+     * STATIC, do not change
      */
     public static class GAME_LABEL {
         public static final String HINT = "hint";
         public static final String SELECTION = "selection";
         public static final String GUESSES = "guess";
         public static final String TIME = "time";
-        public static final String LEADERBOARD = "l_board";
+        public static final String LEADERBOARD = "leaderboard";
         public static final String FRIENDS = "friends";
         //extra for sendChallengeActivity
         public static final String FILE_NAME = "file_name";

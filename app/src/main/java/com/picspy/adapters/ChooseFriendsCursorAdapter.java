@@ -21,10 +21,13 @@ import java.util.HashSet;
  * Created by Gordon on 8/22/2015.
  */
 public class ChooseFriendsCursorAdapter extends ResourceCursorAdapter {
+    private final EmptyCheckedListener emptyCheckedListener;
     private HashSet<Integer> checkedFriends;
     private Context context;
-    public ChooseFriendsCursorAdapter(Context context, int layout, Cursor cursor, int flags) {
+    public ChooseFriendsCursorAdapter(Context context, int layout, Cursor cursor, int flags,
+                                      EmptyCheckedListener emptyCheckedListener) {
         super(context,layout, cursor, flags);
+        this.emptyCheckedListener = emptyCheckedListener;
         checkedFriends = new HashSet<>();
         this.context = context;
     }
@@ -101,9 +104,11 @@ public class ChooseFriendsCursorAdapter extends ResourceCursorAdapter {
     public void toggleSelected(int userId, View view){
         if(checkedFriends.contains(userId)){
             checkedFriends.remove(userId);
+            if(checkedFriends.isEmpty()) emptyCheckedListener.isEmpty(true);
             view.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
         }else{
             checkedFriends.add(userId);
+            if(checkedFriends.size()== 1) emptyCheckedListener.isEmpty(false);
             view.setBackgroundColor(context.getResources().getColor(R.color.grey_300));
         }
     }
@@ -123,5 +128,13 @@ public class ChooseFriendsCursorAdapter extends ResourceCursorAdapter {
             checkBox.setChecked(false);
             view.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
         }
+    }
+
+    public interface EmptyCheckedListener {
+        /**
+         * Called when the set of selected friends changes size from 0 to one
+         * @param isEmpty true if Set of selected friends is empty, otherwise false
+         */
+        void isEmpty(Boolean isEmpty);
     }
 }

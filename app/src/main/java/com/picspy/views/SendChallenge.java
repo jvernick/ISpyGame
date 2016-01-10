@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -15,6 +16,8 @@ import com.picspy.firstapp.R;
 import com.picspy.views.fragments.ChooseFriendsFragment;
 import com.picspy.views.fragments.ConfigureChallengeFragment;
 
+import java.io.File;
+
 public class SendChallenge extends ActionBarActivity implements
         ConfigureChallengeFragment.F1FragmentInteractionListener,
         ChooseFriendsFragment.F2FragmentInteractionListener{
@@ -24,6 +27,7 @@ public class SendChallenge extends ActionBarActivity implements
     public static final String BDL_FRIEND_OPTIONS = "bdl_friend_options";
     public static final String ARG_FRIEND_ID = "friend_id";
     public static final String ARG_FRIEND_USERNAME = "friend_username";
+    private static final String TAG = "SendChallenge";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,15 +46,12 @@ public class SendChallenge extends ActionBarActivity implements
             }
 
             // Create a new Fragment to be placed in the activity layout
-            ConfigureChallengeFragment firstFragment = new ConfigureChallengeFragment();
-
-            // In case this activity was started with special instructions from an
-            // Intent, pass the Intent's extras to the fragment as arguments
-            firstFragment.setArguments(getIntent().getExtras());
+            ConfigureChallengeFragment configureFragment = ConfigureChallengeFragment.newInstance(
+                    getIntent().getBundleExtra(SendChallenge.BDL_PICTURE_OPTIONS),
+                    getIntent().getBundleExtra(SendChallenge.BDL_FRIEND_OPTIONS)
+            );
 
             Toolbar toolbar = (Toolbar) findViewById(R.id.challenges_toolbar);
-            TextView toolbarTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
-            //toolbarTitle.setText("Challenges");
 
             // Setting toolbar as the ActionBar
             //TODO back button stopped working. temp solution in onOptionsItemSelected
@@ -61,7 +62,7 @@ public class SendChallenge extends ActionBarActivity implements
 
             // Add the fragment to the 'fragment_container' FrameLayout
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, firstFragment).commit();
+                    .add(R.id.fragment_container, configureFragment).commit();
         }
     }
 
@@ -89,30 +90,24 @@ public class SendChallenge extends ActionBarActivity implements
 
     @Override
     public void setToolbarTitle(String title) {
+        //TODO causes null pointer
         getSupportActionBar().setTitle(title);
     }
 
     @Override
     public boolean startGame(Bundle gameBundle) {
-        (new CreateGame(this)).execute(gameBundle);
+        (new CreateGame(this, gameBundle)).execute();
         return false;
     }
 
-    private class CreateGame extends AsyncTask<Bundle, Void, String> {
+    private class CreateGame extends AsyncTask<Void, Void, String> {
         private final Context context;
+        private final Bundle bundle;
 
-        public CreateGame(Context context) {
+        public CreateGame(Context context,Bundle bundle) {
             super();
             this.context = context;
-        }
-
-        @Override
-        protected String doInBackground(Bundle... bundles) {
-            String filename = bundles[0].getString(GamesRequests.GAME_LABEL.FILE_NAME);
-            String filepath = bundles[0].getString(GamesRequests.GAME_LABEL.FILE_NAME_PATH);
-
-            GamesRequests.ChallengeParams params = new GamesRequests.ChallengeParams(bundles[0]);
-            return (new GamesRequests(context, true)).createGame(filename, filepath, params);
+            this.bundle = bundle;
         }
 
         @Override
@@ -121,13 +116,25 @@ public class SendChallenge extends ActionBarActivity implements
         }
 
         @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
+        protected String doInBackground(Void... voids) {
+            String filename = bundle.getString(GamesRequests.GAME_LABEL.FILE_NAME);
+            String filepath = bundle.getString(GamesRequests.GAME_LABEL.FILE_NAME_PATH);
+
+            GamesRequests.ChallengeParams params = new GamesRequests.ChallengeParams(bundle);
+            Log.d(TAG, "filename: " + filename);
+            Log.d(TAG, "filepath: " + filepath);
+            Log.d(TAG, "Params:\n" + params.toString());
+            return (new GamesRequests(context, true)).createGame(filename, filepath, params);
         }
 
         @Override
-        protected void onProgressUpdate(Void... values) {
-            super.onProgressUpdate(values);
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            File image = new File(bundle.getString(GamesRequests.GAME_LABEL.FILE_NAME_PATH));
+            Log.d(TAG, "image deleted? " + String.valueOf(image.delete()));
+            Log.d(TAG, "result: " + result);
+
+
         }
     }
 }

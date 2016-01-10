@@ -20,6 +20,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -30,10 +33,6 @@ import com.picspy.adapters.ChooseFriendsCursorAdapter;
 import com.picspy.adapters.DatabaseHandler;
 import com.picspy.firstapp.R;
 import com.picspy.views.SendChallenge;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 
 /**
  * A fragment representing a list of Items.
@@ -47,13 +46,7 @@ import java.util.Iterator;
 public class ChooseFriendsFragment extends ListFragment implements
         LoaderManager.LoaderCallbacks<Cursor>,
         SearchView.OnQueryTextListener,
-        SearchView.OnCloseListener {
-
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_HINT = "hint";
-    private static final String ARG_GUESSES = "guesses";
-
-    public static final String ARG_POSITION = "position";
+        SearchView.OnCloseListener, ChooseFriendsCursorAdapter.EmptyCheckedListener {
     private static final String BDL_IS_SEARCH = "isSearch?";
     private static final String BDL_SEARCH_STRING = "searchString";
     private static final String TAG = "ChooseFriends";
@@ -76,6 +69,9 @@ public class ChooseFriendsFragment extends ListFragment implements
 
     //list adapter
     private ChooseFriendsCursorAdapter cursorAdapter;
+    private Animation animBarUp;
+    private Animation animBarDOWN;
+    private Button sendButton;
 
     public static ChooseFriendsFragment newInstance(Bundle gameOptionsBundle,
                                                     Bundle pictureOptionsBundle) {
@@ -105,7 +101,7 @@ public class ChooseFriendsFragment extends ListFragment implements
         }
 
         cursorAdapter = new ChooseFriendsCursorAdapter(getActivity(),
-              R.layout.item_choose_friend, null, 0);
+              R.layout.item_choose_friend, null, 0, this);
     }
 
     @Override
@@ -113,8 +109,21 @@ public class ChooseFriendsFragment extends ListFragment implements
                              Bundle savedInstanceState) {
         setListAdapter(cursorAdapter);
         View rootView = inflater.inflate(R.layout.fragment_choose_friends_list, container, false);
+
         noFriendView = (TextView) rootView.findViewById(R.id.no_friends);
         emptySearchView = (TextView) rootView.findViewById(R.id.search_empty);
+
+        animBarUp = AnimationUtils.loadAnimation(getActivity(), R.anim.send_challenge_bar_up);
+        animBarDOWN = AnimationUtils.loadAnimation(getActivity(),
+                R.anim.send_challenge_bar_down);
+
+        sendButton = (Button) rootView.findViewById(R.id.send_button);
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createGame();
+            }
+        });
 
         callback = this;
         Bundle data = new Bundle();
@@ -336,6 +345,22 @@ public class ChooseFriendsFragment extends ListFragment implements
         data.putBoolean(ChooseFriendsFragment.BDL_IS_SEARCH, false);
         getLoaderManager().restartLoader(LOADER_ID, data, callback).forceLoad();
         return false;
+    }
+
+    /**
+     * Called when the set of selected friends changes size from 0 to one
+     * @param isEmpty true if Set of selected friends is empty, otherwise false
+     */
+    @Override
+    public void isEmpty(Boolean isEmpty) {
+        //TODO add logic to show toolbar when true and hide toolbar when false
+        if (isEmpty) {
+            sendButton.startAnimation(animBarDOWN);
+            sendButton.setVisibility(View.INVISIBLE);
+        } else {
+            sendButton.startAnimation(animBarUp);
+            sendButton.setVisibility(View.VISIBLE);
+        }
     }
 
 

@@ -17,7 +17,7 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_display_message">My Message</string>
 
-    <string name="button_register">Register</string>
+    <string name="button_register">REGISTER</string>
     <string name="button_login">LOG IN</string>
     <string name="submit_sign_up">SIGN UP</string>
     <string name="login_title">Log In</string>
