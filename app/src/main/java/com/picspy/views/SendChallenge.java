@@ -8,11 +8,13 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 
-import com.dreamfactory.model.FileResponse;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.picspy.GamesRequests;
 import com.picspy.firstapp.R;
+import com.picspy.utils.FileRequest;
+import com.picspy.utils.VolleyRequest;
 import com.picspy.views.fragments.ChooseFriendsFragment;
 import com.picspy.views.fragments.ConfigureChallengeFragment;
 
@@ -28,6 +30,7 @@ public class SendChallenge extends ActionBarActivity implements
     public static final String ARG_FRIEND_ID = "friend_id";
     public static final String ARG_FRIEND_USERNAME = "friend_username";
     private static final String TAG = "SendChallenge";
+    private static final Object CANCEL_TAG = "cancel";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +99,8 @@ public class SendChallenge extends ActionBarActivity implements
 
     @Override
     public boolean startGame(Bundle gameBundle) {
-        (new CreateGame(this, gameBundle)).execute();
+        //(new CreateGame(this, gameBundle)).execute();
+        createChallenge(gameBundle);
         return false;
     }
 
@@ -135,6 +139,48 @@ public class SendChallenge extends ActionBarActivity implements
             Log.d(TAG, "result: " + result);
 
 
+        }
+    }
+
+
+    private void createChallenge(Bundle bundle) {
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, "onResponse" + response);
+            }
+        };
+
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "onErrorResponse: " + error.getMessage());
+            }
+        };
+
+        String filename = bundle.getString(GamesRequests.GAME_LABEL.FILE_NAME);
+        String filepath = bundle.getString(GamesRequests.GAME_LABEL.FILE_NAME_PATH);
+
+        GamesRequests.ChallengeParams params = new GamesRequests.ChallengeParams(bundle);
+        Log.d(TAG, "bundle: " + bundle.toString());
+        Log.d(TAG, "filename: " + filename);
+        Log.d(TAG, "filepath: " + filepath);
+
+        Log.d(TAG, "Params:\n" + params.toString());
+        FileRequest createFileRequest =  FileRequest.sendChallenge(this,
+                filename, filepath, params, responseListener, errorListener);
+
+        if (createFileRequest != null) createFileRequest.setTag(CANCEL_TAG);
+        VolleyRequest.getInstance(getApplicationContext()).addToRequestQueue(createFileRequest);
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        //cancel all pending register/login/addUser tasks
+        if (VolleyRequest.getInstance(this.getApplicationContext()) != null) {
+            VolleyRequest.getInstance(this.getApplication()).getRequestQueue().cancelAll(CANCEL_TAG);
         }
     }
 }

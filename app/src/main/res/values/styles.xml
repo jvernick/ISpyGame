@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resources>
-    <!-- Base application theme. TODO update -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <!-- Base application theme. -->
+    <style name="AppBaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
     <!-- customize the color palette -->
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
+    </style>
+
+    <!-- Customize theme here. -->
+    <style name="LoginTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorControlNormal">#c5c5c5</item>
+        <item name="colorControlActivated">@color/accent_light</item>
+        <item name="colorControlHighlight">@color/accent_light</item>
     </style>
 
     <!-- Toolbar theme-->
@@ -37,8 +44,8 @@
         <item name="android:layout_gravity">center</item>
         <item name="android:minHeight">40dp</item>
         <item name="android:maxLines">1</item>
+        <item name="android:theme">@style/LoginTheme</item>
     </style>
-
 
     <!--
     Style for dividers
@@ -86,7 +93,7 @@
     </style>
 
     <!-- theme for login/register titles-->
-    <style name="login_and_register_title" >
+    <style name="login_and_register_titles" >
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>

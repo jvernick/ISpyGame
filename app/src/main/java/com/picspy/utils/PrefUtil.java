@@ -72,7 +72,20 @@ public class PrefUtil {
      */
     public static int getInt (Context context, String key) {
         SharedPreferences settings = Prefs.get(context);
-        return settings.getInt(key, 0);
+        return settings.getInt(key, -1);
+    }
+
+    /**
+     * Adds a Long to the shared preferences
+     * @param context The context that invokes this call
+     * @param key The key for accessing the required value
+     * @param value The Long value to be added to the shared preferences
+     */
+    static public synchronized void putLong(Context context, String key, Long value) {
+        SharedPreferences settings = Prefs.get(context);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putLong(key, value);
+        editor.apply();
     }
 
     /**
@@ -85,6 +98,18 @@ public class PrefUtil {
     public static int getInt (Context context, String key, int defautlInt) {
         SharedPreferences settings = Prefs.get(context);
         return settings.getInt(key, defautlInt);
+    }
+
+
+    /**
+     * Gets a long from the shared preferences
+     * @param context The context used to access shared prefs
+     * @param key Key for accessing value
+     * @return The long value for the desired key
+     */
+    public static Long getLong(Context context, String key) {
+        SharedPreferences settings = Prefs.get(context);
+        return settings.getLong(key, -1);
     }
 
     /**

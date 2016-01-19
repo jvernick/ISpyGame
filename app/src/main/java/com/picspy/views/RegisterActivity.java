@@ -1,38 +1,46 @@
 package com.picspy.views;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
+import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.graphics.PorterDuff;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
-import com.dreamfactory.client.ApiException;
-import com.dreamfactory.client.ApiInvoker;
-import com.dreamfactory.model.Register;
-import com.dreamfactory.model.Session;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.picspy.firstapp.R;
+import com.picspy.models.UserRecord;
+import com.picspy.utils.Accounts;
 import com.picspy.utils.AppConstants;
 import com.picspy.utils.PrefUtil;
+import com.picspy.utils.RegistrationRequests.RegisterModel;
+import com.picspy.utils.RegistrationRequests.RegisterApiResponse;
+import com.picspy.utils.RegistrationRequests;
+import com.picspy.utils.UserRequests;
+import com.picspy.utils.VolleyRequest;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.Calendar;
 
-import java.util.HashMap;
-import java.util.Map;
-
-//TODO add all strings to string file
 
 /**
  * User registration activity
  */
 public class RegisterActivity extends Activity {
-    public final static String EXTRA_MESSAGE = "com.picspy.firstapp.REGISTER_MESSAGE";
-    private EditText display_name_Text, email_Text, pass1_Text, pass2_Text;
+    private static final String TAG = "RegisterActivity";
+    private static final Object CANCEL_TAG = "cancel";
+    private EditText edtDisplayName;
+    private EditText edtEmail;
+    private EditText edtPaswd;
+    private Button btnRegister;
     private ProgressDialog progressDialog;
 
     @Override
@@ -43,8 +51,54 @@ public class RegisterActivity extends Activity {
         //Create progress box for use during API connection
         progressDialog = new ProgressDialog(RegisterActivity.this);
         progressDialog.setMessage(getText(R.string.loading_message));
+
+
+        edtDisplayName = (EditText) findViewById(R.id.edit_display_name);
+        edtEmail = (EditText) findViewById(R.id.edit_email);
+        edtPaswd = (EditText) findViewById(R.id.edit_password);
+
+        btnRegister =(Button) findViewById(R.id.btn_signup);
+
+
+        edtDisplayName.addTextChangedListener(textWatcher);
+        edtEmail.addTextChangedListener(textWatcher);
+        edtPaswd.addTextChangedListener(textWatcher);
+
+        //check if fields are empty
+        checkFieldsForEmptyValues();
     }
 
+    //Validates the input To disable button if any field is empyty
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3){}
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3)  {}
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            checkFieldsForEmptyValues();
+        }
+    };
+
+    /**
+     * Checks fields for empty values. Enables and dislpays login button when all fields
+     * are not empty. Otherwise disales and hides login button
+     */
+    private void checkFieldsForEmptyValues(){
+        String s1 = edtEmail.getText().toString();
+        String s2 = edtDisplayName.getText().toString();
+        String s3 = edtPaswd.getText().toString();
+
+        if (s1.equals("") || s2.equals("") || s3.equals("")) {   //disables the button
+            btnRegister.setEnabled(false);
+            btnRegister.setVisibility(View.INVISIBLE);
+        } else {                                //enables the button
+            btnRegister.setEnabled(true);
+            btnRegister.setVisibility(View.VISIBLE);
+        }
+    }
 
 	 //TODO: Limit password characters with regex?
     /**
@@ -53,16 +107,13 @@ public class RegisterActivity extends Activity {
      * @return "valid" if email is valid otherwise error message depending on problem
      */
     public String isValidPassword() {
-        String pass1 = pass1_Text.getText().toString();
-        String pass2 = pass2_Text.getText().toString();
-        if (pass1.equals(pass2)) {
-            if (pass1.length() >= 6){
-                return "valid";
-            } else {
-                return "invalid_length";
-            }
+        String pass1 = edtPaswd.getText().toString();
+
+        if (pass1.length() >= 6){
+            return "valid";
+        } else {
+            return "invalid_length";
         }
-        return "invalid_match";
     }
 
     /**
@@ -72,151 +123,167 @@ public class RegisterActivity extends Activity {
     private boolean isValidEmail() {
         String emailPattern = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                 + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-		String email = email_Text.getText().toString();
+		String email = edtEmail.getText().toString();
 		return email.matches(emailPattern);
     }
 
-    //TODO review: added for convinience: find a better way to store/handle this
-    //stores variable so that new activity can be created in new method
-    View post_view = null;
-    //TODO Validate display_name
-    public void signUp(View view) {
-        display_name_Text = (EditText) findViewById(R.id.edit_display_name);
-        email_Text = (EditText) findViewById(R.id.edit_email);
-        pass1_Text = (EditText) findViewById(R.id.edit_password1);
-        pass2_Text = (EditText) findViewById(R.id.edit_password2);
-        post_view = view;
 
-		//TODO try .matches("") instead of .length == 0
+    /**
+     * Validates entered fields and starts the Sign Up process
+     * @param view Button view
+     */
+    public void signUp(View view) {
+        //TODO try .matches("") instead of .length == 0
+        //TODO store strings below in @strings
 		//TODO add filter for valid characters?
-        if (display_name_Text.getText().toString().trim().length() == 0) {
-			display_name_Text.setError("Must enter Display Name");
+        if (edtDisplayName.getText().toString().trim().length() == 0) {
+			edtDisplayName.setError("Must enter Username");
 		} else if (!isValidEmail()) {
-            email_Text.setError("Invalid Email");
-            email_Text.requestFocus();
+            edtEmail.setError("Invalid Email");
+            edtEmail.requestFocus();
         } else if (isValidPassword().equals("invalid_length")) {
-            pass1_Text.setError("Must be at least 6 characters");
-            pass1_Text.requestFocus();
-            pass2_Text.setText("");
-            pass2_Text.setText("");
-        } else if (isValidPassword().equals("invalid_match")) {
-            pass1_Text.setError("Passwords do not match");
-            pass1_Text.requestFocus();
-            pass2_Text.setText("");
-            pass2_Text.setText("");
+            edtPaswd.setError("Must be at least 6 characters");
+            edtPaswd.requestFocus();
         } else {
-            RegisterTask registerTask = new RegisterTask();
-            registerTask.execute();
+           register();
         }
     }
 
     /**
-     * Starts the main activity after a user is succesfuly registered
-     * @param view view from button click
+     * 1st step of registration process. Registers the user, and attempts login.
      */
-    private void showResults(View view) {
+    private void register() {
+        RegisterModel registerModel = new  RegisterModel(edtEmail.getText().toString(),
+                edtPaswd.getText().toString(),
+                edtDisplayName.getText().toString());
+
+        Response.Listener<RegisterApiResponse> responseListener = new Response.Listener<RegisterApiResponse>() {
+            @Override
+            public void onResponse(RegisterApiResponse response) {
+                if (response.isSuccess()) login();
+            }
+        };
+
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error != null) {
+                    String err = (error.getMessage() == null)?
+                            error.getLocalizedMessage(): error.getMessage();
+                    error.printStackTrace();
+                    Log.d(TAG, err);
+                    progressDialog.cancel();
+                    Toast.makeText(RegisterActivity.this, "An error occcured", Toast.LENGTH_SHORT).show();
+                    String errorMsg;
+                    //TODO Parse error and display errors to users
+                }
+            }
+        };
+
+        RegistrationRequests registerRequest =
+                RegistrationRequests.register(this, registerModel, responseListener, errorListener);
+        VolleyRequest.getInstance(this.getApplicationContext()).addToRequestQueue(registerRequest);
+        progressDialog.show();
+    }
+
+    /**
+     * 2nd step in user registration. Login the user and attempt user record creation on success
+     */
+    private void login() {
+        RegistrationRequests.LoginModel loginModel = new RegistrationRequests.LoginModel(
+                edtEmail.getText().toString(), edtPaswd.getText().toString(), true);
+
+        final Context context = this;
+        Response.Listener<RegistrationRequests.LoginApiResponse> responseListener = new Response.Listener<RegistrationRequests.LoginApiResponse>() {
+            @Override
+            public void onResponse(RegistrationRequests.LoginApiResponse response) {
+                if (response.getId() != 0) {
+                    Accounts.checkNewAccount(context, response.getId());
+                    PrefUtil.putString(context, AppConstants.SESSION_TOKEN, response.getSessionToken());
+                    PrefUtil.putInt(context, AppConstants.USER_ID, response.getId());
+                    PrefUtil.putString(context, AppConstants.USER_NAME, response.getUsername());
+                    PrefUtil.putLong(context, AppConstants.LAST_LOGIN_DATE, Calendar.getInstance().getTimeInMillis());
+                    addToUsers(response.getId(), edtDisplayName.getText().toString());
+                }
+            }
+        };
+
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error != null) {
+                    String err = (error.getMessage() == null)? "error message null": error.getMessage();
+                    Log.d(TAG, err);
+                    progressDialog.cancel();
+                    Toast.makeText(RegisterActivity.this, "An error occurred", Toast.LENGTH_SHORT).show();
+                    //TODO notify user of error
+                }
+            }
+        };
+
+        RegistrationRequests loginRequest =
+                RegistrationRequests.login(this, loginModel, responseListener, errorListener);
+         if (loginRequest != null) loginRequest.setTag(CANCEL_TAG);
+        VolleyRequest.getInstance(this.getApplicationContext()).addToRequestQueue(loginRequest);
+    }
+
+    /**
+     * Third and final step of user creation. Stores the user username in the users table.
+     * @param id The current user's id
+     * @param username  The current user's username synonymous with display_name
+     */
+    private void addToUsers(final int id, String username) {
+        UserRequests.AddUserModel addUserModel = new UserRequests.AddUserModel(id, username);
+
+        Response.Listener<UserRecord> responseListener = new Response.Listener<UserRecord>() {
+            @Override
+            public void onResponse(UserRecord response) {
+                if (response != null && response.getId() == id) {
+                    showResults();
+                    progressDialog.cancel();
+                } else {
+                    Log.d(TAG, "Errror");
+                }
+            }
+        };
+
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error != null) {
+                    String err = (error.getMessage() == null)? "error message null": error.getMessage();
+                    Log.d(TAG, err);
+                    progressDialog.cancel();
+                    Toast.makeText(RegisterActivity.this, "An error occcured", Toast.LENGTH_SHORT).show();
+                    //TODO notify user of error
+                }
+            }
+        };
+
+        UserRequests addUserRequest = UserRequests.addUser(this,
+                addUserModel, responseListener, errorListener);
+        if (addUserRequest != null) addUserRequest.setTag(CANCEL_TAG);
+        VolleyRequest.getInstance(this.getApplicationContext()).addToRequestQueue(addUserRequest);
+    }
+
+    /**
+     * Starts the main activity after a user is succesfuly registered
+     */
+    private void showResults() {
+        progressDialog.cancel();
+        Toast.makeText(RegisterActivity.this, "Welcome!!\n" +
+                " Account successfully created", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra(EXTRA_MESSAGE, "Welcome!!\n Account successfuly created");
         startActivity(intent);
     }
 
-    /* Class to run network transaction in background on a new thread. This is required*/
-    private class RegisterTask extends AsyncTask<Void, Void, String> {
-        @Override
-        /* show the progress dialog (Please wait)*/
-        protected void onPreExecute() {
-            progressDialog.show();
+    @Override
+    protected void onStop() {
+        super.onStop();
+        //cancel all pending register/login/addUser tasks
+        if (VolleyRequest.getInstance(this.getApplicationContext()) != null) {
+            VolleyRequest.getInstance(this.getApplication()).getRequestQueue().cancelAll(CANCEL_TAG);
         }
-
-        @Override
-        protected String doInBackground(Void... params) {
-            try {
-                return registerService();
-            } catch (Exception e) {
-                return e.getMessage();
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String message) {
-            progressDialog.cancel();
-            //if request was successfull
-           if (message.equals("SUCCESS")) { //call successful: build new intent
-                //TODO: Update: Should go to main page
-               showResults(post_view);
-            } else {                        //handles and display error
-               String errorMsg;
-               try {
-                   JSONObject jObj = new JSONObject(message);
-                   JSONArray jArray = jObj.getJSONArray("error");
-                   JSONObject obj = jArray.getJSONObject(0);
-                   errorMsg = obj.getString("message");
-
-                   //TODO Challenge!! match the displayname error with a regex
-                   if (errorMsg.matches("^Invalid user name and password combination")) {
-                       errorMsg = "Email already taken.";
-                   } else if (errorMsg.trim().contains("Display Name")) {
-					   errorMsg = "Display Name taken";
-				   }
-               } catch (JSONException e) { //message is from exception
-                   //TODO customize message if an exception was thrown?
-                   errorMsg = message;
-               }
-               AlertDialog.Builder alertDialog = new AlertDialog.Builder(RegisterActivity.this);
-               //TODO modify error presentation format and possibly the error message
-               alertDialog.setTitle("Error").setMessage(errorMsg).setCancelable(false).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                   @Override
-                   public void onClick(DialogInterface dialog, int which) {
-                       dialog.cancel();
-                   }
-               });
-               alertDialog.show();
-           }
-        }
-
-
-
-        /**
-         * Method to call the register service
-         * @return "SUCCESS" on success otherwise error message
-         * @throws ApiException Throws ApiException when an Api error occurs
-         */
-        private String registerService() throws ApiException {
-            ////////////////////ALways include/////////////////////////
-            String appName = AppConstants.APP_NAME;
-            String dsp_url = AppConstants.DSP_URL;
-            ApiInvoker invoker  = new ApiInvoker();
-            invoker.addDefaultHeader("X-DreamFactory-Application-Name", appName);
-
-            // create path and map variables //SET accordingly
-            String serviceName = "user";
-            String endPoint = "register";
-            String path = "/" + serviceName + "/" + endPoint + "/";
-
-            // query params
-            Map<String, String> queryParams = new HashMap<>();
-            queryParams.put("login","true");
-            Map<String, String> headerParams = new HashMap<>();
-            String contentType = "application/json";
-
-            Register register = new Register();
-            register.setEmail(email_Text.getText().toString());
-            register.setNew_password(pass1_Text.getText().toString());
-            register.setDisplay_name(display_name_Text.getText().toString());
-            /*Set other fields later in user settings/profile*/
-
-            String response = invoker.invokeAPI(dsp_url, path, "POST", queryParams, register, headerParams, contentType);
-            if(response != null){
-                Session session = (Session) ApiInvoker.deserialize(response, "", Session.class);
-                PrefUtil.putString(getApplicationContext(), AppConstants.SESSION_ID, session.getSession_id());
-                PrefUtil.putInt(getApplicationContext(), AppConstants.USER_ID, Integer.parseInt(session.getId()));
-                return "SUCCESS";
-            }
-            else {
-                return "FAIlED: unknown error";
-            }
-        }
-
     }
 }
 

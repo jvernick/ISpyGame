@@ -329,7 +329,7 @@ public class DbApi {
 				//    	  return null;
 			}
 			else {
-				Log.d("DbAPI", "Response from apiInvoker is null");
+				Log.d("DbAPI", "ApiResponse from apiInvoker is null");
 				return null;
 			}
 		} catch (ApiException ex) {

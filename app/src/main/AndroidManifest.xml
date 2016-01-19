@@ -24,19 +24,32 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppBaseTheme" >
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-        <!-- TODO veriy that you can chage adjustPan to adjustResize -->
+        <!-- TODO veriy that you can change adjustPan to adjustResize -->
         <activity
             android:name="com.picspy.views.RegisterActivity"
+            android:fitsSystemWindows="true"
             android:configChanges="orientation"
             android:label="@string/title_activity_register"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" >
+            android:windowSoftInputMode="adjustResize|stateVisible">
         </activity>
+
+        <activity
+        android:name="com.picspy.views.LoginActivity"
+        android:configChanges="orientation"
+        android:label="@string/title_activity_login"
+        android:screenOrientation="portrait"
+        android:windowSoftInputMode="adjustResize" >
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+        </activity>
+
         <activity
             android:name="com.picspy.views.MainActivity"
             android:configChanges="orientation"
@@ -45,6 +58,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateUnchanged" >
         </activity>
+
         <activity
             android:name="com.picspy.views.Splash_Activity"
             android:configChanges="orientation"
@@ -57,16 +71,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.picspy.views.LoginActivity"
-            android:configChanges="orientation"
-            android:label="@string/title_activity_login"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" >
-            <meta-data
-                android:name="com.facebook.sdk.ApplicationId"
-                android:value="@string/facebook_app_id" />
-        </activity>
+
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -80,6 +85,7 @@
 
             <!-- configure these activity to use portrait orientation -->
         </activity>
+
         <activity
             android:name="com.picspy.views.CreateChallengeActivity"
             android:label="@string/app_name"
@@ -89,12 +95,14 @@
         <activity android:name="com.picspy.views.ImageViewer"
             android:label="@string/app_name"
             android:screenOrientation="portrait"></activity>
+
         <activity
             android:name="com.picspy.views.FriendInfoActivity"
             android:configChanges="orientation"
             android:label="@string/title_activity_friend_info"
             android:screenOrientation="portrait" >
         </activity>
+
         <activity
             android:name="com.picspy.views.ChallengesActivity"
             android:configChanges="orientation"
@@ -110,6 +118,7 @@
             android:name="com.picspy.views.SettingsActivity"
             android:label="title_activity_settings" >
         </activity>
+
         <activity
             android:name="com.picspy.views.FindFriendsActivity"
             android:label="@string/title_activity_find_friends"
@@ -120,6 +129,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.picspy.views.MainActivity" />
         </activity>
+
         <activity
             android:name="com.picspy.views.SendChallenge"
             android:label="@string/title_activity_send_challenge"

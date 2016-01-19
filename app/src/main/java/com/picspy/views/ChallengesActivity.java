@@ -17,9 +17,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.dreamfactory.client.ApiException;
 import com.picspy.GamesRequests;
 import com.picspy.adapters.DatabaseHandler;
@@ -28,7 +29,9 @@ import com.picspy.firstapp.R;
 import com.picspy.models.Game;
 import com.picspy.models.UserChallengeRecord;
 import com.picspy.models.UserChallengesRecord;
+import com.picspy.utils.ChallengesRequests;
 import com.picspy.utils.DbContract.GameEntry;
+import com.picspy.utils.VolleyRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +39,7 @@ import java.util.List;
 public class ChallengesActivity extends ActionBarActivity  implements LoaderCallbacks<Cursor>{
     public final static String EXTRA_MESSAGE = "com.picspy.firstapp.GAME";
     private static final String TAG = "ChallengesActivity";
+    private static final Object CANCEL_TAG = "cancel";
     private ListView listView;
     private DatabaseHandler dbHandler;
     private final static int LOADER_ID = 1;
@@ -91,7 +95,8 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
         });
 
         //update database
-        (new GetChallengesTask()).execute();
+        //(new GetChallengesTask()).execute();
+        getChallenges();
         Toolbar toolbar = (Toolbar) findViewById(R.id.challenges_toolbar);
 
         // Setting toolbar as the ActionBar
@@ -124,7 +129,8 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             //update database
-            (new GetChallengesTask()).execute();
+            //(new GetChallengesTask()).execute();
+            getChallenges();
             return true;
         } else if( id == android.R.id.home) {
             //handling back button click
@@ -156,11 +162,11 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
             try {
                 UserChallengesRecord userChallengesRecord =
                         (new GamesRequests(getApplicationContext(), false)).getGamesInfo();
-                if (userChallengesRecord != null && userChallengesRecord.getRecord() != null
-                        && userChallengesRecord.getRecord().size() != 0) {
+                if (userChallengesRecord != null && userChallengesRecord.getResource() != null
+                        && userChallengesRecord.getResource().size() != 0) {
                     List<Game> gameList = new ArrayList<>();
                     int max_user_challenge_id = 0;
-                    for (UserChallengeRecord record: userChallengesRecord.getRecord()) {
+                    for (UserChallengeRecord record: userChallengesRecord.getResource()) {
 
                         if (record.getId() > max_user_challenge_id) {
                             max_user_challenge_id = record.getId();
@@ -197,6 +203,64 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
         }
     }
 
+    /**
+     * Gets new challenges from the server
+     */
+    public void getChallenges() {
+        Response.Listener<UserChallengesRecord> responseListiner = new Response.Listener<UserChallengesRecord>() {
+            @Override
+            public void onResponse(UserChallengesRecord response) {
+                progressSpinner.setVisibility(View.GONE);
+                if (storeChallenges(response)) {
+                    ((GamesCursorAdapter) listView.getAdapter()).changeCursor(dbHandler.getAllGames());
+                    ((GamesCursorAdapter) listView.getAdapter()).notifyDataSetChanged();
+                }
+            }
+        };
+
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+                Log.d(TAG, error.getMessage());
+                progressSpinner.setVisibility(View.GONE);
+            }
+        };
+
+        ChallengesRequests gameInfoRequest = ChallengesRequests.getGamesInfo(this, responseListiner, errorListener);
+        if (gameInfoRequest != null) gameInfoRequest.setTag(CANCEL_TAG);
+        VolleyRequest.getInstance(this.getApplicationContext()).addToRequestQueue(gameInfoRequest);
+        progressSpinner.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Stores retrieved challenges in the local database
+     * @param userChallengesRecord Record containing challenges to be stored
+     * @return true if one or more challenge was stored, otherwise false
+     */
+    private boolean storeChallenges(UserChallengesRecord userChallengesRecord){
+        if (userChallengesRecord != null &&  userChallengesRecord.getCount() != 0) {
+            List<Game> gameList = new ArrayList<>();
+            int max_user_challenge_id = 0;
+
+            for (UserChallengeRecord record: userChallengesRecord.getResource()) {
+                if (record.getId() > max_user_challenge_id) {
+                    max_user_challenge_id = record.getId();
+                }
+                gameList.add(record.getGame());
+            }
+
+            //TODO  if comparison not needed, remove
+            if (gameList.size() != 0) {
+                dbHandler.addGames(gameList,
+                        max_user_challenge_id);
+                //dbHandler.close();
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     /***
      *

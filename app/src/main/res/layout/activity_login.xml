@@ -10,9 +10,9 @@
     TODO change color of button to match theme-->
 
     <TextView
-        style="@style/login_and_register_title"
+        style="@style/login_and_register_titles"
         android:id="@+id/login_title"
-        android:text="@string/login_title" />
+        android:text="@string/tx_login" />
     <com.facebook.login.widget.LoginButton
         style="@style/login_text_style"
         android:id="@+id/facebook_login_button"
@@ -39,6 +39,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:text="@string/forgot_password_prompt"
+        android:textColor="@color/accent_light"
         android:clickable="true"
         android:onClick="forgotPassword"/>
     <Button
@@ -46,7 +47,7 @@
         android:id="@+id/button_login"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
-        android:text="@string/button_login"
+        android:text="@string/tx_login"
         android:textColor="@color/primary_text_default_material_dark"
         android:onClick="login"
         android:layout_alignParentBottom="true"

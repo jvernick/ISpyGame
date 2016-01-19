@@ -6,15 +6,17 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 
 import com.dreamfactory.api.UserApi;
 import com.dreamfactory.model.Session;
 import com.picspy.firstapp.R;
 import com.picspy.utils.AppConstants;
 import com.picspy.utils.PrefUtil;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Splashcreen activity that displays logo and determines whether to proceed
@@ -23,7 +25,7 @@ import com.picspy.utils.PrefUtil;
  * Created by BrunelAmC on 6/9/2015.
  */
 public class Splash_Activity extends Activity {
-    private Button splash_login, splash_signup;
+    private Button btn_login, btn_signup;
     private View buttons;
     private static final int SLEEP_TIME = 1000;
     private static final String TAG = "SplashActivity";
@@ -32,16 +34,54 @@ public class Splash_Activity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        //TODO: Temporary. for testing login screen (always enabling it)
-        //PrefUtil.removeString(getApplicationContext(), AppConstants.SESSION_ID);
-        splash_login = (Button) findViewById(R.id.splash_login);
-        splash_signup = (Button) findViewById(R.id.splash_signup);
+        btn_login = (Button) findViewById(R.id.splash_login);
+        btn_signup = (Button) findViewById(R.id.splash_signup);
         buttons = findViewById(R.id.buttons);
 
         //TODO change true in both lines below to false
-        splash_login.setEnabled(false);
-        splash_signup.setEnabled(false);
-        new StartMyApp().execute();
+        btn_login.setEnabled(false);
+        btn_signup.setEnabled(false);
+
+        determineAction();
+    }
+
+    /**
+     * Determine whether or not main activity should be displayed and whether to refresh JWT
+     */
+    private void determineAction() {
+        // if there is no user
+        if (PrefUtil.getInt(getApplicationContext(), AppConstants.USER_ID, -1) == -1) {
+            enableButtons();
+        } else {
+            int daysDiff = daysSinceLastLogin(PrefUtil.getLong(getApplicationContext(),
+                    AppConstants.LAST_LOGIN_DATE));
+            Log.d(TAG, "days since last login: " + daysDiff);
+            if (daysDiff >= AppConstants.SESSION_TTL - 5) {
+                refreshJWTToken();
+            }
+            startMain();
+        }
+    }
+
+    /**
+     * Computes the number of days since the last login
+     * @param lastLoginDate the last login date
+     * @return number of days since last login
+     */
+    private int daysSinceLastLogin(Long lastLoginDate) {
+        Long difference = Calendar.getInstance().getTimeInMillis() - lastLoginDate;
+        return (int) TimeUnit.MILLISECONDS.toDays(difference);
+    }
+
+    /**
+     * enables and makes login and signup buttons visible
+     */
+    private void enableButtons() {
+        btn_login.setEnabled(true);
+        btn_login.setVisibility(View.VISIBLE);
+        btn_signup.setEnabled(true);
+        btn_signup.setVisibility(View.VISIBLE);
+        buttons.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -69,69 +109,15 @@ public class Splash_Activity extends Activity {
         Log.d("Splash","Starting Main");
         Intent intent = new Intent(Splash_Activity.this, MainActivity.class);
         startActivity(intent);
-        //TODO uncomment after all testing is complete so that one never returns to splasy activity
+        //TODO uncomment after all testing is complete so that one never returns to splash activity
         //finish();
     }
 
     /**
-     * Inner Asynctask to Attempt login by refreshing session
+     * Refreshes the JWT for foreve sessions
      */
-    private class StartMyApp extends AsyncTask<Void, Void, Boolean> {
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            String oldSessionKey = PrefUtil.getString(getApplicationContext(),
-                    AppConstants.SESSION_ID, null);
-
-            //sleep to display logo
-            try {
-                Thread.sleep(SLEEP_TIME);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            // checks if sesison_id already exists
-            if (oldSessionKey == null) { //User has never logged in before
-                return false;
-            } else { //User has logged in before. Start main activity
-                //TODO session may have expired
-                startMain();
-                //refresh session if possible
-                try {
-                    UserApi userApi = new UserApi();
-                    userApi.addHeader("X-DreamFactory-Application-Name", AppConstants.APP_NAME);
-                    userApi.addHeader("X-DreamFactory-Session-Token", oldSessionKey);
-                    Session session = userApi.getSession();
-                    if (session != null && session.getId() != null) { //session not null
-                        Log.d(TAG, "session not null");
-                        PrefUtil.putString(getApplicationContext(), AppConstants.SESSION_ID,
-                                session.getSession_id());
-                        PrefUtil.putInt(getApplicationContext(), AppConstants.USER_ID,
-                                Integer.parseInt(session.getId()));
-                        //startMain();
-                    } else { //prompts for login/register if session refresh failed
-                        return false; //This is needed since we haven't figured out a way
-                        // to have infinite session duration
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.d(TAG, e.getMessage());
-                    //PrefUtil.putString(getApplicationContext(), AppConstants.SESSION_ID, "");
-                }
-                return true;
-            }
-        }
-
-        @Override
-        //TODO add response listener to finish activity
-        protected void onPostExecute(Boolean isOldSession) {
-            //if there has been no previous session.
-            if (!isOldSession) {
-                splash_login.setEnabled(true);
-                splash_login.setVisibility(View.VISIBLE);
-                splash_signup.setEnabled(true);
-                splash_signup.setVisibility(View.VISIBLE);
-                buttons.setVisibility(View.VISIBLE);
-            }
-        }
+    private void refreshJWTToken() {
+        //TODO configure JWT Refresh
+        Log.d(TAG, "Refreshing JWT");
     }
 }

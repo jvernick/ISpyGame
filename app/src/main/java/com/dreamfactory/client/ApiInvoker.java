@@ -217,7 +217,7 @@ public class ApiInvoker {
 				Log.d(TAG, "All parameters set up");
 				response = client.execute(post);
 				//TODO added by Brunel
-				Log.d(TAG, "Response: " + response.toString());
+				Log.d(TAG, "ApiResponse: " + response.toString());
 
 			}
 			else if ("PUT".equals(method)) {

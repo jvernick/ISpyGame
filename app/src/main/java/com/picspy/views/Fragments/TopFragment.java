@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.dreamfactory.client.ApiException;
 import com.picspy.GamesRequests;
 import com.picspy.adapters.TopFragmentArrayAdapter;
@@ -19,10 +21,13 @@ import com.picspy.firstapp.R;
 import com.picspy.models.Game;
 import com.picspy.models.GameRecord;
 import com.picspy.models.GamesRecord;
+import com.picspy.utils.ChallengesRequests;
+import com.picspy.utils.VolleyRequest;
 
 import java.util.ArrayList;
 
 //Leaderboard fragment
+//TODO reorganize listadapter init and use
 public class TopFragment extends android.support.v4.app.ListFragment
         implements SwipeRefreshLayout.OnRefreshListener {
     private TopFragmentArrayAdapter arrayAdapter;
@@ -67,7 +72,7 @@ public class TopFragment extends android.support.v4.app.ListFragment
         setListShown(true);
         Log.d(TAG, "executing search");
 
-        (new GetLeaderboard(false)).execute();
+        getLeaderboard(false);
     }
 
     /*
@@ -97,68 +102,64 @@ public class TopFragment extends android.support.v4.app.ListFragment
     @Override
     public void onRefresh() {
         Log.d(TAG, "onRefresh");
-        (new GetLeaderboard(true)).execute();
+        //(new GetLeaderboard(true)).execute();
+        getLeaderboard(true);
     }
 
 
-    private class GetLeaderboard extends AsyncTask<Void, Void, GamesRecord> {
-        private final boolean refresh;
-
-        /**
-         * Constructor to determine is this call is to create a new list or to refresh
-         * the current list
-         * @param refresh
-         */
-        public GetLeaderboard(boolean refresh) {
-            this.refresh = refresh;
-        }
-
-        @Override
-        protected GamesRecord doInBackground(Void... voids) {
-            try {
-                //TODO this sometimes causes a null pointer. verify
-                GamesRequests gamesRequests = new GamesRequests(getActivity().getApplicationContext(), false);
-                GamesRecord result =  gamesRequests.getLeaderboardGames();
-                if (result != null) Log.d(TAG,result.toString());
-                return result;
-            } catch (ApiException e) { //TODO handle exception
-                Log.d(TAG, e.getMessage());
-                return null;
+    private void getLeaderboard(final Boolean refresh) {
+        Response.Listener<GamesRecord> responseListener = new Response.Listener<GamesRecord>() {
+            @Override
+            public void onResponse(GamesRecord response) {
+                updateChallenges(response, refresh);
             }
-        }
+        };
 
-        @Override
-        protected void onPostExecute(GamesRecord gamesRecord) {
-            if (gamesRecord != null) {
-                ArrayList<Game> gameList = new ArrayList<>();
-                for (GameRecord gameRecord : gamesRecord.getRecord()) {
-                    gameList.add(GameRecord.getGame(gameRecord));
-                }
-
-                if (gameList.size() != 0) {
-                    if (refresh) {
-                        if (arrayAdapter == null) {
-                            arrayAdapter = new TopFragmentArrayAdapter(getActivity().getApplicationContext(), R.layout.item_challenge,
-                                    gameList);
-                            setListAdapter(arrayAdapter);
-                        } else {
-                            arrayAdapter.replaceGames(gameList);
-                            arrayAdapter.notifyDataSetChanged();
-                        }
-                    } else {
-                        //TODO move these next two lines to the asynctask post
-                        // Create an empty adapter we will use to display the loaded data.
-                        arrayAdapter = new TopFragmentArrayAdapter(getActivity().getApplicationContext(), R.layout.item_challenge,
-                                gameList);
-                        setListAdapter(arrayAdapter);
-                    }
-                }
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+                Log.d(TAG, error.getMessage());
             }
-            mSwipeRefreshLayout.setRefreshing(false);
-            //setListShown(true);
-        }
+        };
+
+        ChallengesRequests leaderboardRequest = ChallengesRequests.getleaderboard(getActivity(), responseListener, errorListener);
+        // todo change tag to MainActivity.CANCEL_REQUESTS_TAG
+        leaderboardRequest.setTag("cancel");
+        VolleyRequest.getInstance(getActivity().getApplicationContext()).addToRequestQueue(leaderboardRequest);
     }
 
+    private void updateChallenges(GamesRecord gamesRecord, boolean refresh) {
+        if (gamesRecord != null && gamesRecord.getCount() != 0) {
+            ArrayList<Game> gameList = new ArrayList<>();
+
+            for (GameRecord gameRecord : gamesRecord.getResource()) {
+                gameList.add(GameRecord.getGame(gameRecord));
+            }
+
+           /* if (arrayAdapter == null) {
+                arrayAdapter = new TopFragmentArrayAdapter(getActivity().getApplicationContext(), R.layout.item_challenge, gameList);
+
+            }*/
+
+            if (refresh) {
+                if (arrayAdapter == null) {
+                    arrayAdapter = new TopFragmentArrayAdapter(getActivity().getApplicationContext(), R.layout.item_challenge,
+                            gameList);
+                    setListAdapter(arrayAdapter);
+                } else {
+                    arrayAdapter.replaceGames(gameList);
+                    arrayAdapter.notifyDataSetChanged();
+                }
+            } else {
+                // Create an empty adapter we will use to display the loaded data.
+                arrayAdapter = new TopFragmentArrayAdapter(getActivity().getApplicationContext(), R.layout.item_challenge,
+                        gameList);
+                setListAdapter(arrayAdapter);
+            }
+        }
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
 
     private class ListFragmentSwipeRefreshLayout extends SwipeRefreshLayout {
         public ListFragmentSwipeRefreshLayout(Context context) {
@@ -174,13 +175,8 @@ public class TopFragment extends android.support.v4.app.ListFragment
         @Override
         public boolean canChildScrollUp() {
             final ListView listView = getListView();
-            if (listView.getVisibility() == View.VISIBLE) {
-                return canListViewScrollUp(listView);
-            } else {
-                return false;
-            }
+            return listView.getVisibility() == View.VISIBLE && canListViewScrollUp(listView);
         }
-
     }
 
     /**

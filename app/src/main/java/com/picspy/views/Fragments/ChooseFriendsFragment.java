@@ -212,7 +212,8 @@ public class ChooseFriendsFragment extends ListFragment implements
             friendIds[i] = friend_id;
             i++;
         }
-
+            //TODO temp remove next line
+        friendIds= new int[] {3,5,6};
         finalBundle.putAll(gameOptionsBundle);
         finalBundle.putAll(pictureOptionsBundle);
         finalBundle.putIntArray(GamesRequests.GAME_LABEL.FRIENDS, friendIds);
@@ -352,8 +353,10 @@ public class ChooseFriendsFragment extends ListFragment implements
      * @param isEmpty true if Set of selected friends is empty, otherwise false
      */
     @Override
-    public void isEmpty(Boolean isEmpty) {
+    public void isEmpty(Boolean isEmpty2) {
         //TODO add logic to show toolbar when true and hide toolbar when false
+        //TODo temp, remove
+        Boolean isEmpty = false;
         if (isEmpty) {
             sendButton.startAnimation(animBarDOWN);
             sendButton.setVisibility(View.INVISIBLE);

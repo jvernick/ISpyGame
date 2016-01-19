@@ -50,7 +50,7 @@ public class UsersTableRequests {
              UsersRecord record = dbApi.getRecordsByFilter(UsersRecord.class, AppConstants.USERS_TABLE_NAME, filter, null, null, null, null, false, false, null);
              if (record != null) {
                  Log.d(TAG, record.toString());
-                 List<UserRecord> records= record.getRecord();
+                 List<UserRecord> records= record.getResource();
                  if(records != null && records.size() == 1) {
                      return records.get(0);
                  }
@@ -72,8 +72,9 @@ public class UsersTableRequests {
          return null;
      }
 
-    public String addUser(int id, String username) {
-        try {
+
+     public String addUser(int id, String username) {
+         try {
             AddUser request = new AddUser(id, username );
             UserRecord record = dbApi.createRecord(UserRecord.class,
                     AppConstants.USERS_TABLE_NAME, "123", request, null, null, null, null);
@@ -98,6 +99,10 @@ public class UsersTableRequests {
             }
         }
     }
+
+     private class Resource{
+
+     }
 
     private class AddUser extends  DbApiRequest  {
         //user_id

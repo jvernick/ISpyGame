@@ -66,7 +66,7 @@ public class Register {
 
   @Override
   public String toString()  {
-    return "class Register {\n" + "  email: " + email + "\n" + "  first_name: " +
+    return "class RegisterModel {\n" + "  email: " + email + "\n" + "  first_name: " +
             first_name + "\n" + "  last_name: " + last_name + "\n" + "  display_name: " +
             display_name + "\n" + "  new_password: " + new_password + "\n" + "  code: " +
             code + "\n" + "}\n";

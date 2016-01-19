@@ -7,18 +7,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * TODO remove id field and unused methods
  * Created by BrunelAmC on 8/21/2015.
  */
-public class UserChallengeRecord extends DbApiResponse{
-    @JsonProperty
+public class UserChallengeRecord {
     private int user_id;
-    @JsonProperty
     private int challenge_id;
-    @JsonProperty
     private int id;
     //Related record to retrieve challenge
-    @JsonProperty
     private GameRecord challenges_by_challenge_id;
     //Related record to retrieve sender
-    @JsonProperty
     private UserRecord users_by_user_id;
 
     public UserRecord getUsers_by_user_id() {
@@ -44,6 +39,7 @@ public class UserChallengeRecord extends DbApiResponse{
      */
     public Game getGame() {
         Game temp = GameRecord.getGame(challenges_by_challenge_id);
+        //TODO deprecate the line below. username already set in above function
         temp.setSenderUsername(users_by_user_id.getUsername());
         return temp;
     }

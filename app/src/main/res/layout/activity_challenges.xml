@@ -14,19 +14,17 @@
         android:layout_above="@+id/bar">
     </ListView>
 
-
     <TextView
         android:id="@+id/empty_list"
-        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="40dp"
-        android:layout_margin="8dp"
         android:padding="8dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/primary_text"
         android:text="@string/tx_empty_list_challenges"
         android:gravity="center"
+        android:layout_below="@+id/challenges_toolbar"
         android:visibility="gone"/>
 
     <View

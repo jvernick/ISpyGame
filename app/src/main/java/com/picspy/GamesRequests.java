@@ -131,7 +131,7 @@ public class GamesRequests {
      * the appropriate data type
      */
     public static class ChallengeParams {
-        private Map<String,String> params;
+        private HashMap<String,String> params;
 
         /**
          * Constructor initializes all the challenge parameters. Hence no getter and setters.
@@ -176,7 +176,7 @@ public class GamesRequests {
         /**
          * @return returns the parameters as a map
          */
-        public Map<String, String> getParams() {
+        public HashMap<String, String> getParams() {
             return params;
         }
 

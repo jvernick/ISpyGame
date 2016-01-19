@@ -80,7 +80,6 @@ public class TopFragmentArrayAdapter extends ArrayAdapter<Game> {
         return convertView;
     }
 
-
     private class ViewHolder {
         public TextView username;
         public TextView timeLength;

@@ -12,10 +12,10 @@ public class RecordsResponse {
 	//  /* Array of metadata returned for GET requests. */
 	//  @JsonProperty("meta")
 	//  private Metadata meta = null;
-	//  public List<RecordResponse> getRecord() {
+	//  public List<RecordResponse> getResource() {
 	//    return record;
 	//  }
-	//  public void setRecord(List<RecordResponse> record) {
+	//  public void setResource(List<RecordResponse> record) {
 	//    this.record = record;
 	//  }
 

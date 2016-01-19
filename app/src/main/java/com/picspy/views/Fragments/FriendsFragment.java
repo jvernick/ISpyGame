@@ -294,7 +294,7 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
                 FriendsRecord result = (new FriendsTableRequests(context))
                         .getFriends(PrefUtil.getInt(context, AppConstants.MAX_FRIEND_RECORD_ID));
                 ArrayList<Friend> friends = new ArrayList<>();
-                int myUserId = PrefUtil.getInt(context, AppConstants.USER_ID, -1);
+                int myUserId = PrefUtil.getInt(context, AppConstants.USER_ID);
                 if (result != null) {
                     for (FriendRecord friendRecord : result.getRecord()) {
                         friends.add(friendRecord.getFriend(myUserId));

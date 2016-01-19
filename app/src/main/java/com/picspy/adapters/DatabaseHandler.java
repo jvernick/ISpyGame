@@ -119,7 +119,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         values.put(FriendEntry._ID, friend.getId());   //friend_id
 
         db.insert(FriendEntry.TABLE_NAME, null, values);
-        PrefUtil.putString(context, AppConstants.LAST_FRIEND_UPDATE_TIME, updated);
+        //TODO replace deprecated below
+        //PrefUtil.putString(context, AppConstants.LAST_FRIEND_UPDATE_TIME, updated);
         db.close();
 
     }

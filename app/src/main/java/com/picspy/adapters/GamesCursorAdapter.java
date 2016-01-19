@@ -100,7 +100,7 @@ public class GamesCursorAdapter extends ResourceCursorAdapter {
     public static String processTime(String created) {
         Long createdTime = java.sql.Timestamp.valueOf(created).getTime();
         Calendar rightnow = Calendar.getInstance();
-        Long currentTime =rightnow.getTimeInMillis();
+        Long currentTime = rightnow.getTimeInMillis();
 
         Long duration = currentTime - createdTime;
         long diffInSeconds = TimeUnit.MILLISECONDS.toSeconds(duration);

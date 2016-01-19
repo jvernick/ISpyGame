@@ -1,8 +1,9 @@
 package com.picspy.utils;
 
-import android.graphics.Color;
+import android.content.Context;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Provides constants that are used throughout the app and as keys to shared preferences.
@@ -14,8 +15,11 @@ public class AppConstants {
     public static final String SESSION_ID = "session_id";
     public static final String USER_ID = "user_id";
     public static final String APP_NAME = "picspy";
+    public static final String API_KEY = "api_key";
+    public static final String PICSPY_API_KEY =
+            "6eba9ba30d039fe36e4eb9f85531078a0d79a8be684df57685c0af59058318dd";
     //TODO change following constants as required (specifically just change the IP during testing)
-    public static final String DSP_URL = "http://192.168.0.21:8081/rest";
+    public static final String DSP_URL = "http://192.168.0.22:8080/rest";
     public static final String USERS_TABLE_NAME = "users";
     public static final String CONTAINER_NAME = "applications";
     public static final String FOLDER_NAME = "picspy/challenges";
@@ -24,11 +28,9 @@ public class AppConstants {
     public static final String USER_CHALLENGES_TABLE_NAME = "user_challenges";
     public static final String CHALLENGES_TABLE_NAME = "challenges";
 
-    public static final String MAX_USER_CHALLENGE_ID = "last_user_challenge_id";
-    @Deprecated //use largest record id
-    public static final String LAST_FRIEND_UPDATE_TIME = "last_friend_update_time";
+    public static final String MAX_USER_CHALLENGE_ID = "max_user_challenge_id";
+    public static final String LAST_LOGIN_DATE = "last_login_date";
     public static final String MAX_FRIEND_RECORD_ID = "max_friend_record_id";
-
 
     public static final String FRIEND_REQUEST_COUNT = "friend_request_count";
     public static final String CHALLENGE_REQUEST_COUNT = "challenge_request_count";
@@ -43,7 +45,28 @@ public class AppConstants {
             0xFFE6EE9C, //lime_200
             0xFFCE93D8  //purple_200
     };
+
     // To prevent someone from accidentally instantiating the AppConstants class,
     // give it an empty constructor.
     private AppConstants() {};
+
+
+
+///////////////////////////////////NEW /FOR Version 2.0////////////////////////////////////////////
+    public static Map<String, String> dspHeaders(Context context) {
+        Map<String,String> headers = new HashMap<>();
+        headers.put("X-DreamFactory-API-Key", PrefUtil.getString(context, API_KEY , PICSPY_API_KEY));
+        headers.put("X-DreamFactory-Session-Token", PrefUtil.getString(context, SESSION_TOKEN));
+        headers.put("Content-Type", "application/json");
+        headers.put("Accept", "application/json");
+
+        return headers;
+    }
+
+    public static final String DSP_URL_2 = "http://192.168.0.14:8081/api/v2/";
+    //session
+    public static final String SESSION_TOKEN= "session_token";
+    public static final String USER_NAME = "usrname";
+    public static final int SESSION_TTL = 30;
+
 }

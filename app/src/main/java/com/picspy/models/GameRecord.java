@@ -8,31 +8,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Created by BrunelAmC on 8/21/2015.
  */
 public class GameRecord {
-    // picture filename
-    @JsonProperty
     private String picture_name;
-    //challenge solution
-    @JsonProperty
     private String selection;
-    @JsonProperty
     private String hint;
-    //number of guesses allowed
-    @JsonProperty
     private int guess;
-    @JsonProperty
     private int time;
-    //true if challenge should be on leaderboard
-    @JsonProperty
     private boolean l_board;
-    //challenge creator/sender
-    @JsonProperty 
     private int sender;
-    //challenge id
-    @JsonProperty
     private int id;
-    @JsonProperty
     private String created;
-    @JsonProperty
+
+    public GameRecord() {}
+
     private UserRecord users_by_sender;
 
     public static Game getGame(GameRecord gameRecord) {
@@ -141,12 +128,11 @@ public class GameRecord {
                 "\n" + " sender: " + sender +
                 "\n" + " id: " + id +
                 "\n" + " created: " + created +
+                "\n" + " users_by_sender: " + users_by_sender +
                 "\n}";
     }
-
 
     public UserRecord getUsers_by_sender() {
         return users_by_sender;
     }
-
 }

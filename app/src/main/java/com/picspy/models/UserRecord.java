@@ -9,31 +9,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class UserRecord extends DbApiResponse {
     //user_id
-    @JsonProperty
     private int id;
     //dispaly_name
-    @JsonProperty
     private String username;
     //total games won
-    @JsonProperty
     private int total_won;
     //total games lost
-    @JsonProperty
     private int total_lost;
     //total games featured on leaderboard
-    @JsonProperty
     private int leaderboard;
-
-    public String getMeta() {
-        return meta;
-    }
-
-    public void setMeta(String meta) {
-        this.meta = meta;
-    }
-
-    @JsonProperty
-    private String meta;
 
     public Friend getRecordToFriend() {
         return new Friend(id, username);
