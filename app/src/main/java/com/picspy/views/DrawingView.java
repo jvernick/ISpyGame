@@ -44,6 +44,7 @@ class DrawingView extends View {
     private static final float TOUCH_TOLERANCE = 4;
     private static final int MIN_NUM_OF_POINTS = 30;
     private static final int LINE_SEG_TOLERANCE = 7;
+    public static final int MAX_NUM_LINE_SEGMENTS = 300;
     private ArrayList<float[]> coordsOfPrevDraw;
     private Stack<ArrayList<float[]>> coordsOfPastDrawings;
     private float[] startCoordinates;
@@ -54,6 +55,10 @@ class DrawingView extends View {
     private int counter = 0;
     private int currColor;
     private static final int colorChanger = 0xffffff;
+    DisplayMetrics metrics = getResources().getDisplayMetrics();
+    int width;
+    int height;
+    int averageDim;
 
     private HashSet<LineSegment> lineSegments = new HashSet<>();
 
@@ -182,6 +187,10 @@ class DrawingView extends View {
         super.onSizeChanged(w, h, oldw, oldh);
         mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         mCanvas = new Canvas(mBitmap);
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        width = metrics.widthPixels;
+        height = metrics.heightPixels;
+        averageDim = width+height/2;
     }
 
     // This is called immediately after invalidate() is called and it draws the current path, mPath
@@ -218,6 +227,11 @@ class DrawingView extends View {
 
     // This helper method is used to continue a path that is being drawn
     private void touch_move(float x, float y) {
+        // If too many line segments are drawn, alert the user with a toast and force them to redraw
+        if (lineSegments.size() >= MAX_NUM_LINE_SEGMENTS) {
+            forceRedraw("You were drawing for too long!");
+            return;
+        }
         float dx = Math.abs(x - mX);
         float dy = Math.abs(y - mY);
         // construct a line segment from the new x and y coordinates
@@ -227,37 +241,21 @@ class DrawingView extends View {
             int numSegmentsInBetween = Math.abs(lin.id - lineSeg.id);
             if (numSegmentsInBetween >= LINE_SEG_TOLERANCE && doLinesIntersect(lin, lineSeg)) {
                 Log.d("LINE", String.format("Intersection between seg (%d,%d), (%d,%d) and (%d,%d), (%d,%d)", (int)mX, (int)mY, (int)x, (int)y, lin.first.x, lin.first.y, lin.second.x, lin.second.y));
-                invalidShapeDrawn = true;
 
                 // Set the text for the toast to alert the user
-                CharSequence text;
+                String text;
                 if (numSegmentsInBetween == LINE_SEG_TOLERANCE) {
                     text = "Try drawing a little faster!";
                 } else {
                     text = "You can't cross lines!";
                 }
-                // Create and display the toast to the user
-                Toast toast = Toast.makeText(getContext(), text, Toast.LENGTH_SHORT);
-                toast.show();
-
-                // add the current coordinate list to the stack of drawings
-                coordsOfPastDrawings.add(coordsOfPrevDraw);
-
-                try {
-                    Thread.sleep(300);                 //1000 milliseconds is one second.
-                } catch(InterruptedException ex) {
-                    Thread.currentThread().interrupt();
-                }
-                undoDrawing();  // erase the invalid shape
-                // restore visibility of buttons
-                changeVisibilityOfSiblings(View.VISIBLE);
+                forceRedraw(text);
                 return;
             }
         }
 
         // Add the line segment to the set of previously drawn line segments
         lineSegments.add(lineSeg);
-        Log.d("LINE", String.format("New line segment from (%f,%f) to (%f,%f)", mX, mY, x, y));
         counter++;  // increment the line segment counter, which uniquely identifies each segment
         // Only draw the path if the new coordinates are a distance greater than the touch tolerance
         if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
@@ -267,12 +265,33 @@ class DrawingView extends View {
         }
     }
 
+    // Helper method to erase the current drawing and force the user to redraw a new shape. It
+    // takes a String parameter which is the message displayed to the user via a toast.
+    private void forceRedraw(String message) {
+        invalidShapeDrawn = true;
+        Toast toast = Toast.makeText(getContext(), message, Toast.LENGTH_SHORT);
+        toast.show();
+        // add the current coordinate list to the stack of drawings
+        coordsOfPastDrawings.add(coordsOfPrevDraw);
+
+        try {
+            Thread.sleep(300);                 // wait for .3 seconds
+        } catch(InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+        undoDrawing();  // erase the invalid shape
+        // restore visibility of buttons
+        changeVisibilityOfSiblings(View.VISIBLE);
+    }
+
+    // Helper method that ends the current path being drawn.
     private void touch_up() {
         mPath.lineTo(mX, mY);
         // commit the path to our offscreen
         mCanvas.drawPath(mPath, mPaint);
         // kill this so we don't double draw
         mPath.reset();
+        // reset the set of line segments for the next drawing
         lineSegments = new HashSet<>();
         counter = 0;
     }
@@ -306,16 +325,12 @@ class DrawingView extends View {
                     touch_start(x, y);
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    // TODO: do not think shape is drawn when two points are slowly drawn in sequence
-                    // TODO: should we limit how many coordinates can be drawn?
                     double xDistance = Math.abs(startCoordinates[0] - x);
                     double yDistance = Math.abs(startCoordinates[1] - y);
                     double radiusFromCenter = Math.sqrt(xDistance * xDistance + yDistance * yDistance);
                     Log.d("MOVE", "X coord is " + x + " Y coord is " + y + "  distance is " + radiusFromCenter);
-                    DisplayMetrics metrics = getResources().getDisplayMetrics();
-                    int width = metrics.widthPixels;
-                    int height = metrics.heightPixels;
-                    int averageDim = width+height/2;
+                    // Consider a shape to be drawn if the user drew close to the where they
+                    // started and if they drew at least a certain number of points.
                     if (radiusFromCenter <= averageDim/TOLERANCE_RATIO && coordsOfPrevDraw.size() > MIN_NUM_OF_POINTS) {
                         isShapeDrawn = true;
                         // restore the visibility of the siblings because the drawing has finished
@@ -328,7 +343,7 @@ class DrawingView extends View {
 
                         // xor with all 1's to create the opposite color and indicate the drawing is done
                         mPaint.setColor(currColor ^ colorChanger);
-                        // connect the drawing back to the starting coordinates
+                        // connect the drawing back to the starting coordinates with the call to touch_up
                         mX = startCoordinates[0];
                         mY = startCoordinates[1];
                         touch_up();
@@ -349,9 +364,10 @@ class DrawingView extends View {
                         break;
                     }
 
-                    //TODO: should I be adding the coordinates which are not within the touch tolerance?
-                    coordsOfPrevDraw.add(currCoordPair);
-
+                    // TODO: is this logic valid?: only add the coordinates which are within the touch tolerance
+                    if (xDistance >= TOUCH_TOLERANCE || yDistance >= TOUCH_TOLERANCE) {
+                        coordsOfPrevDraw.add(currCoordPair);
+                    }
                     touch_move(x, y);
                     invalidate();
                     break;
@@ -367,14 +383,14 @@ class DrawingView extends View {
                     touch_up();
                     invalidate();
                     try {
-                        Thread.sleep(300);                 //1000 milliseconds is one second.
+                        Thread.sleep(300);                 // pause for .3 seconds before undoing drawing
                     } catch(InterruptedException ex) {
                         Thread.currentThread().interrupt();
                     }
                     undoDrawing();
                     break;
             }
-        }
+         }
         return true;
     }
 
@@ -420,12 +436,29 @@ class DrawingView extends View {
             // restore the normal stroke width
             mPaint.setStrokeWidth(mPaint.getStrokeWidth() - 10);
             isShapeDrawn = false;
-            // Make the finish button visible
+            // Make the finish button invisible
             RelativeLayout rootView = (RelativeLayout) this.getParent();
             Button finishButton = (Button) rootView.findViewById(R.id.finish_button);
             finishButton.setVisibility(View.INVISIBLE);
             mPaint.setColor(currColor);
         }
+    }
+
+    // This method takes a selection array of coordinates and draws it on the drawingView
+    public void drawSelection(ArrayList<float[]> selection) {
+        float[] coordPair = selection.get(0);
+        touch_start(coordPair[0], coordPair[1]);
+        int size = selection.size();
+        // iterate through each coordinate and repeat the starting point to close the shape
+        for (int i = 1; i <= size; i++) {
+            coordPair = selection.get(i % size);
+            mPath.lineTo(coordPair[0],coordPair[1]);
+            mX = coordPair[0];
+            mY = coordPair[1];
+        }
+        touch_up();
+
+        invalidate();   // force the view to redraw itself to reflect the changes
     }
 
     // A helper method to change the visibility of the views which are the siblings of this
