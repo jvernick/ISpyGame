@@ -3,6 +3,8 @@ package com.picspy.views;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
@@ -30,6 +32,7 @@ import com.picspy.GamesRequests;
 import com.picspy.firstapp.R;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -214,6 +217,17 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
             // TODO: the image should be deleted if the user does not continue on however
             OutputStream outputStream = null;
             try {
+                // flip the image if it was in selfie mode
+                if (mPreview.getCameraID() == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                    Matrix matrix = new Matrix();
+                    matrix.preScale(-1, 1);     // this flips the image across the origin
+                    bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+                    // convert the bitmap back to a byte array
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    data = stream.toByteArray();    // write the flipped bitmap to a byte array
+                }
                 outputStream = new BufferedOutputStream(new FileOutputStream(imageFile));
                 outputStream.write(data);   // write the image to the outputStream
             } catch (Exception e) {

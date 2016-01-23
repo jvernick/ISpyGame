@@ -134,6 +134,7 @@
             android:name="com.picspy.views.SendChallenge"
             android:label="@string/title_activity_send_challenge"
             android:screenOrientation="portrait"
+            android:theme="@style/create_challenge"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
