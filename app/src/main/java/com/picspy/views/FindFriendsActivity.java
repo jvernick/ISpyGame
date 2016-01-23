@@ -17,10 +17,12 @@ import android.widget.TextView;
 
 import com.picspy.adapters.SlidingTabLayout;
 import com.picspy.firstapp.R;
+import com.picspy.utils.VolleyRequest;
 import com.picspy.views.fragments.FriendRequestsFragment;
 import com.picspy.views.fragments.FriendSearchFragment;
 
 public class FindFriendsActivity extends ActionBarActivity {
+    public static final String CANCEL_TAG = "cancelFindRequests";
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -157,4 +159,12 @@ public class FindFriendsActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        //cancel all pending register/login/addUser tasks
+        if (VolleyRequest.getInstance(this.getApplicationContext()) != null) {
+            VolleyRequest.getInstance(this.getApplication()).getRequestQueue().cancelAll(CANCEL_TAG);
+        }
+    }
 }

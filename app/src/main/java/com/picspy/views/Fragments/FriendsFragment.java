@@ -24,6 +24,8 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.picspy.FriendsTableRequests;
 import com.picspy.adapters.DatabaseHandler;
 import com.picspy.adapters.FriendsCursorAdapter;
@@ -32,12 +34,13 @@ import com.picspy.models.Friend;
 import com.picspy.models.FriendRecord;
 import com.picspy.models.FriendsRecord;
 import com.picspy.utils.AppConstants;
+import com.picspy.utils.FriendsRequests;
 import com.picspy.utils.PrefUtil;
+import com.picspy.utils.VolleyRequest;
 import com.picspy.views.FindFriendsActivity;
 import com.picspy.views.SearchEditTextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Justin12 on 6/6/2015.
@@ -87,7 +90,7 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
         super.onCreate(savedInstanceState);
         cursorAdapter = new FriendsCursorAdapter(getActivity(), R.layout.item_friends, null, 0);
         setListAdapter(cursorAdapter);
-        (new GetFriends(getActivity())).execute();
+        getFriends(PrefUtil.getInt(getActivity(), AppConstants.MAX_FRIEND_RECORD_ID, 0));
     }
 
     @Override
@@ -138,6 +141,7 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
                 Cursor cursor = DatabaseHandler.getInstance(getActivity()
                         .getApplicationContext()).getMatchingFriends(
                         (constraint != null ? constraint.toString() : null));
+                if (cursor != null && ! cursor.moveToFirst()) cursor.close();
                 return cursor;
             }
         });
@@ -242,6 +246,7 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
 
             firstQuery = false;
             if(data.getCount() == 0) {
+                //TODO not used, verify and remove
                 noFriend = true;
                 listView.setEmptyView(noFriendView);
             } else {
@@ -275,51 +280,38 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
         }
     }
 
-    private class GetFriends extends AsyncTask<Void,Void,Boolean> {
-
-        private final Context context;
-
-        public GetFriends(Context context) {
-            this.context = context;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-            try {
-                FriendsRecord result = (new FriendsTableRequests(context))
-                        .getFriends(PrefUtil.getInt(context, AppConstants.MAX_FRIEND_RECORD_ID));
-                ArrayList<Friend> friends = new ArrayList<>();
-                int myUserId = PrefUtil.getInt(context, AppConstants.USER_ID);
-                if (result != null) {
-                    for (FriendRecord friendRecord : result.getRecord()) {
-                        friends.add(friendRecord.getFriend(myUserId));
-                    }
-                }
-                if (friends.size() != 0)
-                    DatabaseHandler.getInstance(context).addFriends(friends);
-                return friends.size() !=0;
-            } catch (Exception ex) { //TODO handle exceptions better
-                Log.d(TAG + "test", ex.getMessage());
-                //TODO handle exception
-                //toast for Internet connection error
-                return null;
+    private void getFriends(int maxFriendRecordId) {
+        Response.Listener<FriendsRecord> responseListener = new Response.Listener<FriendsRecord>() {
+            @Override
+            public void onResponse(FriendsRecord response) {
+                if (response.getCount() != 0)  storeFriends(response, getActivity());
             }
+        };
+
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        };
+
+        FriendsRequests addUserRequest = FriendsRequests.getFriends(getActivity(), maxFriendRecordId, responseListener, errorListener);
+        if (addUserRequest != null) addUserRequest.setTag(FindFriendsActivity.CANCEL_TAG);
+        VolleyRequest.getInstance(getActivity().getApplicationContext()).addToRequestQueue(addUserRequest);
+    }
+
+    private void storeFriends(FriendsRecord response, Context context) {
+        ArrayList<Friend> friends = new ArrayList<>();
+        int myUserId = PrefUtil.getInt(context, AppConstants.USER_ID);
+
+        for (FriendRecord friendRecord : response.getResource()) {
+            friends.add(friendRecord.getFriend(myUserId));
         }
 
-        @Override
-        protected void onPostExecute(Boolean foundFriend) {
-            if (foundFriend) {
-                Log.d(TAG, "notifying");
-                ((FriendsCursorAdapter) getListAdapter())
-                        .changeCursor(DatabaseHandler.getInstance(context).getAllFriends());
-                ((FriendsCursorAdapter) getListAdapter()).notifyDataSetChanged();
-            }
-        }
+        DatabaseHandler.getInstance(context).addFriends(friends);
+        ((FriendsCursorAdapter) getListAdapter())
+                .changeCursor(DatabaseHandler.getInstance(context).getAllFriends());
+        ((FriendsCursorAdapter) getListAdapter()).notifyDataSetChanged();
     }
 }
 

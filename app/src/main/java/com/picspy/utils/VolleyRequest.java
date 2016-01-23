@@ -56,6 +56,7 @@ public class VolleyRequest {
             volleyError = new VolleyError(new String(volleyError.networkResponse.data));
         }
 
+        //TODO check for session errors and refresh JWT
         return volleyError;
     }
 }

@@ -13,6 +13,8 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.picspy.FriendsTableRequests;
 import com.picspy.adapters.FriendRequestsArrayAdapter;
 import com.picspy.firstapp.R;
@@ -20,13 +22,15 @@ import com.picspy.models.Friend;
 import com.picspy.models.FriendRecord;
 import com.picspy.models.FriendsRecord;
 import com.picspy.utils.AppConstants;
+import com.picspy.utils.FriendsRequests;
 import com.picspy.utils.PrefUtil;
+import com.picspy.utils.VolleyRequest;
+import com.picspy.views.FindFriendsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FriendRequestsFragment extends ListFragment implements LoaderManager.LoaderCallbacks<List<Friend>> {
-    private static final int LOADER_ID = 0;
+public class FriendRequestsFragment extends ListFragment  {
     private static int myUserId;
     private ProgressBar progressSpinner;
     private FriendRequestsArrayAdapter arrayAdapter;
@@ -56,35 +60,10 @@ public class FriendRequestsFragment extends ListFragment implements LoaderManage
     public void onActivityCreated( Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         myUserId = PrefUtil.getInt(getActivity().getApplicationContext(), AppConstants.USER_ID);
-        getLoaderManager().initLoader(LOADER_ID, null, this).forceLoad();
-
+        getFriendRequests();
         if (getView() != null) {
             progressSpinner = (ProgressBar) getView().findViewById(R.id.challenges_progressBar);
             progressSpinner.setVisibility(View.VISIBLE);
-        }
-    }
-
-    @Override
-    public Loader<List<Friend>> onCreateLoader(int i, Bundle bundle) {
-        if (progressSpinner != null) {
-            progressSpinner.setVisibility(View.VISIBLE);
-        }
-        return new FriendRequestLoader(getActivity());
-    }
-
-    @Override
-    public void onLoadFinished(Loader<List<Friend>> loader, List<Friend> friends) {
-        progressSpinner.setVisibility(View.GONE);
-        if (arrayAdapter == null) {
-            arrayAdapter = new FriendRequestsArrayAdapter(getActivity(),
-                    R.layout.item_friend_request, friends);
-            setListAdapter(arrayAdapter);
-        } else {
-            arrayAdapter.setData(friends);
-            arrayAdapter.notifyDataSetChanged();
-        }
-        if (getView() != null) {
-            getListView().setEmptyView(getView().findViewById(R.id.empty_list));
         }
     }
 
@@ -105,37 +84,52 @@ public class FriendRequestsFragment extends ListFragment implements LoaderManage
         Toast.makeText(getActivity().getApplicationContext(), "Starting friend_info activity", Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void onLoaderReset(Loader<List<Friend>> loader) {
-       setListAdapter(null);
-    }
-
-
-    public static class FriendRequestLoader extends AsyncTaskLoader<List<Friend>> {
-        public FriendRequestLoader(Context context) {
-            super(context);
-        }
-
-
-        @Override
-        public List<Friend> loadInBackground() {
-            final List<Friend> requestList = new ArrayList<>();
-
-            FriendsRecord records = (new FriendsTableRequests(getContext())).getFriendRequests();
-            if (records != null) {
-                List<FriendRecord> requestRecords = records.getRecord();
-                for (FriendRecord record : requestRecords) {
-                    if (record != null) {
-                        try {
-                            requestList.add(record.getOtherUserRecord(myUserId).getRecordToFriend());
-                        } catch (NullPointerException e){
-                            e.printStackTrace();
-                        }
-                    }
+    private void getFriendRequests() {
+        Response.Listener<FriendsRecord> response = new Response.Listener<FriendsRecord>() {
+            @Override
+            public void onResponse(FriendsRecord response) {
+                progressSpinner.setVisibility(View.GONE);
+                if (response.getCount() != 0) {
+                    processResponse(response);
                 }
             }
+        };
 
-            return requestList;
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                progressSpinner.setVisibility(View.GONE);
+
+            }
+        };
+
+        FriendsRequests getRequests = FriendsRequests.getFriendRequests(getActivity(), response, errorListener);
+        getRequests.setTag(FindFriendsActivity.CANCEL_TAG);
+        VolleyRequest.getInstance(getActivity().getApplicationContext()).addToRequestQueue(getRequests);
+    }
+
+    private void processResponse(FriendsRecord response) {
+        ArrayList<Friend> requestList = new ArrayList<>();
+        ArrayList<FriendRecord> requestRecords = response.getResource();
+
+        for (FriendRecord record : requestRecords) {
+            try {//TODO why is try block needed again?
+                requestList.add(record.getOtherUserRecord(myUserId).getRecordToFriend());
+            } catch (NullPointerException e){
+                e.printStackTrace();
+            }
+        }
+
+        if (arrayAdapter == null) {
+            arrayAdapter = new FriendRequestsArrayAdapter(getActivity(),
+                    R.layout.item_friend_request, requestList);
+            setListAdapter(arrayAdapter);
+        } else {
+            arrayAdapter.setData(requestList);
+            arrayAdapter.notifyDataSetChanged();
+        }
+        if (getView() != null) {
+            getListView().setEmptyView(getView().findViewById(R.id.empty_list));
         }
     }
 }

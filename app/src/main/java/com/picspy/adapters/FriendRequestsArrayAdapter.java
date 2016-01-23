@@ -1,6 +1,8 @@
 package com.picspy.adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
@@ -13,14 +15,22 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.picspy.FriendsTableRequests;
 import com.picspy.firstapp.R;
 import com.picspy.models.Friend;
+import com.picspy.models.FriendRecord;
 import com.picspy.utils.AppConstants;
+import com.picspy.utils.FriendsRequests;
 import com.picspy.utils.PrefUtil;
+import com.picspy.utils.VolleyRequest;
+import com.picspy.views.FindFriendsActivity;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created by BrunelAmC on 12/28/2015.
@@ -58,6 +68,7 @@ public class FriendRequestsArrayAdapter extends ArrayAdapter<Friend>{
 
         final Friend requestor = getItem(position);
         viewHolder.friendUsername.setText(requestor.getUsername());
+
         viewHolder.acceptFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -67,14 +78,12 @@ public class FriendRequestsArrayAdapter extends ArrayAdapter<Friend>{
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                //TODO verify for success or error
-                (new RequestResponse(view.getContext(), requestor.getId(), true)).execute();
-
-
+                acceptRequest(requestor.getId());
                 remove(getItem(position));
                 notifyDataSetChanged();
             }
         });
+
         viewHolder.declineFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -85,10 +94,9 @@ public class FriendRequestsArrayAdapter extends ArrayAdapter<Friend>{
                     e.printStackTrace();
                 }
 
-                (new RequestResponse(view.getContext(), requestor.getId(), false)).execute();
+                deleteRequest(requestor.getId());
                 remove(getItem(position));
                 notifyDataSetChanged();
-                //TODO Send response to server
             }
         });
 
@@ -130,32 +138,59 @@ public class FriendRequestsArrayAdapter extends ArrayAdapter<Friend>{
 
     }
 
-    private class RequestResponse extends AsyncTask<Void, Void, String> {
-        private final Context context;
-        private final int id;
-        private final boolean accept;
-
-        /**
-         *
-         * @param context context
-         * @param id    friend_id
-         * @param accept accept friend if true, otherwise delete request(friend)
-         */
-        public RequestResponse(Context context, int id, boolean accept) {
-            super();
-            this.context = context;
-            this.id = id;
-            this.accept = accept;
-        }
-
-        @Override
-        protected String doInBackground(Void... voids) {
-            if (accept) {
-                return (new FriendsTableRequests(context)).acceptFriendRequest(id, PrefUtil.getInt(context, AppConstants.USER_ID));
-            } else {
-                Log.d("RequestArrayAdapter", "decline in background");
-                return (new FriendsTableRequests(context)).removeFriend(id);
+    private void deleteRequest(final int friend_id) {
+        Response.Listener<FriendRecord> responseListener = new Response.Listener<FriendRecord>() {
+            @Override
+            public void onResponse(FriendRecord response) {
+                if (response != null ) {
+                    Toast.makeText(getContext(), "Friend request removed",
+                            Toast.LENGTH_SHORT).show();
+                }
             }
-        }
+        };
+
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //ToDO  parse and notify
+                Pattern p1 = Pattern.compile(".*[cC]onnection.*[rR]efused.*", Pattern.DOTALL);
+                Pattern p2 = Pattern.compile(".*timed out", Pattern.DOTALL);
+                Log.d("Delete Friend Request", error.getMessage());
+                Toast.makeText(getContext(), "An error occurred",
+                        Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        FriendsRequests deleteFriedRequest = FriendsRequests.removeFriend(getContext(), friend_id, responseListener, errorListener);
+        if (deleteFriedRequest != null) deleteFriedRequest.setTag(FindFriendsActivity.CANCEL_TAG);
+        VolleyRequest.getInstance(getContext().getApplicationContext()).addToRequestQueue(deleteFriedRequest);
+    }
+
+    private void acceptRequest(int friend_id) {
+        Response.Listener<FriendRecord> responseListener = new Response.Listener<FriendRecord>() {
+            @Override
+            public void onResponse(FriendRecord response) {
+                if (response != null ) {
+                    Toast.makeText(getContext(), "Friend request accepted",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //ToDO  parse and notify
+                Pattern p1 = Pattern.compile(".*[cC]onnection.*[rR]efused.*", Pattern.DOTALL);
+                Pattern p2 = Pattern.compile(".*timed out", Pattern.DOTALL);
+                Log.d("Delete Friend Request", error.getMessage());
+                Toast.makeText(getContext(), "An error occurred",
+                        Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        FriendsRequests deleteFriedRequest = FriendsRequests.acceptFriendRequest(getContext(), friend_id, responseListener, errorListener);
+        if (deleteFriedRequest != null) deleteFriedRequest.setTag(FindFriendsActivity.CANCEL_TAG);
+        VolleyRequest.getInstance(getContext().getApplicationContext()).addToRequestQueue(deleteFriedRequest);
     }
 }

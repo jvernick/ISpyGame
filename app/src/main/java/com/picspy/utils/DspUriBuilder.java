@@ -11,7 +11,7 @@ public class DspUriBuilder {
     //tables
     public static final String CHALLENGES_TABLE = "mysql/_table/challenges";
     public static final String USERS_TABLE = "mysql/_table/users";
-    public static final String FRIENDS_TABLE = "";
+    public static final String FRIENDS_TABLE = "mysql/_table/friends";
     public static final String USER_CHALLEGES_TABLE = "mysql/_table/user_challenges";
     public static final String FILE_URI = "files/images/";
 

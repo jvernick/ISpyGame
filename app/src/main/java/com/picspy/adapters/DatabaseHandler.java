@@ -144,7 +144,29 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         if (cursor != null)
             cursor.moveToFirst();
         Friend friend = null;
-        if (cursor != null) {
+        if (cursor != null && cursor.moveToFirst()) {
+            friend = new Friend(Integer.parseInt(cursor.getString(0)), cursor.getString(1));
+            cursor.close();
+        }
+        db.close();
+        return friend;
+    }
+
+    public Friend getFriend(String username) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String[] projection = {FriendEntry._ID, FriendEntry.COLUMN_NAME_USERNAME};
+        String selection = FriendEntry.COLUMN_NAME_USERNAME + "=?";
+        String[] selectionArgs = {username};
+        Cursor cursor = db.query(
+                FriendEntry.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs, null, null, null, null);
+        if (cursor != null)
+            cursor.moveToFirst();
+        Friend friend = null;
+        if (cursor != null && cursor.moveToFirst()) {
             friend = new Friend(Integer.parseInt(cursor.getString(0)), cursor.getString(1));
             cursor.close();
         }

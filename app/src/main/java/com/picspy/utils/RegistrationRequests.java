@@ -24,7 +24,7 @@ public class RegistrationRequests extends JsonObjectRequest {
     private static final Gson gson = new Gson();
     private Context context;
 
-    public enum Type {LOGIN, REGISTER, REFREH}
+    public enum Type {LOGIN, REGISTER, REFRESH}
     private Type type;
 
     /**
@@ -50,11 +50,9 @@ public class RegistrationRequests extends JsonObjectRequest {
                                                 final RegisterModel request,
                                                 final Response.Listener<RegisterApiResponse> listener,
                                                 Response.ErrorListener errorListener)  {
-
         Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.d(TAG, response.toString());
                 listener.onResponse(gson.fromJson(response.toString(), RegisterApiResponse.class));
             }
         };
@@ -80,7 +78,6 @@ public class RegistrationRequests extends JsonObjectRequest {
         Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.d(TAG, response.toString());
                 listener.onResponse(gson.fromJson(response.toString(), LoginApiResponse.class));
             }
         };
@@ -98,8 +95,7 @@ public class RegistrationRequests extends JsonObjectRequest {
 
     }
 
-    public static RegistrationRequests refresh (Context context,
-                                             final LoginModel request,
+    public static RegistrationRequests refreshJwtToken (Context context,
                                              final Response.Listener<LoginApiResponse> listener,
                                              Response.ErrorListener errorListener)  {
 
@@ -111,17 +107,9 @@ public class RegistrationRequests extends JsonObjectRequest {
             }
         };
 
-        JSONObject jsonRequest;
-        try {
-            jsonRequest = new JSONObject(gson.toJson(request, LoginModel.class));
-            String path = AppConstants.DSP_URL_2 +"user/session";
-            return  new RegistrationRequests(context, Type.REFREH, Method.PUT, path,
-                    jsonRequest, jsonObjectListener, errorListener);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return  null;
-        }
-
+        String path = AppConstants.DSP_URL_2 +"user/session";
+        return  new RegistrationRequests(context, Type.REFRESH, Method.PUT, path,
+                null, jsonObjectListener, errorListener);
     }
 
     /**
@@ -134,8 +122,9 @@ public class RegistrationRequests extends JsonObjectRequest {
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
         Map<String, String> temp = new HashMap<>(AppConstants.dspHeaders(context));
-        if (type == Type.REFREH) temp.put("X-DreamFactory-Session-Token",
-                PrefUtil.getString(context, AppConstants.SESSION_TOKEN));
+        if (type == Type.REFRESH || type == type.LOGIN) temp.put("X-DreamFactory-Session-Token",
+                PrefUtil.getString(context, AppConstants.SESSION_TOKEN, "temp"));
+        Log.d(TAG, temp.toString());
         return  temp;
     }
 

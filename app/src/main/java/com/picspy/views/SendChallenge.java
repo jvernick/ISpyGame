@@ -30,7 +30,7 @@ public class SendChallenge extends ActionBarActivity implements
     public static final String ARG_FRIEND_ID = "friend_id";
     public static final String ARG_FRIEND_USERNAME = "friend_username";
     private static final String TAG = "SendChallenge";
-    private static final Object CANCEL_TAG = "cancel";
+    private static final Object CANCEL_TAG = "sendChallenge";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,6 +143,10 @@ public class SendChallenge extends ActionBarActivity implements
     }
 
 
+    /**
+     * Uploads the image to the server and if succesfull, send the game info to the server
+     * @param bundle A bundle containing the game information
+     */
     private void createChallenge(Bundle bundle) {
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override

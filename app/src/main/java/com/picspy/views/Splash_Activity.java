@@ -1,6 +1,7 @@
 package com.picspy.views;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -8,11 +9,16 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.dreamfactory.api.UserApi;
 import com.dreamfactory.model.Session;
 import com.picspy.firstapp.R;
 import com.picspy.utils.AppConstants;
 import com.picspy.utils.PrefUtil;
+import com.picspy.utils.RegistrationRequests;
+import com.picspy.utils.VolleyRequest;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -25,6 +31,7 @@ import java.util.concurrent.TimeUnit;
  * Created by BrunelAmC on 6/9/2015.
  */
 public class Splash_Activity extends Activity {
+    private static final String CANCEL_TAG = "cancelJWTRefresh";
     private Button btn_login, btn_signup;
     private View buttons;
     private static final int SLEEP_TIME = 1000;
@@ -57,7 +64,8 @@ public class Splash_Activity extends Activity {
                     AppConstants.LAST_LOGIN_DATE));
             Log.d(TAG, "days since last login: " + daysDiff);
             if (daysDiff >= AppConstants.SESSION_TTL - 5) {
-                refreshJWTToken();
+                refreshJWTToken(getApplicationContext());
+                PrefUtil.putLong(this, AppConstants.LAST_LOGIN_DATE, Calendar.getInstance().getTimeInMillis());
             }
             startMain();
         }
@@ -114,10 +122,33 @@ public class Splash_Activity extends Activity {
     }
 
     /**
-     * Refreshes the JWT for foreve sessions
+     * Refreshes the JWT for forever sessions
      */
-    private void refreshJWTToken() {
+    public static void refreshJWTToken(Context applicationContext) {
         //TODO configure JWT Refresh
         Log.d(TAG, "Refreshing JWT");
+        Response.Listener<RegistrationRequests.LoginApiResponse> responseListener = new Response.Listener<RegistrationRequests.LoginApiResponse>() {
+            @Override
+            public void onResponse(RegistrationRequests.LoginApiResponse response) {
+                Log.d(TAG, response.toString());
+            }
+        };
+
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, error.getMessage());
+            }
+        };
+
+        RegistrationRequests jwtRefresh = RegistrationRequests.refreshJwtToken(applicationContext, responseListener, errorListener);
+        jwtRefresh.setTag(CANCEL_TAG);
+        VolleyRequest.getInstance(applicationContext).addToRequestQueue(jwtRefresh);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        VolleyRequest.getInstance(this.getApplication()).getRequestQueue().cancelAll(CANCEL_TAG);
     }
 }

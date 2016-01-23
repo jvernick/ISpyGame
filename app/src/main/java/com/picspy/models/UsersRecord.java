@@ -10,8 +10,6 @@ import java.util.List;
 public class UsersRecord extends RecordsResponse<UserRecord> {
     // List of Friend Records from GET call that returns multiple friend records
     private ArrayList<UserRecord> resource = new ArrayList<>();
-    /* Available metadata for the response. */
-    private Metadata meta = null;
 
     public ArrayList<UserRecord> getResource() {
         return resource;
@@ -25,7 +23,7 @@ public class UsersRecord extends RecordsResponse<UserRecord> {
     public String toString() {
         return "FriendsRecord {" +
                 "\n" + "  resource: " + resource +
-                "\n" + "  meta: " + meta +
+                "\n" + "  meta: " + getMeta() +
                 "\n}";
     }
 }

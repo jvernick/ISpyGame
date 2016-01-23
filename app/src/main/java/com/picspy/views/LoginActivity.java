@@ -39,7 +39,7 @@ import java.util.Date;
  * Activity for user login
  */
 public class LoginActivity extends FragmentActivity {
-    private static final Object CANCEL_TAG = "cancel";
+    private static final Object CANCEL_TAG = "loginUser";
     private static final String TAG = "LoginActivity";
     private EditText edtEmail, edtPaswd;
     private Button login_button;
@@ -207,6 +207,8 @@ public class LoginActivity extends FragmentActivity {
         Response.Listener<RegistrationRequests.LoginApiResponse> responseListener = new Response.Listener<RegistrationRequests.LoginApiResponse>() {
             @Override
             public void onResponse(RegistrationRequests.LoginApiResponse response) {
+                Log.d(TAG, "login: " + response.toString());
+                progressDialog.cancel();
                 if (response.getId() != 0) {
                     Accounts.checkNewAccount(context, response.getId());
                     PrefUtil.putString(context, AppConstants.SESSION_TOKEN, response.getSessionToken());
@@ -221,6 +223,7 @@ public class LoginActivity extends FragmentActivity {
         Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                progressDialog.cancel();
                 if (error != null) {
                     String err = (error.getMessage() == null)? "error message null": error.getMessage();
                     Log.d(TAG, err);

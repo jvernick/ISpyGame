@@ -36,7 +36,7 @@ import java.util.Calendar;
  */
 public class RegisterActivity extends Activity {
     private static final String TAG = "RegisterActivity";
-    private static final Object CANCEL_TAG = "cancel";
+    private static final Object CANCEL_TAG = "registerUser";
     private EditText edtDisplayName;
     private EditText edtEmail;
     private EditText edtPaswd;
@@ -173,7 +173,7 @@ public class RegisterActivity extends Activity {
                     error.printStackTrace();
                     Log.d(TAG, err);
                     progressDialog.cancel();
-                    Toast.makeText(RegisterActivity.this, "An error occcured", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "An error occurred", Toast.LENGTH_SHORT).show();
                     String errorMsg;
                     //TODO Parse error and display errors to users
                 }
@@ -197,6 +197,7 @@ public class RegisterActivity extends Activity {
         Response.Listener<RegistrationRequests.LoginApiResponse> responseListener = new Response.Listener<RegistrationRequests.LoginApiResponse>() {
             @Override
             public void onResponse(RegistrationRequests.LoginApiResponse response) {
+                Log.d(TAG, "login: " + response.toString());
                 if (response.getId() != 0) {
                     Accounts.checkNewAccount(context, response.getId());
                     PrefUtil.putString(context, AppConstants.SESSION_TOKEN, response.getSessionToken());
@@ -238,25 +239,25 @@ public class RegisterActivity extends Activity {
         Response.Listener<UserRecord> responseListener = new Response.Listener<UserRecord>() {
             @Override
             public void onResponse(UserRecord response) {
-                if (response != null && response.getId() == id) {
-                    showResults();
-                    progressDialog.cancel();
-                } else {
-                    Log.d(TAG, "Errror");
-                }
+            if (response != null && response.getId() == id) {
+                showResults();
+                progressDialog.cancel();
+            } else {
+                Log.d(TAG, "Errror");
+            }
             }
         };
 
         Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                if (error != null) {
-                    String err = (error.getMessage() == null)? "error message null": error.getMessage();
-                    Log.d(TAG, err);
-                    progressDialog.cancel();
-                    Toast.makeText(RegisterActivity.this, "An error occcured", Toast.LENGTH_SHORT).show();
-                    //TODO notify user of error
-                }
+            if (error != null) {
+                String err = (error.getMessage() == null)? "error message null": error.getMessage();
+                Log.d(TAG, err);
+                progressDialog.cancel();
+                Toast.makeText(RegisterActivity.this, "An error occcured", Toast.LENGTH_SHORT).show();
+                //TODO notify user of error
+            }
             }
         };
 

@@ -22,13 +22,18 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.picspy.FriendsTableRequests;
 import com.picspy.adapters.DatabaseHandler;
 import com.picspy.firstapp.R;
 import com.picspy.models.Friend;
 import com.picspy.models.FriendRecord;
+import com.picspy.models.FriendsRecord;
 import com.picspy.utils.AppConstants;
+import com.picspy.utils.FriendsRequests;
 import com.picspy.utils.PrefUtil;
+import com.picspy.utils.VolleyRequest;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
@@ -45,6 +50,7 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
     public final static String FRIEND_ID = "com.picspy.FRIEND_ID";
     public final static String FOR_FRIEND = "com.picspy.FRIEND_REQUEST";
     private static final String TAG = "FriendsInfoActivity";
+    private static final Object CANCEL_TAG = "deleteFriend";
     private TextView sent_won, sent_lost, received_won, received_lost;
     private TextView total_won, total_lost, leaderboard, stats_title;
     private SurfaceView frame1;
@@ -62,7 +68,7 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
         super.onCreate(savedInstanceState);
         processIntent();
 
-        new getStats(friend_id).execute();
+        getStats(friend_id);
         setContentView(R.layout.activity_friend_info);
         spinner = (ProgressBar)findViewById(R.id.myProgressBar);
         //TODO Set color to theme color
@@ -140,10 +146,9 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                //TODO ensure that on return to parent, friends list is reloaded
+                                //TODO ensure that on return to parent, friends list is reloaded in on resume
                                 //one way will be to return boolean to parent or always refresh
-                                DeleteFriendTask  deleteFriendTask = new DeleteFriendTask(friend_id);
-                                deleteFriendTask.execute();
+                               deleteFriend(friend_id);
                             }
                         }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -339,86 +344,65 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
         //TODO set user stats
     }
 
-    /**
-     * Class to get stats from database
-     */
-    private class getStats extends AsyncTask<Void, String, FriendRecord> {
-        final int friend_id;
-
-        public getStats(int friend_id) {
-            super();
-            this.friend_id = friend_id;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            //TODO Spinner not neccessary if connecting to server is very fast. Test.
-            if (spinner != null) {
-                spinner.setVisibility(View.VISIBLE);
+    private void getStats(int friend_id) {
+        Response.Listener<FriendRecord> response = new Response.Listener<FriendRecord>() {
+            @Override
+            public void onResponse(FriendRecord response) {
+                spinner.setVisibility(View.GONE);
+                if (response != null) {
+                    findViewById(R.id.page).setVisibility(View.VISIBLE);
+                    if(forFriend) setFriendStats(response);
+                    setUserStats(response);
+                    requestSuccessful = true;
+                }
             }
-        }
+        };
 
-        @Override
-        protected FriendRecord doInBackground(Void... params) {
-            FriendsTableRequests request = new FriendsTableRequests(getApplicationContext());
-            return request.getStats(friend_id);
-        }
-
-        @Override
-        protected void onPostExecute(FriendRecord result) {
-            spinner.setVisibility(View.GONE);
-            if (result != null){
-                findViewById(R.id.page).setVisibility(View.VISIBLE);
-                if(forFriend) setFriendStats(result);
-                setUserStats(result);
-                requestSuccessful = true;
-            } else { // some error, show dialog
-                Toast.makeText(FriendInfoActivity.this, "Network error",Toast.LENGTH_SHORT).show();
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                spinner.setVisibility(View.GONE);
+                Log.d(TAG, error.getMessage());
+                Toast.makeText(FriendInfoActivity.this, "An error occurred",Toast.LENGTH_SHORT).show();
             }
+        };
+
+        //TODO Spinner not necessary if connecting to server is very fast. Test.
+        if (spinner != null) {
+            spinner.setVisibility(View.VISIBLE);
         }
+        FriendsRequests statsRequest = FriendsRequests.getStats(this, friend_id, response, errorListener);
+        if (statsRequest != null) statsRequest.setTag(CANCEL_TAG);
+        VolleyRequest.getInstance(getApplicationContext()).addToRequestQueue(statsRequest);
     }
 
-    /**
-     * Class to delete friend from database
-     */
-    private class DeleteFriendTask extends AsyncTask<Void, String, String> {
-        final int friend_id;
-        public DeleteFriendTask(int friend_id) {
-            super();
-            this.friend_id = friend_id;
-        }
+    private void deleteFriend(final int friend_id) {
+        Response.Listener<FriendRecord> responseListener = new Response.Listener<FriendRecord>() {
+            @Override
+            public void onResponse(FriendRecord response) {
+                if (response != null ) {
+                    DatabaseHandler dbHandler = DatabaseHandler.getInstance((getApplicationContext()));
+                    if (dbHandler.getFriend(friend_id) != null) {
+                        dbHandler.deleteFriend(new Friend(friend_id, null));
+                    }
 
-        @Override
-        protected String doInBackground(Void... params) {
-            FriendsTableRequests request = new FriendsTableRequests(getApplicationContext());
-            String result = request.removeFriend(friend_id);
-            if (result != null && result.equals("SUCCESS")) { //TODO String contains error message on error
-                DatabaseHandler dbHandler = DatabaseHandler.getInstance((getApplicationContext()));
-                if (dbHandler.getFriend(friend_id) != null) {
-                    dbHandler.deleteFriend(new Friend(friend_id, null));
+                    onBackPressed();
+                    Toast.makeText(FriendInfoActivity.this, "Friend successfully removed",
+                            Toast.LENGTH_SHORT).show();
                 }
-                return "SUCCESS";
-            } else {
+            }
+        };
+
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //ToDO  parse and notify
                 Pattern p1 = Pattern.compile(".*[cC]onnection.*[rR]efused.*", Pattern.DOTALL);
                 Pattern p2 = Pattern.compile(".*timed out", Pattern.DOTALL);
-                if (result != null &&  p1.matcher(result).matches()) {
-                    return "No Connection";
-                } else if (result != null && p2.matcher(result).matches()) { //Should never timeout
-                   return "Timed out";
-                }
-                return "FAILED";
-            }
-        }
-        @Override
-        protected void onPostExecute(String result) {
-            if (result.equals("SUCCESS")){
-                onBackPressed();
-                Toast.makeText(FriendInfoActivity.this, "Friend successfully removed",
-                        Toast.LENGTH_SHORT).show();
-            } else { // some error show dialog
+                Log.d(TAG, error.getMessage());
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(FriendInfoActivity.this);
                 //TODO modify error presentation format and possibly the error message
-                alertDialog.setTitle("Error").setMessage(result).setCancelable(false)
+                alertDialog.setTitle("Error").setMessage(error.getMessage()).setCancelable(false)
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -427,7 +411,11 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
                         });
                 alertDialogs.add(alertDialog.show());
             }
-        }
+        };
+
+        FriendsRequests deleteFriedRequest = FriendsRequests.removeFriend(this, friend_id, responseListener, errorListener);
+        if (deleteFriedRequest != null) deleteFriedRequest.setTag(CANCEL_TAG);
+        VolleyRequest.getInstance(getApplicationContext()).addToRequestQueue(deleteFriedRequest);
     }
 
     @Override
@@ -436,5 +424,8 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
         for (AlertDialog d: alertDialogs) {
             if (d.isShowing()) d.dismiss();
         }
+
+        //cancel all pending register/login/addUser tasks
+        VolleyRequest.getInstance(this.getApplication()).getRequestQueue().cancelAll(CANCEL_TAG);
     }
 }

@@ -36,11 +36,11 @@ public class UserRequests extends JsonObjectRequest {
     /**
      * Creates a new request.
      *
-     * @param method        the HTTP method to use
-     * @param path           URL to fetch the JSON from
+     * @param method  the HTTP method to use
+     * @param path  URL to fetch the JSON from
      * @param jsonRequest   A {@link JSONObject} to post with the request. Null is allowed and
      *                      indicates no parameters will be posted along with request.
-     * @param jsonObjectListener      Listener to receive the JSON response
+     * @param jsonObjectListener   Listener to receive the JSON response
      * @param errorListener Error listener, or null to ignore errors.
      */
     public UserRequests(Context context, Type type, int method, String path, JSONObject jsonRequest, Response.Listener<JSONObject> jsonObjectListener, Response.ErrorListener errorListener) {
@@ -70,7 +70,7 @@ public class UserRequests extends JsonObjectRequest {
             }
         };
 
-        RecordsRequest<AddUserModel>  request =  new RecordsRequest<>();
+        RecordsRequest<AddUserModel> request = new RecordsRequest<>();
         request.addResource(userModel);
 
         JSONObject jsonRequest;

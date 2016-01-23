@@ -8,7 +8,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.gson.Gson;
+import com.picspy.models.Game;
+import com.picspy.models.GameRecord;
 import com.picspy.models.GamesRecord;
+import com.picspy.models.UserChallengeRecord;
 import com.picspy.models.UserChallengesRecord;
 
 import org.json.JSONObject;
@@ -44,8 +47,25 @@ public class ChallengesRequests  extends JsonObjectRequest{
     }
 
 
-    public static void createGames() {
+    public static ChallengesRequests createGame(Context context,
+                                   final Response.Listener<UserChallengeRecord> listener,
+                                   Response.ErrorListener errorListener) {
+        Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d(TAG, "JSONresponse: " + response.toString());
+                UserChallengesRecord result = gson.fromJson(response.toString(), UserChallengesRecord.class);
+                Log.d(TAG, "RecordsResponse" + result.toString());
+                listener.onResponse(result.getOnlyResource());
+            }
+        };
 
+
+
+        String url = DspUriBuilder.buildUri(DspUriBuilder.USER_CHALLEGES_TABLE, null);
+        Log.d(TAG, "jsonRequest path: " + url);
+
+        return  new ChallengesRequests(context, Method.POST, url, null, jsonObjectListener, errorListener);
     }
 
     /**
