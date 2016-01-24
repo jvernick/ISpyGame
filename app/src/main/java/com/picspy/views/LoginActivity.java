@@ -11,9 +11,13 @@ import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
@@ -39,55 +43,33 @@ import java.util.Date;
  * Activity for user login
  */
 public class LoginActivity extends FragmentActivity {
-    private static final Object CANCEL_TAG = "loginUser";
+    private static final String CANCEL_TAG = "loginUser";
     private static final String TAG = "LoginActivity";
     private EditText edtEmail, edtPaswd;
     private Button login_button;
     private ProgressDialog progressDialog;
-    private CallbackManager callbackManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("keyhas",this.getPackageName());
-
-        //facebook login setup
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_login);
-        LoginButton facebook_button = (LoginButton) findViewById(R.id.facebook_login_button);
-        facebook_button.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                //TODO store the access token? or understand how facebook sdk stores it.
-                AccessToken s = loginResult.getAccessToken();
-                //for debuging
-                Toast.makeText(LoginActivity.this, s.getExpires().toString(),
-                        Toast.LENGTH_LONG).show();
-
-                Toast.makeText(LoginActivity.this, "Facebook Login Successful",
-                        Toast.LENGTH_SHORT).show();
-                startMain();
-            }
-
-            @Override
-            public void onCancel() {
-                Toast.makeText(LoginActivity.this, "Login attempt canceled.",
-                        Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onError(FacebookException e) {
-                Toast.makeText(LoginActivity.this, "Login attempt failed.", Toast.LENGTH_LONG).show();
-            }
-        });
-
         progressDialog = new ProgressDialog(LoginActivity.this);
         progressDialog.setMessage(getText(R.string.loading_message));
 
         edtEmail = (EditText) findViewById(R.id.user_email);
         edtPaswd = (EditText) findViewById(R.id.user_password);
         login_button = (Button) findViewById(R.id.button_login);
+
+        edtPaswd.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    login_button.performClick();
+                    return true;
+                }
+                return false;
+            }
+        });
 
         edtEmail.addTextChangedListener(textWatcher);
         edtPaswd.addTextChangedListener(textWatcher);
@@ -96,13 +78,7 @@ public class LoginActivity extends FragmentActivity {
         checkFieldsForEmptyValues();
     }
 
-    //for facebok login
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        callbackManager.onActivityResult(requestCode, resultCode, data);
-    }
-
-    //Validates the input To disable button if any field is empyt
+    //Validates the input To disable button if any field is empty
     private TextWatcher textWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3){}
@@ -116,9 +92,18 @@ public class LoginActivity extends FragmentActivity {
         }
     };
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!edtEmail.getText().toString().matches("") &&  !edtPaswd.getText().toString().matches("")) {
+            InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        }
+    }
+
     /**
      * Checks fields for empty values. Enables and dislpays login button when all fields
-     * are not empty. Otherwise disales and hides login button
+     * are not empty. Otherwise disables and hides login button
      */
     private void checkFieldsForEmptyValues(){
         String s1 = edtEmail.getText().toString();
@@ -161,6 +146,9 @@ public class LoginActivity extends FragmentActivity {
      * @param view View from button click
      */
     public void login(View view) {
+        InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
         Boolean email_state = isValidEmail();
         Boolean pass_state = isValidPassword();
 
@@ -170,9 +158,11 @@ public class LoginActivity extends FragmentActivity {
         } else {
             if (!email_state) {
                 edtEmail.setError("Invalid Email");
+                edtEmail.requestFocus();
             }
             if (!pass_state) {
                 edtPaswd.setError("Invalid Password");
+                edtPaswd.requestFocus();
             }
         }
     }
@@ -207,10 +197,11 @@ public class LoginActivity extends FragmentActivity {
         Response.Listener<RegistrationRequests.LoginApiResponse> responseListener = new Response.Listener<RegistrationRequests.LoginApiResponse>() {
             @Override
             public void onResponse(RegistrationRequests.LoginApiResponse response) {
-                Log.d(TAG, "login: " + response.toString());
+                Log.d(TAG, response.toString());
                 progressDialog.cancel();
                 if (response.getId() != 0) {
                     Accounts.checkNewAccount(context, response.getId());
+                    //stores JWT token
                     PrefUtil.putString(context, AppConstants.SESSION_TOKEN, response.getSessionToken());
                     PrefUtil.putInt(context, AppConstants.USER_ID, response.getId());
                     PrefUtil.putString(context, AppConstants.USER_NAME, response.getUsername());
@@ -225,29 +216,25 @@ public class LoginActivity extends FragmentActivity {
             public void onErrorResponse(VolleyError error) {
                 progressDialog.cancel();
                 if (error != null) {
-                    String err = (error.getMessage() == null)? "error message null": error.getMessage();
+                    String err = (error.getMessage() == null)? "An error occurred": error.getMessage();
                     Log.d(TAG, err);
-                    error.printStackTrace();
-                    String errorMsg = err;
+                    String errorMsg = "An error occurred";
                     progressDialog.cancel();
 
-                    //TODO  match error
-                    if (err.matches("^A registered user already exists(.*)")) {
-                        errorMsg = "Email already taken.";
-                    } else if (err.trim().contains("Display Name")) {
-                        errorMsg = "Display Name taken";
+                    if (err.matches(AppConstants.CONNECTION_ERROR)) {
+                        errorMsg = "No connection to server";
+                    } else if (err.matches(".*Received authentication challenge is null.*")) {
+                        errorMsg = "Invalid credentials";
                     }
 
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(LoginActivity.this);
-                    //TODO modify error presentation format and possibly the error message
-                    alertDialog.setTitle("Message").setMessage(errorMsg).setCancelable(false).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    alertDialog.setMessage(errorMsg).setCancelable(false).setPositiveButton("Try again", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.cancel();
                         }
                     });
                     alertDialog.show();
-                    Toast.makeText(LoginActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
                 }
             }
         };
@@ -261,10 +248,7 @@ public class LoginActivity extends FragmentActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        //cancel all pending register/login/addUser tasks
-        if (VolleyRequest.getInstance(this.getApplicationContext()) != null) {
-            VolleyRequest.getInstance(this.getApplication()).getRequestQueue().cancelAll(CANCEL_TAG);
-        }
+        //cancel pending login task
+        VolleyRequest.getInstance(this.getApplication()).getRequestQueue().cancelAll(CANCEL_TAG);
     }
-
 }

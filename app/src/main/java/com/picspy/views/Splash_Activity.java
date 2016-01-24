@@ -46,9 +46,14 @@ public class Splash_Activity extends Activity {
         buttons = findViewById(R.id.buttons);
 
         //TODO change true in both lines below to false
-        btn_login.setEnabled(false);
-        btn_signup.setEnabled(false);
-
+        //btn_login.setEnabled(false);
+        //btn_signup.setEnabled(false);
+        buttons.setVisibility(View.GONE);
+        try {
+            Thread.sleep(SLEEP_TIME);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         determineAction();
     }
 
@@ -84,11 +89,11 @@ public class Splash_Activity extends Activity {
     /**
      * enables and makes login and signup buttons visible
      */
-    private void enableButtons() {
+    private void enableButtons() {/*
         btn_login.setEnabled(true);
         btn_login.setVisibility(View.VISIBLE);
         btn_signup.setEnabled(true);
-        btn_signup.setVisibility(View.VISIBLE);
+        btn_signup.setVisibility(View.VISIBLE);*/
         buttons.setVisibility(View.VISIBLE);
     }
 
@@ -126,6 +131,7 @@ public class Splash_Activity extends Activity {
      */
     public static void refreshJWTToken(Context applicationContext) {
         //TODO configure JWT Refresh
+        //TODO reset days since last login
         Log.d(TAG, "Refreshing JWT");
         Response.Listener<RegistrationRequests.LoginApiResponse> responseListener = new Response.Listener<RegistrationRequests.LoginApiResponse>() {
             @Override

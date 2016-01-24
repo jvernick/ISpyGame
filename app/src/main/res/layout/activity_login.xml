@@ -13,24 +13,21 @@
         style="@style/login_and_register_titles"
         android:id="@+id/login_title"
         android:text="@string/tx_login" />
-    <com.facebook.login.widget.LoginButton
-        style="@style/login_text_style"
-        android:id="@+id/facebook_login_button"
-        android:layout_marginTop="20dp"
-        android:layout_below="@id/login_title"/>
     <EditText
         style="@style/login_text_style"
         android:id="@+id/user_email"
-        android:layout_below="@id/facebook_login_button"
+        android:layout_below="@id/login_title"
         android:inputType="textEmailAddress"
         android:hint="@string/email_hint"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:imeOptions="actionNext"/>
     <EditText
         style="@style/login_text_style"
         android:id="@+id/user_password"
         android:inputType="textPassword"
         android:layout_below="@id/user_email"
-        android:hint="@string/pass_hint1"/>
+        android:hint="@string/pass_hint1"
+        android:imeOptions="actionDone"/>
     <TextView
         android:id="@+id/password_link"
         android:layout_width="wrap_content"

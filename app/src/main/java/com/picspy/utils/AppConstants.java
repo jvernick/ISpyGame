@@ -11,7 +11,7 @@ import java.util.Map;
  * Created by BrunelAmC on 6/9/2015.
  */
 public class AppConstants {
-    //The following are keys for shared prefrecnes
+    //The following are keys for shared preferences
     public static final String SESSION_ID = "session_id";
     public static final String USER_ID = "user_id";
     public static final String APP_NAME = "picspy";
@@ -63,10 +63,12 @@ public class AppConstants {
         return headers;
     }
 
-    public static final String DSP_URL_2 = "http://192.168.0.15:8081/api/v2/";
+    public static final String DSP_URL_2 = "http://192.168.0.33:8081/api/v2/";
     //session
     public static final String SESSION_TOKEN= "session_token";
     public static final String USER_NAME = "username";
     public static final int SESSION_TTL = 30;
+    //matching regex when connection to server cannot be made
+    public static final String CONNECTION_ERROR = ".*failed to connect to.*";
 
 }

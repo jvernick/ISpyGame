@@ -121,11 +121,7 @@ public class RegistrationRequests extends JsonObjectRequest {
      */
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
-        Map<String, String> temp = new HashMap<>(AppConstants.dspHeaders(context));
-        if (type == Type.REFRESH || type == type.LOGIN) temp.put("X-DreamFactory-Session-Token",
-                PrefUtil.getString(context, AppConstants.SESSION_TOKEN, "temp"));
-        Log.d(TAG, temp.toString());
-        return  temp;
+        return  AppConstants.dspHeaders(context);
     }
 
 

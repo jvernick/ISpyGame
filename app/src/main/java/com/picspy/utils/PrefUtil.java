@@ -9,9 +9,10 @@ import android.content.SharedPreferences;
  * Created by BrunelAmC on 6/9/2015.
  */
 public class PrefUtil {
+    public static final String PREF_NAME = "_picspy_pref";
     static public final class Prefs {
         public static SharedPreferences get(Context context) {
-            return context.getSharedPreferences("_picspy_pref", 0);
+            return context.getSharedPreferences(PREF_NAME, 0);
         }
     }
 

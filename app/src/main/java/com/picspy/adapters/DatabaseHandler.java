@@ -105,6 +105,17 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         db.close();
         return isEmpty;
     }
+
+    /**
+     * Clear all database for new user
+     */
+    public void  clearDatabase() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(FriendEntry.TABLE_NAME, null, null);
+        db.delete(GameEntry.TABLE_NAME, null, null);
+        db.close();
+    }
+
     /**
      * Adds a new friend to the database
      * @param friend Friend to be added

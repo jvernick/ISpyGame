@@ -22,7 +22,8 @@
         android:minHeight="48dp"
         android:layout_alignParentBottom="true"
         style="?android:attr/buttonBarStyle"
-        android:background="@color/primary">
+        android:background="@color/primary"
+        android:visibility="gone">
 
         <View
             android:id="@+id/ViewColorPickerHelper"
