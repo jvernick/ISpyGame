@@ -102,7 +102,7 @@ public class RegisterActivity extends Activity {
         super.onResume();
         if (!edtEmail.getText().toString().matches("") &&  !edtPaswd.getText().toString().matches("")) {
             InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+            imm.hideSoftInputFromWindow(btnRegister.getWindowToken(), 0);
         }
     }
 
@@ -199,6 +199,7 @@ public class RegisterActivity extends Activity {
                     String errorMsg = "An error occurred";
                     String err = (error.getMessage() == null)? errorMsg : error.getMessage();
                     Log.d(TAG, err);
+                    error.printStackTrace();
 
                     if (err.matches(AppConstants.CONNECTION_ERROR)) {
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(RegisterActivity.this);
@@ -209,12 +210,23 @@ public class RegisterActivity extends Activity {
                                         dialog.cancel();
                                     }
                                 });
+                        alertDialog.show();
                     } else if (err.matches(".*Duplicate entry .* for key 'name_UNIQUE'.*")) {
                         edtDisplayName.setError("username taken");
                         edtDisplayName.requestFocus();
                     } else if ( err.matches(".*The email has already been taken.*")) {
                         edtEmail.setError("email taken");
                         edtEmail.requestFocus();
+                    } else {
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(RegisterActivity.this);
+                        alertDialog.setMessage("An error occurred").setCancelable(false)
+                                .setPositiveButton("Try again", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                });
+                        alertDialog.show();
                     }
                 }
             }

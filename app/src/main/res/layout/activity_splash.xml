@@ -1,4 +1,3 @@
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.picspy.views.Splash_Activity"
@@ -7,7 +6,7 @@
     android:layout_width="match_parent">
 
 
-    <!--- TODO add & configure splash image below and backgroud above
+    <!--- TODO add & configure splash image below and background above
     <ImageView
         android:id="@+id/splashImage"
         android:layout_width="fill_parent"
@@ -52,7 +51,8 @@
             android:layout_alignParentBottom="true"
             android:layout_toLeftOf="@id/ViewColorPickerHelper"
             android:background="?android:attr/selectableItemBackground"
-            android:onClick="splashLogin"/>
+            android:onClick="splashLogin"
+            android:visibility="gone"/>
 
         <Button
             style="?android:attr/buttonBarButtonStyle"
@@ -69,6 +69,7 @@
             android:layout_alignParentBottom="true"
             android:layout_toRightOf="@id/ViewColorPickerHelper"
             android:background="?android:attr/selectableItemBackground"
-            android:onClick="splashSignUp"/>
+            android:onClick="splashSignUp"
+            android:visibility="gone"/>
     </RelativeLayout>
 </RelativeLayout>

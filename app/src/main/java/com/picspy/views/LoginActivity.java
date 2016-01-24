@@ -18,17 +18,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.facebook.AccessToken;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
-import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
 import com.picspy.firstapp.R;
 import com.picspy.utils.Accounts;
 import com.picspy.utils.AppConstants;
@@ -37,7 +29,6 @@ import com.picspy.utils.RegistrationRequests;
 import com.picspy.utils.VolleyRequest;
 
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Activity for user login
@@ -46,7 +37,7 @@ public class LoginActivity extends FragmentActivity {
     private static final String CANCEL_TAG = "loginUser";
     private static final String TAG = "LoginActivity";
     private EditText edtEmail, edtPaswd;
-    private Button login_button;
+    private Button btnLogin;
     private ProgressDialog progressDialog;
 
     @Override
@@ -58,13 +49,13 @@ public class LoginActivity extends FragmentActivity {
 
         edtEmail = (EditText) findViewById(R.id.user_email);
         edtPaswd = (EditText) findViewById(R.id.user_password);
-        login_button = (Button) findViewById(R.id.button_login);
+        btnLogin = (Button) findViewById(R.id.button_login);
 
         edtPaswd.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    login_button.performClick();
+                    btnLogin.performClick();
                     return true;
                 }
                 return false;
@@ -97,7 +88,7 @@ public class LoginActivity extends FragmentActivity {
         super.onResume();
         if (!edtEmail.getText().toString().matches("") &&  !edtPaswd.getText().toString().matches("")) {
             InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+            imm.hideSoftInputFromWindow(btnLogin.getWindowToken(), 0);
         }
     }
 
@@ -110,13 +101,13 @@ public class LoginActivity extends FragmentActivity {
         String s2 = edtPaswd.getText().toString();
 
         if (s1.equals("") || s2.equals("")) {   //disables and greys out the button
-            login_button.setEnabled(false);
-            login_button.setVisibility(View.INVISIBLE);
-            login_button.getBackground().setColorFilter(0xff888888, PorterDuff.Mode.MULTIPLY);
+            btnLogin.setEnabled(false);
+            btnLogin.setVisibility(View.INVISIBLE);
+            btnLogin.getBackground().setColorFilter(0xff888888, PorterDuff.Mode.MULTIPLY);
         } else {                                //enables and ungreys out the button
-            login_button.setEnabled(true);
-            login_button.setVisibility(View.VISIBLE);
-            login_button.getBackground().clearColorFilter();
+            btnLogin.setEnabled(true);
+            btnLogin.setVisibility(View.VISIBLE);
+            btnLogin.getBackground().clearColorFilter();
         }
     }
 
@@ -219,7 +210,6 @@ public class LoginActivity extends FragmentActivity {
                     String err = (error.getMessage() == null)? "An error occurred": error.getMessage();
                     Log.d(TAG, err);
                     String errorMsg = "An error occurred";
-                    progressDialog.cancel();
 
                     if (err.matches(AppConstants.CONNECTION_ERROR)) {
                         errorMsg = "No connection to server";

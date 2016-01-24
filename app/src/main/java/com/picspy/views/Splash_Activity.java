@@ -49,11 +49,6 @@ public class Splash_Activity extends Activity {
         //btn_login.setEnabled(false);
         //btn_signup.setEnabled(false);
         buttons.setVisibility(View.GONE);
-        try {
-            Thread.sleep(SLEEP_TIME);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         determineAction();
     }
 
@@ -89,11 +84,11 @@ public class Splash_Activity extends Activity {
     /**
      * enables and makes login and signup buttons visible
      */
-    private void enableButtons() {/*
+    private void enableButtons() {
         btn_login.setEnabled(true);
         btn_login.setVisibility(View.VISIBLE);
         btn_signup.setEnabled(true);
-        btn_signup.setVisibility(View.VISIBLE);*/
+        btn_signup.setVisibility(View.VISIBLE);
         buttons.setVisibility(View.VISIBLE);
     }
 
