@@ -15,7 +15,6 @@ public class UserChallengesRecord extends RecordsResponse<UserChallengeRecord> {
         return resource;
     }
 
-
     @Override
     public String toString() {
         return "UserChallengesRecord {" +

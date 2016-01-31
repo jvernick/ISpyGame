@@ -56,9 +56,9 @@ public class FileRequest extends Request<String> {
         httpentity = new FileEntity(file, "image/jpg");
     }
 
-    public static FileRequest sendChallenge(Context context, String imageFileName, String imageAbsolutePath, GamesRequests.ChallengeParams params, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
+    public static FileRequest sendPicture(Context context, String imageFileName, String imageAbsolutePath, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
 
-        String url = DspUriBuilder.buildFileUploadUri(DspUriBuilder.FILE_URI, params.getParams(), imageFileName);
+        String url = DspUriBuilder.buildFileUploadUri(DspUriBuilder.FILE_URI, imageFileName);
         return  new FileRequest(context, url, errorListener, responseListener, new File(imageAbsolutePath));
     }
 

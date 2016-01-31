@@ -4,10 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.picspy.views.LoginActivity">
-    <!--
-    TODO change backgroud above
-    TODO give login button a color to make it visible
-    TODO change color of button to match theme-->
 
     <TextView
         style="@style/login_and_register_titles"

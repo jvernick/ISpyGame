@@ -1,6 +1,7 @@
 package com.picspy.models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Model for receiving data from server
@@ -11,16 +12,18 @@ public class GameRecord {
     private String picture_name;
     private String selection;
     private String hint;
-    private int guess;
-    private int time;
-    private boolean l_board;
-    private int sender;
-    private int id;
+    private Integer guess;
+    private Integer time;
+    private boolean leaderboard;
+    private Integer sender;
+    private Integer id;
     private String created;
+    private ArrayList<UserChallengeRecord> user_challenges_by_challenge_id;
+    private UserRecord users_by_sender;
+
 
     public GameRecord() {}
 
-    private UserRecord users_by_sender;
 
     public static Game getGame(GameRecord gameRecord) {
         if (gameRecord == null) {
@@ -34,7 +37,7 @@ public class GameRecord {
             game.setHint(gameRecord.getHint());
             game.setGuess(gameRecord.getGuess());
             game.setTime(gameRecord.getTime());
-            game.setVote(gameRecord.isL_board());
+            game.setVote(gameRecord.isLeaderboard());
             game.setSenderId(gameRecord.getSender());
             game.setCreated(gameRecord.getCreated());
             if (gameRecord.users_by_sender != null)
@@ -84,12 +87,12 @@ public class GameRecord {
         this.time=  time;
     }
 
-    public boolean isL_board() {
-        return l_board;
+    public boolean isLeaderboard() {
+        return leaderboard;
     }
 
-    public void setL_board(boolean l_board) {
-        this.l_board=  l_board;
+    public void setLeaderboard(boolean leaderboard) {
+        this.leaderboard = leaderboard;
     }
 
     public int getSender() {
@@ -115,7 +118,16 @@ public class GameRecord {
     public void setCreated(String created) {
         this.created = created;
     }
-    
+
+    public UserRecord getUsers_by_sender() {
+        return users_by_sender;
+    }
+
+
+    public void setUser_challenges_by_challenge_id(ArrayList<UserChallengeRecord> user_challenges_by_challenge_id) {
+        this.user_challenges_by_challenge_id = user_challenges_by_challenge_id;
+    }
+
     @Override
     public String toString() {
         return "GameRecord {" +
@@ -124,15 +136,12 @@ public class GameRecord {
                 "\n" + " hint: " + hint +
                 "\n" + " guess: " + guess +
                 "\n" + " time: " + time +
-                "\n" + " l_board: " + l_board +
+                "\n" + " leaderboard: " + leaderboard +
                 "\n" + " sender: " + sender +
                 "\n" + " id: " + id +
                 "\n" + " created: " + created +
                 "\n" + " users_by_sender: " + users_by_sender +
+                "\n" + " user_challenges_by_challenge_id: " + user_challenges_by_challenge_id +
                 "\n}";
-    }
-
-    public UserRecord getUsers_by_sender() {
-        return users_by_sender;
     }
 }

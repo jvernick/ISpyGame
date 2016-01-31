@@ -1,13 +1,16 @@
 package com.picspy.views.fragments;
 
 import android.app.Activity;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Xml;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -17,8 +20,8 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.picspy.GamesRequests;
 import com.picspy.firstapp.R;
+import com.picspy.utils.ChallengesRequests;
 import com.picspy.views.SendChallenge;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -49,16 +52,16 @@ public class ConfigureChallengeFragment extends Fragment {
     //bundles from camera activity
     //contains: selection and filename
     private Bundle pictureOptionsBundle;
-    private Bundle friendOptionsBundle;
+    private int friend_id;
 
     public ConfigureChallengeFragment() {
     }
 
     public static ConfigureChallengeFragment newInstance(Bundle pictureOptionsBundle,
-                                                         Bundle friendOptionBundle) {
+                                                         int friend_id) {
         ConfigureChallengeFragment fragment = new ConfigureChallengeFragment();
         Bundle args = new Bundle();
-        args.putBundle(SendChallenge.BDL_FRIEND_OPTIONS, friendOptionBundle);
+        args.putInt(SendChallenge.ARG_FRIEND_ID, friend_id);
         args.putBundle(SendChallenge.BDL_PICTURE_OPTIONS, pictureOptionsBundle);
 
         fragment.setArguments(args);
@@ -85,7 +88,7 @@ public class ConfigureChallengeFragment extends Fragment {
 
         if (getArguments() != null) {
             pictureOptionsBundle = getArguments().getBundle(SendChallenge.BDL_PICTURE_OPTIONS);
-            friendOptionsBundle =  getArguments().getBundle(SendChallenge.BDL_FRIEND_OPTIONS);
+            friend_id =  getArguments().getInt(SendChallenge.ARG_FRIEND_ID, -1);
         }
     }
 
@@ -103,13 +106,13 @@ public class ConfigureChallengeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Bundle gameOptions = new Bundle();
-                gameOptions.putInt(GamesRequests.GAME_LABEL.GUESSES, guessBox.getCheckedRadioButtonId());
-                gameOptions.putInt(GamesRequests.GAME_LABEL.TIME, timeBox.getCheckedRadioButtonId());
-                gameOptions.putString(GamesRequests.GAME_LABEL.HINT, hintBox.getText().toString());
-                gameOptions.putBoolean(GamesRequests.GAME_LABEL.LEADERBOARD, checkBox.isChecked());
+                gameOptions.putInt(ChallengesRequests.GAME_LABEL.GUESSES, guessBox.getCheckedRadioButtonId());
+                gameOptions.putInt(ChallengesRequests.GAME_LABEL.TIME, timeBox.getCheckedRadioButtonId());
+                gameOptions.putString(ChallengesRequests.GAME_LABEL.HINT, hintBox.getText().toString());
+                gameOptions.putBoolean(ChallengesRequests.GAME_LABEL.LEADERBOARD, checkBox.isChecked());
 
                 //user already selected friends
-                if (friendOptionsBundle != null) {
+                if (friend_id != -1) {
                     createGame(gameOptions);
                 } else {
                     startNextFragment(gameOptions);
@@ -131,17 +134,12 @@ public class ConfigureChallengeFragment extends Fragment {
     }
 
     private void createGame(Bundle gameOptions) {
-        int[] friendId ={ friendOptionsBundle.getInt(SendChallenge.ARG_FRIEND_ID)};
+        int[] friendId = {friend_id};
         Bundle finalBundle = new Bundle();
-        finalBundle.putIntArray(GamesRequests.GAME_LABEL.FRIENDS, friendId);
+        finalBundle.putIntArray(ChallengesRequests.GAME_LABEL.FRIENDS, friendId);
         finalBundle.putAll(gameOptions);
         finalBundle.putAll(pictureOptionsBundle);
-        boolean result = mListener.startGame(finalBundle);
-        if (result) {
-            Log.d(TAG, "Game sent successfully");
-        } else {
-            Log.d(TAG, "Error sending game");
-        }
+        mListener.startGame(finalBundle);
     }
 
     private void startNextFragment(Bundle gameOptions) {
@@ -190,7 +188,7 @@ public class ConfigureChallengeFragment extends Fragment {
      */
     private void setupTimeButtons(View rootView, final int checked_color_selected,
                                   final int checked_color_unselected, AttributeSet attributes) {
-        ViewGroup horScrolLayout =  (ViewGroup) rootView.findViewById(R.id.time_radio_group);
+        ViewGroup horScrollLayout =  (ViewGroup) rootView.findViewById(R.id.time_radio_group);
 
         for (int i = 5; i <= 30; i+=5) {
             RadioButton currButton = new RadioButton(getActivity().getApplicationContext(),
@@ -199,7 +197,7 @@ public class ConfigureChallengeFragment extends Fragment {
             currButton.setText(Integer.toString(i));
             if (i == defaultTime) currButton.setTextColor(checked_color_selected);
             currButton.setChecked(i == defaultTime); // default time
-            horScrolLayout.addView(currButton);
+            horScrollLayout.addView(currButton);
 
             currButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -263,6 +261,38 @@ public class ConfigureChallengeFragment extends Fragment {
         }
     }
 
+    //Added on implement back button click
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        Log.d(TAG, "button clicked: " + id);
+        switch (id) {
+            case (android.R.id.home):
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                fm.popBackStack();
+                return false;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /**
+     * This is called after {@link #onCreateView}
+     * and before {@link #onViewStateRestored(Bundle)}.
+     *
+     * @param savedInstanceState If the fragment is being re-created from
+     *                           a previous saved state, this is the state.
+     */
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -292,7 +322,6 @@ public class ConfigureChallengeFragment extends Fragment {
      */
     public interface F1FragmentInteractionListener {
         void setToolbarTitle(String title);
-        boolean startGame(Bundle gameBundle);
-
+        void startGame(Bundle gameBundle);
     }
 }

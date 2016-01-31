@@ -29,16 +29,12 @@ public class DspUriBuilder {
         return  builtUri.toString();
     }
 
-    public static String buildFileUploadUri(String path, HashMap<String,String> params, String filename) {
+    public static String buildFileUploadUri(String path, String filename) {
         String baseUrl = AppConstants.DSP_URL_2 + path + filename + '?';
         Uri builtUri;
 
-        if (params == null) return baseUrl;
         builtUri = Uri.parse(baseUrl);
-        builtUri.buildUpon().appendPath(filename);
-        for (HashMap.Entry<String, String> entry: params.entrySet()) {
-            builtUri = builtUri.buildUpon().appendQueryParameter(entry.getKey(), entry.getValue()).build();
-        }
+        builtUri.buildUpon().appendPath(filename).build();
 
         return  builtUri.toString();
     }

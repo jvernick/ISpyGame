@@ -1,12 +1,10 @@
 package com.picspy.views.fragments;
 
-import android.support.v4.content.AsyncTaskLoader;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,15 +17,10 @@ import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.dreamfactory.model.UserRequest;
-import com.picspy.FriendsTableRequests;
-import com.picspy.UsersTableRequests;
 import com.picspy.adapters.DatabaseHandler;
-import com.picspy.adapters.FindFriendArrayAdapter;
 import com.picspy.firstapp.R;
 import com.picspy.models.FriendRecord;
 import com.picspy.models.UserRecord;
-import com.picspy.models.UsersRecord;
 import com.picspy.utils.AppConstants;
 import com.picspy.utils.FriendsRequests;
 import com.picspy.utils.PrefUtil;
@@ -36,13 +29,13 @@ import com.picspy.utils.VolleyRequest;
 import com.picspy.views.FindFriendsActivity;
 
 /**
- * Created by Justin12 on 6/6/2015.
+ * Activity to search for friends
+ * TODO in upgrades, change camera on botom bar to buttons for scanning  or searching QR codes
  */
 public class FriendSearchFragment extends Fragment{
     private static final String USERNAME = "username";
     private static final String USER_ID = "userID";
     private static final String TAG = "FriendSearch";
-    private FindFriendArrayAdapter  arrayAdapter;
     private Button btnFindFriend;
     private EditText unameField;
     private TextView responseText;
@@ -123,7 +116,16 @@ public class FriendSearchFragment extends Fragment{
                     String err = (error.getMessage() == null)? "error message null": error.getMessage();
                     error.printStackTrace();
                     Log.d(TAG, err);
-                    //TODO notify user of error
+                    if (err.matches(AppConstants.CONNECTION_ERROR)) {
+                        LayoutInflater inflater = getActivity().getLayoutInflater();
+                        View layout = inflater.inflate(R.layout.custom_toast,
+                                (ViewGroup) getActivity().findViewById(R.id.toast_layout_root));
+                        Toast toast = new Toast(getActivity());
+                        toast.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
+                        toast.setDuration(Toast.LENGTH_LONG);
+                        toast.setView(layout);
+                        toast.show();
+                    }
                 }
             }
         };
@@ -133,7 +135,6 @@ public class FriendSearchFragment extends Fragment{
         VolleyRequest.getInstance(getActivity().getApplicationContext()).addToRequestQueue(addUserRequest);
     }
 
-    //TODO handle response and error
     private void sendFriendRequest(int userId) {
         Response.Listener<FriendRecord> responseListener = new Response.Listener<FriendRecord>() {
             @Override
@@ -151,12 +152,24 @@ public class FriendSearchFragment extends Fragment{
             @Override
             public void onErrorResponse(VolleyError error) {
                 progressSpinner.setVisibility(View.GONE);
-                responseText.setText("Friend Request Sent");
                 if (error != null) {
                     String err = (error.getMessage() == null)? "error message null": error.getMessage();
                     error.printStackTrace();
                     Log.d(TAG, err);
-                    //TODO notify user of error
+                    //Show toast only if there is no server connection on refresh
+                    if (err.matches(AppConstants.CONNECTION_ERROR)) {
+                        LayoutInflater inflater = getActivity().getLayoutInflater();
+                        View layout = inflater.inflate(R.layout.custom_toast,
+                                (ViewGroup) getActivity().findViewById(R.id.toast_layout_root));
+                        Toast toast = new Toast(getActivity());
+                        toast.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
+                        toast.setDuration(Toast.LENGTH_LONG);
+                        toast.setView(layout);
+                        toast.show();
+                    } else {
+                        //Set if user already sent or was already sent a request
+                        responseText.setText("Friend Request Sent");
+                    }
                 }
             }
         };

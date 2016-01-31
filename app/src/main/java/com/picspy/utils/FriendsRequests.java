@@ -27,20 +27,23 @@ public class FriendsRequests extends JsonObjectRequest{
     private static final String TAG = "FriendsReq";
     private static Gson gson = new Gson();
     private Context context;
+    private boolean isPatchTunnel = false;
 
     /**
      * Creates a new request.
      *
+     * @param isPatchTunnel This defines an post tunnel for a patch request
      * @param method        the HTTP method to use
      * @param url           URL to fetch the JSON from
      * @param jsonRequest   A {@link JSONObject} to post with the request. Null is allowed and
-     *                      indicates no parameters will be posted along with request.
+*                      indicates no parameters will be posted along with request.
      * @param listener      Listener to receive the JSON response
      * @param errorListener Error listener, or null to ignore errors.
      */
-    private FriendsRequests(Context context, int method, String url, JSONObject jsonRequest, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+    private FriendsRequests(Context context, boolean isPatchTunnel, int method, String url, JSONObject jsonRequest, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         super(method, url, jsonRequest, listener, errorListener);
         this.context = context;
+        this.isPatchTunnel = isPatchTunnel;
     }
 
     public static FriendsRequests getFriends(Context context,int maxFriendRecordId, final Response.Listener<FriendsRecord> listener, Response.ErrorListener errorListener) {
@@ -60,9 +63,8 @@ public class FriendsRequests extends JsonObjectRequest{
         params.put("related", "*");
 
         String url = DspUriBuilder.buildUri(DspUriBuilder.FRIENDS_TABLE, params);
-        Log.d(TAG, "jsonRequest path: " + url);
 
-        return new FriendsRequests(context, Method.GET, url, null, jsonObjectListener, errorListener);
+        return new FriendsRequests(context, false, Method.GET, url, null, jsonObjectListener, errorListener);
     }
 
     public static FriendsRequests sendFriendRequest(Context context,int friend_2_id, final Response.Listener<FriendRecord> listener, Response.ErrorListener errorListener) {
@@ -83,9 +85,8 @@ public class FriendsRequests extends JsonObjectRequest{
         try {
             jsonRequest = new JSONObject(gson.toJson(request, new TypeToken<RecordsRequest<FriendModel>>(){}.getType()));
             String url = DspUriBuilder.buildUri(DspUriBuilder.FRIENDS_TABLE, null);
-            Log.d(TAG, "jsonRequest path: " + url);
 
-            return new FriendsRequests(context, Method.POST, url, jsonRequest, jsonObjectListener, errorListener);
+            return new FriendsRequests(context, false, Method.POST, url, jsonRequest, jsonObjectListener, errorListener);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -106,18 +107,17 @@ public class FriendsRequests extends JsonObjectRequest{
         RecordsRequest<FriendModel> request = new RecordsRequest<>();
         request.addResource(new FriendModel(friend_2_id, userId, null));
 
-        JSONObject jsonRequest;
-        try {
-            jsonRequest = new JSONObject(gson.toJson(request, new TypeToken<RecordsRequest<FriendModel>>(){}.getType()));
-            String url = DspUriBuilder.buildUri(DspUriBuilder.FRIENDS_TABLE, null);
-            Log.d(TAG, "jsonRequest path: " + url);
-
-            return new FriendsRequests(context, Method.DELETE, url, jsonRequest, jsonObjectListener, errorListener);
-        } catch (JSONException e) {
-            e.printStackTrace();
+        HashMap<String,String> params = new HashMap<>();
+        String filter;
+        if (friend_2_id < userId) {
+            filter = "(friend_1=" + friend_2_id + ") AND (friend_2=" + userId + ")";
+        } else  {
+            filter = "(friend_1=" + userId + ") AND (friend_2=" + friend_2_id + ")";
         }
+        params.put("filter", filter);
+        String url = DspUriBuilder.buildUri(DspUriBuilder.FRIENDS_TABLE, params);
 
-        return null;
+        return new FriendsRequests(context, false, Method.DELETE, url, null, jsonObjectListener, errorListener);
     }
 
     public static FriendsRequests getFriendRequests ( Context context, final Response.Listener<FriendsRecord> listener, Response.ErrorListener errorListener) {
@@ -135,7 +135,7 @@ public class FriendsRequests extends JsonObjectRequest{
         params.put("related", "*");
         String url = DspUriBuilder.buildUri(DspUriBuilder.FRIENDS_TABLE, params);
 
-        return new FriendsRequests(context, Method.GET, url, null, jsonObjectListener, errorListener);
+        return new FriendsRequests(context, false, Method.GET, url, null, jsonObjectListener, errorListener);
     }
 
     /** ToDO combine sendRequest, acceptRequest and removeFriend into one method)*/
@@ -152,13 +152,14 @@ public class FriendsRequests extends JsonObjectRequest{
         RecordsRequest<FriendModel> request = new RecordsRequest<>();
         request.addResource(new FriendModel(friend_id, userId, 0));
 
+
         JSONObject jsonRequest;
         try {
             jsonRequest = new JSONObject(gson.toJson(request, new TypeToken<RecordsRequest<FriendModel>>(){}.getType()));
             String url = DspUriBuilder.buildUri(DspUriBuilder.FRIENDS_TABLE, null);
             Log.d(TAG, "jsonRequest path: " + url);
 
-            return new FriendsRequests(context, Method.PATCH, url, jsonRequest, jsonObjectListener, errorListener);
+            return new FriendsRequests(context, true, Method.POST, url, jsonRequest, jsonObjectListener, errorListener);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -171,6 +172,7 @@ public class FriendsRequests extends JsonObjectRequest{
         Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+
                 FriendsRecord result = gson.fromJson(response.toString(), FriendsRecord.class);
                 listener.onResponse(result.getOnlyResource());
             }
@@ -185,24 +187,26 @@ public class FriendsRequests extends JsonObjectRequest{
         int user_id = PrefUtil.getInt(context, AppConstants.USER_ID);
         if (user_id < friend_id) {
             related = "users_by_friend_2";
-            filter = "`friend_1` = " + user_id + " AND `friend_2` = " + friend_id;
+            filter = "(friend_1=" + user_id + ") AND (friend_2=" + friend_id + ")";
         } else {
             related = "users_by_friend_1";
-            filter = "`friend_1` = " + friend_id + " AND `friend_2` = " + friend_id;
+            filter = "(friend_1=" + friend_id + ") AND (friend_2=" + user_id + ")";
         }
 
         HashMap<String,String> params = new HashMap<>();
         params.put("filter", filter);
         params.put("related", related);
         String url = DspUriBuilder.buildUri(DspUriBuilder.FRIENDS_TABLE, params);
-        Log.d(TAG, "jsonRequest path: " + url);
+        Log.d(TAG, url);
 
-        return new FriendsRequests(context, Method.GET, url, null, jsonObjectListener, errorListener);
+        return new FriendsRequests(context, false, Method.GET, url, null, jsonObjectListener, errorListener);
     }
 
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
-        return AppConstants.dspHeaders(context);
+        Map<String, String> temp = AppConstants.dspHeaders(context);
+        if (isPatchTunnel) temp.put("X-HTTP-METHOD", "PATCH");
+        return temp;
     }
 
     @Override

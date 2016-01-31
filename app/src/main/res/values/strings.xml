@@ -10,7 +10,7 @@
     -->
     <string name="app_name">Picspy</string>
     <string name="action_settings">Menu</string>
-    <string name="friend_action_settings">Remove Friend</string>
+    <string name="friend_delete_menu">Remove Friend</string>
     <string name="challenge_action_settings">Refresh </string>
     <string name="edit_message">Enter a message</string>
     <string name="button_send">Send</string>
@@ -103,4 +103,7 @@
     <string name="title_activity_send_challenge">SendChallenge</string>
     <string name="search_hint">Search</string>
     <string name="search_title">Search Friends</string>
+
+    <!-- custom_toast network error text-->
+    <string name="networkErrorText">No connection to server right now.</string>
 </resources>

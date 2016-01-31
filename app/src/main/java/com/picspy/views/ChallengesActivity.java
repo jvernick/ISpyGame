@@ -11,9 +11,12 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -29,6 +32,7 @@ import com.picspy.firstapp.R;
 import com.picspy.models.Game;
 import com.picspy.models.UserChallengeRecord;
 import com.picspy.models.UserChallengesRecord;
+import com.picspy.utils.AppConstants;
 import com.picspy.utils.ChallengesRequests;
 import com.picspy.utils.DbContract.GameEntry;
 import com.picspy.utils.VolleyRequest;
@@ -95,12 +99,10 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
         });
 
         //update database
-        //(new GetChallengesTask()).execute();
-        getChallenges();
+        getChallenges(false);
         Toolbar toolbar = (Toolbar) findViewById(R.id.challenges_toolbar);
 
         // Setting toolbar as the ActionBar
-        //TODO back button stopped working. temp solution in onOptionsItemSelected
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Challenges");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -129,12 +131,12 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             //update database
-            //(new GetChallengesTask()).execute();
-            getChallenges();
+            getChallenges(true);
             return true;
         } else if( id == android.R.id.home) {
             //handling back button click
             onBackPressed();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -149,65 +151,11 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
         startActivity(intent);
     }
 
-    private class GetChallengesTask extends AsyncTask<Void, Void, Boolean> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressSpinner.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-            try {
-                UserChallengesRecord userChallengesRecord =
-                        (new GamesRequests(getApplicationContext(), false)).getGamesInfo();
-                if (userChallengesRecord != null && userChallengesRecord.getResource() != null
-                        && userChallengesRecord.getResource().size() != 0) {
-                    List<Game> gameList = new ArrayList<>();
-                    int max_user_challenge_id = 0;
-                    for (UserChallengeRecord record: userChallengesRecord.getResource()) {
-
-                        if (record.getId() > max_user_challenge_id) {
-                            max_user_challenge_id = record.getId();
-                        }
-                        gameList.add(record.getGame());
-                    }
-                    if (gameList.size() != 0) {
-                        dbHandler.addGames(gameList,
-                                max_user_challenge_id);
-                        //dbHandler.close();
-                        return true;
-                    }
-                }
-            } catch (ApiException ex) {
-                Log.d(TAG + "test", ex.getMessage());
-                //TODO handle exception
-                //toast for Internet connection error
-            }
-            return false;
-        }
-
-        /**
-         * Attempts to add challenges from server to local database
-         * @param foundChallenge True if new challenge was added, otherwise false
-         */
-        @Override
-        protected void onPostExecute(Boolean foundChallenge) {
-            progressSpinner.setVisibility(View.GONE);
-            if (foundChallenge) {
-                Log.d(TAG, "notifying");
-                ((GamesCursorAdapter) listView.getAdapter()).changeCursor(dbHandler.getAllGames());
-                ((GamesCursorAdapter) listView.getAdapter()).notifyDataSetChanged();
-            }
-        }
-    }
-
     /**
      * Gets new challenges from the server
      */
-    public void getChallenges() {
-        Response.Listener<UserChallengesRecord> responseListiner = new Response.Listener<UserChallengesRecord>() {
+    public void getChallenges(final boolean isRefresh) {
+        Response.Listener<UserChallengesRecord> responseListener = new Response.Listener<UserChallengesRecord>() {
             @Override
             public void onResponse(UserChallengesRecord response) {
                 progressSpinner.setVisibility(View.GONE);
@@ -221,13 +169,27 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
         Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-                Log.d(TAG, error.getMessage());
                 progressSpinner.setVisibility(View.GONE);
+                if (error != null ) {
+                    String err = (error.getMessage() == null)? "An error occurred": error.getMessage();
+                    error.printStackTrace();
+                    Log.d(TAG, err);
+                    //Show toast only if there is no server connection on refresh
+                    if (err.matches(AppConstants.CONNECTION_ERROR) && isRefresh) {
+                        LayoutInflater inflater = getLayoutInflater();
+                        View layout = inflater.inflate(R.layout.custom_toast,
+                                (ViewGroup) findViewById(R.id.toast_layout_root));
+                        Toast toast = new Toast(getApplicationContext());
+                        toast.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
+                        toast.setDuration(Toast.LENGTH_LONG);
+                        toast.setView(layout);
+                        toast.show();
+                    }
+                }
             }
         };
 
-        ChallengesRequests gameInfoRequest = ChallengesRequests.getGamesInfo(this, responseListiner, errorListener);
+        ChallengesRequests gameInfoRequest = ChallengesRequests.getGamesInfo(this, responseListener, errorListener);
         if (gameInfoRequest != null) gameInfoRequest.setTag(CANCEL_TAG);
         VolleyRequest.getInstance(this.getApplicationContext()).addToRequestQueue(gameInfoRequest);
         progressSpinner.setVisibility(View.VISIBLE);
@@ -250,15 +212,9 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
                 gameList.add(record.getGame());
             }
 
-            //TODO  if comparison not needed, remove
-            if (gameList.size() != 0) {
-                dbHandler.addGames(gameList,
-                        max_user_challenge_id);
-                //dbHandler.close();
-                return true;
-            }
+            dbHandler.addGames(gameList, max_user_challenge_id);
+            return true;
         }
-
         return false;
     }
 

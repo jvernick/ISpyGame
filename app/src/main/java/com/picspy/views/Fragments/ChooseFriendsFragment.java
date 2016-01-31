@@ -28,10 +28,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.picspy.GamesRequests;
 import com.picspy.adapters.ChooseFriendsCursorAdapter;
 import com.picspy.adapters.DatabaseHandler;
 import com.picspy.firstapp.R;
+import com.picspy.utils.ChallengesRequests;
 import com.picspy.views.SendChallenge;
 
 /**
@@ -62,7 +62,7 @@ public class ChooseFriendsFragment extends ListFragment implements
     //ie: hint, time, guesses, leaderboard?
     private Bundle gameOptionsBundle;
     //bundle received from forwarded from ConfigureChallengeFragment that store picture options
-    //ie: file_name and selction.
+    //ie: file_name and selection.
     private Bundle pictureOptionsBundle;
 
     private F2FragmentInteractionListener mListener;
@@ -146,19 +146,6 @@ public class ChooseFriendsFragment extends ListFragment implements
         setHasOptionsMenu(true);
     }
 
-    /**
-     * Initialize the contents of the Activity's standard options menu.  You
-     * should place your menu items in to <var>menu</var>.  For this method
-     * to be called, you must have first called {@link #setHasOptionsMenu}.  See
-     * {@link Activity#onCreateOptionsMenu(Menu) Activity.onCreateOptionsMenu}
-     * for more information.
-     *
-     * @param menu     The options menu in which you place your items.
-     * @param inflater
-     * @see #setHasOptionsMenu
-     * @see #onPrepareOptionsMenu
-     * @see #onOptionsItemSelected
-     */
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_choose_friends, menu);
@@ -169,22 +156,6 @@ public class ChooseFriendsFragment extends ListFragment implements
         }
     }
 
-    /**
-     * This hook is called whenever an item in your options menu is selected.
-     * The default implementation simply returns false to have the normal
-     * processing happen (calling the item's Runnable or sending a message to
-     * its Handler as appropriate).  You can use this method for any items
-     * for which you would like to do processing without those other
-     * facilities.
-     * <p/>
-     * <p>Derived classes should call through to the base class for it to
-     * perform the default menu handling.
-     *
-     * @param item The menu item that was selected.
-     * @return boolean Return false to allow normal menu processing to
-     * proceed, true to consume it here.
-     * @see #onCreateOptionsMenu
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -208,22 +179,17 @@ public class ChooseFriendsFragment extends ListFragment implements
         Bundle finalBundle = new Bundle();
         int[] friendIds = new int[cursorAdapter.getCheckedFriends().size()];
         int i = 0;
+
         for (Integer friend_id: cursorAdapter.getCheckedFriends()) {
             friendIds[i] = friend_id;
             i++;
         }
-            //TODO temp remove next line
-        friendIds= new int[] {3,5,6};
+
         finalBundle.putAll(gameOptionsBundle);
         finalBundle.putAll(pictureOptionsBundle);
-        finalBundle.putIntArray(GamesRequests.GAME_LABEL.FRIENDS, friendIds);
+        finalBundle.putIntArray(ChallengesRequests.GAME_LABEL.FRIENDS, friendIds);
 
-        boolean result = mListener.startGame(finalBundle);
-        if (result) {
-            Log.d(TAG, "Game sent successfully");
-        } else {
-            Log.d(TAG, "Error sending game");
-        }
+        mListener.startGame(finalBundle);
     }
     private void setupSearchView() {
         SearchManager searchManager = (SearchManager)
@@ -353,10 +319,7 @@ public class ChooseFriendsFragment extends ListFragment implements
      * @param isEmpty true if Set of selected friends is empty, otherwise false
      */
     @Override
-    public void isEmpty(Boolean isEmpty2) {
-        //TODO add logic to show toolbar when true and hide toolbar when false
-        //TODo temp, remove
-        Boolean isEmpty = false;
+    public void isEmpty(Boolean isEmpty) {
         if (isEmpty) {
             sendButton.startAnimation(animBarDOWN);
             sendButton.setVisibility(View.INVISIBLE);
@@ -379,7 +342,7 @@ public class ChooseFriendsFragment extends ListFragment implements
      */
     public interface F2FragmentInteractionListener {
         void setToolbarTitle(String title);
-        boolean startGame(Bundle finalBundle);
+        void startGame(Bundle finalBundle);
     }
 
     public static class FriendLoader extends AsyncTaskLoader<Cursor> {

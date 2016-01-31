@@ -8,12 +8,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.picspy.models.Game;
 import com.picspy.models.GameRecord;
 import com.picspy.models.GamesRecord;
+import com.picspy.models.RecordsRequest;
 import com.picspy.models.UserChallengeRecord;
 import com.picspy.models.UserChallengesRecord;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -47,32 +50,44 @@ public class ChallengesRequests  extends JsonObjectRequest{
     }
 
 
-    public static ChallengesRequests createGame(Context context,
-                                   final Response.Listener<UserChallengeRecord> listener,
+    /**
+     * Creates game on server and stores challenge info.
+     * Called after challenge picture has been successfully sent to server.
+     * @param context Context from calling activity
+     * @param listener response listener
+     * @param errorListener error listener
+     * @return A {@link ChallengesRequests} to add to request queue
+     */
+    public static ChallengesRequests createGame(Context context,GameRecord gameRecord,
+                                   final Response.Listener<GameRecord> listener,
                                    Response.ErrorListener errorListener) {
         Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.d(TAG, "JSONresponse: " + response.toString());
-                UserChallengesRecord result = gson.fromJson(response.toString(), UserChallengesRecord.class);
-                Log.d(TAG, "RecordsResponse" + result.toString());
+                GamesRecord result = gson.fromJson(response.toString(), GamesRecord.class);
                 listener.onResponse(result.getOnlyResource());
             }
         };
 
+        try {
+            RecordsRequest<GameRecord> gamesRecord = new RecordsRequest<>();
+            gamesRecord.addResource(gameRecord);
+            JSONObject jsonRequest;
+            jsonRequest = new JSONObject(gson.toJson(gamesRecord, new TypeToken<RecordsRequest<GameRecord>>(){}.getType()));
+            String url = DspUriBuilder.buildUri(DspUriBuilder.CHALLENGES_TABLE, null);
 
-
-        String url = DspUriBuilder.buildUri(DspUriBuilder.USER_CHALLEGES_TABLE, null);
-        Log.d(TAG, "jsonRequest path: " + url);
-
-        return  new ChallengesRequests(context, Method.POST, url, null, jsonObjectListener, errorListener);
+            return new ChallengesRequests(context, Method.POST, url, jsonRequest, jsonObjectListener, errorListener);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
      * Gets all new available games.
      * @param listener Response listener
      * @param errorListener Error listener
-     * @return  A list fof all new pending games
+     * @return A {@link ChallengesRequests} to add to request queue
      */
     public static ChallengesRequests getGamesInfo(Context context,
                              final Response.Listener<UserChallengesRecord> listener,
@@ -88,7 +103,7 @@ public class ChallengesRequests  extends JsonObjectRequest{
             }
         };
 
-        //TODO can limit number of returns using limit and then ofsset
+        //TODO can limit number of returns using limit and then offset
         HashMap<String,String> params = new HashMap<>();
         String filter = "(user_id=" + PrefUtil.getInt(context, AppConstants.USER_ID) + ") AND (id>"
                 + PrefUtil.getInt(context, AppConstants.MAX_USER_CHALLENGE_ID, 0) + ")";
@@ -107,7 +122,7 @@ public class ChallengesRequests  extends JsonObjectRequest{
      * //TOdO is context needed
      * @param listener Response listener
      * @param errorListener Error listener
-     * @return  A record containing leaderboard games
+     * @return A {@link ChallengesRequests} to add to request queue
      */
     public static ChallengesRequests getleaderboard(Context context, final Response.Listener<GamesRecord> listener,
                                                     Response.ErrorListener errorListener) {
@@ -121,7 +136,7 @@ public class ChallengesRequests  extends JsonObjectRequest{
             }
         };
 
-        //TODO can limit number of returns using limit and then ofsset
+        //TODO can limit number of returns using limit and then offset
         HashMap<String,String> params = new HashMap<>();
         params.put("filter", "leaderboard=true");
         params.put("related", "users_by_sender");
@@ -135,12 +150,6 @@ public class ChallengesRequests  extends JsonObjectRequest{
         return  new ChallengesRequests(context, Method.GET, url, null, jsonObjectListener, errorListener);
     }
 
-    /**
-     * gets game from server
-     */
-    public static void getGame() {
-
-    }
 
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
@@ -150,5 +159,21 @@ public class ChallengesRequests  extends JsonObjectRequest{
     @Override
     protected VolleyError parseNetworkError(VolleyError volleyError){
         return VolleyRequest.parseNetworkError(volleyError);
+    }
+
+    /**
+     * Class representing and storing server Table column names
+     * STATIC, do not change
+     */
+    public static class GAME_LABEL {
+        public static final String HINT = "hint";
+        public static final String SELECTION = "selection";
+        public static final String GUESSES = "guess";
+        public static final String TIME = "time";
+        public static final String LEADERBOARD = "leaderboard";
+        public static final String FRIENDS = "friends";
+        //extra for sendChallengeActivity
+        public static final String FILE_NAME = "file_name";
+        public static final String FILE_NAME_PATH = "file_path";
     }
 }

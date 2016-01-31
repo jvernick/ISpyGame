@@ -8,98 +8,115 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.picspy.FriendsTableRequests;
 import com.picspy.adapters.DatabaseHandler;
 import com.picspy.firstapp.R;
 import com.picspy.models.Friend;
 import com.picspy.models.FriendRecord;
-import com.picspy.models.FriendsRecord;
 import com.picspy.utils.AppConstants;
 import com.picspy.utils.FriendsRequests;
 import com.picspy.utils.PrefUtil;
 import com.picspy.utils.VolleyRequest;
 
 import java.util.ArrayList;
-import java.util.regex.Pattern;
 
 /**
  * Activity that displays friend information
- * When starting activity, pass the following informtion to the intent:
+ * TODo revise this documentation
+ * When starting activity, pass the following information to the intent:
  *      FRIEND_ID && FRIEND_USERNAME : if this is for a friend
  *      FOR_FRIEND : if this for a friend request
  *      Nothing : if this is for self.
  */
 public class FriendInfoActivity extends ActionBarActivity implements SurfaceHolder.Callback {
-    public final static String FRIEND_USERNAME = "com.picspy.USERNAME";
     public final static String FRIEND_ID = "com.picspy.FRIEND_ID";
     public final static String FOR_FRIEND = "com.picspy.FRIEND_REQUEST";
+
     private static final String TAG = "FriendsInfoActivity";
-    private static final Object CANCEL_TAG = "deleteFriend";
+    private static final String CANCEL_TAG = "deleteFriend";
+
+    public static final String USERNAME = "username";
+    public static final String WON = "won";
+    public static final String LOST = "lost";
+    public static final String L_BOARD = "l_board";
     private TextView sent_won, sent_lost, received_won, received_lost;
     private TextView total_won, total_lost, leaderboard, stats_title;
     private SurfaceView frame1;
-    private ProgressBar spinner;
+    private ProgressBar progressSpinner;
     private int friend_id;
-    private String friend_username;
+    private String user_username;
     private int topPercentage = 50, bottomPercentage = 50;  //default percentage values
     private boolean requestSuccessful = false;
-    private boolean forFriend = false;
+    private boolean forFriend;
     private boolean surfaceDrawn = false;
     private ArrayList<AlertDialog> alertDialogs = new ArrayList<>();
+    private Menu menu;
+    private static final int MENU_DELETE_ID = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        processIntent();
-
-        getStats(friend_id);
         setContentView(R.layout.activity_friend_info);
-        spinner = (ProgressBar)findViewById(R.id.myProgressBar);
-        //TODO Set color to theme color
-       // spinner.getIndeterminateDrawable().setColorFilter(R.color.accent, PorterDuff.Mode.SRC_IN);
-
+        Intent intent = getIntent();
+        forFriend = intent.getBooleanExtra(FOR_FRIEND, false);
         initializeViews();
 
+        progressSpinner = (ProgressBar)findViewById(R.id.myProgressBar);
+
+        processIntent();
+        if (forFriend) {
+            Log.d(TAG, "getting stats");
+            getStats(friend_id);
+        }
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.friend_info_toolbar);
-
-
-        // TODO Should local db be queried here or in parent activity
-
         // Setting toolbar as the ActionBar
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationIcon(R.drawable.ic_chevron_left);
-        if (friend_username != null) {
-            stats_title.setText(friend_username + "\' all time");
-            getSupportActionBar().setTitle(friend_username);
+
+        if (user_username != null) {
+            stats_title.setText(user_username + "\' all time");
+            getSupportActionBar().setTitle(user_username);
         }
     }
 
+    /**
+     * Gets information about the user to be displayed from the intent bundle
+     */
     private void processIntent() {
         Intent intent = getIntent();
-        friend_id = intent.getIntExtra(FRIEND_ID, -1);
-        friend_username = intent.getStringExtra(FRIEND_USERNAME);
-        forFriend = intent.getBooleanExtra(FOR_FRIEND, false);
-
-        //TODO get username form intent
+        if (forFriend) {
+            friend_id = intent.getIntExtra(FRIEND_ID, -1);
+            user_username = intent.getStringExtra(USERNAME);
+        } else {
+            setUserStats(intent.getStringExtra(USERNAME), intent.getIntExtra(WON, -1),
+                    intent.getIntExtra(LOST, -1), intent.getIntExtra(L_BOARD, -1));
+            user_username = intent.getStringExtra(USERNAME);
+        }
     }
 
+    /**
+     * Initializes all the views in this activity and hides the friends start depending
+     * on whether the user to be displayed is a friend
+     */
     private void initializeViews() {
         sent_won = (TextView) findViewById(R.id.sent_won);
         sent_lost = (TextView) findViewById(R.id.sent_lost);
@@ -120,13 +137,13 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_friend_info, menu);
-        return forFriend;
+        return true;
     }
 
     @Override
-    // menu dialog for deleting friends
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -135,7 +152,8 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
         switch (id) {
             case (android.R.id.home):
                 onBackPressed();
-            case (R.id.action_settings):
+                return true;
+            case (MENU_DELETE_ID):
                 if (!requestSuccessful) { //Do nothing if web request was unsuccessful
                     return false;
                 }
@@ -159,9 +177,10 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
                         .setIcon(android.R.drawable.ic_dialog_alert) //TODO change alert color to red?
                         .show()
                 );
+
                 return true;
             }
-            return true;
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -179,21 +198,21 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
         Toast.makeText(FriendInfoActivity.this, "Game started", Toast.LENGTH_SHORT).show();
     }
 
-    @Override //from implenting surface view
+    @Override //from implementing surface view
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         if (requestSuccessful && forFriend) { //draw image only after data is gotten from server
             surfaceDrawn = tryDrawing(surfaceHolder, topPercentage, bottomPercentage);
         }
     }
 
-    @Override //from implenting surface view
+    @Override //from implementing surface view
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
         if (requestSuccessful && forFriend) {
             surfaceDrawn = tryDrawing(surfaceHolder, topPercentage, bottomPercentage);
         }
     }
 
-    @Override //from implenting surface view
+    @Override //from implementing surface view
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
     }
 
@@ -241,7 +260,7 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
         //paint.setAntiAlias(true);
         //TODO change color so that the background is indistinguishable
-        //idealy the same color as backgroud
+        //ideally the same color as background
         //canvas.drawColor(Color.rgb(211,211,211));
         canvas.drawColor(Color.LTGRAY);
 
@@ -282,23 +301,43 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
         return new RectF(left, top, right, bottom);
     }
 
+
+    /**
+     * Sets the stats for the given User info without making server request
+     * @param username User's username
+     * @param won   Number of games won
+     * @param lost  Number of games lost
+     * @param l_board Number of games on leaderboard
+     */
+    private  void setUserStats( String username, int won, int lost, int l_board) {
+        stats_title.setText(username);
+        total_won.setText(String.valueOf(won));
+        total_lost.setText(String.valueOf(lost));
+        leaderboard.setText(String.valueOf(l_board));
+        findViewById(R.id.page).setVisibility(View.VISIBLE);
+        findViewById(R.id.user_stats).setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Sets the stats for the given Friend
+     * @param record Record containing information about the friend (games won, lost, leaderboard)
+     */
     private void setUserStats(FriendRecord record) {
         //set values depending on who is friend_1 or friend_2
-        //TODO move renaming of toolbar to onCreate
         if (friend_id < PrefUtil.getInt(getApplicationContext(), AppConstants.USER_ID)) {
             stats_title.setText(record.getUsers_by_friend_1().getUsername() + "\' all time");
-            getSupportActionBar().setTitle(record.getUsers_by_friend_1().getUsername());
             total_won.setText(String.valueOf(record.getUsers_by_friend_1().getTotal_won()));
             total_lost.setText(String.valueOf(record.getUsers_by_friend_1().getTotal_lost()));
             leaderboard.setText(String.valueOf(record.getUsers_by_friend_1().getLeaderboard()));
         } else {
             stats_title.setText(record.getUsers_by_friend_2().getUsername() + "\' all time");
-            getSupportActionBar().setTitle(record.getUsers_by_friend_2().getUsername());
             total_won.setText(String.valueOf(record.getUsers_by_friend_2().getTotal_won()));
             total_lost.setText(String.valueOf(record.getUsers_by_friend_2().getTotal_lost()));
             leaderboard.setText(String.valueOf(record.getUsers_by_friend_2().getLeaderboard()));
         }
+        findViewById(R.id.user_stats).setVisibility(View.VISIBLE);
     }
+
     /**
      * Sets all the stat fields in the view
      * @param record friend record from database containing friend stats
@@ -340,18 +379,29 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
         }
 
         findViewById(R.id.joint_stats).setVisibility(View.VISIBLE);
-        if (! surfaceDrawn) tryDrawing(frame1.getHolder(), topPercentage, bottomPercentage);
-        //TODO set user stats
+        if (!surfaceDrawn) tryDrawing(frame1.getHolder(), topPercentage, bottomPercentage);
     }
 
+    /**
+     * Gets a user's stats from the server
+     * @param friend_id The user whose is to be obtained
+     */
     private void getStats(int friend_id) {
         Response.Listener<FriendRecord> response = new Response.Listener<FriendRecord>() {
             @Override
             public void onResponse(FriendRecord response) {
-                spinner.setVisibility(View.GONE);
+                progressSpinner.setVisibility(View.GONE);
                 if (response != null) {
+                    Log.d(TAG, response.toString());
+                    //add delete button to menu
+                    if (forFriend) {
+                        setFriendStats(response);
+                        menu.add(Menu.NONE, MENU_DELETE_ID, Menu.NONE, R.string.friend_delete_menu)
+                                .setIcon(R.drawable.ic_delete)
+                                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+                    }
+
                     findViewById(R.id.page).setVisibility(View.VISIBLE);
-                    if(forFriend) setFriendStats(response);
                     setUserStats(response);
                     requestSuccessful = true;
                 }
@@ -361,21 +411,39 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
         Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                spinner.setVisibility(View.GONE);
-                Log.d(TAG, error.getMessage());
-                Toast.makeText(FriendInfoActivity.this, "An error occurred",Toast.LENGTH_SHORT).show();
+                progressSpinner.setVisibility(View.GONE);
+                if (error != null ) {
+                    String err = (error.getMessage() == null)? "An error occurred": error.getMessage();
+                    error.printStackTrace();
+                    Log.d(TAG, err);
+                    //Show toast only if there is no server connection on refresh
+                    if (err.matches(AppConstants.CONNECTION_ERROR)) {
+                        LayoutInflater inflater = getLayoutInflater();
+                        View layout = inflater.inflate(R.layout.custom_toast,
+                                (ViewGroup) findViewById(R.id.toast_layout_root));
+                        Toast toast = new Toast(getApplicationContext());
+                        toast.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
+                        toast.setDuration(Toast.LENGTH_LONG);
+                        toast.setView(layout);
+                        toast.show();
+                    } else { //TODO for debugging, remove
+                        Toast.makeText(FriendInfoActivity.this, "An error occurred",Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         };
 
-        //TODO Spinner not necessary if connecting to server is very fast. Test.
-        if (spinner != null) {
-            spinner.setVisibility(View.VISIBLE);
-        }
+        progressSpinner.setVisibility(View.VISIBLE);
+
         FriendsRequests statsRequest = FriendsRequests.getStats(this, friend_id, response, errorListener);
         if (statsRequest != null) statsRequest.setTag(CANCEL_TAG);
         VolleyRequest.getInstance(getApplicationContext()).addToRequestQueue(statsRequest);
     }
 
+    /**
+     * Delete friend on server
+     * @param friend_id friend to be deleted
+     */
     private void deleteFriend(final int friend_id) {
         Response.Listener<FriendRecord> responseListener = new Response.Listener<FriendRecord>() {
             @Override
@@ -395,21 +463,25 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
 
         Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                //ToDO  parse and notify
-                Pattern p1 = Pattern.compile(".*[cC]onnection.*[rR]efused.*", Pattern.DOTALL);
-                Pattern p2 = Pattern.compile(".*timed out", Pattern.DOTALL);
-                Log.d(TAG, error.getMessage());
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(FriendInfoActivity.this);
-                //TODO modify error presentation format and possibly the error message
-                alertDialog.setTitle("Error").setMessage(error.getMessage()).setCancelable(false)
-                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });
-                alertDialogs.add(alertDialog.show());
+            public void onErrorResponse(VolleyError error) { progressSpinner.setVisibility(View.GONE);
+                if (error != null ) {
+                    String err = (error.getMessage() == null)? "An error occurred": error.getMessage();
+                    error.printStackTrace();
+                    Log.d(TAG, err);
+                    //Show toast only if there is no server connection on refresh
+                    if (err.matches(AppConstants.CONNECTION_ERROR)) {
+                        LayoutInflater inflater = getLayoutInflater();
+                        View layout = inflater.inflate(R.layout.custom_toast,
+                                (ViewGroup) findViewById(R.id.toast_layout_root));
+                        Toast toast = new Toast(getApplicationContext());
+                        toast.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
+                        toast.setDuration(Toast.LENGTH_LONG);
+                        toast.setView(layout);
+                        toast.show();
+                    } else { //TODO for debugging, remove
+                        Toast.makeText(FriendInfoActivity.this, "An error occurred", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         };
 
@@ -419,12 +491,11 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onStop() {
+        super.onStop();
         for (AlertDialog d: alertDialogs) {
             if (d.isShowing()) d.dismiss();
         }
-
         //cancel all pending register/login/addUser tasks
         VolleyRequest.getInstance(this.getApplication()).getRequestQueue().cancelAll(CANCEL_TAG);
     }

@@ -28,8 +28,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
-import com.picspy.GamesRequests;
 import com.picspy.firstapp.R;
+import com.picspy.utils.ChallengesRequests.GAME_LABEL;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -59,12 +59,14 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
     private static final String TAG = "CameraActivity";
     public static final String DRAWING_VIEW_TAG = "DRAWING_VIEW";
     public static final String FINISH_BUTTON_TAG = "FINISH_BUTTON";
+    //TODO remove
     public static final String HINT = "HINT";
     public static final String GUESSES = "GUESSES";
     public static final String TIME = "TIME";
     public static final String LEADERBOARDS = "LEADERBOARDS";
     public static final String IMAGE_PATH = "IMAGE_PATH";
     public static final String SELECTION = "SELECTION";
+    //
     public static final int CHALLENGE_INFO_REQUEST = 2;
     private Camera mCamera;
     private CameraPreview mPreview;
@@ -88,8 +90,9 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
     private static int[] colors = new int[6];
     private static int currColor;
     private File imageFile;
-    private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
+    private int friend_id;  //for storing friend id if passed in.
 
+    private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
             isPictureTaken = true;
@@ -160,9 +163,8 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
 
                         // create and launch an activity to prompt the user for info about the challenge
                         Bundle pictureOptionsBundle = new Bundle();
-                        pictureOptionsBundle.putString(GamesRequests.GAME_LABEL.FILE_NAME_PATH,
+                        pictureOptionsBundle.putString(GAME_LABEL.FILE_NAME_PATH,
                                 imageFile.getAbsolutePath());
-                        Intent intent = new Intent(getApplicationContext(), SendChallenge.class);
 
                         ExifInterface exif = null;
                         try {
@@ -181,27 +183,22 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
                             selection = ImageViewer.applyScalingToSelection(selection, scalingX, scalingY);
 
                             //For testing
-                            /*
-                            Log.d(TAG, "uncompressed");
-                            Log.d(TAG, "size: " + selection.size());
-                            Log.d(TAG, "string size: " + selectionToString(selection).length());
-                            Log.d(TAG, "compressed");
-
-                            Log.d(TAG, "size: " + compressSelection(selection).size());
-                            Log.d(TAG, "string size: " + selectionToString2(compressSelection(selection)).length());
-
-                            Log.d(TAG, "uncompressed: " + selectionToString(selection));
-                            Log.d(TAG, "compressed: " + selectionToString2(compressSelection(selection)));*/
+                            testCompression(selection);
 
                             // put the selection array as a string as a string
-                            pictureOptionsBundle.putString(GamesRequests.GAME_LABEL.SELECTION, selectionToString2(compressSelection(selection)));
-                            pictureOptionsBundle.putString(GamesRequests.GAME_LABEL.FILE_NAME, imageFile.getName());
+                            pictureOptionsBundle.putString(GAME_LABEL.SELECTION, selectionToString2(compressSelection(selection)));
+                            pictureOptionsBundle.putString(GAME_LABEL.FILE_NAME, imageFile.getName());
+
+
                             Log.d(TAG, "CameraID: " + mPreview.getCameraID());
                             //intent.putExtra("CameraID", mPreview.getCameraID());
                             // TODO: determine where to delete the image
                             // TODO: apply the selfie flip here, rather than in the imageviewer
 
+                            Intent intent = new Intent(getApplicationContext(), SendChallenge.class);
                             intent.putExtra(SendChallenge.BDL_PICTURE_OPTIONS, pictureOptionsBundle);
+                            //add friend id if any
+                            intent.putExtra(SendChallenge.ARG_FRIEND_ID, friend_id);
                             startActivityForResult(intent, CHALLENGE_INFO_REQUEST);
                         }
                     }
@@ -244,6 +241,19 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
             }
         }
     };
+
+    private void testCompression(ArrayList<float[]> selection) {
+        Log.d(TAG, "uncompressed");
+        Log.d(TAG, "size: " + selection.size());
+        Log.d(TAG, "string size: " + selectionToString(selection).length());
+        Log.d(TAG, "compressed");
+
+        Log.d(TAG, "size: " + compressSelection(selection).size());
+        Log.d(TAG, "string size: " + selectionToString2(compressSelection(selection)).length());
+
+        Log.d(TAG, "uncompressed: " + selectionToString(selection));
+        Log.d(TAG, "compressed: " + selectionToString2(compressSelection(selection)));
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -303,6 +313,7 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
+        processIntent();
         matrix = new Matrix();
 
         myOrientationEventListener
@@ -374,6 +385,14 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
                     }
                 }
         );
+    }
+
+    /**
+     * Gets and stores friend_id from intent if available
+     */
+    private void processIntent() {
+        Intent intent = getIntent();
+        friend_id = intent.getIntExtra(SendChallenge.ARG_FRIEND_ID, -1);
     }
 
     // Helper method to set the picture size for the next picture taken

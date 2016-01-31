@@ -8,13 +8,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Created by BrunelAmC on 8/21/2015.
  */
 public class UserChallengeRecord {
-    private int user_id;
-    private int challenge_id;
-    private int id;
+    private Integer user_id;
+    private Integer challenge_id;
+    private Integer id;
     //Related record to retrieve challenge
     private GameRecord challenges_by_challenge_id;
     //Related record to retrieve sender
     private UserRecord users_by_user_id;
+
+    public UserChallengeRecord(Integer user_id) {
+        this.user_id = user_id;
+    }
 
     public UserRecord getUsers_by_user_id() {
         return users_by_user_id;

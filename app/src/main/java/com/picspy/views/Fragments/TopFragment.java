@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,8 +22,10 @@ import com.picspy.firstapp.R;
 import com.picspy.models.Game;
 import com.picspy.models.GameRecord;
 import com.picspy.models.GamesRecord;
+import com.picspy.utils.AppConstants;
 import com.picspy.utils.ChallengesRequests;
 import com.picspy.utils.VolleyRequest;
+import com.picspy.views.MainActivity;
 
 import java.util.ArrayList;
 
@@ -57,8 +60,6 @@ public class TopFragment extends android.support.v4.app.ListFragment
 
         mSwipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.accent));
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        mSwipeRefreshLayout.setRefreshing(true);
-
 
         // Now return the SwipeRefreshLayout as this fragment's content view
         return mSwipeRefreshLayout;
@@ -107,25 +108,41 @@ public class TopFragment extends android.support.v4.app.ListFragment
     }
 
 
-    private void getLeaderboard(final Boolean refresh) {
+    private void getLeaderboard(final Boolean isRefresh) {
+
         Response.Listener<GamesRecord> responseListener = new Response.Listener<GamesRecord>() {
             @Override
             public void onResponse(GamesRecord response) {
-                updateChallenges(response, refresh);
+                updateChallenges(response, isRefresh);
             }
         };
 
         Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-                Log.d(TAG, error.getMessage());
+                if(isRefresh) mSwipeRefreshLayout.setRefreshing(false);
+                if (error != null ) {
+                    String err = (error.getMessage() == null) ? "An error occurred" : error.getMessage();
+                    error.printStackTrace();
+                    Log.d(TAG, err);
+                    //Show toast only if there is no server connection on refresh
+                    if (err.matches(AppConstants.CONNECTION_ERROR) && isRefresh) {
+                        LayoutInflater inflater = getActivity().getLayoutInflater();
+                        View layout = inflater.inflate(R.layout.custom_toast,
+                                (ViewGroup) getActivity().findViewById(R.id.toast_layout_root));
+                        Toast toast = new Toast(getActivity());
+                        toast.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
+                        toast.setDuration(Toast.LENGTH_LONG);
+                        toast.setView(layout);
+                        toast.show();
+                    }
+                }
             }
         };
 
+        if (isRefresh ) mSwipeRefreshLayout.setRefreshing(true);
         ChallengesRequests leaderboardRequest = ChallengesRequests.getleaderboard(getActivity(), responseListener, errorListener);
-        // todo change tag to MainActivity.CANCEL_REQUESTS_TAG
-        leaderboardRequest.setTag("cancel");
+        leaderboardRequest.setTag(MainActivity.CANCEL_TAG);
         VolleyRequest.getInstance(getActivity().getApplicationContext()).addToRequestQueue(leaderboardRequest);
     }
 

@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.picspy.firstapp.R;
+import com.picspy.utils.VolleyRequest;
 import com.picspy.views.fragments.FriendsFragment;
 import com.picspy.adapters.TabsViewPagerAdapter;
 import com.picspy.views.fragments.TopFragment;
@@ -27,7 +28,7 @@ import java.util.ArrayList;
  */
 public class MainActivity extends FragmentActivity {
     private ViewPager viewPager;
-
+    public static final String CANCEL_TAG = "cancel_main_request";
     private static final int SELECT_PICTURE = 1;
     private String selectedImagePath;
 
@@ -157,5 +158,15 @@ public class MainActivity extends FragmentActivity {
     public void launchChallenges(View view) {
         Intent intent = new Intent(this, ChallengesActivity.class);
         startActivity(intent);
+    }
+
+    /**
+     * Dispatch onStop() to all fragments.  Ensure all loaders are stopped.
+     */
+    @Override
+    protected void onStop() {
+        super.onStop();
+        //cancel pending login task
+        VolleyRequest.getInstance(this.getApplication()).getRequestQueue().cancelAll(CANCEL_TAG);
     }
 }

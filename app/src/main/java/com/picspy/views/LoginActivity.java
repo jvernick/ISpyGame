@@ -104,7 +104,7 @@ public class LoginActivity extends FragmentActivity {
             btnLogin.setEnabled(false);
             btnLogin.setVisibility(View.INVISIBLE);
             btnLogin.getBackground().setColorFilter(0xff888888, PorterDuff.Mode.MULTIPLY);
-        } else {                                //enables and ungreys out the button
+        } else {                                //enables and un-greys out the button
             btnLogin.setEnabled(true);
             btnLogin.setVisibility(View.VISIBLE);
             btnLogin.getBackground().clearColorFilter();
@@ -116,8 +116,8 @@ public class LoginActivity extends FragmentActivity {
      * @return true if the length is appropriate, otherwise false
      */
     public boolean isValidPassword() {
-        String pass = edtPaswd.getText().toString();;
-        return edtPaswd.length() >= 6;
+        String pass = edtPaswd.getText().toString();
+        return pass.length() >= 6;
     }
 
 
@@ -173,8 +173,8 @@ public class LoginActivity extends FragmentActivity {
      */
     private void startMain() {
         Intent intent = new Intent(this, MainActivity.class);
+        //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-        finish();
     }
 
     /**

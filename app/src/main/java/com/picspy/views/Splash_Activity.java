@@ -114,11 +114,11 @@ public class Splash_Activity extends Activity {
      * Starts the main activity
      */
     public void startMain() {
-        Log.d("Splash","Starting Main");
+        Log.d("Splash", "Starting Main");
         Intent intent = new Intent(Splash_Activity.this, MainActivity.class);
         startActivity(intent);
         //TODO uncomment after all testing is complete so that one never returns to splash activity
-        //finish();
+       //finish();
     }
 
     /**

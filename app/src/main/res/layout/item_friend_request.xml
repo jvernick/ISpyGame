@@ -54,7 +54,5 @@
         android:layout_toLeftOf="@id/accept_friend"
         android:layout_toStartOf="@id/accept_friend"
         android:layout_alignTop="@+id/request_icon"
-        android:layout_alignBottom="@+id/request_icon"
-        android:textColor="@color/primary_text"
-        android:textAppearance="@android:style/TextAppearance.Medium"/>
+        android:layout_alignBottom="@+id/request_icon"/>
 </RelativeLayout>

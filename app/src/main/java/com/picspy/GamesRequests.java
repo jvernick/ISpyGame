@@ -12,6 +12,7 @@ import com.dreamfactory.model.FileResponse;
 import com.picspy.models.GamesRecord;
 import com.picspy.models.UserChallengesRecord;
 import com.picspy.utils.AppConstants;
+import com.picspy.utils.ChallengesRequests;
 import com.picspy.utils.PrefUtil;
 
 import java.util.Arrays;
@@ -147,30 +148,30 @@ public class GamesRequests {
         public ChallengeParams(String selection, String hint, int guess, int time,
                                boolean leaderboard, int[] friends) {
             params = new HashMap<>();
-            params.put(GAME_LABEL.SELECTION, selection);
-            params.put(GAME_LABEL.HINT, hint);
+            params.put(ChallengesRequests.GAME_LABEL.SELECTION, selection);
+            params.put(ChallengesRequests.GAME_LABEL.HINT, hint);
             guess = (guess < 1 || guess > 5)? 3: guess;
-            params.put(GAME_LABEL.GUESSES, String.valueOf(guess));
+            params.put(ChallengesRequests.GAME_LABEL.GUESSES, String.valueOf(guess));
             time = (time < 5 || time > 30) ? 5 : time;
-            params.put(GAME_LABEL.TIME, String.valueOf(time));
-            params.put(GAME_LABEL.LEADERBOARD, String.valueOf(leaderboard));
+            params.put(ChallengesRequests.GAME_LABEL.TIME, String.valueOf(time));
+            params.put(ChallengesRequests.GAME_LABEL.LEADERBOARD, String.valueOf(leaderboard));
             //TODO since this has brackets around it, javascript may already interpret it as an array. Verify and test
-            params.put(GAME_LABEL.FRIENDS, Arrays.toString(friends));
+            params.put(ChallengesRequests.GAME_LABEL.FRIENDS, Arrays.toString(friends));
         }
 
         public ChallengeParams(Bundle bundle) {
             params = new HashMap<>();
-            params.put(GAME_LABEL.SELECTION, "sel too long");//bundle.getString(GAME_LABEL.SELECTION));
-            params.put(GAME_LABEL.HINT, bundle.getString(GAME_LABEL.HINT));
-            params.put(GAME_LABEL.GUESSES, String.valueOf(bundle.getInt(GAME_LABEL.GUESSES)));
-            params.put(GAME_LABEL.TIME, String.valueOf(bundle.getInt(GAME_LABEL.TIME)));
-            params.put(GAME_LABEL.LEADERBOARD,
-                    String.valueOf(bundle.getBoolean(GAME_LABEL.LEADERBOARD)));
-            String s = Arrays.toString(bundle.getIntArray(GAME_LABEL.FRIENDS));
+            params.put(ChallengesRequests.GAME_LABEL.SELECTION, "sel too long");//bundle.getString(GAME_LABEL.SELECTION));
+            params.put(ChallengesRequests.GAME_LABEL.HINT, bundle.getString(ChallengesRequests.GAME_LABEL.HINT));
+            params.put(ChallengesRequests.GAME_LABEL.GUESSES, String.valueOf(bundle.getInt(ChallengesRequests.GAME_LABEL.GUESSES)));
+            params.put(ChallengesRequests.GAME_LABEL.TIME, String.valueOf(bundle.getInt(ChallengesRequests.GAME_LABEL.TIME)));
+            params.put(ChallengesRequests.GAME_LABEL.LEADERBOARD,
+                    String.valueOf(bundle.getBoolean(ChallengesRequests.GAME_LABEL.LEADERBOARD)));
+            String s = Arrays.toString(bundle.getIntArray(ChallengesRequests.GAME_LABEL.FRIENDS));
             s = s.replace('[', ' ');
             s = s.replace(']', ' ');
             s = s.replaceAll("\\s+","");
-            params.put(GAME_LABEL.FRIENDS, s);
+            params.put(ChallengesRequests.GAME_LABEL.FRIENDS, s);
         }
 
         /**
@@ -189,22 +190,6 @@ public class GamesRequests {
 
             return s + "}";
         }
-    }
-
-    /**
-     * Class representing and storing server Table column names
-     * STATIC, do not change
-     */
-    public static class GAME_LABEL {
-        public static final String HINT = "hint";
-        public static final String SELECTION = "selection";
-        public static final String GUESSES = "guess";
-        public static final String TIME = "time";
-        public static final String LEADERBOARD = "leaderboard";
-        public static final String FRIENDS = "friends";
-        //extra for sendChallengeActivity
-        public static final String FILE_NAME = "file_name";
-        public static final java.lang.String FILE_NAME_PATH = "file_path";
     }
 
 }

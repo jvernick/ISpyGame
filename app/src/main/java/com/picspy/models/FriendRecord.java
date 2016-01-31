@@ -1,7 +1,5 @@
 package com.picspy.models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
  * Model for retrieving data from the friends database. Contains fields for related data
  * and for choosing the related data.

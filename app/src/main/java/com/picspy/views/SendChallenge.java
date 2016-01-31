@@ -1,24 +1,34 @@
 package com.picspy.views;
 
-import android.content.Context;
-import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.picspy.GamesRequests;
 import com.picspy.firstapp.R;
+import com.picspy.models.GameRecord;
+import com.picspy.models.UserChallengeRecord;
+import com.picspy.utils.AppConstants;
+import com.picspy.utils.ChallengesRequests;
+import com.picspy.utils.ChallengesRequests.GAME_LABEL;
 import com.picspy.utils.FileRequest;
+import com.picspy.utils.PrefUtil;
 import com.picspy.utils.VolleyRequest;
 import com.picspy.views.fragments.ChooseFriendsFragment;
 import com.picspy.views.fragments.ConfigureChallengeFragment;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class SendChallenge extends ActionBarActivity implements
         ConfigureChallengeFragment.F1FragmentInteractionListener,
@@ -26,11 +36,10 @@ public class SendChallenge extends ActionBarActivity implements
 
     public static final String BDL_GAME_OPTIONS = "bdl_game_options";
     public static final String BDL_PICTURE_OPTIONS = "bdl_picture_options";
-    public static final String BDL_FRIEND_OPTIONS = "bdl_friend_options";
     public static final String ARG_FRIEND_ID = "friend_id";
-    public static final String ARG_FRIEND_USERNAME = "friend_username";
     private static final String TAG = "SendChallenge";
-    private static final Object CANCEL_TAG = "sendChallenge";
+    private static final String CANCEL_TAG = "cancel_sendChallenge";
+    private int friend_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +60,7 @@ public class SendChallenge extends ActionBarActivity implements
             // Create a new Fragment to be placed in the activity layout
             ConfigureChallengeFragment configureFragment = ConfigureChallengeFragment.newInstance(
                     getIntent().getBundleExtra(SendChallenge.BDL_PICTURE_OPTIONS),
-                    getIntent().getBundleExtra(SendChallenge.BDL_FRIEND_OPTIONS)
+                    getIntent().getIntExtra(SendChallenge.ARG_FRIEND_ID, -1)
             );
 
             Toolbar toolbar = (Toolbar) findViewById(R.id.challenges_toolbar);
@@ -93,90 +102,123 @@ public class SendChallenge extends ActionBarActivity implements
 
     @Override
     public void setToolbarTitle(String title) {
-        //TODO causes null pointer
         getSupportActionBar().setTitle(title);
     }
 
     @Override
-    public boolean startGame(Bundle gameBundle) {
-        //(new CreateGame(this, gameBundle)).execute();
-        createChallenge(gameBundle);
-        return false;
-    }
-
-    private class CreateGame extends AsyncTask<Void, Void, String> {
-        private final Context context;
-        private final Bundle bundle;
-
-        public CreateGame(Context context,Bundle bundle) {
-            super();
-            this.context = context;
-            this.bundle = bundle;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected String doInBackground(Void... voids) {
-            String filename = bundle.getString(GamesRequests.GAME_LABEL.FILE_NAME);
-            String filepath = bundle.getString(GamesRequests.GAME_LABEL.FILE_NAME_PATH);
-
-            GamesRequests.ChallengeParams params = new GamesRequests.ChallengeParams(bundle);
-            Log.d(TAG, "filename: " + filename);
-            Log.d(TAG, "filepath: " + filepath);
-            Log.d(TAG, "Params:\n" + params.toString());
-            return (new GamesRequests(context, true)).createGame(filename, filepath, params);
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            File image = new File(bundle.getString(GamesRequests.GAME_LABEL.FILE_NAME_PATH));
-            Log.d(TAG, "image deleted? " + String.valueOf(image.delete()));
-            Log.d(TAG, "result: " + result);
-
-
-        }
+    public void startGame(Bundle gameBundle) {
+        sendPicture(gameBundle);
     }
 
 
     /**
-     * Uploads the image to the server and if succesfull, send the game info to the server
+     * Uploads the image to the server and if successful, send the game info to the server
      * @param bundle A bundle containing the game information
      */
-    private void createChallenge(Bundle bundle) {
+    private void sendPicture(final Bundle bundle) {
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.d(TAG, "onResponse" + response);
+                if (response != null) {
+                    Log.d(TAG, "onResponse: " + response);
+                    sendChallengeInfo(bundle);
+                }
             }
         };
 
         Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "onErrorResponse: " + error.getMessage());
+                if (error != null ) {
+                    String err = (error.getMessage() == null)? "An error occurred": error.getMessage();
+                    error.printStackTrace();
+                    Log.d(TAG, err);
+                    //Show toast only if there is no server connection on refresh
+                    if (err.matches(AppConstants.CONNECTION_ERROR)) {
+                        LayoutInflater inflater = getLayoutInflater();
+                        View layout = inflater.inflate(R.layout.custom_toast,
+                                (ViewGroup) findViewById(R.id.toast_layout_root));
+                        Toast toast = new Toast(getApplicationContext());
+                        toast.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
+                        toast.setDuration(Toast.LENGTH_LONG);
+                        toast.setView(layout);
+                        toast.show();
+                    }
+                }
             }
         };
 
-        String filename = bundle.getString(GamesRequests.GAME_LABEL.FILE_NAME);
-        String filepath = bundle.getString(GamesRequests.GAME_LABEL.FILE_NAME_PATH);
-
-        GamesRequests.ChallengeParams params = new GamesRequests.ChallengeParams(bundle);
-        Log.d(TAG, "bundle: " + bundle.toString());
+        String filename = bundle.getString(GAME_LABEL.FILE_NAME);
+        String filepath = bundle.getString(GAME_LABEL.FILE_NAME_PATH);
         Log.d(TAG, "filename: " + filename);
         Log.d(TAG, "filepath: " + filepath);
 
-        Log.d(TAG, "Params:\n" + params.toString());
-        FileRequest createFileRequest =  FileRequest.sendChallenge(this,
-                filename, filepath, params, responseListener, errorListener);
-
+        FileRequest createFileRequest =  FileRequest.sendPicture(this,
+                filename, filepath, responseListener, errorListener);
         if (createFileRequest != null) createFileRequest.setTag(CANCEL_TAG);
         VolleyRequest.getInstance(getApplicationContext()).addToRequestQueue(createFileRequest);
+    }
 
+    private void sendChallengeInfo(final Bundle bundle) {
+        Response.Listener<GameRecord> responseListener = new Response.Listener<GameRecord>() {
+            @Override
+            public void onResponse(GameRecord response) {
+                if (response != null && response.getId() != 0) {
+                    Toast.makeText(getApplicationContext(), "Games successfully sent", Toast.LENGTH_SHORT).show();
+                    File file = new File(bundle.getString(GAME_LABEL.FILE_NAME_PATH));
+                    if (file.delete()) Log.d(TAG, "picture deleted");
+
+                    Intent intent = new Intent(SendChallenge.this, MainActivity.class);
+                    //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                }
+            }
+        };
+
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error != null ) {
+                    String err = (error.getMessage() == null)? "An error occurred": error.getMessage();
+                    error.printStackTrace();
+                    Log.d(TAG, err);
+                    //Show toast only if there is no server connection on refresh
+                    if (err.matches(AppConstants.CONNECTION_ERROR)) {
+                        LayoutInflater inflater = getLayoutInflater();
+                        View layout = inflater.inflate(R.layout.custom_toast,
+                                (ViewGroup) findViewById(R.id.toast_layout_root));
+                        Toast toast = new Toast(getApplicationContext());
+                        toast.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
+                        toast.setDuration(Toast.LENGTH_LONG);
+                        toast.setView(layout);
+                        toast.show();
+                    }
+                }
+            }
+        };
+
+        GameRecord gameRecord = new GameRecord();
+        gameRecord.setGuess(bundle.getInt(GAME_LABEL.GUESSES));
+        gameRecord.setTime(bundle.getInt(GAME_LABEL.TIME));
+        gameRecord.setHint(bundle.getString(GAME_LABEL.HINT));
+        gameRecord.setSelection(bundle.getString(GAME_LABEL.SELECTION));
+        gameRecord.setLeaderboard(bundle.getBoolean(GAME_LABEL.LEADERBOARD));
+        gameRecord.setPicture_name(bundle.getString(GAME_LABEL.FILE_NAME));
+        int[] friends = bundle.getIntArray(GAME_LABEL.FRIENDS);
+        ArrayList<UserChallengeRecord> challengeUsers = new ArrayList<>();
+
+        if (friends != null) {
+            for (int friend : friends) {
+                challengeUsers.add(new UserChallengeRecord(friend));
+            }
+        }
+        gameRecord.setUser_challenges_by_challenge_id(challengeUsers);
+        gameRecord.setSender(PrefUtil.getInt(this, AppConstants.USER_ID));
+
+        ChallengesRequests challengeInfoRequest = ChallengesRequests.createGame(this, gameRecord,
+                responseListener, errorListener);
+        if (challengeInfoRequest != null) challengeInfoRequest.setTag(CANCEL_TAG);
+        VolleyRequest.getInstance(getApplicationContext()).addToRequestQueue(challengeInfoRequest);
     }
 
     @Override

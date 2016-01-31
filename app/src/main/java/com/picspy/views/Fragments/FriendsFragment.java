@@ -138,11 +138,8 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
         cursorAdapter.setFilterQueryProvider(new FilterQueryProvider() {
             public Cursor runQuery(CharSequence constraint) {
                 // Search for friends whose names begin with the specified letters.
-                Cursor cursor = DatabaseHandler.getInstance(getActivity()
-                        .getApplicationContext()).getMatchingFriends(
+                 return DatabaseHandler.getInstance(getActivity()).getMatchingFriends(
                         (constraint != null ? constraint.toString() : null));
-                if (cursor != null && ! cursor.moveToFirst()) cursor.close();
-                return cursor;
             }
         });
 
@@ -180,6 +177,23 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
         getLoaderManager().restartLoader(LOADER_ID, null, callback).forceLoad();
     }
 
+    /**
+     * This method will be called when an item in the list is selected.
+     * Subclasses should override. Subclasses can call
+     * getListView().getItemAtPosition(position) if they need to access the
+     * data associated with the selected item.
+     *
+     * @param l        The ListView where the click happened
+     * @param v        The view that was clicked within the ListView
+     * @param position The position of the view in the list
+     * @param id       The row id of the item that was clicked
+     */
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        Log.d(TAG, "onListItemClick");
+    }
+
     private void setSearchFieldFilter (final EditText searchText) {
         searchText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -200,7 +214,6 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
 
             @Override
             public void afterTextChanged(Editable editable) {
-
             }
         });
     }
@@ -238,7 +251,7 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
      */
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        cursorAdapter.changeCursor(data);
+        //cursorAdapter.changeCursor(data);
         cursorAdapter.notifyDataSetChanged();
         if (firstQuery) {
             Log.d(TAG, "firstQuery " + data.getCount());
@@ -291,7 +304,7 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
         Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+            //TODO if there is no friend, show only connection error. Otherwise, do nothing
             }
         };
 

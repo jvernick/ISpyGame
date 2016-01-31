@@ -3,10 +3,8 @@ package com.picspy.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.ShapeDrawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -14,10 +12,12 @@ import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
 import com.picspy.firstapp.R;
+import com.picspy.models.UserRecord;
 import com.picspy.utils.AppConstants;
 import com.picspy.utils.DbContract;
 import com.picspy.views.CameraActivity;
 import com.picspy.views.FriendInfoActivity;
+import com.picspy.views.SendChallenge;
 
 /**
  * Created by Gordon on 8/22/2015.
@@ -50,7 +50,7 @@ public class FriendsCursorAdapter extends ResourceCursorAdapter {
             viewHolder.unameTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    startFriendInfoActivity(view, true, friendUsername, userId);
+                    startFriendInfoActivity(view, friendUsername, userId, null);
                 }
             });
 
@@ -59,6 +59,7 @@ public class FriendsCursorAdapter extends ResourceCursorAdapter {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(context, CameraActivity.class);
+                    intent.putExtra(SendChallenge.ARG_FRIEND_ID, userId);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     //TODO change intent extra to appropriate value if any
                     view.getContext().startActivity(intent);
@@ -72,7 +73,7 @@ public class FriendsCursorAdapter extends ResourceCursorAdapter {
             viewHolder.friendIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    startFriendInfoActivity(view, true, friendUsername, userId);
+                    startFriendInfoActivity(view, friendUsername, userId, null);
                 }
             });
         }
@@ -96,17 +97,25 @@ public class FriendsCursorAdapter extends ResourceCursorAdapter {
     /**
      * Method to start the FriendInfoActivity with appropriate intent bundles.
      * @param view Context view
-     * @param isFriend is the activity for a fiend?
      * @param uname friend username
      * @param id friend id
      */
-    public static void startFriendInfoActivity(View view, boolean isFriend, String uname, int id) {
+    public static void startFriendInfoActivity(View view, String uname, Integer id, UserRecord userRecord) {
         Intent intent = new Intent(view.getContext(), FriendInfoActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(FriendInfoActivity.FOR_FRIEND, isFriend);
-        intent.putExtra(FriendInfoActivity.FRIEND_USERNAME, uname);
-        intent.putExtra(FriendInfoActivity.FRIEND_ID, id);
-        view.getContext().startActivity(intent);
+        if (userRecord == null) {
+            intent.putExtra(FriendInfoActivity.FOR_FRIEND, true);
+            intent.putExtra(FriendInfoActivity.USERNAME, uname);
+            intent.putExtra(FriendInfoActivity.FRIEND_ID, id);
+            view.getContext().startActivity(intent);
+        } else {
+            intent.putExtra(FriendInfoActivity.FOR_FRIEND, false);
+            intent.putExtra(FriendInfoActivity.USERNAME, userRecord.getUsername());
+            intent.putExtra(FriendInfoActivity.WON, userRecord.getTotal_won());
+            intent.putExtra(FriendInfoActivity.LOST, userRecord.getTotal_lost());
+            intent.putExtra(FriendInfoActivity.L_BOARD, userRecord.getLeaderboard());
+            view.getContext().startActivity(intent);
+        }
     }
 
     private class ViewHolder {

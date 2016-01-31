@@ -215,7 +215,6 @@ public class DatabaseHandler extends SQLiteOpenHelper{
             cursor.moveToFirst();
         }
         return cursor;
-
     }
 
 //    public List<Friend> getAllfriends() {
@@ -297,7 +296,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         int maxFriendId = PrefUtil.getInt(context, AppConstants.MAX_FRIEND_RECORD_ID);
 
         for(Friend friend: friends) {
-            if (addFriendHelper(friend, db) == -1) {
+            if (addFriendHelper(friend, db) != -1) {
                 if (maxFriendId < friend.getRecordId()) maxFriendId = friend.getRecordId();
             }
         }
