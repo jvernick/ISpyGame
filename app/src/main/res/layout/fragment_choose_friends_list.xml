@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.picspy.views.fragments.ChooseFriendsFragment">
@@ -40,11 +40,32 @@
         android:text="@string/no_friends"
         android:visibility="gone"/>
 
-    <Button
-        android:id="@+id/send_button"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:background="@drawable/create_challenge_button"
-        android:layout_gravity="end|bottom"
-        android:visibility="gone"/>
-</FrameLayout>
+    <RelativeLayout
+        android:id="@+id/next_view"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:visibility="gone">
+        <View
+            android:id="@+id/bar"
+            android:layout_width="fill_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_send_challenge"
+            android:layout_alignParentBottom="true">
+        </View>
+
+        <Button
+            android:id="@+id/send_button"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_send"
+            android:layout_marginRight="8dp"
+            android:layout_alignBottom="@id/bar"
+            android:layout_alignTop="@id/bar"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"/>
+    </RelativeLayout>
+</RelativeLayout>

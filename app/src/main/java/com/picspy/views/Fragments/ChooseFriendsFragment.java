@@ -72,6 +72,7 @@ public class ChooseFriendsFragment extends ListFragment implements
     private Animation animBarUp;
     private Animation animBarDOWN;
     private Button sendButton;
+    private ViewGroup nextView;
 
     public static ChooseFriendsFragment newInstance(Bundle gameOptionsBundle,
                                                     Bundle pictureOptionsBundle) {
@@ -118,6 +119,7 @@ public class ChooseFriendsFragment extends ListFragment implements
                 R.anim.send_challenge_bar_down);
 
         sendButton = (Button) rootView.findViewById(R.id.send_button);
+        nextView = (ViewGroup) rootView.findViewById(R.id.next_view);
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -321,11 +323,11 @@ public class ChooseFriendsFragment extends ListFragment implements
     @Override
     public void isEmpty(Boolean isEmpty) {
         if (isEmpty) {
-            sendButton.startAnimation(animBarDOWN);
-            sendButton.setVisibility(View.INVISIBLE);
+            nextView.startAnimation(animBarDOWN);
+            nextView.setVisibility(View.INVISIBLE);
         } else {
-            sendButton.startAnimation(animBarUp);
-            sendButton.setVisibility(View.VISIBLE);
+            nextView.startAnimation(animBarUp);
+            nextView.setVisibility(View.VISIBLE);
         }
     }
 

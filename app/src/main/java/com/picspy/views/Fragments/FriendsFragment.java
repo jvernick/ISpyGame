@@ -3,7 +3,6 @@ package com.picspy.views.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
@@ -26,7 +25,6 @@ import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.picspy.FriendsTableRequests;
 import com.picspy.adapters.DatabaseHandler;
 import com.picspy.adapters.FriendsCursorAdapter;
 import com.picspy.firstapp.R;

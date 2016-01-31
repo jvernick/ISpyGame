@@ -12,7 +12,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.google.gson.JsonSyntaxException;
-import com.picspy.GamesRequests;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.FileEntity;

@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Xml;
@@ -38,15 +39,6 @@ public class ConfigureChallengeFragment extends Fragment {
 
     private final int defaultTime = 5;
     private final int defaultGuesses = 3;
-    private final boolean defaultLeaderboard = false;
-    private final String defaultHint = "";
-    /**
-     * gaameOptionsBundle elements
-     */
-    private int configuredTime = defaultTime;
-    private int configuredGuesses = defaultGuesses;
-    private String configuredHint = defaultHint;
-    private boolean configuredLeaderboard = defaultLeaderboard;
 
     // the fragment initialization parameters
     //bundles from camera activity
@@ -95,13 +87,15 @@ public class ConfigureChallengeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        //TODO configure custome font
+        //TODO configure custom font
         View rootView = inflater.inflate(R.layout.fragment_configure_challenge, container, false);
         final CheckBox checkBox = (CheckBox) rootView.findViewById(R.id.checkbox);
         final EditText hintBox = (EditText) rootView.findViewById(R.id.hint_input);
         final RadioGroup timeBox = (RadioGroup) rootView.findViewById(R.id.time_radio_group);
         final RadioGroup guessBox = (RadioGroup) rootView.findViewById(R.id.guesses_radio_group);
         Button nextButton = (Button) rootView.findViewById(R.id.next_button);
+        if (friend_id != -1) nextButton.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_send));
+
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -119,8 +113,6 @@ public class ConfigureChallengeFragment extends Fragment {
                 }
             }
         });
-
-
 
         final int checked_color_selected = getResources().getColor(R.color.primary_text);
         final int checked_color_unselected = getResources().getColor(R.color.grey_400);
@@ -202,11 +194,10 @@ public class ConfigureChallengeFragment extends Fragment {
             currButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
                     ((RadioGroup) view.getParent()).check(view.getId());
-                    configuredTime = view.getId();
                 }
             });
+
             currButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -229,25 +220,26 @@ public class ConfigureChallengeFragment extends Fragment {
      */
     private void setupGuessButtons(View rootView, final int checked_color_selected,
                                   final int checked_color_unselected, AttributeSet attributes) {
-        ViewGroup horScrolLayout =  (ViewGroup) rootView.findViewById(R.id.guesses_radio_group);
+        ViewGroup horScrollLayout =  (ViewGroup) rootView.findViewById(R.id.guesses_radio_group);
 
-        for (int i = 1; i <= 5; i++) {
+        for (int i = 1; i <= 5 ; i++) {
             RadioButton currButton = new RadioButton(getActivity().getApplicationContext(),
                     attributes, R.style.radio_button);
             currButton.setId(i);
             currButton.setText(Integer.toString(i));
-            if (i == defaultGuesses) currButton.setTextColor(checked_color_selected);
+            if (i == defaultGuesses) {
+                currButton.setTextColor(checked_color_selected);
+            }
             currButton.setChecked(i == defaultGuesses);
-            horScrolLayout.addView(currButton);
+            horScrollLayout.addView(currButton);
 
             currButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
                     ((RadioGroup) view.getParent()).check(view.getId());
-                    configuredGuesses = view.getId();
                 }
             });
+
             currButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
