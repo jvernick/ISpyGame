@@ -163,6 +163,12 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         return friend;
     }
 
+
+    /**
+     * Gets a friend from the database by friend username
+     * @param username id of the Friend whose record is to be retrieved
+     * @return the friend record for specified username
+     */
     public Friend getFriend(String username) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -192,7 +198,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     //TODO test
     public Cursor getAllFriends() {
         // Select All Query
-        String selectQuery = "SELECT * FROM " + FriendEntry.TABLE_NAME;
+        String selectQuery = "SELECT * FROM " + FriendEntry.TABLE_NAME + " ORDER BY " + FriendEntry.COLUMN_NAME_USERNAME + " COLLATE NOCASE ASC";
 
         SQLiteDatabase db = this.getWritableDatabase();
         return db.rawQuery(selectQuery, null);
@@ -205,41 +211,18 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         String[] columns = {FriendEntry._ID, FriendEntry.COLUMN_NAME_USERNAME};
 
         String selection = FriendEntry.COLUMN_NAME_USERNAME + " like '%" + constraint + "%'";
+        String order = FriendEntry.COLUMN_NAME_USERNAME + " COLLATE NOCASE ASC";
         cursor = db.query(
                 FriendEntry.TABLE_NAME,
                 columns,
                 selection,
-                null, null, null, null, null);
+                null, null, null, order);
 
         if (cursor != null) {
             cursor.moveToFirst();
         }
         return cursor;
     }
-
-//    public List<Friend> getAllfriends() {
-//        List<Friend> friendList = new ArrayList<>();
-//        // Select All Query
-//        String selectQuery = "SELECT  * FROM " + FriendEntry.TABLE_NAME;
-//
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        Cursor cursor = db.rawQuery(selectQuery, null);
-//
-//        // looping through all rows and adding to list
-//        if (cursor.moveToFirst()) {
-//            do {
-//                Friend friend = new Friend();
-//                friend.setId(Integer.parseInt(cursor.getString(0)));
-//                friend.setUsername(cursor.getString(1));
-//                // Adding friend to list
-//                friendList.add(friend);
-//            } while (cursor.moveToNext());
-//        }
-//        cursor.close();
-//        db.close();
-//        // return friend list
-//        return friendList;
-//    }
 
     /**
      * Gets the total number of friends in the database

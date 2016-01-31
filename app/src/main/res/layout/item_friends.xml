@@ -3,15 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="8dp"
-    android:paddingTop="8dp"
-    android:descendantFocusability="blocksDescendants">
+    android:paddingTop="8dp">
 
     <ImageView
         style="@style/friend_icon"
         android:id="@+id/friend_icon"
-        android:contentDescription="@string/cd_user_icon"
-        android:focusableInTouchMode="true"
-        android:clickable="true"/>
+        android:contentDescription="@string/cd_user_icon"/>
 
     <ImageView
         android:id="@+id/game_start"
@@ -22,9 +19,7 @@
         android:layout_centerVertical="true"
         android:padding="12dp"
         android:src="@drawable/ic_camera_green_small"
-        android:contentDescription="@string/cd_start_game"
-        android:focusableInTouchMode="true"
-        android:clickable="true"/>
+        android:contentDescription="@string/cd_start_game"/>
 
     <TextView
         style="@style/friend_name"
