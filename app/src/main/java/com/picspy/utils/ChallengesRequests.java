@@ -9,11 +9,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.picspy.models.Game;
 import com.picspy.models.GameRecord;
 import com.picspy.models.GamesRecord;
 import com.picspy.models.RecordsRequest;
-import com.picspy.models.UserChallengeRecord;
 import com.picspy.models.UserChallengesRecord;
 
 import org.json.JSONException;
@@ -108,9 +106,9 @@ public class ChallengesRequests  extends JsonObjectRequest{
         String filter = "(user_id=" + PrefUtil.getInt(context, AppConstants.USER_ID) + ") AND (id>"
                 + PrefUtil.getInt(context, AppConstants.MAX_USER_CHALLENGE_ID, 0) + ")";
         params.put("filter", filter);
-        params.put("related", "challenges_by_challenge_id");
+        params.put("related", "challenges_by_challenge_id, users_by_sender");
 
-        String url = DspUriBuilder.buildUri(DspUriBuilder.USER_CHALLEGES_TABLE, params);
+        String url = DspUriBuilder.buildUri(DspUriBuilder.USER_CHALLENGES_TABLE, params);
         Log.d(TAG, "jsonRequest path: " + url);
 
         return  new ChallengesRequests(context, Method.GET, url, null, jsonObjectListener, errorListener);

@@ -1,6 +1,7 @@
 package com.picspy.views;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -36,6 +38,7 @@ public class Splash_Activity extends Activity {
     private View buttons;
     private static final int SLEEP_TIME = 1000;
     private static final String TAG = "SplashActivity";
+    ProgressBar progressSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +47,8 @@ public class Splash_Activity extends Activity {
         btn_login = (Button) findViewById(R.id.splash_login);
         btn_signup = (Button) findViewById(R.id.splash_signup);
         buttons = findViewById(R.id.buttons);
+        progressSpinner = (ProgressBar) findViewById(R.id.splash_progressSpinner);
+        progressSpinner.setVisibility(View.GONE);
 
         //TODO change true in both lines below to false
         //btn_login.setEnabled(false);
@@ -65,9 +70,9 @@ public class Splash_Activity extends Activity {
             Log.d(TAG, "days since last login: " + daysDiff);
             if (daysDiff >= AppConstants.SESSION_TTL - 5) {
                 refreshJWTToken(getApplicationContext());
-                PrefUtil.putLong(this, AppConstants.LAST_LOGIN_DATE, Calendar.getInstance().getTimeInMillis());
+            } else {
+                startMain();
             }
-            startMain();
         }
     }
 
@@ -124,27 +129,38 @@ public class Splash_Activity extends Activity {
     /**
      * Refreshes the JWT for forever sessions
      */
-    public static void refreshJWTToken(Context applicationContext) {
+    public void refreshJWTToken(final Context applicationContext) {
         //TODO configure JWT Refresh
         //TODO reset days since last login
         Log.d(TAG, "Refreshing JWT");
         Response.Listener<RegistrationRequests.LoginApiResponse> responseListener = new Response.Listener<RegistrationRequests.LoginApiResponse>() {
             @Override
             public void onResponse(RegistrationRequests.LoginApiResponse response) {
-                Log.d(TAG, response.toString());
+                progressSpinner.setVisibility(View.GONE);
+                if (response != null) { //TODO check that it matches regex
+                    PrefUtil.putString(applicationContext, AppConstants.SESSION_TOKEN, response.getSessionToken());
+                    PrefUtil.putLong(applicationContext, AppConstants.LAST_LOGIN_DATE, Calendar.getInstance().getTimeInMillis());
+                    Log.d(TAG, response.toString());
+                    startMain();
+                } else {
+                    splashLogin(null);
+                }
             }
         };
 
         Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                progressSpinner.setVisibility(View.GONE);
                 Log.d(TAG, error.getMessage());
+                splashLogin(null);
             }
         };
 
         RegistrationRequests jwtRefresh = RegistrationRequests.refreshJwtToken(applicationContext, responseListener, errorListener);
         jwtRefresh.setTag(CANCEL_TAG);
         VolleyRequest.getInstance(applicationContext).addToRequestQueue(jwtRefresh);
+        progressSpinner.setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -38,7 +38,7 @@ public class RegistrationRequests extends JsonObjectRequest {
      * @param listener      Listener to receive the JSON response
      * @param errorListener Error listener, or null to ignore errors.
      */
-    public RegistrationRequests(Context context, Type type, int method, String url,
+    private RegistrationRequests(Context context, Type type, int method, String url,
                                 JSONObject jsonRequest, Response.Listener<JSONObject> listener,
                                 Response.ErrorListener errorListener) {
         super(method, url, jsonRequest, listener, errorListener);
@@ -60,6 +60,7 @@ public class RegistrationRequests extends JsonObjectRequest {
         JSONObject jsonRequest;
         try {
             jsonRequest = new JSONObject(gson.toJson(request, RegisterModel.class));
+            //TODO change path to use BuildURI
             String path = AppConstants.DSP_URL_2 + "user/register";
             return  new RegistrationRequests(context, Type.REGISTER, Method.POST, path,
                     jsonRequest, jsonObjectListener, errorListener);

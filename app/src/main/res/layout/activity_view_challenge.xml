@@ -12,10 +12,10 @@ android:layout_height="match_parent">
         android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/initial_hint_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:id="@+id/initial_hint_layout"
             android:layout_gravity="start"
             android:gravity="center"
             android:background="@color/white" >
@@ -31,38 +31,35 @@ android:layout_height="match_parent">
                 android:layout_height="wrap_content"
                 android:textSize="30sp"
                 android:gravity="center_horizontal"/>
-
         </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/game_info"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:visibility="invisible"
-            android:text="---> Swipe for hint"
-            android:id="@+id/swipe_text" />
+            android:orientation="horizontal"
+            android:padding="2dp"
+            android:weightSum="3">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/guesses_remaining"
-            android:layout_toRightOf="@+id/swipe_text"
-            android:visibility="invisible"
-            android:layout_marginLeft="20dp"/>
+            <TextView
+                style="@style/game_info_text"
+                android:id="@+id/swipe_text"
+                android:text="@string/swipe_hint"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:layout_alignParentRight="true"
-            android:textStyle="bold"
-            android:id="@+id/timer"/>
+            <TextView
+                style="@style/game_info_text"
+                android:id="@+id/guesses_remaining"/>
+
+            <TextView
+                style="@style/game_info_text"
+                android:id="@+id/timer"/>
+        </LinearLayout>
 
         <ImageView
+            android:id="@+id/image_view"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_below="@id/timer"
-            android:id="@+id/image_view"
+            android:layout_below="@id/game_info"
             android:adjustViewBounds="true"
             android:scaleType="fitXY"
             android:visibility="invisible"/>
@@ -71,15 +68,14 @@ android:layout_height="match_parent">
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:id="@+id/selection_layout"
-            android:layout_below="@+id/timer"
-            />
+            android:layout_below="@id/game_info" />
 
         <RelativeLayout
+            android:id="@+id/x_mark_holder"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:id="@+id/x_mark_holder"
             android:visibility="invisible"
-            android:layout_below="@id/timer">
+            android:layout_below="@id/game_info">
 
             <ImageView
                 android:layout_width="150dp"
@@ -88,11 +84,10 @@ android:layout_height="match_parent">
                 android:adjustViewBounds="true"
                 android:scaleType="fitXY"
                 android:src="@drawable/x_mark" />
-
         </RelativeLayout>
     </RelativeLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="240dp"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -101,23 +96,24 @@ android:layout_height="match_parent">
         android:gravity="center"
         android:choiceMode="singleChoice"
         android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
-        android:background="@color/white" >
+        android:dividerHeight="0dp">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="30sp"
-            android:gravity="center_horizontal"
-            android:text="The hint is:\n\n"/>
+            android:orientation="vertical"
+            android:padding="4dp"
+            android:background="@drawable/drawer_border">
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="30sp"
-            android:gravity="center_horizontal"
-            android:id="@+id/hint_provided"/>
-
-     </LinearLayout>
-
-
+            style="@style/drawer_text"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:drawableTop="@drawable/drawer_border"
+            android:text="@string/game_hint_title"/>
+        <TextView
+            style="@style/drawer_text"
+            android:id="@+id/hint_provided"
+            android:drawableBottom="@drawable/drawer_border"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+        </LinearLayout>
+     </RelativeLayout>
 </android.support.v4.widget.DrawerLayout>

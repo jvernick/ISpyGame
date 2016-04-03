@@ -1,5 +1,9 @@
 package com.picspy.models;
 
+import android.content.Context;
+
+import com.picspy.adapters.DatabaseHandler;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -25,7 +29,7 @@ public class GameRecord {
     public GameRecord() {}
 
 
-    public static Game getGame(GameRecord gameRecord) {
+    public static Game getGame(GameRecord gameRecord, Context applicationContext) {
         if (gameRecord == null) {
             return null;
         } else {
@@ -40,8 +44,17 @@ public class GameRecord {
             game.setVote(gameRecord.isLeaderboard());
             game.setSenderId(gameRecord.getSender());
             game.setCreated(gameRecord.getCreated());
-            if (gameRecord.users_by_sender != null)
-            game.setSenderUsername(gameRecord.getUsers_by_sender().getUsername());
+            if (gameRecord.users_by_sender != null) { //user not a friend == username in record
+                game.setSenderUsername(gameRecord.getUsers_by_sender().getUsername());
+            } else {  //user is a friend == username in local database
+                DatabaseHandler dbHandler = DatabaseHandler.getInstance((applicationContext));
+                Friend friend = dbHandler.getFriend(game.getSenderId());
+                if (friend == null) {
+                    game.setSenderUsername("New Challenge");
+                } else {
+                    game.setSenderUsername(dbHandler.getFriend(game.getSenderId()).getUsername());
+                }
+            }
 
             return game;
         }

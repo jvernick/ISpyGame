@@ -117,17 +117,21 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            Uri selectedImageUri = null;
-            if (requestCode == SELECT_PICTURE) {
-                selectedImageUri = data.getData();
-                selectedImagePath = getPath(selectedImageUri);
-            }
+        switch (requestCode) {
+            case SELECT_PICTURE:
+                if (resultCode == RESULT_OK) {
+                    Uri selectedImageUri = data.getData();
+                    selectedImagePath = getPath(selectedImageUri);
 
-            Intent intent = new Intent(getApplicationContext(), CreateChallengeActivity.class);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, selectedImageUri);
-            startActivity(intent);
+                    Intent intent = new Intent(getApplicationContext(), CreateChallengeActivity.class);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, selectedImageUri);
+                    startActivity(intent);
+                }
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
         }
+
     }
 
     /**

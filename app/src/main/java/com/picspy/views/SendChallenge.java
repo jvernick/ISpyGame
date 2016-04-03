@@ -159,6 +159,10 @@ public class SendChallenge extends ActionBarActivity implements
         VolleyRequest.getInstance(getApplicationContext()).addToRequestQueue(createFileRequest);
     }
 
+    /**
+     * Sends the challenge information to the server.
+     * @param bundle Bundle containing game parameters
+     */
     private void sendChallengeInfo(final Bundle bundle) {
         Response.Listener<GameRecord> responseListener = new Response.Listener<GameRecord>() {
             @Override

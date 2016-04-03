@@ -91,7 +91,7 @@
             android:parentActivityName="com.picspy.views.CameraActivity"
             android:theme="@style/create_challenge" >
         </activity>
-        <activity android:name="com.picspy.views.ImageViewer"
+        <activity android:name="com.picspy.views.ViewChallenge"
             android:label="@string/app_name"
             android:screenOrientation="portrait"></activity>
 

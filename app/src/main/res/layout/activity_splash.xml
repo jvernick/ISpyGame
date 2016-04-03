@@ -72,4 +72,17 @@
             android:onClick="splashSignUp"
             android:visibility="gone"/>
     </RelativeLayout>
+
+    <!-- TODO modify location-->
+    <ProgressBar
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:id="@+id/splash_progressSpinner"
+        android:layout_below="@id/challenge_list"
+        android:layout_above="@id/bar"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:progressDrawable="@drawable/circular_progress_bar"
+        android:visibility="gone"/>
 </RelativeLayout>

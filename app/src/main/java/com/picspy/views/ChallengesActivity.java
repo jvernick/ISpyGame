@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -24,8 +23,6 @@ import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.dreamfactory.client.ApiException;
-import com.picspy.GamesRequests;
 import com.picspy.adapters.DatabaseHandler;
 import com.picspy.adapters.GamesCursorAdapter;
 import com.picspy.firstapp.R;
@@ -35,19 +32,23 @@ import com.picspy.models.UserChallengesRecord;
 import com.picspy.utils.AppConstants;
 import com.picspy.utils.ChallengesRequests;
 import com.picspy.utils.DbContract.GameEntry;
+import com.picspy.utils.PrefUtil;
 import com.picspy.utils.VolleyRequest;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ChallengesActivity extends ActionBarActivity  implements LoaderCallbacks<Cursor>{
-    public final static String EXTRA_MESSAGE = "com.picspy.firstapp.GAME";
+    public final static String GAME_EXTRA = "com.picspy.firstapp.GAME";
     private static final String TAG = "ChallengesActivity";
-    private static final Object CANCEL_TAG = "cancel";
+    private static final String CANCEL_TAG = "cancel_ChallengesActivity";
+    public static final int PLAY_GAME_CODE = 60;
+    public static final String GAME_RESULT = "game_result";
     private ListView listView;
     private DatabaseHandler dbHandler;
     private final static int LOADER_ID = 1;
-    ProgressBar progressSpinner;
+    private ProgressBar progressSpinner;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,19 +83,11 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
                 game.setSenderUsername(c.getString(c.getColumnIndex(
                         GameEntry.COLUMN_NAME_SENDER_NAME)));
 
-                Toast.makeText(ChallengesActivity.this, game.toString(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(ChallengesActivity.this, game.toString(), Toast.LENGTH_LONG).show();
 
-                //TODO Start activity to display Game
-                /*
-                    get game in reciepient activity as follows:
-                    Bundle Bundle = intent.getExtras();
-                    Game game = (game) bundle.getParcelable(ChallengesActivity.EXTRA_MESSAGE);
-                 */
-                /*
-                Intent intent = new Intent(ChallengesActivity.this, SecondActivity.class);
-                intent.putExtra(EXTRA_MESSAGE, game);
-                startActivity(intent);
-                */
+                Intent intent = new Intent(ChallengesActivity.this, ViewChallenge.class);
+                intent.putExtra(GAME_EXTRA, game);
+                startActivityForResult(intent, PLAY_GAME_CODE);
             }
         });
 
@@ -209,7 +202,7 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
                 if (record.getId() > max_user_challenge_id) {
                     max_user_challenge_id = record.getId();
                 }
-                gameList.add(record.getGame());
+                gameList.add(record.getGame(getApplicationContext()));
             }
 
             dbHandler.addGames(gameList, max_user_challenge_id);
@@ -258,5 +251,21 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
            return dbHandler.getAllGames();
         }
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case PLAY_GAME_CODE:
+                if (resultCode == RESULT_OK) {
+                    processGameResult(data.getBooleanExtra(GAME_RESULT, false));
+                }
+                break;
+        }
+    }
+
+    public static void processGameResult(boolean gameResult) {
+        Log.d(TAG, "Game result: " + gameResult);
+        //TODO send game result to server
     }
 }

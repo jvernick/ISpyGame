@@ -180,7 +180,7 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
                             float scalingY = (float) imageLength / height;
                             float scalingX = (float) imageWidth / width;
                             // apply the scaling to the selection so that it is normalized to the true image size
-                            selection = ImageViewer.applyScalingToSelection(selection, scalingX, scalingY);
+                            selection = ViewChallenge.applyScalingToSelection(selection, scalingX, scalingY);
 
                             //For testing
                             testCompression(selection);
@@ -246,8 +246,8 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
         Log.d(TAG, "uncompressed");
         Log.d(TAG, "size: " + selection.size());
         Log.d(TAG, "string size: " + selectionToString(selection).length());
-        Log.d(TAG, "compressed");
 
+        Log.d(TAG, "compressed");
         Log.d(TAG, "size: " + compressSelection(selection).size());
         Log.d(TAG, "string size: " + selectionToString2(compressSelection(selection)).length());
 
@@ -686,32 +686,48 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
         }
     }
 
-    private String selectionToString(ArrayList<float[]> selection) {
-        String s = "{ Length: " + selection.size() + "\n";
+    /**
+     * Converts the float array to as string
+     * @param selection User selection
+     * @return string representing selection
+     */
+    public static String selectionToString(ArrayList<float[]> selection) {
+        String s = "{Length: " + selection.size() + "\n";
         for (float[] floatArray: selection) {
             s += "[" + floatArray[0] + "," + floatArray[1] + "],"; // Arrays.toString(floatArray) + ", ";
         }
         s += "P";
-        s = s.replace(",P","\n}");
+        s = s.replace(",P","\nend}");
+
         return s;
     }
 
+    /**
+     ** Converts the int array to as string
+     * @param selection User selection
+     * @return string representing selection
+     */
     private String selectionToString2(ArrayList<int[]> selection) {
-        String s = "{ Length: " + selection.size() + "\n";
+        String s = "{Length: " + selection.size() + "\n";
         for (int[] floatArray: selection) {
             s += "[" + floatArray[0] + "," + floatArray[1] + "],"; // Arrays.toString(floatArray) + ", ";
         }
         s += "P";
-        s = s.replace(",P","\n}");
+        s = s.replace(",P","\nend}");
+        
         return s;
     }
 
-
+    /**
+     * Compress the selection from float to int
+     * @param sel Selection form device
+     * @return selection with decimals discarded
+     */
     public ArrayList<int[]> compressSelection(ArrayList<float[]> sel) {
         ArrayList<int[]> newSel = new ArrayList<>();
         int[] temp = {(int)sel.get(0)[0],(int)sel.get(0)[1]};
         newSel.add(temp);
-        for (int i = 1; i < sel.size() - 1; i++) {
+        for (int i = 0; i < sel.size() - 1; i++) {
             float[] curr = sel.get(i);
             float[] next = sel.get(i+1);
             newSel.add(new int[]{(int) (next[0] - curr[0]), (int) (next[1] - curr[1])});

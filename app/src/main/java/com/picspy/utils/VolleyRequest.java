@@ -28,7 +28,6 @@ public class VolleyRequest {
     private VolleyRequest(Context context) {
         VolleyRequest.context = context;
         mRequestQueue = getRequestQueue();
-
     }
 
     public static synchronized VolleyRequest getInstance(Context context) {

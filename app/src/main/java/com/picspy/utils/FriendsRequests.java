@@ -215,7 +215,6 @@ public class FriendsRequests extends JsonObjectRequest{
     }
 
 
-
     /**
      * Model for posting data to server. Used for sending friend requests and removing friends.
      */

@@ -1,5 +1,7 @@
 package com.picspy.models;
 
+import android.content.Context;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -41,10 +43,10 @@ public class UserChallengeRecord {
      * @return Constructed game object. Returns null is there is
      * no related data(challenges_by_challenge_id)
      */
-    public Game getGame() {
-        Game temp = GameRecord.getGame(challenges_by_challenge_id);
+    public Game getGame(Context applicationContext) {
+        Game temp = GameRecord.getGame(challenges_by_challenge_id, applicationContext);
         //TODO deprecate the line below. username already set in above function
-        temp.setSenderUsername(users_by_user_id.getUsername());
+        //temp.setSenderUsername(users_by_user_id.getUsername());
         return temp;
     }
     public int getId() {

@@ -12,7 +12,7 @@ public class DspUriBuilder {
     public static final String CHALLENGES_TABLE = "mysql/_table/challenges";
     public static final String USERS_TABLE = "mysql/_table/users";
     public static final String FRIENDS_TABLE = "mysql/_table/friends";
-    public static final String USER_CHALLEGES_TABLE = "mysql/_table/user_challenges";
+    public static final String USER_CHALLENGES_TABLE = "mysql/_table/user_challenges";
     public static final String FILE_URI = "files/images/";
 
     public static String buildUri(String path, HashMap<String,String> parmas) {
@@ -29,6 +29,7 @@ public class DspUriBuilder {
         return  builtUri.toString();
     }
 
+    //TODO Rename method?
     public static String buildFileUploadUri(String path, String filename) {
         String baseUrl = AppConstants.DSP_URL_2 + path + filename + '?';
         Uri builtUri;
