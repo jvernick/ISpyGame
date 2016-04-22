@@ -68,12 +68,13 @@ android:layout_height="match_parent">
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:id="@+id/selection_layout"
+            android:visibility="invisible"
             android:layout_below="@id/game_info" />
 
         <RelativeLayout
             android:id="@+id/x_mark_holder"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:visibility="invisible"
             android:layout_below="@id/game_info">
 

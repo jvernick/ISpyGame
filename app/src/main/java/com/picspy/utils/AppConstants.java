@@ -63,7 +63,7 @@ public class AppConstants {
         return headers;
     }
 
-    public static final String DSP_URL_2 = "http://192.168.0.13:8081/api/v2/";
+    public static final String DSP_URL_2 = "http://192.168.0.15:8081/api/v2/";
     //session
     public static final String SESSION_TOKEN= "session_token";
     public static final String USER_NAME = "username";

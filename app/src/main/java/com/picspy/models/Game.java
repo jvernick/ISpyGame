@@ -47,7 +47,7 @@ public class Game implements Parcelable {
     }
 
     /**
-     * Constructor from parcel, to be used in receiveing intent
+     * Constructor from parcel, to be used in receiving intent
      * @param p Parcel containing game data
      */
     public Game(Parcel p) {
@@ -57,10 +57,11 @@ public class Game implements Parcelable {
         this.guess = p.readInt();
         this.time = p.readInt();
         this.vote = Boolean.parseBoolean(p.readString());
-        this.senderId = p.readInt();
         this.id = p.readInt();
+        this.senderId = p.readInt();
         this.created = p.readString();
         this.senderUsername = p.readString();
+        this.userChallengeId = p.readInt();
     }
     //Default constructor
     public Game() {

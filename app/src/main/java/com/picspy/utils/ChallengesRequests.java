@@ -56,7 +56,7 @@ public class ChallengesRequests  extends JsonObjectRequest{
      * @param errorListener error listener
      * @return A {@link ChallengesRequests} to add to request queue
      */
-    public static ChallengesRequests createGame(Context context,GameRecord gameRecord,
+    public static ChallengesRequests createGame(Context context, GameRecord gameRecord,
                                    final Response.Listener<GameRecord> listener,
                                    Response.ErrorListener errorListener) {
         Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
@@ -148,6 +148,24 @@ public class ChallengesRequests  extends JsonObjectRequest{
         return  new ChallengesRequests(context, Method.GET, url, null, jsonObjectListener, errorListener);
     }
 
+    public static ChallengesRequests submitChallengeResult(Context context, int
+            recordId, HashMap<String,String>
+            params, final Response.Listener<UserChallengesRecord> listener, Response.ErrorListener
+            errorListener) {
+
+        Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                UserChallengesRecord result = gson.fromJson(response.toString(), UserChallengesRecord.class);
+                Log.d(TAG, "RecordResponse: " + result.toString());
+                listener.onResponse(result);
+            }
+        };
+
+        String url = DspUriBuilder.buildDeleteByIdUri(DspUriBuilder.USER_CHALLENGES_TABLE, recordId, params);
+
+        return new ChallengesRequests(context, Method.DELETE, url, null, jsonObjectListener, errorListener);
+    }
 
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {

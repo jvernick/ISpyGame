@@ -32,10 +32,10 @@ import com.picspy.models.UserChallengesRecord;
 import com.picspy.utils.AppConstants;
 import com.picspy.utils.ChallengesRequests;
 import com.picspy.utils.DbContract.GameEntry;
-import com.picspy.utils.PrefUtil;
 import com.picspy.utils.VolleyRequest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ChallengesActivity extends ActionBarActivity  implements LoaderCallbacks<Cursor>{
@@ -43,7 +43,12 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
     private static final String TAG = "ChallengesActivity";
     private static final String CANCEL_TAG = "cancel_ChallengesActivity";
     public static final int PLAY_GAME_CODE = 60;
-    public static final String GAME_RESULT = "game_result";
+    public static final String GAME_RESULT_VALUE = "game_result";
+    public static final String GAME_RESULT_ERROR = "game_error";
+    public static final String GAME_RESULT_SENDER = "game_sender";
+    public static final String GAME_RESULT_CHALLENGE = "game_ChallengeId";
+    public static final String GAME_RESULT_RECORD = "game_UserChallengeId";
+
     private ListView listView;
     private DatabaseHandler dbHandler;
     private final static int LOADER_ID = 1;
@@ -82,8 +87,7 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
                 game.setId(c.getInt(c.getColumnIndex(GameEntry._ID)));
                 game.setSenderUsername(c.getString(c.getColumnIndex(
                         GameEntry.COLUMN_NAME_SENDER_NAME)));
-
-                //Toast.makeText(ChallengesActivity.this, game.toString(), Toast.LENGTH_LONG).show();
+                game.setUserChallengeId(c.getInt(c.getColumnIndex(GameEntry.COLUMN_NAME_USERCHALLENGE_ID)));
 
                 Intent intent = new Intent(ChallengesActivity.this, ViewChallenge.class);
                 intent.putExtra(GAME_EXTRA, game);
@@ -202,7 +206,10 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
                 if (record.getId() > max_user_challenge_id) {
                     max_user_challenge_id = record.getId();
                 }
-                gameList.add(record.getGame(getApplicationContext()));
+                Game temp = record.getGame(getApplicationContext());
+                temp.setUserChallengeId(record.getId());
+                gameList.add(temp);
+                Log.d(TAG,temp.toString());
             }
 
             dbHandler.addGames(gameList, max_user_challenge_id);
@@ -258,14 +265,59 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
         switch (requestCode) {
             case PLAY_GAME_CODE:
                 if (resultCode == RESULT_OK) {
-                    processGameResult(data.getBooleanExtra(GAME_RESULT, false));
+                    boolean value = data.getBooleanExtra(GAME_RESULT_VALUE, false);
+                    int challengeId = data.getIntExtra(GAME_RESULT_CHALLENGE, -1);
+                    int recordId = data.getIntExtra(GAME_RESULT_RECORD, -1);
+                    int sender = data.getIntExtra(GAME_RESULT_SENDER, -1);
+                    processGameResult(value, challengeId, recordId, sender);
+                } else if ( resultCode == RESULT_CANCELED) {
+                    //do nothing
                 }
                 break;
         }
     }
 
-    public static void processGameResult(boolean gameResult) {
-        Log.d(TAG, "Game result: " + gameResult);
-        //TODO send game result to server
+    public  void processGameResult(boolean gameResult, int challengeId, int recordId, int sender) {
+        //Log.d(TAG, "value: " + gameResult + " challengeId: " + challengeId + " recordId: " + recordId + " sender: " + sender);
+        if (recordId != 0) {
+            HashMap<String, String> params = new HashMap<>();
+            params.put("result", String.valueOf(gameResult));
+            params.put("challengeId", String.valueOf(challengeId));
+            params.put("senderId", String.valueOf(sender));
+
+            submitChallengeResult(recordId, params);
+            dbHandler.deleteGame(challengeId);
+            ((GamesCursorAdapter) listView.getAdapter()).changeCursor(dbHandler.getAllGames());
+            ((GamesCursorAdapter) listView.getAdapter()).notifyDataSetChanged();
+        }
     }
+
+    public void submitChallengeResult(int recordId, HashMap<String, String> params) {
+        Response.Listener<UserChallengesRecord> responseListener = new Response.Listener<UserChallengesRecord>() {
+            @Override
+            public void onResponse(UserChallengesRecord response) {
+                if (response != null) {
+                    Log.d(TAG, response.toString());
+                }
+            }
+        };
+
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // TODO handle errors
+                if (error != null ) {
+                    String err = (error.getMessage() == null)? "An error occurred": error.getMessage();
+                    error.printStackTrace();
+                    Log.d(TAG, err);
+                }
+            }
+        };
+
+        ChallengesRequests submitGameRequest = ChallengesRequests.submitChallengeResult(this, recordId, params, responseListener, errorListener);
+        if (submitGameRequest != null) submitGameRequest.setTag(CANCEL_TAG);
+        VolleyRequest.getInstance(this.getApplicationContext()).addToRequestQueue(submitGameRequest);
+        progressSpinner.setVisibility(View.VISIBLE);
+    }
+
 }

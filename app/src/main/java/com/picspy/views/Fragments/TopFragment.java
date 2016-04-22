@@ -1,7 +1,8 @@
 package com.picspy.views.fragments;
 
+import android.app.Activity;
 import android.content.Context;
-import android.os.AsyncTask;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -15,8 +16,6 @@ import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.dreamfactory.client.ApiException;
-import com.picspy.GamesRequests;
 import com.picspy.adapters.TopFragmentArrayAdapter;
 import com.picspy.firstapp.R;
 import com.picspy.models.Game;
@@ -25,7 +24,9 @@ import com.picspy.models.GamesRecord;
 import com.picspy.utils.AppConstants;
 import com.picspy.utils.ChallengesRequests;
 import com.picspy.utils.VolleyRequest;
+import com.picspy.views.ChallengesActivity;
 import com.picspy.views.MainActivity;
+import com.picspy.views.ViewChallenge;
 
 import java.util.ArrayList;
 
@@ -83,21 +84,9 @@ public class TopFragment extends android.support.v4.app.ListFragment
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        // Insert desired behavior here.
-        Toast.makeText(getActivity().getApplicationContext(), arrayAdapter.getItem(position).toString(),
-                Toast.LENGTH_LONG).show();
-
-        //TODO Start activity to display Game
-                /*
-                    get game in reciepient activity as follows:
-                    Bundle Bundle = intent.getExtras();
-                    Game game = (game) bundle.getParcelable(ChallengesActivity.EXTRA_MESSAGE);
-                 */
-                /*
-                Intent intent = new Intent(ChallengesActivity.this, SecondActivity.class);
-                intent.putExtra(EXTRA_MESSAGE, arrayAdapter.getItem(position));
-                startActivity(intent);
-                */
+        Intent intent = new Intent(getActivity(), ViewChallenge.class);
+        intent.putExtra(ChallengesActivity.GAME_EXTRA, arrayAdapter.getItem(position));
+        startActivityForResult(intent, ChallengesActivity.PLAY_GAME_CODE);
     }
 
     @Override
@@ -151,7 +140,7 @@ public class TopFragment extends android.support.v4.app.ListFragment
             ArrayList<Game> gameList = new ArrayList<>();
 
             for (GameRecord gameRecord : gamesRecord.getResource()) {
-                gameList.add(GameRecord.getGame(gameRecord));
+                gameList.add(GameRecord.getGame(gameRecord, getActivity().getApplicationContext()));
             }
 
            /* if (arrayAdapter == null) {
@@ -213,5 +202,35 @@ public class TopFragment extends android.support.v4.app.ListFragment
                             || listView.getChildAt(0).getTop() < listView.getPaddingTop());
         }
 
+    }
+
+    /**
+     * Receive the result from a previous call to
+     * {@link #startActivityForResult(Intent, int)}.  This follows the
+     * related Activity API as described there in
+     * {@link Activity#onActivityResult(int, int, Intent)}.
+     *
+     * @param requestCode The integer request code originally supplied to
+     *                    startActivityForResult(), allowing you to identify who this
+     *                    result came from.
+     * @param resultCode  The integer result code returned by the child activity
+     *                    through its setResult().
+     * @param data        An Intent, which can return result data to the caller
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case ChallengesActivity.PLAY_GAME_CODE:
+                if (resultCode == Activity.RESULT_OK) {
+                    boolean value = data.getBooleanExtra(ChallengesActivity.GAME_RESULT_VALUE, false);
+                    int challengeId = data.getIntExtra(ChallengesActivity.GAME_RESULT_CHALLENGE, -1);
+                    int recordId = data.getIntExtra(ChallengesActivity.GAME_RESULT_RECORD, -1);
+                    int sender = data.getIntExtra(ChallengesActivity.GAME_RESULT_SENDER, -1);
+                    (new ChallengesActivity()).processGameResult(value, challengeId, recordId, sender);
+                } else if ( resultCode == Activity.RESULT_CANCELED) {
+                    //do nothing
+                }
+                break;
+        }
     }
 }

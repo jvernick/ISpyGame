@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.picspy.views.Splash_Activity"
     android:layout_height="match_parent"
-    android:background="@color/primary_light"
+    android:background="@color/primary"
     android:layout_width="match_parent">
 
 
@@ -13,6 +13,7 @@
         android:layout_height="fill_parent"
           TODO To add logo
         android:src="@drawable/Logo.txt"/> -->
+
 
     <RelativeLayout
         android:id="@+id/buttons"
@@ -72,6 +73,28 @@
             android:onClick="splashSignUp"
             android:visibility="gone"/>
     </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_above="@id/buttons"
+        android:weightSum="10">
+
+        <TextView
+            android:id="@+id/appName"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:text="@string/app_name"
+            android:textColor="@color/grey_100"
+            android:gravity="bottom"
+            android:layout_gravity="center_horizontal"
+            android:padding="4dp"
+            android:textSize="48sp"
+            android:layout_weight="4"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <!-- TODO modify location-->
     <ProgressBar

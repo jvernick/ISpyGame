@@ -10,6 +10,7 @@ import android.util.Log;
 import com.picspy.models.Friend;
 import com.picspy.models.Game;
 import com.picspy.utils.AppConstants;
+import com.picspy.utils.ChallengesRequests;
 import com.picspy.utils.DbContract.FriendEntry;
 import com.picspy.utils.DbContract.GameEntry;
 import com.picspy.utils.PrefUtil;
@@ -41,6 +42,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
             + GameEntry.COLUMN_NAME_VOTE + " BOOLEAN, "
             + GameEntry.COLUMN_NAME_SENDER_ID + " INTEGER, "
             + GameEntry.COLUMN_NAME_CREATED + " TEXT, "
+            + GameEntry.COLUMN_NAME_USERCHALLENGE_ID + " INTEGER, "
             + GameEntry.COLUMN_NAME_SENDER_NAME + " TEXT"
             + ")";
     private static final String SQL_DELETE_FRIENDS_TABLE =
@@ -332,6 +334,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         values.put(GameEntry.COLUMN_NAME_SENDER_ID, game.getSenderId());
         values.put(GameEntry.COLUMN_NAME_CREATED, game.getCreated());
         values.put(GameEntry.COLUMN_NAME_SENDER_NAME, game.getSenderUsername());
+        values.put(GameEntry.COLUMN_NAME_USERCHALLENGE_ID, game.getUserChallengeId());
 
         return db.insert(GameEntry.TABLE_NAME, null, values);
     }
@@ -346,7 +349,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         SQLiteDatabase db = this.getWritableDatabase();
        return db.rawQuery(selectQuery, null);
     }
-        /**
+
+    /**
      * Deletes a game from the database
      * @param game game to be deleted
      */
@@ -354,6 +358,21 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         SQLiteDatabase db = this.getWritableDatabase();
         String selection = GameEntry._ID + " = ?";
         String[] selectionArgs = { String.valueOf(game.getId()) };
+        db.delete(
+                GameEntry.TABLE_NAME,
+                selection,
+                selectionArgs);
+        db.close();
+    }
+
+    /**
+     * Deletes a game with the given Id from the database
+     * @param gameId id of game to be deleted
+     */
+    public void deleteGame(int gameId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selection = GameEntry._ID + " = ?";
+        String[] selectionArgs = { String.valueOf(gameId) };
         db.delete(
                 GameEntry.TABLE_NAME,
                 selection,

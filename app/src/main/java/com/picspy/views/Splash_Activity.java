@@ -123,7 +123,7 @@ public class Splash_Activity extends Activity {
         Intent intent = new Intent(Splash_Activity.this, MainActivity.class);
         startActivity(intent);
         //TODO uncomment after all testing is complete so that one never returns to splash activity
-       //finish();
+       finish();
     }
 
     /**

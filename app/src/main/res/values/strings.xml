@@ -8,7 +8,7 @@
         hint    : EditText hint
 
     -->
-    <string name="app_name">Picspy</string>
+    <string name="app_name">PicSpy</string>
     <string name="action_settings">Menu</string>
     <string name="friend_delete_menu">Remove Friend</string>
     <string name="challenge_action_settings">Refresh </string>

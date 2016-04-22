@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Gravity;
@@ -43,8 +44,8 @@ import java.util.regex.Pattern;
 public class ViewChallenge extends Activity {
     private static final String TAG = "ViewChallenge";
     private static final Object CANCEL_TAG = "cancel_game_request";
-    private static final int exitDelay = 3000;
-    private static final int hintDelay = 5000;
+    private static final int HINT_DELAY = 5000;
+    private static final long EXIT_DELAY = 3000;
     private ImageView pic;
     private Matrix matrix;
     private ArrayList<float[]> selection;
@@ -67,6 +68,7 @@ public class ViewChallenge extends Activity {
     Animation animHintLeft;
     int trueWidth;
     int trueHeight;
+    Game game;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,7 +79,7 @@ public class ViewChallenge extends Activity {
         imageDownloaded = false;
 
         Intent intent = getIntent();
-        Game game = intent.getParcelableExtra(ChallengesActivity.GAME_EXTRA);
+        game = intent.getParcelableExtra(ChallengesActivity.GAME_EXTRA);
         hint  = game.getHint();
         time = game.getTime();
         guessesRemaining = game.getGuess();
@@ -106,9 +108,9 @@ public class ViewChallenge extends Activity {
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
 
-        ////download image
+        // download image
         downloadImage(fileName);
-        //TODo after removing unneeded code, move to inside image download
+        // TODo after removing unneeded code, move to inside image download
         matrix = new Matrix();
         // TODO: Ensure that this rotation value applies for all devices
         //set image rotation value to 90 degrees in matrix.
@@ -118,7 +120,7 @@ public class ViewChallenge extends Activity {
         animHintLeft = AnimationUtils.loadAnimation(this, R.anim.slide_hint_left);
 
         // Start a timerText to display solely the hint for 5 seconds
-        new CountDownTimer(hintDelay, hintDelay) {
+        new CountDownTimer(HINT_DELAY, HINT_DELAY) {
 
             public void onTick(long millisUntilFinished) {
             }
@@ -148,6 +150,7 @@ public class ViewChallenge extends Activity {
         pic.setVisibility(View.VISIBLE);
         swipeText.setVisibility(View.VISIBLE);
         guessesText.setVisibility(View.VISIBLE);
+        selectionLayout.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -178,7 +181,7 @@ public class ViewChallenge extends Activity {
 
             public void onFinish() {
                 timerText.setText("Time's up!");
-                exitGuessing(false);
+                exitGuessing(false, false);
             }
         }.start();
     }
@@ -206,7 +209,7 @@ public class ViewChallenge extends Activity {
                         Toast toast = Toast.makeText(getApplicationContext(), "You guessed right!", Toast.LENGTH_SHORT);
                         toast.show();
                         // open the challengesActivity once the guessing is done
-                        exitGuessing(true);
+                        exitGuessing(true, false);
 
                     } else {
                         Log.d("click", "Wrong");
@@ -246,7 +249,7 @@ public class ViewChallenge extends Activity {
                             // end the guessing as the user was wrong
                             Toast toast = Toast.makeText(getApplicationContext(), "You didn't guess right :(", Toast.LENGTH_SHORT);
                             toast.show();
-                            exitGuessing(false);
+                            exitGuessing(false, false);
                         }
                     }
                 }
@@ -292,6 +295,7 @@ public class ViewChallenge extends Activity {
                         toast.setDuration(Toast.LENGTH_LONG);
                         toast.setView(layout);
                         toast.show();
+                        exitGuessing(false, true);
                     }
                 }
                 // TODO: what should happen if an error occurred
@@ -345,19 +349,27 @@ public class ViewChallenge extends Activity {
     /**
      * Delay for exitDelay time and exit to previous activity (challengesActivity|topFragment)
      */
-    private void exitGuessing(boolean gameResult) {
+    private void exitGuessing(boolean gameResult, boolean error) {
         //TODO return to parent activity, not ChallengesActivity
         Intent intent = new Intent();
-        intent.putExtra(ChallengesActivity.GAME_RESULT, gameResult);
-        setResult(RESULT_OK, intent);
-        new CountDownTimer(exitDelay, exitDelay) {
-            public void onTick(long millisUntilFinished) {
-            }
+        intent.putExtra(ChallengesActivity.GAME_RESULT_VALUE, gameResult);
+        intent.putExtra(ChallengesActivity.GAME_RESULT_ERROR, error);
+        intent.putExtra(ChallengesActivity.GAME_RESULT_SENDER, game.getSenderId());
+        intent.putExtra(ChallengesActivity.GAME_RESULT_CHALLENGE, game.getId());
+        intent.putExtra(ChallengesActivity.GAME_RESULT_RECORD, game.getUserChallengeId());
 
-            public void onFinish() {
+        if (! error) {
+            setResult(RESULT_OK, intent);
+        } else {
+            setResult(RESULT_CANCELED, intent);
+        }
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
                 finish();
             }
-        }.start(); //TODO uncomment
+        }, EXIT_DELAY);
     }
 
     // Helper method which checks if a given (x,y) coordinate as a float[] is inside the list of

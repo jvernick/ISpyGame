@@ -29,6 +29,7 @@ public class DbContract {
          public static final String COLUMN_NAME_PICTURE = "picture_name";
          public static final String COLUMN_NAME_SENDER_ID = "sender";
          public static final String COLUMN_NAME_SENDER_NAME = "sender_name";
+         public static final String COLUMN_NAME_USERCHALLENGE_ID = "userChallengeId";
          public static final String COLUMN_NAME_CREATED = "created";
      }
 
