@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 public class GamesCursorAdapter extends ResourceCursorAdapter {
     private static final String TAG = "GamesCursorAdapter";
     //possible challenge icons. Add as necessary.
-    private static final int[] ICONS = {R.drawable.ic_challenge_purple, R.drawable.ic_challenge_lime,
+    public static final int[] ICONS = {R.drawable.ic_challenge_purple, R.drawable.ic_challenge_lime,
             R.drawable.ic_challenge_orange, R.drawable.ic_challenge_yellow,
             R.drawable.ic_challenge_blue, R.drawable.ic_challenge_red};
 

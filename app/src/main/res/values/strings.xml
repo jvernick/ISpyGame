@@ -9,6 +9,7 @@
 
     -->
     <string name="app_name">PicSpy</string>
+    <string name="gcm_sender_id">159973896341</string>
     <string name="action_settings">Menu</string>
     <string name="friend_delete_menu">Remove Friend</string>
     <string name="challenge_action_settings">Refresh </string>

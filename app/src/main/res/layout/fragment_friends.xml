@@ -42,7 +42,7 @@
             android:id="@+id/friend_request_badge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="10+"
+            android:text=" 3 "
             android:padding="2dp"
             android:textColor="#FFFFFF"
             android:layout_alignTop="@id/find_friend"

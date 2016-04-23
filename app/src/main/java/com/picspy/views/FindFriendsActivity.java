@@ -17,6 +17,8 @@ import android.widget.TextView;
 
 import com.picspy.adapters.SlidingTabLayout;
 import com.picspy.firstapp.R;
+import com.picspy.utils.AppConstants;
+import com.picspy.utils.PrefUtil;
 import com.picspy.utils.VolleyRequest;
 import com.picspy.views.fragments.FriendRequestsFragment;
 import com.picspy.views.fragments.FriendSearchFragment;
@@ -43,6 +45,8 @@ public class FindFriendsActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find_friends);
+        // reset notification counter
+        PrefUtil.putInt(this, AppConstants.FRIEND_REQUEST_COUNT, 0);
 
         // Set up the action bar.
         //final ActionBar actionBar = getSupportActionBar();

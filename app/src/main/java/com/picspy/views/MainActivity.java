@@ -14,8 +14,11 @@ import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.picspy.firstapp.R;
+import com.picspy.utils.AppConstants;
+import com.picspy.utils.PrefUtil;
 import com.picspy.utils.VolleyRequest;
 import com.picspy.views.fragments.FriendsFragment;
 import com.picspy.adapters.TabsViewPagerAdapter;
@@ -24,7 +27,6 @@ import com.picspy.adapters.SlidingTabLayout;
 
 import java.util.ArrayList;
 
-//TODO: this is currently modified to show the result of user registration
 /**
  * Main page activity
  */
@@ -33,6 +35,7 @@ public class MainActivity extends FragmentActivity {
     public static final String CANCEL_TAG = "cancel_main_request";
     private static final int SELECT_PICTURE = 1;
     private String selectedImagePath;
+    private TextView challengeBadge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +47,8 @@ public class MainActivity extends FragmentActivity {
         // Get their instances.
         SlidingTabLayout slidingTabLayout = (SlidingTabLayout) findViewById(R.id.tab);
         viewPager = (ViewPager) findViewById(R.id.viewpager);
+        challengeBadge = (TextView) findViewById(R.id.challenge_request_badge);
+
 
         // create a fragment list in order.
         ArrayList<Fragment> fragments = new ArrayList<>();
@@ -55,7 +60,6 @@ public class MainActivity extends FragmentActivity {
         TabsViewPagerAdapter myViewPagerAdapter = new TabsViewPagerAdapter(
                 getSupportFragmentManager(), fragments);
         viewPager.setAdapter(myViewPagerAdapter);
-        Log.d("mainactivity", "onCreate");
 
         // make sure the tabs are equally spaced.
         slidingTabLayout.setDistributeEvenly(true);
@@ -86,6 +90,52 @@ public class MainActivity extends FragmentActivity {
         return super.onOptionsItemSelected(item);
     }
     */
+
+    /**
+     * Dispatch onResume() to fragments.  Note that for better inter-operation
+     * with older versions of the platform, at the point of this call the
+     * fragments attached to the activity are <em>not</em> resumed.  This means
+     * that in some cases the previous state may still be saved, not allowing
+     * fragment transactions that modify the state.  To correctly interact
+     * with fragments in their proper state, you should instead override
+     * {@link #onResumeFragments()}.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateNotificationBadge();
+    }
+
+    /**
+     * Handle onNewIntent() to inform the fragment manager that the
+     * state is not saved.  If you are handling new intents and may be
+     * making changes to the fragment state, you want to be sure to call
+     * through to the super-class here first.  Otherwise, if your state
+     * is saved but the activity is not stopped, you could get an
+     * onNewIntent() call which happens before onResume() and trying to
+     * perform fragment operations at that point will throw IllegalStateException
+     * because the fragment manager thinks the state is still saved.
+     *
+     * @param intent received intent
+     */
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Log.d("mainactivity", "onNewIntent");
+        updateNotificationBadge();
+    }
+
+    /**
+     * Updates the friend request notification badge
+     */
+    private void updateNotificationBadge() {
+        int notificationCount = PrefUtil.getInt(this, AppConstants.CHALLENGE_REQUEST_COUNT);
+        if (notificationCount <= 0) {
+            challengeBadge.setVisibility(View.GONE);
+        } else {
+            challengeBadge.setText(" " + notificationCount + " ");
+        }
+    }
 
     /**
      * Starts camera activity

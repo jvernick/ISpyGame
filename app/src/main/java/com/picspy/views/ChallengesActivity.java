@@ -32,6 +32,7 @@ import com.picspy.models.UserChallengesRecord;
 import com.picspy.utils.AppConstants;
 import com.picspy.utils.ChallengesRequests;
 import com.picspy.utils.DbContract.GameEntry;
+import com.picspy.utils.PrefUtil;
 import com.picspy.utils.VolleyRequest;
 
 import java.util.ArrayList;
@@ -58,6 +59,9 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // reset notification counter
+        PrefUtil.putInt(this, AppConstants.CHALLENGE_REQUEST_COUNT, 0);
+
         setContentView(R.layout.activity_challenges);
         listView = (ListView) findViewById(R.id.challenge_list);
         progressSpinner = (ProgressBar) findViewById(R.id.challenges_progressBar);

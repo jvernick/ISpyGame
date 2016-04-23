@@ -55,6 +55,7 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
 
     private TextView emptySearchView;
     private TextView noFriendView;
+    private TextView friendReqBadge;
 
     /**
      * Static factory method that takes an int parameter,
@@ -98,6 +99,7 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
 
         noFriendView = (TextView) rootView.findViewById(R.id.no_friends);
         emptySearchView = (TextView) rootView.findViewById(R.id.search_empty);
+        friendReqBadge = (TextView) rootView.findViewById(R.id.friend_request_badge);
 
         ImageView findFriend = (ImageView) rootView.findViewById(R.id.find_friend);
         findFriend.setOnClickListener(new View.OnClickListener() {
@@ -223,10 +225,17 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
     public void onResume() {
         super.onResume();
 
-        //clear search field
+        // clear search field
         if (searchField != null && searchField.getText().length() == 0) {
             searchField.clearFocus();
             searchField.setText("");
+        }
+        // update notification badge
+        int notificationCount = PrefUtil.getInt(getActivity(), AppConstants.FRIEND_REQUEST_COUNT);
+        if (notificationCount <= 0) {
+            friendReqBadge.setVisibility(View.GONE);
+        } else {
+            friendReqBadge.setText(" " + notificationCount + " ");
         }
     }
 

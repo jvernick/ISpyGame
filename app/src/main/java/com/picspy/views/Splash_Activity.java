@@ -17,6 +17,7 @@ import com.android.volley.VolleyError;
 import com.dreamfactory.api.UserApi;
 import com.dreamfactory.model.Session;
 import com.picspy.firstapp.R;
+import com.picspy.gcm.RegistrationIntentService;
 import com.picspy.utils.AppConstants;
 import com.picspy.utils.PrefUtil;
 import com.picspy.utils.RegistrationRequests;
@@ -119,11 +120,11 @@ public class Splash_Activity extends Activity {
      * Starts the main activity
      */
     public void startMain() {
+        gcmTokenCheck();
         Log.d("Splash", "Starting Main");
         Intent intent = new Intent(Splash_Activity.this, MainActivity.class);
         startActivity(intent);
-        //TODO uncomment after all testing is complete so that one never returns to splash activity
-       finish();
+         finish();
     }
 
     /**
@@ -157,7 +158,8 @@ public class Splash_Activity extends Activity {
             }
         };
 
-        RegistrationRequests jwtRefresh = RegistrationRequests.refreshJwtToken(applicationContext, responseListener, errorListener);
+        RegistrationRequests jwtRefresh = RegistrationRequests.refreshJwtToken(applicationContext,
+                responseListener, errorListener);
         jwtRefresh.setTag(CANCEL_TAG);
         VolleyRequest.getInstance(applicationContext).addToRequestQueue(jwtRefresh);
         progressSpinner.setVisibility(View.VISIBLE);
@@ -167,5 +169,14 @@ public class Splash_Activity extends Activity {
     protected void onStop() {
         super.onStop();
         VolleyRequest.getInstance(this.getApplication()).getRequestQueue().cancelAll(CANCEL_TAG);
+    }
+
+    public void gcmTokenCheck(){
+        int daysDiff = daysSinceLastLogin(PrefUtil.getLong(getApplicationContext(),
+                AppConstants.LAST_TOK_DATE));
+        if (daysDiff >= 7) {
+            Intent gcmIntent = new Intent(Splash_Activity.this, RegistrationIntentService.class);
+            startService(gcmIntent);
+        }
     }
 }

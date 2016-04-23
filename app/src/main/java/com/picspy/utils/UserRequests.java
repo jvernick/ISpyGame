@@ -30,7 +30,7 @@ public class UserRequests extends JsonObjectRequest {
     private Context context;
 
     //TODO may not need, verify and remove if not needed
-    public enum Type {ADD, FIND}
+    public enum Type {ADD, FIND, UPDATE}
     private Type type;
 
     /**
@@ -89,6 +89,45 @@ public class UserRequests extends JsonObjectRequest {
     }
 
     /**
+     * Adds the user to the user table on the server
+     * @param context Calling activiyt context
+     * @param userModel Model containing data to post
+     * @param listener Response listener
+     * @param errorListener Errror listener
+     * @return Returns an instance of a Request that is added to the request queue
+     */
+    public static UserRequests updateGcmReg(Context context, AddUserModel userModel,
+                                       final Response.Listener<UserRecord> listener,
+                                       Response.ErrorListener errorListener) {
+        Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d(TAG, "JSONresponse: " + response.toString());
+                UsersRecord temp = gson.fromJson(response.toString(), UsersRecord.class);
+                Log.d(TAG, "RecordsResponse" + temp.toString());
+                listener.onResponse(temp.getOnlyResource());
+            }
+        };
+
+        RecordsRequest<AddUserModel> request = new RecordsRequest<>();
+        request.addResource(userModel);
+
+        JSONObject jsonRequest;
+        try {
+            Log.d(TAG, "adduserRequest: " + userModel.toString());
+            jsonRequest = new JSONObject(gson.toJson(request, new TypeToken<RecordsRequest<AddUserModel>>(){}.getType()));
+            Log.d(TAG, "jsonRequest: " + jsonRequest.toString());
+
+            String url = DspUriBuilder.buildUri(DspUriBuilder.USERS_TABLE, null);
+            return new UserRequests(context, Type.UPDATE, Method.PATCH, url,
+                    jsonRequest, jsonObjectListener, errorListener);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return  null;
+        }
+    }
+
+    /**
      * TODO Test and replace find friend
      * Searches for a user on the server by username
      * @param context Calling activity context for getting headers
@@ -134,10 +173,21 @@ public class UserRequests extends JsonObjectRequest {
     public static class AddUserModel {
         private Integer id;
         private String username;
+        private String reg_token;
 
         public AddUserModel(int id, String username) {
             this.id = id;
             this.username = username;
+        }
+
+        public AddUserModel(Integer id, String username, String reg_token) {
+            this.id = id;
+            this.username = username;
+            this.reg_token = reg_token;
+        }
+
+        public String getReg_token() {
+            return reg_token;
         }
 
         public int getId() {
@@ -151,9 +201,10 @@ public class UserRequests extends JsonObjectRequest {
         @Override
         public String toString() {
             return "AddUserModel{" +
-                    "id=" + id +
-                    ", username='" + username + '\'' +
-                    '}';
+                    "\n" + "id=" + id +
+                    "\n" + " username=" + username +
+                    "\n" + "reg_token= " + reg_token +
+                    "\n}";
         }
     }
 }

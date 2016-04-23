@@ -19,7 +19,7 @@ public class PrefUtil {
     /**
      * Gets a String from the shared preferences
      * @param context The context that invokes this call
-     * @param key The key for accessing the required value
+     * @param key The key for accessing the desired value
      * @return  The value for the desired key
      */
     public static String getString(Context context, String key) {
@@ -30,7 +30,7 @@ public class PrefUtil {
     /**
      * Gets a String from the shared preferences
      * @param context The context that invokes this call
-     * @param key The key for accessing the required value
+     * @param key The key for accessing the desired value
      * @param defaultString Value returned when the key is not found
      * @return  The value for the desired key
      */
@@ -42,7 +42,7 @@ public class PrefUtil {
     /**
      * Adds a String to the shared preferences
      * @param context The context that invokes this call
-     * @param key The key for accessing the required value
+     * @param key The key for accessing the desired value
      * @param value The value to be added to the shared preferences
      */
     static public synchronized void putString(Context context, String key, String value) {
@@ -53,9 +53,22 @@ public class PrefUtil {
     }
 
     /**
+     * Adds a boolean to the shared preferences
+     * @param context The context that invokes this call
+     * @param key The key for accessing the desired value
+     * @param value The value to be added to the shared preferences
+     */
+    static public synchronized void putBoolean(Context context, String key, Boolean value) {
+        SharedPreferences settings = Prefs.get(context);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean(key, value);
+        editor.apply();
+    }
+
+    /**
      * Adds an Int to the shared preferences
      * @param context The context that invokes this call
-     * @param key The key for accessing the required value
+     * @param key The key for accessing the desired value
      * @param value The integer value to be added to the shared preferences
      */
     static public synchronized void putInt(Context context, String key, int value) {
@@ -68,7 +81,7 @@ public class PrefUtil {
     /**
      * Gets an int from the shared preferences
      * @param context The context that invokes this call
-     * @param key The key for accessing the required value
+     * @param key The key for accessing the desired value
      * @return  The integer value for the desired key
      */
     public static int getInt (Context context, String key) {
@@ -79,7 +92,7 @@ public class PrefUtil {
     /**
      * Adds a Long to the shared preferences
      * @param context The context that invokes this call
-     * @param key The key for accessing the required value
+     * @param key The key for accessing the desired value
      * @param value The Long value to be added to the shared preferences
      */
     static public synchronized void putLong(Context context, String key, Long value) {
@@ -92,7 +105,7 @@ public class PrefUtil {
     /**
      * Gets a String from the shared preferences
      * @param context The context that invokes this call
-     * @param key The key for accessing the required value
+     * @param key The key for accessing the desired value
      * @param defautlInt Value returned when the key is not found
      * @return  The integer value for the desired key
      */
