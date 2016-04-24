@@ -238,4 +238,10 @@ public class FriendRequestsFragment extends ListFragment implements FriendReques
         if (deleteFriedRequest != null) deleteFriedRequest.setTag(FindFriendsActivity.CANCEL_TAG);
         VolleyRequest.getInstance(getActivity().getApplicationContext()).addToRequestQueue(deleteFriedRequest);
     }
+
+    public void refresh() {
+        fromNotf = true;
+        getFriendRequests();
+        Log.d(TAG, "refreshing");
+    }
 }

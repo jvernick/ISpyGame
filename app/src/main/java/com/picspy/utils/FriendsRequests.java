@@ -85,6 +85,7 @@ public class FriendsRequests extends JsonObjectRequest{
         try {
             jsonRequest = new JSONObject(gson.toJson(request, new TypeToken<RecordsRequest<FriendModel>>(){}.getType()));
             HashMap<String, String> params = new HashMap<>();
+            // TODO may not be needed. Username obtained from display_name
             params.put("uname", PrefUtil.getString(context, AppConstants.USER_NAME));
             String url = DspUriBuilder.buildUri(DspUriBuilder.FRIENDS_TABLE, params);
             Log.d(TAG, url);

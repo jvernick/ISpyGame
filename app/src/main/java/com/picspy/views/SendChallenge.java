@@ -173,7 +173,7 @@ public class SendChallenge extends ActionBarActivity implements
                     if (file.delete()) Log.d(TAG, "picture deleted");
 
                     Intent intent = new Intent(SendChallenge.this, MainActivity.class);
-                    //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    //TODO use? intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                 }
             }

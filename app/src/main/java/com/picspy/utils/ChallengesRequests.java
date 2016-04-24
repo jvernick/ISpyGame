@@ -72,7 +72,10 @@ public class ChallengesRequests  extends JsonObjectRequest{
             gamesRecord.addResource(gameRecord);
             JSONObject jsonRequest;
             jsonRequest = new JSONObject(gson.toJson(gamesRecord, new TypeToken<RecordsRequest<GameRecord>>(){}.getType()));
-            String url = DspUriBuilder.buildUri(DspUriBuilder.CHALLENGES_TABLE, null);
+            HashMap<String, String> params = new HashMap<>();
+            params.put("fields", "id");
+            params.put("related", "user_challenges_by_challenge_id");
+            String url = DspUriBuilder.buildUri(DspUriBuilder.CHALLENGES_TABLE, params);
 
             return new ChallengesRequests(context, Method.POST, url, jsonRequest, jsonObjectListener, errorListener);
         } catch (JSONException e) {

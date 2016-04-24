@@ -329,4 +329,23 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
         progressSpinner.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * Handle onNewIntent() to inform the fragment manager that the
+     * state is not saved.  If you are handling new intents and may be
+     * making changes to the fragment state, you want to be sure to call
+     * through to the super-class here first.  Otherwise, if your state
+     * is saved but the activity is not stopped, you could get an
+     * onNewIntent() call which happens before onResume() and trying to
+     * perform fragment operations at that point will throw IllegalStateException
+     * because the fragment manager thinks the state is still saved.
+     *
+     * @param intent
+     */
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        PrefUtil.putInt(this, AppConstants.FRIEND_REQUEST_COUNT, 0);
+        getChallenges(true);
+    }
+
 }

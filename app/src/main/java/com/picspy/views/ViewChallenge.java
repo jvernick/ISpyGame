@@ -282,6 +282,7 @@ public class ViewChallenge extends Activity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 if (error != null) {
+                    //TODO handle error when file not found.
                     String err = (error.getMessage() == null)? "error message null": error.getMessage();
                     error.printStackTrace();
                     Log.d(TAG, err);

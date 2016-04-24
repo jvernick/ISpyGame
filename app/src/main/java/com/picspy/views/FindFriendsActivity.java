@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -56,8 +57,10 @@ public class FindFriendsActivity extends ActionBarActivity {
 
         // create a fragment list in order.
         ArrayList<Fragment> fragments = new ArrayList<>();
-        fragments.add(FriendRequestsFragment.newInstance(isNotf));
+        FriendRequestsFragment requestsFragment = FriendRequestsFragment.newInstance(isNotf);
+        fragments.add(requestsFragment);
         fragments.add(new FriendSearchFragment());
+
 
         // Create the adapter that will return a fragment for each of the two
         // primary sections of the activity.
@@ -90,6 +93,29 @@ public class FindFriendsActivity extends ActionBarActivity {
         toolbar.setNavigationIcon(R.drawable.ic_chevron_left);
     }
 
+    /**
+     * Handle onNewIntent() to inform the fragment manager that the
+     * state is not saved.  If you are handling new intents and may be
+     * making changes to the fragment state, you want to be sure to call
+     * through to the super-class here first.  Otherwise, if your state
+     * is saved but the activity is not stopped, you could get an
+     * onNewIntent() call which happens before onResume() and trying to
+     * perform fragment operations at that point will throw IllegalStateException
+     * because the fragment manager thinks the state is still saved.
+     *
+     * @param intent
+     */
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        PrefUtil.putInt(this, AppConstants.FRIEND_REQUEST_COUNT, 0);
+        FriendRequestsFragment  requestsFragment = (FriendRequestsFragment)
+                getSupportFragmentManager().findFragmentByTag(
+                        mSectionsPagerAdapter.fragments.get(0).getTag());
+        if (requestsFragment != null) {
+            requestsFragment.refresh();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
