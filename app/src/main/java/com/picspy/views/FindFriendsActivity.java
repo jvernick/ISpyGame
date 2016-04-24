@@ -47,6 +47,8 @@ public class FindFriendsActivity extends ActionBarActivity {
         setContentView(R.layout.activity_find_friends);
         // reset notification counter
         PrefUtil.putInt(this, AppConstants.FRIEND_REQUEST_COUNT, 0);
+        boolean isNotf = getIntent().getBooleanExtra(FriendRequestsFragment.ARG_NOTF, false);
+
 
         // Set up the action bar.
         //final ActionBar actionBar = getSupportActionBar();
@@ -54,7 +56,7 @@ public class FindFriendsActivity extends ActionBarActivity {
 
         // create a fragment list in order.
         ArrayList<Fragment> fragments = new ArrayList<>();
-        fragments.add(new FriendRequestsFragment());
+        fragments.add(FriendRequestsFragment.newInstance(isNotf));
         fragments.add(new FriendSearchFragment());
 
         // Create the adapter that will return a fragment for each of the two

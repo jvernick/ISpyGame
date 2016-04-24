@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.picspy.firstapp.R;
+import com.picspy.gcm.RegistrationIntentService;
 import com.picspy.models.UserRecord;
 import com.picspy.utils.Accounts;
 import com.picspy.utils.AppConstants;
@@ -341,6 +342,9 @@ public class RegisterActivity extends Activity {
      */
     private void showResults() {
         progressDialog.cancel();
+        // gcm registration
+        Intent gcmIntent = new Intent(getApplicationContext(), RegistrationIntentService.class);
+        startService(gcmIntent);
         Toast.makeText(RegisterActivity.this, "Welcome!", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);

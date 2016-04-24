@@ -28,16 +28,33 @@ import java.util.ArrayList;
 
 public class FriendRequestsFragment extends ListFragment implements FriendRequestsArrayAdapter.AdapterRequestListener {
     private static final String TAG = "FriendRequestsFragment";
+    public static final String ARG_NOTF = "isNotification";
     private static int myUserId;
+    private boolean fromNotf;
     private ProgressBar progressSpinner;
     private FriendRequestsArrayAdapter arrayAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        // Reset friend notification badge
+        PrefUtil.putInt(getActivity(), AppConstants.FRIEND_REQUEST_COUNT, 0);
+        fromNotf = getArguments().getBoolean(ARG_NOTF, false);
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_friend_request, container, false);
+    }
+
+    /**
+     * Static factory method that takes an int parameter,
+     * initializes the fragment's arguments, and returns the
+     * new fragment to the client.
+     */
+    public static FriendRequestsFragment newInstance(boolean isNotification) {
+        FriendRequestsFragment f = new FriendRequestsFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(ARG_NOTF, isNotification);
+        f.setArguments(args);
+        return f;
     }
 
     /**
@@ -96,7 +113,22 @@ public class FriendRequestsFragment extends ListFragment implements FriendReques
             @Override
             public void onErrorResponse(VolleyError error) {
                 progressSpinner.setVisibility(View.GONE);
-                //ToDO  if there isa friend request (from notification) show error bar Otherwise show nothing
+                if (error != null ) {
+                    String err = (error.getMessage() == null)? "An error occurred": error.getMessage();
+                    error.printStackTrace();
+                    Log.d(TAG, err);
+                    //Show toast only if there is no server connection this is from a notification
+                    if (err.matches(AppConstants.CONNECTION_ERROR) && fromNotf) {
+                        LayoutInflater inflater = getActivity().getLayoutInflater();
+                        View layout = inflater.inflate(R.layout.custom_toast,
+                                (ViewGroup) getActivity().findViewById(R.id.toast_layout_root));
+                        Toast toast = new Toast(getActivity());
+                        toast.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
+                        toast.setDuration(Toast.LENGTH_LONG);
+                        toast.setView(layout);
+                        toast.show();
+                    }
+                }
             }
         };
 

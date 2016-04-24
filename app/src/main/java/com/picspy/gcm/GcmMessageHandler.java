@@ -18,6 +18,7 @@ import com.picspy.utils.PrefUtil;
 import com.picspy.views.ChallengesActivity;
 import com.picspy.views.FindFriendsActivity;
 import com.picspy.views.MainActivity;
+import com.picspy.views.fragments.FriendRequestsFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,8 +41,6 @@ public class GcmMessageHandler extends GcmListenerService {
     public static final String TYPE_CHALLENGE = "challengeRequest";
 
     private static final String TAG = "GcmMessHandler";
-    public static final String GCM_NOTF = "gcnNotification";
-
 
     @Override
     public void onMessageReceived(String serverOrigin, Bundle data) {
@@ -99,11 +98,13 @@ public class GcmMessageHandler extends GcmListenerService {
             case TYPE_FRIEND:
                 icon = R.drawable.ic_add_friend;
                 resultIntent = new Intent(this, FindFriendsActivity.class);
+                resultIntent.putExtra(FriendRequestsFragment.ARG_NOTF, true);
                 notificationId = FRIEND_NOTIFICATION_ID;
                 break;
             case TYPE_CHALLENGE:
                 icon = R.drawable.ic_challenge_lime; // TODO change icon to white
                 resultIntent = new Intent(this, ChallengesActivity.class);
+                resultIntent.putExtra(ChallengesActivity.ARG_NOTF, true);
                 notificationId = CHALLENGE_NOTIFICATION_ID;
                 break;
             default:
@@ -119,7 +120,6 @@ public class GcmMessageHandler extends GcmListenerService {
         // Adds the Intent to the top of the stack
         stackBuilder.addNextIntent(resultIntent);
         resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        resultIntent.putExtra(GCM_NOTF, true);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, resultIntent,
                 PendingIntent.FLAG_ONE_SHOT);
 

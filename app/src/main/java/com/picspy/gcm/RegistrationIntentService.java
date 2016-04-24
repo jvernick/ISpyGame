@@ -92,7 +92,7 @@ public class RegistrationIntentService extends IntentService{
             }
         };
 
-        UserRequests addUserRequest = UserRequests.addUser(this,
+        UserRequests addUserRequest = UserRequests.updateGcmReg(this,
                 addUserModel, responseListener, errorListener);
         VolleyRequest.getInstance(this.getApplicationContext()).addToRequestQueue(addUserRequest);
     }

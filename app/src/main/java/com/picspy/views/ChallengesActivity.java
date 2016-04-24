@@ -26,6 +26,7 @@ import com.android.volley.VolleyError;
 import com.picspy.adapters.DatabaseHandler;
 import com.picspy.adapters.GamesCursorAdapter;
 import com.picspy.firstapp.R;
+import com.picspy.gcm.GcmMessageHandler;
 import com.picspy.models.Game;
 import com.picspy.models.UserChallengeRecord;
 import com.picspy.models.UserChallengesRecord;
@@ -50,17 +51,21 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
     public static final String GAME_RESULT_CHALLENGE = "game_ChallengeId";
     public static final String GAME_RESULT_RECORD = "game_UserChallengeId";
 
+    public static final String ARG_NOTF = "challengeNotification";
+
     private ListView listView;
     private DatabaseHandler dbHandler;
     private final static int LOADER_ID = 1;
     private ProgressBar progressSpinner;
+    private boolean isNotf;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // reset notification counter
+        // reset challenge notification Badge
         PrefUtil.putInt(this, AppConstants.CHALLENGE_REQUEST_COUNT, 0);
+        isNotf = getIntent().getBooleanExtra(ARG_NOTF, false);
 
         setContentView(R.layout.activity_challenges);
         listView = (ListView) findViewById(R.id.challenge_list);
@@ -176,7 +181,7 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
                     error.printStackTrace();
                     Log.d(TAG, err);
                     //Show toast only if there is no server connection on refresh
-                    if (err.matches(AppConstants.CONNECTION_ERROR) && isRefresh) {
+                    if (err.matches(AppConstants.CONNECTION_ERROR) && (isRefresh || isNotf)) {
                         LayoutInflater inflater = getLayoutInflater();
                         View layout = inflater.inflate(R.layout.custom_toast,
                                 (ViewGroup) findViewById(R.id.toast_layout_root));

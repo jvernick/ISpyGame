@@ -72,6 +72,7 @@
     <string name="edt_search_hint">Search by Username</string>
     <string name="btn_search">Search</string>
     <string name="tx_empty_list">No new requests! Add new friends below.</string>
+    <string name="err_friend_notif">"No connection to server, unable to get friend request"</string>
     <string name="title_list_header">FRIEND REQUESTS</string>
 
     <!-- item_friend_request -->
@@ -83,6 +84,7 @@
 
     <!-- activity_challenges -->
     <string name="tx_empty_list_challenges">No new challenges</string>
+    <string name="err_challenge_notif">"No connection to server, unable to get challenge"</string>
 
     <!-- choose_friends_fragment-->
     <string name="no_friends">No friends</string>

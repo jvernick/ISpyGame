@@ -84,7 +84,10 @@ public class FriendsRequests extends JsonObjectRequest{
         JSONObject jsonRequest;
         try {
             jsonRequest = new JSONObject(gson.toJson(request, new TypeToken<RecordsRequest<FriendModel>>(){}.getType()));
-            String url = DspUriBuilder.buildUri(DspUriBuilder.FRIENDS_TABLE, null);
+            HashMap<String, String> params = new HashMap<>();
+            params.put("uname", PrefUtil.getString(context, AppConstants.USER_NAME));
+            String url = DspUriBuilder.buildUri(DspUriBuilder.FRIENDS_TABLE, params);
+            Log.d(TAG, url);
 
             return new FriendsRequests(context, false, Method.POST, url, jsonRequest, jsonObjectListener, errorListener);
         } catch (JSONException e) {

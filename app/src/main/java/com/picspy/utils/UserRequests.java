@@ -119,7 +119,7 @@ public class UserRequests extends JsonObjectRequest {
             Log.d(TAG, "jsonRequest: " + jsonRequest.toString());
 
             String url = DspUriBuilder.buildUri(DspUriBuilder.USERS_TABLE, null);
-            return new UserRequests(context, Type.UPDATE, Method.PATCH, url,
+            return new UserRequests(context, Type.UPDATE, Method.POST, url,
                     jsonRequest, jsonObjectListener, errorListener);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -158,8 +158,11 @@ public class UserRequests extends JsonObjectRequest {
     }
 
     @Override
-    public Map<String, String> getHeaders() throws AuthFailureError {
-        return AppConstants.dspHeaders(context);
+    public Map<String, String> getHeaders() throws AuthFailureError {{
+        Map<String, String> temp = AppConstants.dspHeaders(context);
+        if (type == Type.UPDATE) temp.put("X-HTTP-METHOD", "PATCH");
+        return temp;
+    }
     }
 
     @Override
