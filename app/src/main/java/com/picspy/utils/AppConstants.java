@@ -73,4 +73,5 @@ public class AppConstants {
 
     // Error regex
     public static final String CONNECTION_ERROR = ".*failed to connect to.*";
+    public static final String TIMEOUT_ERROR = "timeoutError";
 }

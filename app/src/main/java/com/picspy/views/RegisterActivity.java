@@ -202,7 +202,7 @@ public class RegisterActivity extends Activity {
                     Log.d(TAG, err);
                     error.printStackTrace();
 
-                    if (err.matches(AppConstants.CONNECTION_ERROR)) {
+                    if (err.matches(AppConstants.CONNECTION_ERROR) || err.matches(AppConstants.TIMEOUT_ERROR)) {
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(RegisterActivity.this);
                         alertDialog.setMessage("No connection to server").setCancelable(false)
                                 .setPositiveButton("Try again", new DialogInterface.OnClickListener() {

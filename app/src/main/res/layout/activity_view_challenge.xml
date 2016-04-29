@@ -18,19 +18,44 @@ android:layout_height="match_parent">
             android:orientation="vertical"
             android:layout_gravity="start"
             android:gravity="center"
+            android:weightSum="12"
             android:background="@color/white" >
 
             <TextView
+                android:id="@+id/hint_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="30sp"
-                android:text="Hope this hint helps:\n\n"/>
+                android:text="@string/challenge_hint_title"
+                android:gravity="bottom"
+                android:layout_weight="2"/>
 
             <TextView
+                android:id="@+id/hint_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="30sp"
-                android:gravity="center_horizontal"/>
+                android:text="afa\nafa"
+                android:gravity="center"
+                android:layout_weight="6"/>
+
+            <ProgressBar
+                style="?android:attr/progressBarStyleSmall"
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="24dp"
+                android:minWidth="24dp"
+                android:indeterminateOnly="true"
+                android:indeterminateBehavior="repeat"
+                android:indeterminateDrawable="@drawable/circular_progress_bar"/>
+            
+            <TextView
+                android:id="@+id/loadingText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/download_progress"
+                android:layout_weight="1"/>
         </LinearLayout>
 
         <LinearLayout
@@ -104,7 +129,7 @@ android:layout_height="match_parent">
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="4dp"
-            android:background="@drawable/drawer_border">
+            android:background="@color/hint_background">
         <TextView
             style="@style/drawer_text"
             android:textAppearance="?android:attr/textAppearanceLarge"

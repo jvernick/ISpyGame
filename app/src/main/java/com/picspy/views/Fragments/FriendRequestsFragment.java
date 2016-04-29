@@ -1,7 +1,10 @@
 package com.picspy.views.fragments;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -9,11 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.picspy.adapters.FriendRequestsArrayAdapter;
+import com.picspy.adapters.FriendRequestsRecyclerAdpater;
 import com.picspy.firstapp.R;
 import com.picspy.models.FriendRecord;
 import com.picspy.models.FriendsRecord;
@@ -26,13 +31,19 @@ import com.picspy.views.FindFriendsActivity;
 
 import java.util.ArrayList;
 
-public class FriendRequestsFragment extends ListFragment implements FriendRequestsArrayAdapter.AdapterRequestListener {
+public class FriendRequestsFragment extends Fragment implements FriendRequestsRecyclerAdpater.AdapterRequestListener {
     private static final String TAG = "FriendRequestsFragment";
     public static final String ARG_NOTF = "isNotification";
     private static int myUserId;
     private boolean fromNotf;
     private ProgressBar progressSpinner;
-    private FriendRequestsArrayAdapter arrayAdapter;
+    private RecyclerView mRecyclerView;
+    private FriendRequestsRecyclerAdpater mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private TextView emptyView;
+
+    public FriendRequestsFragment() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,7 +52,30 @@ public class FriendRequestsFragment extends ListFragment implements FriendReques
         PrefUtil.putInt(getActivity(), AppConstants.FRIEND_REQUEST_COUNT, 0);
         fromNotf = getArguments().getBoolean(ARG_NOTF, false);
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_friend_request, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_friend_request, container, false);
+        rootView.setTag(TAG);
+
+        emptyView = (TextView) rootView.findViewById(R.id.empty_list);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
+        mLayoutManager =  new LinearLayoutManager(getActivity());
+
+        setRecyclerViewLayoutManager();
+
+        mAdapter = new FriendRequestsRecyclerAdpater(new ArrayList<UserRecord>());
+        mAdapter.setAdapterRequestListener(this);
+        mRecyclerView.setAdapter(mAdapter);
+        return rootView;
+    }
+
+    private void setRecyclerViewLayoutManager() {
+        int scrollPosition = 0;
+        if (mRecyclerView.getLayoutManager() != null) {
+            scrollPosition = ((LinearLayoutManager)
+                    mRecyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
+        }
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.scrollToPosition(scrollPosition);
     }
 
     /**
@@ -81,23 +115,6 @@ public class FriendRequestsFragment extends ListFragment implements FriendReques
         }
     }
 
-    /**TODO may not be needed
-     * This method will be called when an item in the list is selected.
-     * Subclasses should override. Subclasses can call
-     * getListView().getItemAtPosition(position) if they need to access the
-     * data associated with the selected item.
-     *
-     * @param l        The ListView where the click happened
-     * @param v        The view that was clicked within the ListView
-     * @param position The position of the view in the list
-     * @param id       The row id of the item that was clicked
-     */
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        Toast.makeText(getActivity().getApplicationContext(), "Starting friend_info activity", Toast.LENGTH_SHORT).show();
-    }
-
     private void getFriendRequests() {
         Response.Listener<FriendsRecord> response = new Response.Listener<FriendsRecord>() {
             @Override
@@ -118,7 +135,7 @@ public class FriendRequestsFragment extends ListFragment implements FriendReques
                     error.printStackTrace();
                     Log.d(TAG, err);
                     //Show toast only if there is no server connection this is from a notification
-                    if (err.matches(AppConstants.CONNECTION_ERROR) && fromNotf) {
+                    if (err.matches(AppConstants.CONNECTION_ERROR) || err.matches(AppConstants.TIMEOUT_ERROR) && fromNotf) {
                         LayoutInflater inflater = getActivity().getLayoutInflater();
                         View layout = inflater.inflate(R.layout.custom_toast,
                                 (ViewGroup) getActivity().findViewById(R.id.toast_layout_root));
@@ -145,18 +162,15 @@ public class FriendRequestsFragment extends ListFragment implements FriendReques
             requestList.add(record.getOtherUserRecord(myUserId));
         }
 
-        if (arrayAdapter == null) {
-            arrayAdapter = new FriendRequestsArrayAdapter(getActivity(),
-                    R.layout.item_friend_request, requestList);
-            arrayAdapter.setAdapterRequestListener(this);
+        mAdapter.setData(requestList);
+        checkAdapterEmpty();
+    }
 
-            setListAdapter(arrayAdapter);
+    private void checkAdapterEmpty() {
+        if (mAdapter.getItemCount() == 0) {
+            emptyView.setVisibility(View.VISIBLE);
         } else {
-            arrayAdapter.setData(requestList);
-            arrayAdapter.notifyDataSetChanged();
-        }
-        if (getView() != null) {
-            getListView().setEmptyView(getView().findViewById(R.id.empty_list));
+            emptyView.setVisibility(View.GONE);
         }
     }
 
@@ -166,7 +180,7 @@ public class FriendRequestsFragment extends ListFragment implements FriendReques
                 @Override
                 public void onResponse(FriendRecord response) {
                     if (response != null) {
-                        arrayAdapter.removeItem(position);
+                        mAdapter.removeItem(position);
                     }
                 }
             };
@@ -177,7 +191,7 @@ public class FriendRequestsFragment extends ListFragment implements FriendReques
                     if (error != null ) {
                         String err = (error.getMessage() == null)? "An error occurred": error.getMessage();
                         //Show toast only if there is no server connection on refresh
-                        if (err.matches(AppConstants.CONNECTION_ERROR)) {
+                        if (err.matches(AppConstants.CONNECTION_ERROR) || err.matches(AppConstants.TIMEOUT_ERROR)) {
                             LayoutInflater inflater = getActivity().getLayoutInflater();
                             View layout = inflater.inflate(R.layout.custom_toast,
                                     (ViewGroup)getActivity().findViewById(R.id.toast_layout_root));
@@ -205,7 +219,7 @@ public class FriendRequestsFragment extends ListFragment implements FriendReques
             public void onResponse(FriendRecord response) {
                 if (response != null ) {
                     Log.d(TAG, response.toString());
-                    arrayAdapter.removeItem(position);
+                    mAdapter.removeItem(position);
                 }
             }
         };
@@ -218,7 +232,7 @@ public class FriendRequestsFragment extends ListFragment implements FriendReques
                     error.printStackTrace();
                     Log.d(TAG, err);
                     //Show toast only if there is no server connection on refresh
-                    if (err.matches(AppConstants.CONNECTION_ERROR)) {
+                    if (err.matches(AppConstants.CONNECTION_ERROR) || err.matches(AppConstants.TIMEOUT_ERROR)) {
                         LayoutInflater inflater = getActivity().getLayoutInflater();
                         View layout = inflater.inflate(R.layout.custom_toast,
                                 (ViewGroup) getActivity().findViewById(R.id.toast_layout_root));

@@ -52,8 +52,11 @@ public class VolleyRequest {
 
 
     public static VolleyError parseNetworkError(VolleyError volleyError) {
+        if (volleyError instanceof TimeoutError) {
+            volleyError = new VolleyError(AppConstants.TIMEOUT_ERROR);
+        }
         if(volleyError.networkResponse != null && volleyError.networkResponse.data != null){
-            Log.d(TAG, "erorr converted: " + volleyError.networkResponse.data);
+            Log.d(TAG, "error converted: " + volleyError.networkResponse.data);
             volleyError = new VolleyError(new String(volleyError.networkResponse.data));
         }
 

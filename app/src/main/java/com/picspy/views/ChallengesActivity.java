@@ -181,7 +181,7 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
                     error.printStackTrace();
                     Log.d(TAG, err);
                     //Show toast only if there is no server connection on refresh
-                    if (err.matches(AppConstants.CONNECTION_ERROR) && (isRefresh || isNotf)) {
+                    if (err.matches(AppConstants.CONNECTION_ERROR) || err.matches(AppConstants.TIMEOUT_ERROR) && (isRefresh || isNotf)) {
                         LayoutInflater inflater = getLayoutInflater();
                         View layout = inflater.inflate(R.layout.custom_toast,
                                 (ViewGroup) findViewById(R.id.toast_layout_root));
@@ -278,7 +278,7 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
                     int challengeId = data.getIntExtra(GAME_RESULT_CHALLENGE, -1);
                     int recordId = data.getIntExtra(GAME_RESULT_RECORD, -1);
                     int sender = data.getIntExtra(GAME_RESULT_SENDER, -1);
-                    processGameResult(value, challengeId, recordId, sender);
+                    processGameResult(value, challengeId, recordId, sender, false);
                 } else if ( resultCode == RESULT_CANCELED) {
                     //do nothing
                 }
@@ -286,7 +286,16 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
         }
     }
 
-    public  void processGameResult(boolean gameResult, int challengeId, int recordId, int sender) {
+    /**
+     * Processes the result from the view game activity. Sends challenge to server and removes
+     * challenge from local db if this was a friend challenge
+     * @param gameResult true if challenge was solved, false otherwise
+     * @param challengeId cchallenge id of game played
+     * @param recordId record id for game userChallenge record
+     * @param sender id of the sender
+     * @param isTopGame true if this was called from the topFragment class, false otherwise.
+     */
+    public  void processGameResult(boolean gameResult, int challengeId, int recordId, int sender, boolean isTopGame) {
         //Log.d(TAG, "value: " + gameResult + " challengeId: " + challengeId + " recordId: " + recordId + " sender: " + sender);
         if (recordId != 0) {
             HashMap<String, String> params = new HashMap<>();
@@ -295,12 +304,19 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
             params.put("senderId", String.valueOf(sender));
 
             submitChallengeResult(recordId, params);
-            dbHandler.deleteGame(challengeId);
-            ((GamesCursorAdapter) listView.getAdapter()).changeCursor(dbHandler.getAllGames());
-            ((GamesCursorAdapter) listView.getAdapter()).notifyDataSetChanged();
+            if (!isTopGame) {
+                dbHandler.deleteGame(challengeId);
+                ((GamesCursorAdapter) listView.getAdapter()).changeCursor(dbHandler.getAllGames());
+                ((GamesCursorAdapter) listView.getAdapter()).notifyDataSetChanged();
+            }
         }
     }
 
+    /**
+     * Submits the challenge with given parameters to the server
+     * @param recordId Record id for the userChallenge record
+     * @param params Challenge result parameters
+     */
     public void submitChallengeResult(int recordId, HashMap<String, String> params) {
         Response.Listener<UserChallengesRecord> responseListener = new Response.Listener<UserChallengesRecord>() {
             @Override

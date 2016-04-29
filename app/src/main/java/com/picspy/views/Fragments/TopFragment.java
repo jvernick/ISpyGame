@@ -115,7 +115,7 @@ public class TopFragment extends android.support.v4.app.ListFragment
                     error.printStackTrace();
                     Log.d(TAG, err);
                     //Show toast only if there is no server connection on refresh
-                    if (err.matches(AppConstants.CONNECTION_ERROR) && isRefresh) {
+                    if (err.matches(AppConstants.CONNECTION_ERROR) || err.matches(AppConstants.TIMEOUT_ERROR) && isRefresh) {
                         LayoutInflater inflater = getActivity().getLayoutInflater();
                         View layout = inflater.inflate(R.layout.custom_toast,
                                 (ViewGroup) getActivity().findViewById(R.id.toast_layout_root));
@@ -226,7 +226,7 @@ public class TopFragment extends android.support.v4.app.ListFragment
                     int challengeId = data.getIntExtra(ChallengesActivity.GAME_RESULT_CHALLENGE, -1);
                     int recordId = data.getIntExtra(ChallengesActivity.GAME_RESULT_RECORD, -1);
                     int sender = data.getIntExtra(ChallengesActivity.GAME_RESULT_SENDER, -1);
-                    (new ChallengesActivity()).processGameResult(value, challengeId, recordId, sender);
+                    (new ChallengesActivity()).processGameResult(value, challengeId, recordId, sender, true);
                 } else if ( resultCode == Activity.RESULT_CANCELED) {
                     //do nothing
                 }

@@ -116,7 +116,7 @@ public class FriendSearchFragment extends Fragment{
                     String err = (error.getMessage() == null)? "error message null": error.getMessage();
                     error.printStackTrace();
                     Log.d(TAG, err);
-                    if (err.matches(AppConstants.CONNECTION_ERROR)) {
+                    if (err.matches(AppConstants.CONNECTION_ERROR) || err.matches(AppConstants.TIMEOUT_ERROR)) {
                         LayoutInflater inflater = getActivity().getLayoutInflater();
                         View layout = inflater.inflate(R.layout.custom_toast,
                                 (ViewGroup) getActivity().findViewById(R.id.toast_layout_root));
@@ -157,7 +157,7 @@ public class FriendSearchFragment extends Fragment{
                     error.printStackTrace();
                     Log.d(TAG, err);
                     //Show toast only if there is no server connection on refresh
-                    if (err.matches(AppConstants.CONNECTION_ERROR)) {
+                    if (err.matches(AppConstants.CONNECTION_ERROR) || err.matches(AppConstants.TIMEOUT_ERROR)) {
                         LayoutInflater inflater = getActivity().getLayoutInflater();
                         View layout = inflater.inflate(R.layout.custom_toast,
                                 (ViewGroup) getActivity().findViewById(R.id.toast_layout_root));

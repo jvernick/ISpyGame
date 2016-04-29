@@ -211,7 +211,7 @@ public class LoginActivity extends FragmentActivity {
                     Log.d(TAG, err);
                     String errorMsg = "An error occurred";
 
-                    if (err.matches(AppConstants.CONNECTION_ERROR)) {
+                    if (err.matches(AppConstants.CONNECTION_ERROR) || err.matches(AppConstants.TIMEOUT_ERROR)) {
                         errorMsg = "No connection to server";
                     } else if (err.matches(".*Received authentication challenge is null.*")) {
                         errorMsg = "Invalid credentials";

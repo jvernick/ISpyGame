@@ -3,9 +3,9 @@
     TODO never used. Fix issue so that it works or remove
     -->
 <rotate
-
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:fromDegrees="90"
+    android:duration="4000"
+    android:fromDegrees="0"
     android:pivotX="50%"
     android:pivotY="50%"
     android:toDegrees="360">
@@ -13,15 +13,16 @@
     <shape
         android:innerRadiusRatio="3"
         android:shape="ring"
-        android:thicknessRatio="7.0">
+        android:thicknessRatio="7.0"
+        android:useLevel="false">
 
         <gradient
-            android:centerColor="@color/accent"
-            android:endColor="@color/accent"
-            android:startColor="@color/accent"
+            android:centerColor="@color/circle_center"
+            android:endColor="@color/circle_end"
+            android:startColor="@color/circle_start"
             android:angle="0"
+            android:centerY="0.5"
             android:type="sweep"
             android:useLevel="false" />
     </shape>
-
 </rotate>

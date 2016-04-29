@@ -28,7 +28,7 @@
     <string name="pass_hint2">Re-type Password</string>
     <string name="hint_username">Username</string>
     <string name="title_activity_post_registration">PostRegistrationActivity</string>
-    <string name="loading_message">Please Wait..</string>
+    <string name="loading_message">Please Wait…</string>
     <string name="title_activity_splash_">Splash_Activity</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="facebook_app_id">567017063440429</string>
@@ -108,9 +108,11 @@
     <string name="search_title">Search Friends</string>
 
     <!-- custom_toast network error text-->
-    <string name="networkErrorText">No connection to server right now.</string>
+    <string name="networkErrorText">No connection to server.</string>
 
     <!--ViewChallenge-->
     <string name="game_hint_title">Hint</string>
     <string name="swipe_hint">--> Swipe for hint</string>
+    <string name="challenge_hint_title">Hope this hint helps:\n</string>
+    <string name="download_progress">Fetching image…</string>
 </resources>

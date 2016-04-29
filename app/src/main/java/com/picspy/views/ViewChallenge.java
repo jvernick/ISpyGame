@@ -21,6 +21,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,26 +50,21 @@ public class ViewChallenge extends Activity {
     private ImageView pic;
     private Matrix matrix;
     private ArrayList<float[]> selection;
-    private int canvasWidth, canvasHeight;
+    private int canvasWidth, canvasHeight, trueWidth, trueHeight;
     private int time;
     private int guessesRemaining;
     private String hint;
-    private TextView timerText;
-    private TextView hintText;
-    private TextView swipeText;
-    private TextView guessesText;
+    private TextView timerText, swipeText, guessesText, hintText, loadingText;
     private ImageView incorrectImg;
-    private RelativeLayout xMarkLayout;
-    private RelativeLayout selectionLayout;
+    private RelativeLayout xMarkLayout, selectionLayout;
     private DrawingView mDrawingView;
     private DrawerLayout mDrawerLayout;
     private LinearLayout initialHintLayout;
     boolean gameSetup;
     boolean imageDownloaded;
     Animation animHintLeft;
-    int trueWidth;
-    int trueHeight;
     Game game;
+    ProgressBar spinner;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,6 +73,10 @@ public class ViewChallenge extends Activity {
 
         gameSetup = false;
         imageDownloaded = false;
+        spinner = (ProgressBar) findViewById(R.id.progressBar);
+        spinner.setVisibility(View.VISIBLE);
+        loadingText = (TextView) findViewById(R.id.loadingText);
+
 
         Intent intent = getIntent();
         game = intent.getParcelableExtra(ChallengesActivity.GAME_EXTRA);
@@ -88,7 +88,7 @@ public class ViewChallenge extends Activity {
 
         // first display the hint initially on its own
         initialHintLayout = (LinearLayout) findViewById(R.id.initial_hint_layout);
-        ((TextView) initialHintLayout.getChildAt(1)).setText(hint);
+        ((TextView) findViewById(R.id.hint_text)).setText(hint);
 
         pic = (ImageView) findViewById(R.id.image_view);
         hintText = (TextView) findViewById(R.id.hint_provided);
@@ -157,6 +157,9 @@ public class ViewChallenge extends Activity {
      * Scale selection appropriately and starts the game (game timer)
      */
     private void startGame() {
+        spinner.setVisibility(View.GONE);
+        loadingText.setVisibility(View.GONE);
+
         //Scale the selection based on the canvas size on the device
         canvasWidth = pic.getWidth();
         canvasHeight = pic.getHeight();
@@ -281,13 +284,15 @@ public class ViewChallenge extends Activity {
         Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                spinner.setVisibility(View.GONE);
+                loadingText.setVisibility(View.GONE);
                 if (error != null) {
                     //TODO handle error when file not found.
                     String err = (error.getMessage() == null)? "error message null": error.getMessage();
                     error.printStackTrace();
                     Log.d(TAG, err);
                     //Show toast only if there is no server connection on refresh
-                    if (err.matches(AppConstants.CONNECTION_ERROR)) {
+                    if (err.matches(AppConstants.CONNECTION_ERROR) || err.matches(AppConstants.TIMEOUT_ERROR)) {
                         LayoutInflater inflater = getLayoutInflater();
                         View layout = inflater.inflate(R.layout.custom_toast,
                                 (ViewGroup) findViewById(R.id.toast_layout_root));
@@ -350,16 +355,21 @@ public class ViewChallenge extends Activity {
     /**
      * Delay for exitDelay time and exit to previous activity (challengesActivity|topFragment)
      */
-    private void exitGuessing(boolean gameResult, boolean error) {
+    /**
+     * Exit activity and send result to previous activity
+     * @param gameResult true if the challenge was solved, false otherwise
+     * @param isError true if there was an error, false otherwise
+     */
+    private void exitGuessing(boolean gameResult, boolean isError) {
         //TODO return to parent activity, not ChallengesActivity
         Intent intent = new Intent();
         intent.putExtra(ChallengesActivity.GAME_RESULT_VALUE, gameResult);
-        intent.putExtra(ChallengesActivity.GAME_RESULT_ERROR, error);
+        intent.putExtra(ChallengesActivity.GAME_RESULT_ERROR, isError);
         intent.putExtra(ChallengesActivity.GAME_RESULT_SENDER, game.getSenderId());
         intent.putExtra(ChallengesActivity.GAME_RESULT_CHALLENGE, game.getId());
         intent.putExtra(ChallengesActivity.GAME_RESULT_RECORD, game.getUserChallengeId());
 
-        if (! error) {
+        if (! isError) {
             setResult(RESULT_OK, intent);
         } else {
             setResult(RESULT_CANCELED, intent);

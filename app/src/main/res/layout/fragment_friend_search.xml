@@ -55,7 +55,7 @@
         android:focusableInTouchMode="true"/>
     <ProgressBar
         android:id="@+id/challenges_progressBar"
-        style="@android:style/Widget.ProgressBar.Small"
+        style="?android:attr/progressBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@id/message"
