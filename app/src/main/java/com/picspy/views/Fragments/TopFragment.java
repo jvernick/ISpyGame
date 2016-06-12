@@ -4,8 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -17,6 +20,7 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.picspy.adapters.TopFragmentArrayAdapter;
+import com.picspy.adapters.TopFragmentRecyclerAdapter;
 import com.picspy.firstapp.R;
 import com.picspy.models.Game;
 import com.picspy.models.GameRecord;
@@ -32,38 +36,56 @@ import java.util.ArrayList;
 
 //Leaderboard fragment
 //TODO reorganize listadapter init and use
-public class TopFragment extends android.support.v4.app.ListFragment
-        implements SwipeRefreshLayout.OnRefreshListener {
+public class TopFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
+        TopFragmentRecyclerAdapter.AdapterRequestListener {
     private TopFragmentArrayAdapter arrayAdapter;
     private static final String TAG = "TopFragment";
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private TopFragmentRecyclerAdapter mAdapter;
+    private RecyclerView mRecyclerView;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         // Create the list fragment's content view by calling the super method
-        final View listFragmentView = super.onCreateView(inflater, container, savedInstanceState);
+       // final View listFragmentView = super.onCreateView(inflater, container, savedInstanceState);
 
+        View rootView = inflater.inflate(R.layout.fragment_top, container, false);
+
+        // [ start Setup recycler view ]
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
+        mLayoutManager =  new LinearLayoutManager(getActivity());
+        setRecyclerViewLayoutManager();
+        mAdapter =  new TopFragmentRecyclerAdapter(new ArrayList<Game>());
+        mAdapter.setAdapterRequestListener(this);
+        mRecyclerView.setAdapter(mAdapter);
+        // [ end Setup recycler view ]
+
+        // [ Start setup swipe refresh layout ]
         // Now create a SwipeRefreshLayout to wrap the fragment's content view
-        mSwipeRefreshLayout = new ListFragmentSwipeRefreshLayout(container.getContext());
-
-        // Add the list fragment's content view to the SwipeRefreshLayout, making sure that it fills
-        // the SwipeRefreshLayout
-        mSwipeRefreshLayout.addView(listFragmentView,
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-
-        // Make sure that the SwipeRefreshLayout will fill the fragment
-        mSwipeRefreshLayout.setLayoutParams(
-                new ViewGroup.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT));
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeRefresh);
 
         mSwipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.accent));
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
+
+        // [ End swipe refresh layout setup ]
+
         // Now return the SwipeRefreshLayout as this fragment's content view
-        return mSwipeRefreshLayout;
+        return rootView;
+    }
+
+    private void setRecyclerViewLayoutManager() {
+        int scrollPosition = 0;
+        if (mRecyclerView.getLayoutManager() != null) {
+            scrollPosition = ((LinearLayoutManager)
+                    mRecyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
+        }
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.scrollToPosition(scrollPosition);
     }
 
     @Override
@@ -71,24 +93,18 @@ public class TopFragment extends android.support.v4.app.ListFragment
         super.onActivityCreated(savedInstanceState);
 
         // Start out with a progress indicator.
-        setListShown(true);
+        //setListShown(true);
         Log.d(TAG, "executing search");
-
         getLeaderboard(false);
     }
 
-    /*
-     * implemented lodercalbacks methods
-     */
-
-
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
+    public void onListItemClick(int position) {
         Intent intent = new Intent(getActivity(), ViewChallenge.class);
-        intent.putExtra(ChallengesActivity.GAME_EXTRA, arrayAdapter.getItem(position));
+        intent.putExtra(ChallengesActivity.GAME_EXTRA, mAdapter.getItem(position));
         startActivityForResult(intent, ChallengesActivity.PLAY_GAME_CODE);
     }
 
+    // [ swipeRefreshLayout implementation ]
     @Override
     public void onRefresh() {
         Log.d(TAG, "onRefresh");
@@ -98,7 +114,6 @@ public class TopFragment extends android.support.v4.app.ListFragment
 
 
     private void getLeaderboard(final Boolean isRefresh) {
-
         Response.Listener<GamesRecord> responseListener = new Response.Listener<GamesRecord>() {
             @Override
             public void onResponse(GamesRecord response) {
@@ -149,60 +164,12 @@ public class TopFragment extends android.support.v4.app.ListFragment
             }*/
 
             if (refresh) {
-                if (arrayAdapter == null) {
-                    arrayAdapter = new TopFragmentArrayAdapter(getActivity().getApplicationContext(), R.layout.item_challenge,
-                            gameList);
-                    setListAdapter(arrayAdapter);
-                } else {
-                    arrayAdapter.replaceGames(gameList);
-                    arrayAdapter.notifyDataSetChanged();
-                }
-            } else {
-                // Create an empty adapter we will use to display the loaded data.
-                arrayAdapter = new TopFragmentArrayAdapter(getActivity().getApplicationContext(), R.layout.item_challenge,
-                        gameList);
-                setListAdapter(arrayAdapter);
+                mAdapter.setData(gameList);
             }
         }
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
-    private class ListFragmentSwipeRefreshLayout extends SwipeRefreshLayout {
-        public ListFragmentSwipeRefreshLayout(Context context) {
-            super(context);
-        }
-
-        /**
-         * As mentioned above, we need to override this method to properly signal when a
-         * 'swipe-to-refresh' is possible.
-         *
-         * @return true if the {@link android.widget.ListView} is visible and can scroll up.
-         */
-        @Override
-        public boolean canChildScrollUp() {
-            final ListView listView = getListView();
-            return listView.getVisibility() == View.VISIBLE && canListViewScrollUp(listView);
-        }
-    }
-
-    /**
-     * Utility method to check whether a {@link ListView} can scroll up from it's current position.
-     * Handles platform version differences, providing backwards compatible functionality where
-     * needed.
-     */
-    private static boolean canListViewScrollUp(ListView listView) {
-        if (android.os.Build.VERSION.SDK_INT >= 14) {
-            // For ICS and above we can call canScrollVertically() to determine this
-            return ViewCompat.canScrollVertically(listView, -1);
-        } else {
-            // Pre-ICS we need to manually check the first visible item and the child view's top
-            // value
-            return listView.getChildCount() > 0 &&
-                    (listView.getFirstVisiblePosition() > 0
-                            || listView.getChildAt(0).getTop() < listView.getPaddingTop());
-        }
-
-    }
 
     /**
      * Receive the result from a previous call to
