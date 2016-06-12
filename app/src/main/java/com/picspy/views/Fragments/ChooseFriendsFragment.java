@@ -204,26 +204,12 @@ public class ChooseFriendsFragment extends ListFragment implements
             mSearchView.setSearchableInfo(searchManager.getSearchableInfo(componentName));
         }
         mSearchView.setIconifiedByDefault(false);
-        //mSearchView.setQueryHint("");
         mSearchView.setOnQueryTextListener(this);
         mSearchView.setOnCloseListener(this);
-
-        try {
-            int searchPlateId = mSearchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
-            EditText searchPlate = (EditText) mSearchView.findViewById(searchPlateId);
-            searchPlate.setHint("");
-        }
-        catch (Throwable t)
-        {
-            t.printStackTrace();
-        }
-
 
         //remove search Icon
         ImageView magImage = (ImageView) mSearchView.findViewById(android.support.v7.appcompat.R.id.search_mag_icon);
         magImage.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
-        //magImage.setVisibility(View.GONE);
-        //magImage.setImageResource(R.drawable.ic_arrow_back);
         // Change background line
         View searchplate = mSearchView.findViewById(android.support.v7.appcompat.R.id.search_plate);
         if (searchplate != null) {

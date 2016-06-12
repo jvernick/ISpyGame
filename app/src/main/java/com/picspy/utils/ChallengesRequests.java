@@ -44,6 +44,7 @@ public class ChallengesRequests  extends JsonObjectRequest{
                               Response.Listener<JSONObject> listener,
                               Response.ErrorListener errorListener) {
         super(method, path, jsonRequest, listener, errorListener);
+        Log.d(TAG, path + "\nJson: " + jsonRequest);
         this.context = context;
     }
 
@@ -112,7 +113,6 @@ public class ChallengesRequests  extends JsonObjectRequest{
         params.put("related", "challenges_by_challenge_id, users_by_sender");
 
         String url = DspUriBuilder.buildUri(DspUriBuilder.USER_CHALLENGES_TABLE, params);
-        Log.d(TAG, "jsonRequest path: " + url);
 
         return  new ChallengesRequests(context, Method.GET, url, null, jsonObjectListener, errorListener);
     }
@@ -146,7 +146,6 @@ public class ChallengesRequests  extends JsonObjectRequest{
         params.put("limit", String.valueOf(LEADERBOARD_LIMIT));
 
         String url = DspUriBuilder.buildUri(DspUriBuilder.CHALLENGES_TABLE, params);
-        Log.d(TAG, "jsonRequest path: " + url);
 
         return  new ChallengesRequests(context, Method.GET, url, null, jsonObjectListener, errorListener);
     }
