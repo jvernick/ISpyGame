@@ -36,7 +36,7 @@ public class AppConstants {
     public static final String FRIEND_REQUEST_COUNT = "friend_request_count";
     public static final String CHALLENGE_REQUEST_COUNT = "challenge_request_count";
     public static final String SENT_TOKEN_TO_SERVER = "sentTokenToServer";
-    public static final String GCM_TOKEN = "gcmToken";
+    public static final String FCM_TOKEN = "gcmToken";
     public static final String LAST_TOK_DATE = "last_token_obtained_date";
 
     // Colors for friend icon TODO do we need more colors?
@@ -66,7 +66,7 @@ public class AppConstants {
     }
 
     // V2 info
-    public static final String DSP_URL_2 = "http://192.168.0.15:8081/api/v2/";
+    public static final String DSP_URL_2 = "http://192.168.1.14:8081/api/v2/";
     public static final String SESSION_TOKEN= "session_token";
     public static final String USER_NAME = "username";
     public static final int SESSION_TTL = 30;

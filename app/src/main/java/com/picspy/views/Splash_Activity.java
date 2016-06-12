@@ -1,31 +1,26 @@
 package com.picspy.views;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.dreamfactory.api.UserApi;
-import com.dreamfactory.model.Session;
 import com.picspy.firstapp.R;
-import com.picspy.gcm.RegistrationIntentService;
 import com.picspy.utils.AppConstants;
 import com.picspy.utils.PrefUtil;
 import com.picspy.utils.RegistrationRequests;
 import com.picspy.utils.VolleyRequest;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
+
+import static com.picspy.fcm.MyFirebaseInstanceIDService.sendRegistrationToServer;
 
 /**
  * Splashcreen activity that displays logo and determines whether to proceed
@@ -82,7 +77,7 @@ public class Splash_Activity extends Activity {
      * @param lastLoginDate the last login date
      * @return number of days since last login
      */
-    private int daysSinceLastLogin(Long lastLoginDate) {
+    public static int daysSinceLastLogin(Long lastLoginDate) {
         Long difference = Calendar.getInstance().getTimeInMillis() - lastLoginDate;
         return (int) TimeUnit.MILLISECONDS.toDays(difference);
     }
@@ -120,11 +115,18 @@ public class Splash_Activity extends Activity {
      * Starts the main activity
      */
     public void startMain() {
-        gcmTokenCheck();
+        verifyFCMToken(this);
         Log.d("Splash", "Starting Main");
         Intent intent = new Intent(Splash_Activity.this, MainActivity.class);
         startActivity(intent);
-         finish();
+        finish();
+    }
+
+    public static void verifyFCMToken(Context context) {
+        boolean tokenSent = PrefUtil.getBoolean(context, AppConstants.SENT_TOKEN_TO_SERVER, false);
+        String fcmToken = PrefUtil.getString(context, AppConstants.FCM_TOKEN, null);
+
+        if (!tokenSent && fcmToken != null) sendRegistrationToServer(fcmToken, context);
     }
 
     /**
@@ -169,14 +171,5 @@ public class Splash_Activity extends Activity {
     protected void onStop() {
         super.onStop();
         VolleyRequest.getInstance(this.getApplication()).getRequestQueue().cancelAll(CANCEL_TAG);
-    }
-
-    public void gcmTokenCheck(){
-        int daysDiff = daysSinceLastLogin(PrefUtil.getLong(getApplicationContext(),
-                AppConstants.LAST_TOK_DATE));
-        if (daysDiff >= 7) {
-            Intent gcmIntent = new Intent(Splash_Activity.this, RegistrationIntentService.class);
-            startService(gcmIntent);
-        }
     }
 }

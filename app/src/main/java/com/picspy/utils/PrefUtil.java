@@ -66,6 +66,18 @@ public class PrefUtil {
     }
 
     /**
+     * Gets a boolean from the shared preferences
+     * @param context The context that invokes this call
+     * @param key The key for accessing the desired value
+     * @param defaultVal default value to be returned
+     * @return The value for the desired key
+     */
+    public static boolean getBoolean(Context context, String key, boolean defaultVal) {
+        SharedPreferences settings = Prefs.get(context);
+        return settings.getBoolean(key, defaultVal);
+    }
+
+    /**
      * Adds an Int to the shared preferences
      * @param context The context that invokes this call
      * @param key The key for accessing the desired value

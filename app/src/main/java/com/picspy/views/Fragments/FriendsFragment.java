@@ -235,6 +235,7 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
         if (notificationCount <= 0) {
             friendReqBadge.setVisibility(View.GONE);
         } else {
+            friendReqBadge.setVisibility(View.VISIBLE);
             friendReqBadge.setText(" " + notificationCount + " ");
         }
     }

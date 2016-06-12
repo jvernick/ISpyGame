@@ -29,7 +29,6 @@
         android:layout_alignParentEnd="true">
     </View>
 
-
     <ImageButton
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
@@ -46,7 +45,8 @@
         android:layout_alignBottom="@+id/bar"
         android:layout_centerHorizontal="true"
         android:id="@+id/cameraButton"
-        />
+        android:contentDescription="Create Challenge" />
+
     <ImageButton
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
@@ -63,13 +63,13 @@
         android:layout_alignEnd="@+id/bar"
         android:background="@color/primary"
         android:id="@+id/inboxButton"
-        android:onClick="launchChallenges"/>
+        android:onClick="launchChallenges"
+        android:contentDescription="View Challenges" />
 
     <TextView
         android:id="@+id/challenge_request_badge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=" 1 "
         android:padding="2dp"
         android:textColor="#FFFFFF"
         android:layout_alignTop="@+id/inboxButton"
@@ -79,6 +79,7 @@
         android:singleLine="true"
         android:textSize="8sp"
         android:textStyle="bold"
+        android:visibility="gone"
         android:layout_marginTop="4dp"
         android:layout_marginRight="6dp"
         android:background="@drawable/notification_badge"/>
@@ -96,6 +97,8 @@
         android:layout_alignTop="@+id/bar"
         android:layout_alignBottom="@+id/bar"
         android:background="@color/primary"
-        android:id="@+id/menuButton" />
+        android:id="@+id/menuButton"
+        android:onClick="launchSettings"
+        android:contentDescription="Settings" />
 
 </RelativeLayout>

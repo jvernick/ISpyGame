@@ -49,6 +49,7 @@
     <TextView
         style="@style/friend_name"
         android:id="@+id/request_username"
+        android:layout_height="wrap_content"
         android:layout_toRightOf="@id/request_icon"
         android:layout_toEndOf="@+id/request_icon"
         android:layout_toLeftOf="@id/accept_friend"

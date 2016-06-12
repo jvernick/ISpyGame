@@ -286,8 +286,6 @@ public class DatabaseHandler extends SQLiteOpenHelper{
             }
         }
         PrefUtil.putInt(context, AppConstants.MAX_FRIEND_RECORD_ID, maxFriendId);
-
-        db.close();
     }
 
     private long addFriendHelper(Friend friend, SQLiteDatabase db) {

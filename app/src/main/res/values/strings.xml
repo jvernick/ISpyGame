@@ -111,7 +111,7 @@
     <string name="networkErrorText">No connection to server.</string>
 
     <!--ViewChallenge-->
-    <string name="game_hint_title">Hint</string>
+    <string name="game_hint_title">HINT</string>
     <string name="swipe_hint">--> Swipe for hint</string>
     <string name="challenge_hint_title">Hope this hint helps:\n</string>
     <string name="download_progress">Fetching image…</string>

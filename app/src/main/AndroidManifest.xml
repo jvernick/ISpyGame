@@ -10,12 +10,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
 
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-    <permission android:name="com.example.gcm.permission.C2D_MESSAGE"
-        android:protectionLevel="signature" />
-    <uses-permission android:name="com.example.gcm.permission.C2D_MESSAGE" />
-
 
 
     <uses-feature android:name="android.hardware.camera" />
@@ -154,32 +149,26 @@
                 android:resource="@xml/searchable" />
         </activity>
 
-        <service android:name="com.picspy.gcm.RegistrationIntentService" android:exported="false"/>
+        <!-- [START firebase_iid_service] -->
         <service
-            android:name="com.picspy.gcm.MyInstanceIDListenerService"
+            android:name="com.picspy.fcm.MyFirebaseInstanceIDService"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
         </service>
+        <!-- [END firebase_iid_service] -->
 
-        <receiver
-            android:name="com.google.android.gms.gcm.GcmReceiver"
-            android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND" >
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <category android:name="com.codepath.gcmquickstart" />
-            </intent-filter>
-        </receiver>
-
+        <!-- [START firebase_service (receives messages)] -->
         <service
-            android:name="com.picspy.gcm.GcmMessageHandler"
-            android:exported="false" >
+            android:name="com.picspy.fcm.MyFirebaseMessagingService"
+            android:exported="false">
+
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+        <!-- [END firebase_service] -->
 
 
     </application>

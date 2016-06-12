@@ -114,6 +114,7 @@ public class MainActivity extends FragmentActivity {
         if (notificationCount <= 0) {
             challengeBadge.setVisibility(View.GONE);
         } else {
+            challengeBadge.setVisibility(View.VISIBLE);
             challengeBadge.setText(" " + notificationCount + " ");
         }
     }
@@ -205,5 +206,14 @@ public class MainActivity extends FragmentActivity {
         super.onStop();
         //cancel pending login task
         VolleyRequest.getInstance(this.getApplication()).getRequestQueue().cancelAll(CANCEL_TAG);
+    }
+
+    // TODO overwrite. For now, it logs the user out.
+    public void launchSettings(View view) {
+        PrefUtil.putInt(this, AppConstants.USER_ID, -1);
+        Intent intent = new Intent(this, Splash_Activity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        finish();
     }
 }

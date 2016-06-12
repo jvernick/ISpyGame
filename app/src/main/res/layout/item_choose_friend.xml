@@ -14,6 +14,7 @@
     <TextView
         style="@style/friend_name"
         android:id="@+id/friend_username"
+        android:layout_height="wrap_content"
         android:layout_toRightOf="@id/friend_icon"
         android:layout_toEndOf="@id/friend_icon"
         android:layout_toLeftOf="@id/checkbox"

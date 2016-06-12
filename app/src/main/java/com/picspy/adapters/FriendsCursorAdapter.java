@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -45,11 +46,12 @@ public class FriendsCursorAdapter extends ResourceCursorAdapter {
             final int userId = c.getInt(c.getColumnIndex(DbContract.FriendEntry._ID));
 
             viewHolder.unameTextView.setText(friendUsername);
-
+            Log.d("CursorAdapter", "binding: uname:" + friendUsername);
             //Start friendInfoActivity when friend username clicked
             viewHolder.unameTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    Log.d("CursorAdapter", "clicked");
                     startFriendInfoActivity(view, friendUsername, userId, null);
                 }
             });

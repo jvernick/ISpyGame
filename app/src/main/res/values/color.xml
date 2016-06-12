@@ -22,7 +22,7 @@
     <color name="palette_purple">#B200FF</color>
     <color name="yellow">#ffff00</color>
     <color name="toast_background">#ee444444</color>
-    <color name="hint_background">#40444444</color>
+    <color name="hint_background">#80444444</color>
 
     <color name="circle_start">#0082B1FF</color>
     <color name="circle_end">#ff82B1FF</color>

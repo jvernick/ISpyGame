@@ -42,7 +42,6 @@
             android:id="@+id/friend_request_badge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=" 3 "
             android:padding="2dp"
             android:textColor="#FFFFFF"
             android:layout_alignTop="@id/find_friend"
@@ -52,6 +51,7 @@
             android:singleLine="true"
             android:textSize="8sp"
             android:textStyle="bold"
+            android:visibility="gone"
             android:background="@drawable/notification_badge"/>
 
     </RelativeLayout>

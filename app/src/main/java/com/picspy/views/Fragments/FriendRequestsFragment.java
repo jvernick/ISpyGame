@@ -116,9 +116,11 @@ public class FriendRequestsFragment extends Fragment implements FriendRequestsRe
     }
 
     private void getFriendRequests() {
+        Log.d(TAG, "getting friend requests");
         Response.Listener<FriendsRecord> response = new Response.Listener<FriendsRecord>() {
             @Override
             public void onResponse(FriendsRecord response) {
+                Log.d(TAG, response.toString());
                 progressSpinner.setVisibility(View.GONE);
                 if (response.getCount() != 0) {
                     processResponse(response);
@@ -157,7 +159,7 @@ public class FriendRequestsFragment extends Fragment implements FriendRequestsRe
     private void processResponse(FriendsRecord response) {
         ArrayList<UserRecord> requestList = new ArrayList<>();
         ArrayList<FriendRecord> requestRecords = response.getResource();
-        Log.d("RequestFragment", response.toString());
+        Log.d(TAG, response.toString());
         for (FriendRecord record : requestRecords) {
             requestList.add(record.getOtherUserRecord(myUserId));
         }

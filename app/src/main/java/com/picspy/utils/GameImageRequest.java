@@ -2,7 +2,9 @@ package com.picspy.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -15,6 +17,7 @@ import java.util.Map;
  * Created by BrunelAmC on 4/2/2016.
  */
 public class GameImageRequest extends ImageRequest {
+    private static final String TAG = "GameImageReq";
     private Context context;
 
     /**
@@ -39,6 +42,7 @@ public class GameImageRequest extends ImageRequest {
                              int maxWidth, int maxHeight, ImageView.ScaleType scaleType,
                             Bitmap.Config decodeConfig, Response.ErrorListener errorListener) {
         super(url, listener, maxWidth, maxHeight, scaleType, decodeConfig, errorListener);
+        Log.d(TAG, url);
         this.context = context;
     }
 

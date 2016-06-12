@@ -1,4 +1,4 @@
-package com.picspy.gcm;
+package com.picspy.fcm;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -6,12 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
-import com.google.android.gms.gcm.GcmListenerService;
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
 import com.picspy.firstapp.R;
 import com.picspy.utils.AppConstants;
 import com.picspy.utils.PrefUtil;
@@ -23,10 +23,12 @@ import com.picspy.views.fragments.FriendRequestsFragment;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Map;
+
 /**
  * Created by BrunelAmC on 4/23/2016.
  */
-public class GcmMessageHandler extends GcmListenerService {
+public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public static final int FRIEND_NOTIFICATION_ID = 6001;
     public static final int CHALLENGE_NOTIFICATION_ID = 6002;
     public static final int APP_NOTIFICATION_ID = 6003;
@@ -40,10 +42,24 @@ public class GcmMessageHandler extends GcmListenerService {
     public static final String TYPE_FRIEND = "friendRequest";
     public static final String TYPE_CHALLENGE = "challengeRequest";
 
-    private static final String TAG = "GcmMessHandler";
+    private static final String TAG = "FCMMessHandler";
 
+    /**
+     * Called when message is received.
+     *
+     * @param remoteMessage Object representing the message received from Firebase Cloud Messaging.
+     */
     @Override
-    public void onMessageReceived(String serverOrigin, Bundle data) {
+    public void onMessageReceived(RemoteMessage remoteMessage) {
+
+        String from = remoteMessage.getFrom();
+        Map<String, String> map = remoteMessage.getData();
+        String data = remoteMessage.getData().get(TAG_MESSAGE);
+
+        //String notification = remoteMessage.getNotification().getBody();
+        //  Log.d(TAG, remoteMessage.)
+        Log.d(TAG, map.get(TAG_MESSAGE));
+
         JSONObject message;
         String type = null;
         String sender = null;
@@ -51,7 +67,7 @@ public class GcmMessageHandler extends GcmListenerService {
         int senderId = 0, count = 0;
 
         try {
-            message = new JSONObject(data.getString(TAG_MESSAGE));
+            message = new JSONObject(data);
             Log.d(TAG, message.toString());
             type = message.getString(TAG_TYPE);
             senderId = message.getInt(TAG_SENDER_ID);
@@ -81,6 +97,7 @@ public class GcmMessageHandler extends GcmListenerService {
         }
 
         createNotification(TAG_TITLE, notificationMessage, type);
+
     }
 
 
@@ -136,5 +153,4 @@ public class GcmMessageHandler extends GcmListenerService {
                 getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(notificationId, mBuilder.build());
     }
-
 }

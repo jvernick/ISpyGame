@@ -41,6 +41,7 @@ public class FileRequest extends Request<String> {
     private FileRequest(Context context, String url, Response.ErrorListener errorListener,
                         Response.Listener<String> listener, File file) {
         super(Method.POST, url, errorListener);
+        Log.d(TAG, url);
 
         this.context = context;
         this.mListener = listener;

@@ -6,8 +6,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.PorterDuff;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -24,7 +22,6 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.picspy.firstapp.R;
-import com.picspy.gcm.RegistrationIntentService;
 import com.picspy.models.UserRecord;
 import com.picspy.utils.Accounts;
 import com.picspy.utils.AppConstants;
@@ -36,6 +33,8 @@ import com.picspy.utils.UserRequests;
 import com.picspy.utils.VolleyRequest;
 
 import java.util.Calendar;
+
+import static com.picspy.views.Splash_Activity.verifyFCMToken;
 
 
 /**
@@ -341,10 +340,8 @@ public class RegisterActivity extends Activity {
      * Starts the main activity after a user is successfully registered
      */
     private void showResults() {
+        verifyFCMToken(this);
         progressDialog.cancel();
-        // gcm registration
-        Intent gcmIntent = new Intent(getApplicationContext(), RegistrationIntentService.class);
-        startService(gcmIntent);
         Toast.makeText(RegisterActivity.this, "Welcome!", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);

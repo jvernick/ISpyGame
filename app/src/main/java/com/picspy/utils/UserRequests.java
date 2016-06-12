@@ -45,6 +45,7 @@ public class UserRequests extends JsonObjectRequest {
      */
     public UserRequests(Context context, Type type, int method, String path, JSONObject jsonRequest, Response.Listener<JSONObject> jsonObjectListener, Response.ErrorListener errorListener) {
       super(method, path, jsonRequest, jsonObjectListener, errorListener);
+        Log.d(TAG, path + "\njson: " + jsonRequest);
         this.context = context;
         this.type = type;
     }
@@ -75,9 +76,7 @@ public class UserRequests extends JsonObjectRequest {
 
         JSONObject jsonRequest;
         try {
-            Log.d(TAG, "adduserRequest: " + userModel.toString());
             jsonRequest = new JSONObject(gson.toJson(request, new TypeToken<RecordsRequest<AddUserModel>>(){}.getType()));
-            Log.d(TAG, "jsonRequest: " + jsonRequest.toString());
 
             String url = DspUriBuilder.buildUri(DspUriBuilder.USERS_TABLE, null);
             return new UserRequests(context, Type.ADD, Method.POST, url,
@@ -114,9 +113,7 @@ public class UserRequests extends JsonObjectRequest {
 
         JSONObject jsonRequest;
         try {
-            Log.d(TAG, "adduserRequest: " + userModel.toString());
             jsonRequest = new JSONObject(gson.toJson(request, new TypeToken<RecordsRequest<AddUserModel>>(){}.getType()));
-            Log.d(TAG, "jsonRequest: " + jsonRequest.toString());
 
             String url = DspUriBuilder.buildUri(DspUriBuilder.USERS_TABLE, null);
             return new UserRequests(context, Type.UPDATE, Method.POST, url,
@@ -152,7 +149,6 @@ public class UserRequests extends JsonObjectRequest {
         params.put("filter", filter);
 
         String url = DspUriBuilder.buildUri(DspUriBuilder.USERS_TABLE, params);
-        Log.d(TAG, "jsonRequest path: " + url);
 
         return new UserRequests(context,Type.FIND, Method.GET, url, null, jsonObjectListener, errorListener);
     }
@@ -206,7 +202,7 @@ public class UserRequests extends JsonObjectRequest {
             return "AddUserModel{" +
                     "\n" + "id=" + id +
                     "\n" + " username=" + username +
-                    "\n" + "reg_token= " + reg_token +
+                    "\n" + "reg_token=" + reg_token +
                     "\n}";
         }
     }

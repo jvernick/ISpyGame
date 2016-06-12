@@ -42,6 +42,7 @@ public class RegistrationRequests extends JsonObjectRequest {
                                 JSONObject jsonRequest, Response.Listener<JSONObject> listener,
                                 Response.ErrorListener errorListener) {
         super(method, url, jsonRequest, listener, errorListener);
+        Log.d(TAG, url + "\nJson: " + jsonRequest);
         this.context = context;
         this.type = type;
     }

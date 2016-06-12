@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "159973896341",
+    "firebase_url": "https://picspy-c460.firebaseio.com",
+    "project_id": "picspy-c460",
+    "storage_bucket": "picspy-c460.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:159973896341:android:02454377bd613980",
+        "android_client_info": {
+          "package_name": "com.picspy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "159973896341-efnhas7ikjl84kqelvipc55amjl8ofd2.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "159973896341-sops5kqga3ba42vu2cvql7i11bnt7jeb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfvw4vUMt9-mRlUi4zDxF6oFFhNHA4ItM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

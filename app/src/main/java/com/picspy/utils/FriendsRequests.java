@@ -42,6 +42,7 @@ public class FriendsRequests extends JsonObjectRequest{
      */
     private FriendsRequests(Context context, boolean isPatchTunnel, int method, String url, JSONObject jsonRequest, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         super(method, url, jsonRequest, listener, errorListener);
+        Log.d(TAG, url + "\nJson: " + jsonRequest);
         this.context = context;
         this.isPatchTunnel = isPatchTunnel;
     }
@@ -61,7 +62,6 @@ public class FriendsRequests extends JsonObjectRequest{
         String filter ="(status=" + 0 + ") AND (id> " + maxFriendRecordId  +")";
         params.put("filter", filter);
         params.put("related", "*");
-
         String url = DspUriBuilder.buildUri(DspUriBuilder.FRIENDS_TABLE, params);
 
         return new FriendsRequests(context, false, Method.GET, url, null, jsonObjectListener, errorListener);
@@ -88,7 +88,6 @@ public class FriendsRequests extends JsonObjectRequest{
             // TODO may not be needed. Username obtained from display_name
             params.put("uname", PrefUtil.getString(context, AppConstants.USER_NAME));
             String url = DspUriBuilder.buildUri(DspUriBuilder.FRIENDS_TABLE, params);
-            Log.d(TAG, url);
 
             return new FriendsRequests(context, false, Method.POST, url, jsonRequest, jsonObjectListener, errorListener);
         } catch (JSONException e) {
@@ -125,6 +124,7 @@ public class FriendsRequests extends JsonObjectRequest{
     }
 
     public static FriendsRequests getFriendRequests ( Context context, final Response.Listener<FriendsRecord> listener, Response.ErrorListener errorListener) {
+        Log.d(TAG, "getFriendRequests");
         Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -161,7 +161,6 @@ public class FriendsRequests extends JsonObjectRequest{
         try {
             jsonRequest = new JSONObject(gson.toJson(request, new TypeToken<RecordsRequest<FriendModel>>(){}.getType()));
             String url = DspUriBuilder.buildUri(DspUriBuilder.FRIENDS_TABLE, null);
-            Log.d(TAG, "jsonRequest path: " + url);
 
             return new FriendsRequests(context, true, Method.POST, url, jsonRequest, jsonObjectListener, errorListener);
         } catch (JSONException e) {
@@ -201,7 +200,6 @@ public class FriendsRequests extends JsonObjectRequest{
         params.put("filter", filter);
         params.put("related", related);
         String url = DspUriBuilder.buildUri(DspUriBuilder.FRIENDS_TABLE, params);
-        Log.d(TAG, url);
 
         return new FriendsRequests(context, false, Method.GET, url, null, jsonObjectListener, errorListener);
     }

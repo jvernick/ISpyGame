@@ -13,7 +13,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,7 +22,9 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,7 +53,7 @@ public class ChooseFriendsFragment extends ListFragment implements
     private static final String TAG = "ChooseFriends";
     private static  LoaderManager.LoaderCallbacks<Cursor> callback;
     private static final int LOADER_ID = 0;
-    private SearchView searchView;
+    private SearchView mSearchView;
     private TextView emptySearchView;
     private TextView noFriendView;
     private boolean firstQuery = true;
@@ -73,6 +74,7 @@ public class ChooseFriendsFragment extends ListFragment implements
     private Animation animBarDOWN;
     private Button sendButton;
     private ViewGroup nextView;
+    private MenuItem mSearchItem;
 
     public static ChooseFriendsFragment newInstance(Bundle gameOptionsBundle,
                                                     Bundle pictureOptionsBundle) {
@@ -151,9 +153,10 @@ public class ChooseFriendsFragment extends ListFragment implements
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_choose_friends, menu);
-        searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        mSearchItem = menu.findItem(R.id.search);
+        mSearchView = (SearchView) mSearchItem.getActionView();
 
-        if (searchView != null) {
+        if (mSearchView != null) {
             setupSearchView();
         }
     }
@@ -197,23 +200,40 @@ public class ChooseFriendsFragment extends ListFragment implements
         SearchManager searchManager = (SearchManager)
                 getActivity().getSystemService(Context.SEARCH_SERVICE);
         ComponentName componentName = new ComponentName(getActivity(), SendChallenge.class);
+        if (searchManager != null) {
+            mSearchView.setSearchableInfo(searchManager.getSearchableInfo(componentName));
+        }
+        mSearchView.setIconifiedByDefault(false);
+        //mSearchView.setQueryHint("");
+        mSearchView.setOnQueryTextListener(this);
+        mSearchView.setOnCloseListener(this);
 
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName));
-        searchView.setIconifiedByDefault(true);
-        searchView.setOnQueryTextListener(this);
-        searchView.setOnCloseListener(this);
+        try {
+            int searchPlateId = mSearchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
+            EditText searchPlate = (EditText) mSearchView.findViewById(searchPlateId);
+            searchPlate.setHint("");
+        }
+        catch (Throwable t)
+        {
+            t.printStackTrace();
+        }
 
 
+        //remove search Icon
+        ImageView magImage = (ImageView) mSearchView.findViewById(android.support.v7.appcompat.R.id.search_mag_icon);
+        magImage.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
+        //magImage.setVisibility(View.GONE);
+        //magImage.setImageResource(R.drawable.ic_arrow_back);
         // Change background line
-        View searchplate = searchView.findViewById(android.support.v7.appcompat.R.id.search_plate);
+        View searchplate = mSearchView.findViewById(android.support.v7.appcompat.R.id.search_plate);
         if (searchplate != null) {
             searchplate.setBackgroundResource(R.drawable.horizontal_divider_transparent);
         }
-        // Change close icon color
-        ImageView searchCloseIcon = (ImageView)searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
+        // Change close icon color TODO Not neeted, remove
+        /*ImageView searchCloseIcon = (ImageView) mSearchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
         if (searchCloseIcon != null) {
             searchCloseIcon.setImageResource(R.drawable.ic_close_white);
-        }
+        }*/
 
     }
 
@@ -287,12 +307,14 @@ public class ChooseFriendsFragment extends ListFragment implements
         ((ChooseFriendsCursorAdapter) getListAdapter()).changeCursor(null);
     }
 
+    // [ SearchView configuration ]
     @Override
     public boolean onQueryTextSubmit(String s) {
         Bundle data = new Bundle();
         data.putBoolean(ChooseFriendsFragment.BDL_IS_SEARCH, true);
         data.putString(ChooseFriendsFragment.BDL_SEARCH_STRING, s);
         getLoaderManager().restartLoader(LOADER_ID, data, callback).forceLoad();
+        mSearchItem.collapseActionView();
         return false;
     }
 
@@ -315,6 +337,8 @@ public class ChooseFriendsFragment extends ListFragment implements
         getLoaderManager().restartLoader(LOADER_ID, data, callback).forceLoad();
         return false;
     }
+
+    // [ End SearchView configuration ]
 
     /**
      * Called when the set of selected friends changes size from 0 to one

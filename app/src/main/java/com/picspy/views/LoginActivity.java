@@ -30,6 +30,8 @@ import com.picspy.utils.VolleyRequest;
 
 import java.util.Calendar;
 
+import static com.picspy.views.Splash_Activity.verifyFCMToken;
+
 /**
  * Activity for user login
  */
@@ -172,6 +174,7 @@ public class LoginActivity extends FragmentActivity {
      * Starts the main activity after user logs in
      */
     private void startMain() {
+        verifyFCMToken(this);
         Intent intent = new Intent(this, MainActivity.class);
         //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
