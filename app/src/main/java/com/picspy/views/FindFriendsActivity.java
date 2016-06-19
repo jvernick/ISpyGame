@@ -2,6 +2,7 @@ package com.picspy.views;
 
 import java.util.ArrayList;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
@@ -14,7 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.view.inputmethod.InputMethodManager;
 
 import com.picspy.adapters.SlidingTabLayout;
 import com.picspy.firstapp.R;
@@ -26,6 +27,8 @@ import com.picspy.views.fragments.FriendSearchFragment;
 
 public class FindFriendsActivity extends ActionBarActivity {
     public static final String CANCEL_TAG = "cancelFindRequests";
+    public static final String EXTRA_START_FRAGMENT = "com.picspy.views.friend.startFragment";
+    private static final String TAG = "FindFriendsAct";
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -46,20 +49,24 @@ public class FindFriendsActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find_friends);
+
+        // get intent
+        int startFragment = getIntent().getIntExtra(EXTRA_START_FRAGMENT, 0);
+        startFragment = (startFragment != 1 && startFragment != 0)? 0: startFragment;
+        Log.d(TAG, "startFragment: " +  startFragment);
+
         // reset notification counter
         PrefUtil.putInt(this, AppConstants.FRIEND_REQUEST_COUNT, 0);
         boolean isNotf = getIntent().getBooleanExtra(FriendRequestsFragment.ARG_NOTF, false);
-
 
         // Set up the action bar.
         //final ActionBar actionBar = getSupportActionBar();
         //actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         // create a fragment list in order.
-        ArrayList<Fragment> fragments = new ArrayList<>();
-        FriendRequestsFragment requestsFragment = FriendRequestsFragment.newInstance(isNotf);
-        fragments.add(requestsFragment);
-        fragments.add(new FriendSearchFragment());
+        final ArrayList<Fragment> fragments = new ArrayList<>();
+        fragments.add(FriendRequestsFragment.newInstance(isNotf));
+        fragments.add(FriendSearchFragment.newInstance(startFragment));
 
 
         // Create the adapter that will return a fragment for each of the two
@@ -69,7 +76,33 @@ public class FindFriendsActivity extends ActionBarActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.setCurrentItem(startFragment);
+        if (startFragment == 1){
+            Log.d(TAG, "startFragment == 0");
 
+            InputMethodManager imgr = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            //imgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+        }
+
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                Log.d(TAG, "onPageSelected: " + position);
+                if (position == 1) {
+                    ((FriendSearchFragment) fragments.get(1)).showKeyboard();
+                } else {
+                    ((FriendSearchFragment) fragments.get(1)).hideKeyboard();
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
 
         // Define SlidingTabLayout (shown at top)
         SlidingTabLayout slidingTabLayout = (SlidingTabLayout) findViewById(R.id.find_friends_tab);
@@ -103,7 +136,7 @@ public class FindFriendsActivity extends ActionBarActivity {
      * perform fragment operations at that point will throw IllegalStateException
      * because the fragment manager thinks the state is still saved.
      *
-     * @param intent
+     * @param intent intent from caller
      */
     @Override
     protected void onNewIntent(Intent intent) {

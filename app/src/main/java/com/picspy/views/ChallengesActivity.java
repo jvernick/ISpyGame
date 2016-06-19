@@ -241,7 +241,7 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         ((GamesCursorAdapter)listView.getAdapter()).changeCursor(cursor);
         ((GamesCursorAdapter)listView.getAdapter()).notifyDataSetChanged();
-        listView.setEmptyView(findViewById(R.id.empty_list));
+        listView.setEmptyView(findViewById(R.id.empty_challenge));
     }
 
     @Override

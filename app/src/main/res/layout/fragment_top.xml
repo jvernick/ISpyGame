@@ -3,9 +3,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/my_recycler_view"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical" />
+        android:layout_margin="16dp">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/my_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" />
+
+            <TextView
+                style="@style/empty_challenge_view"
+                android:id="@+id/empty_challenge"
+                android:text="@string/top_challenge_empty_text"/>
+    </RelativeLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

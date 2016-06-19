@@ -112,7 +112,7 @@ public class ChooseFriendsFragment extends ListFragment implements
         setListAdapter(cursorAdapter);
         View rootView = inflater.inflate(R.layout.fragment_choose_friends_list, container, false);
 
-        noFriendView = (TextView) rootView.findViewById(R.id.no_friends);
+        noFriendView = (TextView) rootView.findViewById(R.id.empty_friends);
         emptySearchView = (TextView) rootView.findViewById(R.id.search_empty);
 
         animBarUp = AnimationUtils.loadAnimation(getActivity(), R.anim.send_challenge_bar_up);

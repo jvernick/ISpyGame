@@ -1,5 +1,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.picspy.views.fragments.FriendsFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -7,7 +9,7 @@
 
     <!--TODO Should the following divider be added after header?
         android:background="@drawable/horizontal_divider"-->
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout
         android:orientation="vertical" android:layout_width="match_parent"
         android:layout_height="56dp"
         android:paddingRight="8dp"
@@ -84,7 +86,7 @@
         android:visibility="gone"/>
 
     <TextView
-        android:id="@+id/no_friends"
+        android:id="@+id/empty_friends2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/friend_list_header"
@@ -98,6 +100,31 @@
         android:gravity="center"
         android:text="@string/friends_fragment_no_friends"
         android:visibility="gone"/>
+
+    <LinearLayout
+        android:id="@+id/empty_friends"
+        style="@style/empty_views"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <TextView
+            style="@style/empty_friend_view"
+            android:minHeight="48dp"
+            android:textColor="@color/secondary_text"
+            android:gravity="center"
+            android:text="@string/friends_fragment_no_friends"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="16dp"
+            android:paddingLeft="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:text="@string/find_friend_link"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/accent"
+            android:clickable="true"
+            android:onClick="findFriends"/>
+    </LinearLayout>
 
     <ProgressBar
         style="@style/progressSpinner"

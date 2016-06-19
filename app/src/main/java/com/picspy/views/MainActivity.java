@@ -9,10 +9,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -215,5 +212,11 @@ public class MainActivity extends FragmentActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
         finish();
+    }
+
+    public void findFriends(View view) {
+        Intent intent = new Intent(this, FindFriendsActivity.class);
+        intent.putExtra(FindFriendsActivity.EXTRA_START_FRAGMENT, 1);
+        startActivity(intent);
     }
 }

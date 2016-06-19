@@ -2,6 +2,7 @@ package com.picspy.views.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Gravity;
@@ -30,16 +31,39 @@ import com.picspy.views.FindFriendsActivity;
 
 /**
  * Activity to search for friends
- * TODO in upgrades, change camera on botom bar to buttons for scanning  or searching QR codes
+ * TODO in upgrades, change camera on bottom bar to buttons for scanning  or searching QR codes
  */
 public class FriendSearchFragment extends Fragment{
     private static final String USERNAME = "username";
     private static final String USER_ID = "userID";
     private static final String TAG = "FriendSearch";
+    private static final String EXTRA_SHOW_KEYBOARD = "com.picspy.friend.showKeyboard";
     private Button btnFindFriend;
     private EditText unameField;
     private TextView responseText;
     private ProgressBar progressSpinner;
+    private boolean showKeyboard;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        int startFragment = this.getArguments().getInt(EXTRA_SHOW_KEYBOARD, 0);
+        Log.d(TAG, "" + startFragment);
+        showKeyboard = (startFragment == 1);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (showKeyboard) {
+            //showKeyboard();
+
+            InputMethodManager imgr = (InputMethodManager)
+                    getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imgr.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_IMPLICIT_ONLY);
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,14 +72,38 @@ public class FriendSearchFragment extends Fragment{
         btnFindFriend = (Button) rootView.findViewById(R.id.btn_add_friend);
         unameField = (EditText) rootView.findViewById(R.id.username_field);
         unameField.requestFocus();
-        InputMethodManager mgr = (InputMethodManager)
-                getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        mgr.showSoftInput(unameField, InputMethodManager.SHOW_IMPLICIT);
+        //showKeyboard();
+
         responseText = (TextView) rootView.findViewById(R.id.message);
 
         progressSpinner = (ProgressBar) rootView.findViewById(R.id.challenges_progressBar);
         progressSpinner.setVisibility(View.GONE);
         return rootView;
+    }
+
+    public void showKeyboard() {
+        InputMethodManager mgr = (InputMethodManager)
+                getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        mgr.showSoftInput(unameField, InputMethodManager.SHOW_IMPLICIT);
+    }
+
+    public void hideKeyboard() {
+        InputMethodManager mgr = (InputMethodManager)
+                getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        mgr.hideSoftInputFromWindow(unameField.getWindowToken(), 0);
+    }
+
+    /**
+     * Static factory method that initializes the fragment's arguments,
+     * and returns the new fragment to the client.
+     * @param startFragment
+     */
+    public static FriendSearchFragment newInstance(int startFragment) {
+        Bundle args = new Bundle();
+        args.putInt(EXTRA_SHOW_KEYBOARD, startFragment);
+        FriendSearchFragment f = new FriendSearchFragment();
+        f.setArguments(args);
+        return f;
     }
 
     @Override

@@ -15,17 +15,9 @@
     </ListView>
 
     <TextView
-        android:id="@+id/empty_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="40dp"
-        android:padding="8dp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/primary_text"
-        android:text="@string/tx_empty_list_challenges"
-        android:gravity="center"
-        android:layout_below="@+id/challenges_toolbar"
-        android:visibility="gone"/>
+        style="@style/empty_challenge_view"
+        android:id="@+id/empty_challenge"
+        android:text="@string/challenges_activity_empty_text"/>
 
     <View
         android:id="@+id/bar"
@@ -51,7 +43,8 @@
         android:layout_alignTop="@+id/bar"
         android:layout_alignBottom="@+id/bar"
         android:layout_centerHorizontal="true"
-        android:id="@+id/cameraButton" />
+        android:id="@+id/cameraButton"
+        android:contentDescription="@string/cd_start_game" />
 
     <!-- TODO modify location-->
     <ProgressBar
@@ -61,6 +54,7 @@
         android:id="@+id/challenges_progressBar"
         android:layout_below="@id/challenge_list"
         android:layout_above="@id/bar"
+        android:layout_marginTop="72dp"
         android:layout_centerHorizontal="true"
         android:progressDrawable="@drawable/circular_progress_bar"
         android:visibility="gone"/>

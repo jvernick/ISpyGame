@@ -155,6 +155,7 @@ public class Splash_Activity extends Activity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 progressSpinner.setVisibility(View.GONE);
+                if (error.getMessage() != null)
                 Log.d(TAG, error.getMessage());
                 splashLogin(null);
             }

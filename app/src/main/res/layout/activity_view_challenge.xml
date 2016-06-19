@@ -26,7 +26,7 @@ android:layout_height="match_parent">
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="30sp"
-                android:text="@string/challenge_hint_title"
+                android:text="@string/title_challenge_hint"
                 android:gravity="bottom"
                 android:layout_weight="2"/>
 
@@ -134,7 +134,7 @@ android:layout_height="match_parent">
             style="@style/drawer_text"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:drawableTop="@drawable/drawer_border"
-            android:text="@string/game_hint_title"/>
+            android:text="@string/title_game_hint"/>
         <TextView
             style="@style/drawer_text"
             android:id="@+id/hint_provided"

@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     tools:context="com.picspy.views.FriendInfoActivity">
     <!--
-    TODO change colors to colors form colors resource
     TODO remove floating action button or replace with camera
     is border in second listview necessary?
     -->
@@ -23,6 +22,18 @@
         android:layout_centerVertical="true"
         android:indeterminateDrawable="@drawable/circular_progress_bar"
         android:visibility="gone"/>
+
+    <TextView
+        style="@style/empty_views"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/secondary_text"
+        android:text="@string/friend_info_no_connection"
+        android:drawableTop="@drawable/ic_warning_dark"
+        android:layout_margin="4dp"
+        android:padding="4dp"/>
+
     <!--
         View set to be invisible so as to display empty page if there is no network connection.
     -->

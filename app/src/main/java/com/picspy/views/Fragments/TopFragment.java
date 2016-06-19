@@ -1,12 +1,11 @@
 package com.picspy.views.fragments;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,7 +13,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
@@ -44,6 +43,7 @@ public class TopFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     private TopFragmentRecyclerAdapter mAdapter;
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
+    private TextView emptyChallengeView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,6 +53,7 @@ public class TopFragment extends Fragment implements SwipeRefreshLayout.OnRefres
        // final View listFragmentView = super.onCreateView(inflater, container, savedInstanceState);
 
         View rootView = inflater.inflate(R.layout.fragment_top, container, false);
+        emptyChallengeView = (TextView) rootView.findViewById(R.id.empty_challenge);
 
         // [ start Setup recycler view ]
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
@@ -61,14 +62,18 @@ public class TopFragment extends Fragment implements SwipeRefreshLayout.OnRefres
         mAdapter =  new TopFragmentRecyclerAdapter(new ArrayList<Game>());
         mAdapter.setAdapterRequestListener(this);
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
         // [ end Setup recycler view ]
 
         // [ Start setup swipe refresh layout ]
         // Now create a SwipeRefreshLayout to wrap the fragment's content view
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeRefresh);
 
-        mSwipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.accent));
+        mSwipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.accent),
+                getResources().getColor(R.color.primary));
         mSwipeRefreshLayout.setOnRefreshListener(this);
+
 
 
         // [ End swipe refresh layout setup ]
@@ -94,7 +99,6 @@ public class TopFragment extends Fragment implements SwipeRefreshLayout.OnRefres
 
         // Start out with a progress indicator.
         //setListShown(true);
-        Log.d(TAG, "executing search");
         getLeaderboard(false);
     }
 
@@ -107,8 +111,6 @@ public class TopFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     // [ swipeRefreshLayout implementation ]
     @Override
     public void onRefresh() {
-        Log.d(TAG, "onRefresh");
-        //(new GetLeaderboard(true)).execute();
         getLeaderboard(true);
     }
 
@@ -130,7 +132,7 @@ public class TopFragment extends Fragment implements SwipeRefreshLayout.OnRefres
                     error.printStackTrace();
                     Log.d(TAG, err);
                     //Show toast only if there is no server connection on refresh
-                    if (err.matches(AppConstants.CONNECTION_ERROR) || err.matches(AppConstants.TIMEOUT_ERROR) && isRefresh) {
+                    if ((err.matches(AppConstants.CONNECTION_ERROR) || err.matches(AppConstants.TIMEOUT_ERROR)) && isRefresh) {
                         LayoutInflater inflater = getActivity().getLayoutInflater();
                         View layout = inflater.inflate(R.layout.custom_toast,
                                 (ViewGroup) getActivity().findViewById(R.id.toast_layout_root));
@@ -152,6 +154,7 @@ public class TopFragment extends Fragment implements SwipeRefreshLayout.OnRefres
 
     private void updateChallenges(GamesRecord gamesRecord, boolean refresh) {
         if (gamesRecord != null && gamesRecord.getCount() != 0) {
+            emptyChallengeView.setVisibility(View.GONE);
             ArrayList<Game> gameList = new ArrayList<>();
 
             for (GameRecord gameRecord : gamesRecord.getResource()) {
@@ -166,6 +169,8 @@ public class TopFragment extends Fragment implements SwipeRefreshLayout.OnRefres
             if (refresh) {
                 mAdapter.setData(gameList);
             }
+        } else {
+            emptyChallengeView.setVisibility(View.VISIBLE);
         }
         mSwipeRefreshLayout.setRefreshing(false);
     }

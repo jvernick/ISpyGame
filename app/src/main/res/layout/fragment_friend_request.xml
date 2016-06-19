@@ -6,9 +6,9 @@
     <ProgressBar
         android:id="@+id/challenges_progressBar"
         style="?android:attr/progressBarStyleSmall"
+        android:layout_marginTop="72dp"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_centerInParent="true"
         android:progressDrawable="@drawable/circular_progress_bar"/>
 
     <android.support.v7.widget.RecyclerView
@@ -20,15 +20,15 @@
 
     <TextView
         android:id="@+id/empty_list"
-        android:layout_alignParentTop="true"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minHeight="40dp"
-        android:layout_margin="8dp"
-        android:padding="8dp"
+        android:layout_centerInParent="true"
+        android:padding="16dp"
+        android:layout_margin="16dp"
+        android:gravity="center"
+        android:drawableTop="@drawable/ic_empty_add_friend"
+        android:layout_gravity="center"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/primary_text"
-        android:text="@string/tx_empty_list"
-        android:gravity="center"
-        android:visibility="gone"/>
+        android:text="@string/tx_empty_list"/>
 </RelativeLayout>

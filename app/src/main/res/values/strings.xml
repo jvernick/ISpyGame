@@ -41,6 +41,7 @@
     <string name="stats_title">All Time</string>
     <string name="games_sent_description">Challenges sent to me</string>
     <string name="games_received_description">Challenges I sent</string>
+    <string name="friend_info_no_connection">No connection</string>
 
     <!-- item_challenge.xml-->
     <string name="gueses_text">Guess</string>
@@ -62,16 +63,16 @@
 
     <!-- friend_fragment> -->
     <string name="search_friend_hint">Search friends </string>
-    <string name="find_button_description">Find new friendList and see requests</string>
+    <string name="find_button_description">Find new friends and see requests</string>
     <string name="title_activity_find_friend">FindFriendActivity</string>
     <string name="friends_fragment_empty_search">No friend with entered username</string>
-    <string name="friends_fragment_no_friends">Picspy is more fun with friends.
-        Tap the blue button to find friends</string>
+    <string name="friends_fragment_no_friends">You don\'t have any friends yet</string>
+    <string name="find_friend_link">FIND FRIENDS</string>
 
     <!-- activity_find_friend -->
     <string name="edt_search_hint">Search by Username</string>
     <string name="btn_search">Search</string>
-    <string name="tx_empty_list">No new requests! Add new friends below.</string>
+    <string name="tx_empty_list">No new requests!\nSwipe right to search users</string>
     <string name="err_friend_notif">"No connection to server, unable to get friend request"</string>
     <string name="title_list_header">FRIEND REQUESTS</string>
 
@@ -111,8 +112,14 @@
     <string name="networkErrorText">No connection to server.</string>
 
     <!--ViewChallenge-->
-    <string name="game_hint_title">HINT</string>
+    <string name="title_game_hint">HINT</string>
     <string name="swipe_hint">--> Swipe for hint</string>
-    <string name="challenge_hint_title">Hope this hint helps:\n</string>
+    <string name="title_challenge_hint">Hope this hint helps:\n</string>
     <string name="download_progress">Fetching image…</string>
+
+    <!--fragment_top-->
+    <string name="top_challenge_empty_text">Top challenges will appear here,\n Swipe down to refresh</string>
+
+    <!--activity_challenges-->
+    <string name="challenges_activity_empty_text">Challenges sent to you will appear here</string>
 </resources>

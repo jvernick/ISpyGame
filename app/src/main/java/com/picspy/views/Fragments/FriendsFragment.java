@@ -54,8 +54,8 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
     private boolean noFriend = false;
 
     private TextView emptySearchView;
-    private TextView noFriendView;
     private TextView friendReqBadge;
+    private ViewGroup noFriendView;
 
     /**
      * Static factory method that takes an int parameter,
@@ -87,7 +87,7 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        cursorAdapter = new FriendsCursorAdapter(getActivity(), R.layout.item_friends, null, 0);
+        cursorAdapter = new FriendsCursorAdapter(getActivity(), R.layout.item_friend, null, 0);
         setListAdapter(cursorAdapter);
         getFriends(PrefUtil.getInt(getActivity(), AppConstants.MAX_FRIEND_RECORD_ID, 0));
     }
@@ -97,7 +97,7 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
                              ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_friends, container, false);
 
-        noFriendView = (TextView) rootView.findViewById(R.id.no_friends);
+        noFriendView = (ViewGroup) rootView.findViewById(R.id.empty_friends);
         emptySearchView = (TextView) rootView.findViewById(R.id.search_empty);
         friendReqBadge = (TextView) rootView.findViewById(R.id.friend_request_badge);
 
@@ -207,7 +207,7 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
                     if (getView() != null) getView().requestFocus();
                     InputMethodManager mgr = (InputMethodManager)
                             getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    mgr.hideSoftInputFromWindow(searchText.getWindowToken(), 0);
+                    mgr.hideSoftInputFromWindow(searchText.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                 }
                 cursorAdapter.getFilter().filter(cs);
             }

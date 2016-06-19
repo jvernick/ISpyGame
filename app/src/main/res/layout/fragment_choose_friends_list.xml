@@ -27,7 +27,7 @@
         android:visibility="gone"/>
 
     <TextView
-        android:id="@+id/no_friends"
+        android:id="@+id/empty_friends"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center"

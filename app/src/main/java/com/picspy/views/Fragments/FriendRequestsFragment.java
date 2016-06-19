@@ -2,6 +2,7 @@ package com.picspy.views.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -61,6 +62,7 @@ public class FriendRequestsFragment extends Fragment implements FriendRequestsRe
         mAdapter = new FriendRequestsRecyclerAdpater(new ArrayList<UserRecord>());
         mAdapter.setAdapterRequestListener(this);
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         return rootView;
     }
 
