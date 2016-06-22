@@ -20,11 +20,11 @@ import java.util.ArrayList;
 /**
  * Created by BrunelAmC on 4/24/2016.
  */
-public class FriendRequestsRecyclerAdpater extends RecyclerView.Adapter<FriendRequestsRecyclerAdpater.ViewHolder>{
+public class FriendRequestsRecyclerAdapter extends RecyclerView.Adapter<FriendRequestsRecyclerAdapter.ViewHolder>{
     ArrayList<UserRecord> mDataset;
     private AdapterRequestListener adapterRequestListener;
 
-    public FriendRequestsRecyclerAdpater(ArrayList<UserRecord> mDataset) {
+    public FriendRequestsRecyclerAdapter(ArrayList<UserRecord> mDataset) {
         this.mDataset = mDataset;
     }
 

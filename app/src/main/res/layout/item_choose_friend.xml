@@ -15,6 +15,7 @@
         style="@style/friend_name"
         android:id="@+id/friend_username"
         android:layout_height="wrap_content"
+        android:padding="4dp"
         android:layout_toRightOf="@id/friend_icon"
         android:layout_toEndOf="@id/friend_icon"
         android:layout_toLeftOf="@id/checkbox"

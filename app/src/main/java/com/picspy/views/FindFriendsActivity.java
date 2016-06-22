@@ -65,7 +65,7 @@ public class FindFriendsActivity extends ActionBarActivity {
 
         // create a fragment list in order.
         final ArrayList<Fragment> fragments = new ArrayList<>();
-        fragments.add(FriendRequestsFragment.newInstance(isNotf));
+        fragments.add(FriendRequestsFragment.newInstance(isNotf, startFragment));
         fragments.add(FriendSearchFragment.newInstance(startFragment));
 
 

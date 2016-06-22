@@ -58,6 +58,7 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
     public static final String L_BOARD = "l_board";
     private TextView sent_won, sent_lost, received_won, received_lost;
     private TextView total_won, total_lost, leaderboard, stats_title;
+    private TextView emptyView;
     private SurfaceView frame1;
     private ProgressBar progressSpinner;
     private int friend_id;
@@ -118,6 +119,7 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
      * on whether the user to be displayed is a friend
      */
     private void initializeViews() {
+        emptyView = (TextView) findViewById(R.id.empty_view);
         sent_won = (TextView) findViewById(R.id.sent_won);
         sent_lost = (TextView) findViewById(R.id.sent_lost);
         received_won = (TextView) findViewById(R.id.recieved_won);
@@ -412,6 +414,7 @@ public class FriendInfoActivity extends ActionBarActivity implements SurfaceHold
             @Override
             public void onErrorResponse(VolleyError error) {
                 progressSpinner.setVisibility(View.GONE);
+                emptyView.setVisibility(View.VISIBLE);
                 if (error != null ) {
                     String err = (error.getMessage() == null)? "An error occurred": error.getMessage();
                     error.printStackTrace();

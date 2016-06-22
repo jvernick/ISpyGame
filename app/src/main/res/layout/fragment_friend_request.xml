@@ -7,6 +7,7 @@
         android:id="@+id/challenges_progressBar"
         style="?android:attr/progressBarStyleSmall"
         android:layout_marginTop="72dp"
+        android:layout_centerHorizontal="true"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:progressDrawable="@drawable/circular_progress_bar"/>
@@ -15,7 +16,6 @@
         android:id="@+id/my_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="4dp"
         android:scrollbars="vertical" />
 
     <TextView
@@ -29,6 +29,20 @@
         android:drawableTop="@drawable/ic_empty_add_friend"
         android:layout_gravity="center"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/primary_text"
-        android:text="@string/tx_empty_list"/>
+        android:textColor="@color/secondary_text"
+        android:text="@string/tx_empty_list"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/empty_view"
+        style="@style/empty_views"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/secondary_text"
+        android:text="@string/friend_info_no_connection"
+        android:drawableTop="@drawable/ic_warning_dark"
+        android:layout_margin="4dp"
+        android:padding="4dp"
+        android:visibility="gone"/>
 </RelativeLayout>

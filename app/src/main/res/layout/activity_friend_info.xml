@@ -24,6 +24,7 @@
         android:visibility="gone"/>
 
     <TextView
+        android:id="@+id/empty_view"
         style="@style/empty_views"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,7 +33,8 @@
         android:text="@string/friend_info_no_connection"
         android:drawableTop="@drawable/ic_warning_dark"
         android:layout_margin="4dp"
-        android:padding="4dp"/>
+        android:padding="4dp"
+        android:visibility="gone"/>
 
     <!--
         View set to be invisible so as to display empty page if there is no network connection.

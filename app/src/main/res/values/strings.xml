@@ -118,8 +118,8 @@
     <string name="download_progress">Fetching image…</string>
 
     <!--fragment_top-->
-    <string name="top_challenge_empty_text">Top challenges will appear here,\n Swipe down to refresh</string>
+    <string name="top_challenge_empty_text">Top challenges will appear here. Swipe down to refresh</string>
 
     <!--activity_challenges-->
-    <string name="challenges_activity_empty_text">Challenges sent to you will appear here</string>
+    <string name="challenges_activity_empty_text">No new challenges. Challenges sent to you will appear here</string>
 </resources>

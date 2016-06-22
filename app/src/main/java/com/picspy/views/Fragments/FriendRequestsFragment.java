@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.picspy.adapters.FriendRequestsRecyclerAdpater;
+import com.picspy.adapters.FriendRequestsRecyclerAdapter;
 import com.picspy.firstapp.R;
 import com.picspy.models.FriendRecord;
 import com.picspy.models.FriendsRecord;
@@ -29,15 +29,18 @@ import com.picspy.views.FindFriendsActivity;
 
 import java.util.ArrayList;
 
-public class FriendRequestsFragment extends Fragment implements FriendRequestsRecyclerAdpater.AdapterRequestListener {
+public class FriendRequestsFragment extends Fragment implements FriendRequestsRecyclerAdapter.AdapterRequestListener {
     private static final String TAG = "FriendRequestsFragment";
-    public static final String ARG_NOTF = "isNotification";
+    public static final String ARG_NOTF = "com.picspy.friend.isNotification";
+    private static final String ARG_START_FRAGMENT = "com.picspy.friend.startFragment";
     private static int myUserId;
+    private static boolean isStartFragment;
     private boolean fromNotf;
     private ProgressBar progressSpinner;
     private RecyclerView mRecyclerView;
-    private FriendRequestsRecyclerAdpater mAdapter;
+    private FriendRequestsRecyclerAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private TextView emptyListView;
     private TextView emptyView;
 
     public FriendRequestsFragment() {
@@ -49,17 +52,21 @@ public class FriendRequestsFragment extends Fragment implements FriendRequestsRe
         // Reset friend notification badge
         PrefUtil.putInt(getActivity(), AppConstants.FRIEND_REQUEST_COUNT, 0);
         fromNotf = getArguments().getBoolean(ARG_NOTF, false);
+        isStartFragment = getArguments().getBoolean(ARG_START_FRAGMENT, true);
+
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_friend_request, container, false);
         rootView.setTag(TAG);
 
-        emptyView = (TextView) rootView.findViewById(R.id.empty_list);
+        emptyListView = (TextView) rootView.findViewById(R.id.empty_list);
+        emptyView = (TextView) rootView.findViewById(R.id.empty_view);
+
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
         mLayoutManager =  new LinearLayoutManager(getActivity());
 
         setRecyclerViewLayoutManager();
 
-        mAdapter = new FriendRequestsRecyclerAdpater(new ArrayList<UserRecord>());
+        mAdapter = new FriendRequestsRecyclerAdapter(new ArrayList<UserRecord>());
         mAdapter.setAdapterRequestListener(this);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -82,10 +89,11 @@ public class FriendRequestsFragment extends Fragment implements FriendRequestsRe
      * initializes the fragment's arguments, and returns the
      * new fragment to the client.
      */
-    public static FriendRequestsFragment newInstance(boolean isNotification) {
+    public static FriendRequestsFragment newInstance(boolean isNotification, int startFragment) {
         FriendRequestsFragment f = new FriendRequestsFragment();
         Bundle args = new Bundle();
         args.putBoolean(ARG_NOTF, isNotification);
+        args.putBoolean(ARG_START_FRAGMENT, startFragment == 0);
         f.setArguments(args);
         return f;
     }
@@ -123,6 +131,8 @@ public class FriendRequestsFragment extends Fragment implements FriendRequestsRe
                 progressSpinner.setVisibility(View.GONE);
                 if (response.getCount() != 0) {
                     processResponse(response);
+                } else {
+                    emptyListView.setVisibility(View.VISIBLE);
                 }
             }
         };
@@ -131,12 +141,13 @@ public class FriendRequestsFragment extends Fragment implements FriendRequestsRe
             @Override
             public void onErrorResponse(VolleyError error) {
                 progressSpinner.setVisibility(View.GONE);
+                emptyView.setVisibility(View.VISIBLE);
                 if (error != null ) {
                     String err = (error.getMessage() == null)? "An error occurred": error.getMessage();
                     error.printStackTrace();
                     Log.d(TAG, err);
                     //Show toast only if there is no server connection this is from a notification
-                    if (err.matches(AppConstants.CONNECTION_ERROR) || err.matches(AppConstants.TIMEOUT_ERROR) && fromNotf) {
+                    if ((err.matches(AppConstants.CONNECTION_ERROR) || err.matches(AppConstants.TIMEOUT_ERROR)) && (isStartFragment)/*&& fromNotf*/) {
                         LayoutInflater inflater = getActivity().getLayoutInflater();
                         View layout = inflater.inflate(R.layout.custom_toast,
                                 (ViewGroup) getActivity().findViewById(R.id.toast_layout_root));
@@ -169,9 +180,9 @@ public class FriendRequestsFragment extends Fragment implements FriendRequestsRe
 
     private void checkAdapterEmpty() {
         if (mAdapter.getItemCount() == 0) {
-            emptyView.setVisibility(View.VISIBLE);
+            emptyListView.setVisibility(View.VISIBLE);
         } else {
-            emptyView.setVisibility(View.GONE);
+            emptyListView.setVisibility(View.GONE);
         }
     }
 
