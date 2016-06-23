@@ -50,13 +50,13 @@
     <!-- no_connection_dialog.xml-->
     <string name="connectivity_dialog_text">No internet connectivity</string>
     <string name="connectivity_dialog_button"> OK </string>
-<!-- TODO: Remove or change this placeholder text -->
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="home_fragment">Home</string>
     <string name="friends_fragment">Friends</string>
     <string name="menu_fragment">Menu</string>
     <string name="top_fragment">Open Challenges</string>
 
-<!-- TODO: Remove or change this placeholder text -->
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_friend_info">FriendInfoActivity</string>
     <string name="title_activity_challenges">ChallengesActivity</string>
@@ -77,8 +77,8 @@
     <string name="title_list_header">FRIEND REQUESTS</string>
 
     <!-- item_friend_request -->
-    <string name="btn_accept">Confirm</string>
-    <string name="btn_decline">Delete</string>
+    <string name="btn_accept">Accept</string>
+    <string name="btn_decline">Decline</string>
 
     <!-- item_add_friend -->
     <string name="btn_send_request">Send request</string>

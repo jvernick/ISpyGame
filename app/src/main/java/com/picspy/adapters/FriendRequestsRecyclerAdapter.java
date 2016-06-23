@@ -18,7 +18,8 @@ import com.picspy.utils.AppConstants;
 import java.util.ArrayList;
 
 /**
- * Created by BrunelAmC on 4/24/2016.
+ * RecyclerAdapter for the FriendRequests fragment
+ * @author BrunelAmC
  */
 public class FriendRequestsRecyclerAdapter extends RecyclerView.Adapter<FriendRequestsRecyclerAdapter.ViewHolder>{
     ArrayList<UserRecord> mDataset;
@@ -84,6 +85,8 @@ public class FriendRequestsRecyclerAdapter extends RecyclerView.Adapter<FriendRe
                 FriendsCursorAdapter.startFriendInfoActivity(view, null, null, requestor);
             }
         });
+
+        viewHolder.iconAndName.setAddStatesFromChildren(true);
     }
 
     @Override
@@ -117,6 +120,7 @@ public class FriendRequestsRecyclerAdapter extends RecyclerView.Adapter<FriendRe
         public TextView friendUsername;
         public Button acceptFriend;
         public Button declineFriend;
+        public ViewGroup iconAndName;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -124,6 +128,7 @@ public class FriendRequestsRecyclerAdapter extends RecyclerView.Adapter<FriendRe
             friendUsername = (TextView) itemView.findViewById(R.id.request_username);
             acceptFriend = (Button) itemView.findViewById(R.id.accept_friend);
             declineFriend = (Button) itemView.findViewById(R.id.decline_friend);
+            iconAndName = (ViewGroup) itemView.findViewById(R.id.icon_and_name);
         }
     }
 

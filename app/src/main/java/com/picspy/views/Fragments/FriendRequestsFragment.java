@@ -62,7 +62,7 @@ public class FriendRequestsFragment extends Fragment implements FriendRequestsRe
         emptyView = (TextView) rootView.findViewById(R.id.empty_view);
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
-        mLayoutManager =  new LinearLayoutManager(getActivity());
+        mLayoutManager = new LinearLayoutManager(getActivity());
 
         setRecyclerViewLayoutManager();
 
@@ -112,7 +112,7 @@ public class FriendRequestsFragment extends Fragment implements FriendRequestsRe
      *                           a previous saved state, this is the state.
      */
     @Override
-    public void onActivityCreated( Bundle savedInstanceState) {
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         myUserId = PrefUtil.getInt(getActivity().getApplicationContext(), AppConstants.USER_ID);
         getFriendRequests();
@@ -142,8 +142,8 @@ public class FriendRequestsFragment extends Fragment implements FriendRequestsRe
             public void onErrorResponse(VolleyError error) {
                 progressSpinner.setVisibility(View.GONE);
                 emptyView.setVisibility(View.VISIBLE);
-                if (error != null ) {
-                    String err = (error.getMessage() == null)? "An error occurred": error.getMessage();
+                if (error != null) {
+                    String err = (error.getMessage() == null) ? "An error occurred" : error.getMessage();
                     error.printStackTrace();
                     Log.d(TAG, err);
                     //Show toast only if there is no server connection this is from a notification
@@ -188,40 +188,40 @@ public class FriendRequestsFragment extends Fragment implements FriendRequestsRe
 
     @Override
     public void declineRequest(int friend_id, final int position) {
-            Response.Listener<FriendRecord> responseListener = new Response.Listener<FriendRecord>() {
-                @Override
-                public void onResponse(FriendRecord response) {
-                    if (response != null) {
-                        mAdapter.removeItem(position);
+        Response.Listener<FriendRecord> responseListener = new Response.Listener<FriendRecord>() {
+            @Override
+            public void onResponse(FriendRecord response) {
+                if (response != null) {
+                    mAdapter.removeItem(position);
+                }
+            }
+        };
+
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error != null) {
+                    String err = (error.getMessage() == null) ? "An error occurred" : error.getMessage();
+                    //Show toast only if there is no server connection on refresh
+                    if (err.matches(AppConstants.CONNECTION_ERROR) || err.matches(AppConstants.TIMEOUT_ERROR)) {
+                        LayoutInflater inflater = getActivity().getLayoutInflater();
+                        View layout = inflater.inflate(R.layout.custom_toast,
+                                (ViewGroup) getActivity().findViewById(R.id.toast_layout_root));
+                        Toast toast = new Toast(getActivity());
+                        toast.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
+                        toast.setDuration(Toast.LENGTH_LONG);
+                        toast.setView(layout);
+                        toast.show();
+                    } else { //TODO for debugging, remove
+                        Toast.makeText(getActivity(), "An error occurred", Toast.LENGTH_SHORT).show();
                     }
                 }
-            };
+            }
+        };
 
-            Response.ErrorListener errorListener = new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    if (error != null ) {
-                        String err = (error.getMessage() == null)? "An error occurred": error.getMessage();
-                        //Show toast only if there is no server connection on refresh
-                        if (err.matches(AppConstants.CONNECTION_ERROR) || err.matches(AppConstants.TIMEOUT_ERROR)) {
-                            LayoutInflater inflater = getActivity().getLayoutInflater();
-                            View layout = inflater.inflate(R.layout.custom_toast,
-                                    (ViewGroup)getActivity().findViewById(R.id.toast_layout_root));
-                            Toast toast = new Toast(getActivity());
-                            toast.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
-                            toast.setDuration(Toast.LENGTH_LONG);
-                            toast.setView(layout);
-                            toast.show();
-                        } else { //TODO for debugging, remove
-                            Toast.makeText(getActivity(), "An error occurred", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
-            };
-
-            FriendsRequests deleteFriedRequest = FriendsRequests.removeFriend(getActivity(), friend_id, responseListener, errorListener);
-            if (deleteFriedRequest != null) deleteFriedRequest.setTag(FindFriendsActivity.CANCEL_TAG);
-            VolleyRequest.getInstance(getActivity().getApplicationContext()).addToRequestQueue(deleteFriedRequest);
+        FriendsRequests deleteFriedRequest = FriendsRequests.removeFriend(getActivity(), friend_id, responseListener, errorListener);
+        if (deleteFriedRequest != null) deleteFriedRequest.setTag(FindFriendsActivity.CANCEL_TAG);
+        VolleyRequest.getInstance(getActivity().getApplicationContext()).addToRequestQueue(deleteFriedRequest);
     }
 
     @Override
@@ -229,7 +229,7 @@ public class FriendRequestsFragment extends Fragment implements FriendRequestsRe
         Response.Listener<FriendRecord> responseListener = new Response.Listener<FriendRecord>() {
             @Override
             public void onResponse(FriendRecord response) {
-                if (response != null ) {
+                if (response != null) {
                     Log.d(TAG, response.toString());
                     mAdapter.removeItem(position);
                 }
@@ -240,7 +240,7 @@ public class FriendRequestsFragment extends Fragment implements FriendRequestsRe
             @Override
             public void onErrorResponse(VolleyError error) {
                 if (error != null) {
-                    String err = (error.getMessage() == null)? "error message null": error.getMessage();
+                    String err = (error.getMessage() == null) ? "error message null" : error.getMessage();
                     error.printStackTrace();
                     Log.d(TAG, err);
                     //Show toast only if there is no server connection on refresh
@@ -254,7 +254,7 @@ public class FriendRequestsFragment extends Fragment implements FriendRequestsRe
                         toast.setView(layout);
                         toast.show();
                     } else {//TODO for debugging, remove
-                        Toast.makeText(getActivity(), "An error occurred",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "An error occurred", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
