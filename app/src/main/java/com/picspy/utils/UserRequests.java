@@ -7,11 +7,9 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.dreamfactory.model.UserRequest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.picspy.models.RecordsRequest;
-import com.picspy.models.RecordsResponse;
 import com.picspy.models.UserRecord;
 import com.picspy.models.UsersRecord;
 
