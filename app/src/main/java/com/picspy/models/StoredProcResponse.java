@@ -10,10 +10,11 @@ import java.util.List;
  * Only for a custom stored procedure response
  * The model is ass follows
  * {
- *     [
- *      return_val = 0/1
- *     ]
+ * [
+ * return_val = 0/1
+ * ]
  * }
+ *
  * @see com.dreamfactory.model.StoredProcResponse
  */
 public class StoredProcResponse extends DbApiResponse {

@@ -52,15 +52,13 @@ public class FriendInfoActivity extends ActionBarActivity {
 
     private static final String TAG = "FriendsInfoActivity";
     private static final String CANCEL_TAG = "deleteFriend";
-
+    private static final int MENU_DELETE_ID = 1;
     // stat views
     private TextView fromFriendWon, fromFriendLost, toFriendWon, toFriendLost;
     private TextView userTotalWon, userTotalLost, userLeaderboard, userStatsTitle;
     private TextView sentSummary, receivedSummary, friendUsername;
-
     // Parent cards
     private View fromFriendCard, toFriendCard, userStatsCard, userProfileCard;
-
     private TextView emptyView;
     private ProgressBar progressSpinner;
     private int userId, myId;
@@ -69,8 +67,6 @@ public class FriendInfoActivity extends ActionBarActivity {
     private boolean forFriend;
     private ArrayList<AlertDialog> alertDialogs = new ArrayList<>();
     private Menu menu;
-    private static final int MENU_DELETE_ID = 1;
-
     private Circle sentCircle;
     private Circle receivedCircle;
     private View startGameFab, noFriendStatsTitle;
@@ -292,9 +288,9 @@ public class FriendInfoActivity extends ActionBarActivity {
 
         Log.d(TAG, "  " + topPercentage + " " + bottomPercentage);
         CharSequence text1 = Html.fromHtml(String.format(getString(R.string.sent_summary),
-                (int) ((1-topPercentage )* 100), userUsername));
+                (int) ((1 - topPercentage) * 100), userUsername));
         CharSequence text2 = Html.fromHtml(String.format(getString(R.string.received_summary),
-                userUsername, (int) ((1-bottomPercentage) * 100)));
+                userUsername, (int) ((1 - bottomPercentage) * 100)));
         text1 = totalTop == 0 ? getString(R.string.empty_received_challenges) : text1;
         sentSummary.setText(text1);
         text2 = (totalBottom == 0) ? getString(R.string.empty_sent_challenges) : text2;

@@ -1,8 +1,6 @@
 package com.picspy.adapters;
 
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +11,8 @@ import android.widget.TextView;
 
 import com.picspy.firstapp.R;
 import com.picspy.models.Game;
+
+import java.util.ArrayList;
 
 /**
  * Custom adapter for populating leaderboard challenges
@@ -30,13 +30,15 @@ public class TopFragmentArrayAdapter extends ArrayAdapter<Game> {
 
     /**
      * Add multiple games to the adapter
+     *
      * @param gameList list of games to be added
      */
     public void addGames(ArrayList<Game> gameList) {
         games.addAll(gameList);
     }
 
-    /** replaces the games with the new game list
+    /**
+     * replaces the games with the new game list
      *
      * @param gameList new game list
      */
@@ -61,7 +63,7 @@ public class TopFragmentArrayAdapter extends ArrayAdapter<Game> {
             viewHolder.challenge_time = (TextView) convertView.findViewById(R.id.challengeTime);
             viewHolder.guesses = (TextView) convertView.findViewById(R.id.guesses_title);
             viewHolder.list_icon = (ImageView) convertView.findViewById(R.id.list_icon);
-            
+
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();

@@ -1,10 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.picspy.views.ChallengesActivity">
-    <item android:id="@+id/action_settings"
-        android:title="@string/challenge_action_settings"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="com.picspy.views.ChallengesActivity">
+    <item
+        android:id="@+id/action_settings"
         android:icon="@drawable/ic_refresh"
         android:orderInCategory="100"
-        app:showAsAction="ifRoom" />
+        android:title="@string/challenge_action_settings"
+        app:showAsAction="ifRoom"/>
 </menu>

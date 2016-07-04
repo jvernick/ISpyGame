@@ -1,8 +1,7 @@
 package com.picspy.views;
 
-import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,15 +12,15 @@ import com.picspy.firstapp.R;
 /**
  * Created by BrunelAmC on 8/26/2015.
  */
-public class NoConnectivityDialog  extends DialogFragment {
+public class NoConnectivityDialog extends DialogFragment {
     Button btnOk;
 
     //---empty constructor required
-    public NoConnectivityDialog(){
+    public NoConnectivityDialog() {
 
     }
 
-    public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState ) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.no_connection_dialog, container);
         //---get the Button views---

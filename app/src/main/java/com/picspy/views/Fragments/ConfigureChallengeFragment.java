@@ -1,9 +1,9 @@
 package com.picspy.views.fragments;
 
 import android.app.Activity;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -35,11 +35,9 @@ import java.io.IOException;
  */
 public class ConfigureChallengeFragment extends Fragment {
     private static final String TAG = "ConfigureChallenge";
-    private F1FragmentInteractionListener mListener;
-
     private final int defaultTime = 5;
     private final int defaultGuesses = 3;
-
+    private F1FragmentInteractionListener mListener;
     // the fragment initialization parameters
     //bundles from camera activity
     //contains: selection and filename
@@ -80,7 +78,7 @@ public class ConfigureChallengeFragment extends Fragment {
 
         if (getArguments() != null) {
             pictureOptionsBundle = getArguments().getBundle(SendChallenge.BDL_PICTURE_OPTIONS);
-            friend_id =  getArguments().getInt(SendChallenge.ARG_FRIEND_ID, -1);
+            friend_id = getArguments().getInt(SendChallenge.ARG_FRIEND_ID, -1);
         }
     }
 
@@ -94,7 +92,8 @@ public class ConfigureChallengeFragment extends Fragment {
         final RadioGroup timeBox = (RadioGroup) rootView.findViewById(R.id.time_radio_group);
         final RadioGroup guessBox = (RadioGroup) rootView.findViewById(R.id.guesses_radio_group);
         Button nextButton = (Button) rootView.findViewById(R.id.next_button);
-        if (friend_id != -1) nextButton.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_send));
+        if (friend_id != -1)
+            nextButton.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_send));
 
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,12 +116,12 @@ public class ConfigureChallengeFragment extends Fragment {
         final int checked_color_selected = getResources().getColor(R.color.primary_text);
         final int checked_color_unselected = getResources().getColor(R.color.grey_400);
 
-        AttributeSet attributeSet =  getButtonAttributes();
+        AttributeSet attributeSet = getButtonAttributes();
         setupTimeButtons(rootView, checked_color_selected, checked_color_unselected, attributeSet);
         setupGuessButtons(rootView, checked_color_selected, checked_color_unselected, attributeSet);
 
         mListener.setToolbarTitle("Game options..");
-        return  rootView;
+        return rootView;
     }
 
     private void createGame(Bundle gameOptions) {
@@ -166,23 +165,24 @@ public class ConfigureChallengeFragment extends Fragment {
                     break;
                 }
             }
-        } while(state != XmlPullParser.END_DOCUMENT);
+        } while (state != XmlPullParser.END_DOCUMENT);
 
         return attributes;
     }
 
     /**
      * Sets up the options for the game time
-     * @param rootView The root view
-     * @param checked_color_selected Text color when number is selected
+     *
+     * @param rootView                 The root view
+     * @param checked_color_selected   Text color when number is selected
      * @param checked_color_unselected Default text color
-     * @param attributes RadioButton attributes used to inflate each number's radio button
+     * @param attributes               RadioButton attributes used to inflate each number's radio button
      */
     private void setupTimeButtons(View rootView, final int checked_color_selected,
                                   final int checked_color_unselected, AttributeSet attributes) {
-        ViewGroup horScrollLayout =  (ViewGroup) rootView.findViewById(R.id.time_radio_group);
+        ViewGroup horScrollLayout = (ViewGroup) rootView.findViewById(R.id.time_radio_group);
 
-        for (int i = 5; i <= 30; i+=5) {
+        for (int i = 5; i <= 30; i += 5) {
             RadioButton currButton = new RadioButton(getActivity().getApplicationContext(),
                     attributes, R.style.radio_button);
             currButton.setId(i);
@@ -213,16 +213,17 @@ public class ConfigureChallengeFragment extends Fragment {
 
     /**
      * Sets up the options for number of guesses
-     * @param rootView The root view
-     * @param checked_color_selected Text color when number is selected
+     *
+     * @param rootView                 The root view
+     * @param checked_color_selected   Text color when number is selected
      * @param checked_color_unselected Default text color
-     * @param attributes RadioButton attributes used to inflate each number's radio button
+     * @param attributes               RadioButton attributes used to inflate each number's radio button
      */
     private void setupGuessButtons(View rootView, final int checked_color_selected,
-                                  final int checked_color_unselected, AttributeSet attributes) {
-        ViewGroup horScrollLayout =  (ViewGroup) rootView.findViewById(R.id.guesses_radio_group);
+                                   final int checked_color_unselected, AttributeSet attributes) {
+        ViewGroup horScrollLayout = (ViewGroup) rootView.findViewById(R.id.guesses_radio_group);
 
-        for (int i = 1; i <= 5 ; i++) {
+        for (int i = 1; i <= 5; i++) {
             RadioButton currButton = new RadioButton(getActivity().getApplicationContext(),
                     attributes, R.style.radio_button);
             currButton.setId(i);
@@ -301,7 +302,7 @@ public class ConfigureChallengeFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
-    
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -314,6 +315,7 @@ public class ConfigureChallengeFragment extends Fragment {
      */
     public interface F1FragmentInteractionListener {
         void setToolbarTitle(String title);
+
         void startGame(Bundle gameBundle);
     }
 }

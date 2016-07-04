@@ -1,29 +1,31 @@
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.picspy.views.LoginActivity">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="com.picspy.views.LoginActivity">
 
     <TextView
-        style="@style/login_and_register_titles"
         android:id="@+id/login_title"
-        android:text="@string/tx_login" />
+        style="@style/login_and_register_titles"
+        android:text="@string/tx_login"/>
+
     <EditText
-        style="@style/login_text_style"
         android:id="@+id/user_email"
-        android:layout_below="@id/login_title"
-        android:inputType="textEmailAddress"
-        android:hint="@string/email_hint"
-        android:layout_gravity="center"
-        android:imeOptions="actionNext"/>
-    <EditText
         style="@style/login_text_style"
+        android:layout_below="@id/login_title"
+        android:layout_gravity="center"
+        android:hint="@string/email_hint"
+        android:imeOptions="actionNext"
+        android:inputType="textEmailAddress"/>
+
+    <EditText
         android:id="@+id/user_password"
-        android:inputType="textPassword"
+        style="@style/login_text_style"
         android:layout_below="@id/user_email"
         android:hint="@string/pass_hint1"
-        android:imeOptions="actionDone"/>
+        android:imeOptions="actionDone"
+        android:inputType="textPassword"/>
+
     <TextView
         android:id="@+id/password_link"
         android:layout_width="wrap_content"
@@ -31,21 +33,22 @@
         android:layout_below="@id/user_password"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:text="@string/forgot_password_prompt"
-        android:textColor="@color/accent_light"
         android:clickable="true"
-        android:onClick="forgotPassword"/>
+        android:onClick="forgotPassword"
+        android:text="@string/forgot_password_prompt"
+        android:textColor="@color/accent_light"/>
+
     <Button
-        style="?android:attr/buttonBarButtonStyle"
         android:id="@+id/button_login"
+        style="?android:attr/buttonBarButtonStyle"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
-        android:text="@string/tx_login"
-        android:textColor="@color/primary_text_default_material_dark"
-        android:onClick="login"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
+        android:background="@color/primary"
+        android:onClick="login"
+        android:text="@string/tx_login"
+        android:textColor="@color/primary_text_default_material_dark"
         android:textStyle="bold"
-        android:visibility="gone"
-        android:background="@color/primary"/>
+        android:visibility="gone"/>
 </RelativeLayout>

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.picspy.views.RegisterActivity">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="com.picspy.views.RegisterActivity">
 
     <!--TODO add facebook signup here-->
     <TextView
-        style="@style/login_and_register_titles"
         android:id="@+id/register_title"
+        style="@style/login_and_register_titles"
         android:text="@string/tx_signup"/>
 
     <!--com.facebook.login.widget.LoginButton
@@ -18,41 +18,42 @@
         android:layout_below="@id/register_title"/-->
 
     <EditText
-        style="@style/login_text_style"
         android:id="@+id/edit_display_name"
-        android:layout_marginTop="20dp"
-        android:layout_below="@id/register_title"
-        android:hint="@string/hint_username"
-        android:inputType="textNoSuggestions"
-        android:imeOptions="actionNext"/>
-    <EditText
         style="@style/login_text_style"
+        android:layout_below="@id/register_title"
+        android:layout_marginTop="20dp"
+        android:hint="@string/hint_username"
+        android:imeOptions="actionNext"
+        android:inputType="textNoSuggestions"/>
+
+    <EditText
         android:id="@+id/edit_email"
+        style="@style/login_text_style"
         android:layout_below="@id/edit_display_name"
         android:hint="@string/email_hint"
-        android:inputType="textEmailAddress"
-        android:imeOptions="actionNext"/>
+        android:imeOptions="actionNext"
+        android:inputType="textEmailAddress"/>
 
     <EditText
-        style="@style/login_text_style"
         android:id="@+id/edit_password"
+        style="@style/login_text_style"
         android:layout_below="@id/edit_email"
         android:hint="@string/pass_hint1"
-        android:inputType="textPassword"
-        android:imeOptions="actionDone" />
+        android:imeOptions="actionDone"
+        android:inputType="textPassword"/>
 
     <Button
-        style="?android:attr/buttonBarButtonStyle"
         android:id="@+id/btn_signup"
+        style="?android:attr/buttonBarButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_gravity="bottom"
         android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
         android:layout_marginTop="20dp"
+        android:background="@color/primary"
+        android:onClick="signUp"
+        android:text="@string/tx_signup"
         android:textColor="@color/primary_text_default_material_dark"
         android:textStyle="bold"
-        android:text="@string/tx_signup"
-        android:onClick="signUp"
-        android:visibility="gone"
-        android:background="@color/primary"/>
+        android:visibility="gone"/>
 </RelativeLayout>

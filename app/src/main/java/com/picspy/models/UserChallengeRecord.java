@@ -2,8 +2,6 @@ package com.picspy.models;
 
 import android.content.Context;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
  * Model for retrieving challenges from the server
  * TODO remove id field and unused methods
@@ -40,6 +38,7 @@ public class UserChallengeRecord {
 
     /**
      * returns a game object constructed from the Game record
+     *
      * @return Constructed game object. Returns null is there is
      * no related data(challenges_by_challenge_id)
      */
@@ -49,6 +48,7 @@ public class UserChallengeRecord {
         //temp.setSenderUsername(users_by_user_id.getUsername());
         return temp;
     }
+
     public int getId() {
         return id;
     }

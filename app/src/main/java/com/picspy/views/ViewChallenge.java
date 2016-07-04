@@ -80,7 +80,7 @@ public class ViewChallenge extends Activity {
 
         Intent intent = getIntent();
         game = intent.getParcelableExtra(ChallengesActivity.GAME_EXTRA);
-        hint  = game.getHint();
+        hint = game.getHint();
         time = game.getTime();
         guessesRemaining = game.getGuess();
         selection = getSelection(game.getSelection());
@@ -106,7 +106,6 @@ public class ViewChallenge extends Activity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         // disable drawer at start
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-
 
         // download image
         downloadImage(fileName);
@@ -140,6 +139,7 @@ public class ViewChallenge extends Activity {
 
     /**
      * Hides hint layout show remaining views
+     *
      * @param initialHintLayout Hint layout to hide
      */
     private void updateVisibilities(LinearLayout initialHintLayout) {
@@ -263,13 +263,14 @@ public class ViewChallenge extends Activity {
 
     /**
      * Downloads file with the specified filename from the server.
+     *
      * @param fileName filename to download
      */
     private void downloadImage(String fileName) {
         Response.Listener<Bitmap> responseListener = new Response.Listener<Bitmap>() {
             @Override
             public void onResponse(Bitmap bitmap) {
-                Bitmap gameImage =  Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
+                Bitmap gameImage = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
                         bitmap.getHeight(), matrix, true);
                 pic.setImageBitmap(gameImage);
                 trueHeight = gameImage.getHeight();
@@ -288,7 +289,7 @@ public class ViewChallenge extends Activity {
                 loadingText.setVisibility(View.GONE);
                 if (error != null) {
                     //TODO handle error when file not found.
-                    String err = (error.getMessage() == null)? "error message null": error.getMessage();
+                    String err = (error.getMessage() == null) ? "error message null" : error.getMessage();
                     error.printStackTrace();
                     Log.d(TAG, err);
                     //Show toast only if there is no server connection on refresh
@@ -320,6 +321,7 @@ public class ViewChallenge extends Activity {
 
     /**
      * Returns a selection array from a selection string.
+     *
      * @param selection Selection  as string
      * @return Selection as array
      */
@@ -341,7 +343,7 @@ public class ViewChallenge extends Activity {
 
         Log.d(TAG, "compressed: " + CameraActivity.selectionToString(sel));
         //find cumulative sum
-        for (int i = 1; i < sel.size(); i ++) {
+        for (int i = 1; i < sel.size(); i++) {
             float[] curr = sel.get(i);
             float[] prev = sel.get(i - 1);
 
@@ -357,8 +359,9 @@ public class ViewChallenge extends Activity {
      */
     /**
      * Exit activity and send result to previous activity
+     *
      * @param gameResult true if the challenge was solved, false otherwise
-     * @param isError true if there was an error, false otherwise
+     * @param isError    true if there was an error, false otherwise
      */
     private void exitGuessing(boolean gameResult, boolean isError) {
         //TODO return to parent activity, not ChallengesActivity
@@ -369,7 +372,7 @@ public class ViewChallenge extends Activity {
         intent.putExtra(ChallengesActivity.GAME_RESULT_CHALLENGE, game.getId());
         intent.putExtra(ChallengesActivity.GAME_RESULT_RECORD, game.getUserChallengeId());
 
-        if (! isError) {
+        if (!isError) {
             setResult(RESULT_OK, intent);
         } else {
             setResult(RESULT_CANCELED, intent);
@@ -388,18 +391,18 @@ public class ViewChallenge extends Activity {
     private boolean isInsideSelection(float[] click, ArrayList<float[]> selection) {
         int counter = 0;
         float xinters;
-        float[] p1,p2;
+        float[] p1, p2;
         int numPoints = selection.size();
 
         //TODO check IndexOutOfBoundsException
         p1 = selection.get(0);
-        for(int i = 1; i <= numPoints; i++) {
+        for (int i = 1; i <= numPoints; i++) {
             p2 = selection.get(i % numPoints);
-            if (click[1] > Math.min(p1[1],p2[1])) {
-                if (click[1] <= Math.max(p1[1],p2[1])) {
-                    if (click[0] <= Math.max(p1[0],p2[0])) {
+            if (click[1] > Math.min(p1[1], p2[1])) {
+                if (click[1] <= Math.max(p1[1], p2[1])) {
+                    if (click[0] <= Math.max(p1[0], p2[0])) {
                         if (p1[1] != p2[1]) {
-                            xinters = (click[1]-p1[1])*(p2[0]-p1[0])/(p2[1]-p1[1])+p1[0];
+                            xinters = (click[1] - p1[1]) * (p2[0] - p1[0]) / (p2[1] - p1[1]) + p1[0];
                             if (p1[0] == p2[0] || click[0] <= xinters)
                                 counter++;
                         }
@@ -415,7 +418,8 @@ public class ViewChallenge extends Activity {
     /**
      * Applies the x and y scaling factors to each coordinate pair in the selection
      * in order to allow portability across different device screen sizes.
-     * @param selection Selection from server
+     *
+     * @param selection      Selection from server
      * @param scalingFactorX xScaling factor
      * @param scalingFactorY yScaling factor
      * @return scaled selection to match device
@@ -425,7 +429,7 @@ public class ViewChallenge extends Activity {
         int size = selection.size();
         ArrayList<float[]> scaledResult = new ArrayList<>(size);
 
-        for(int i = 0; i < size-1; i++) {
+        for (int i = 0; i < size - 1; i++) {
             float[] coord = new float[2];
             temp = selection.get(i);
             coord[0] = temp[0] * scalingFactorX;

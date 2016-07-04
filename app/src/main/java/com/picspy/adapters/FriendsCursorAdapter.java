@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -28,6 +27,31 @@ public class FriendsCursorAdapter extends ResourceCursorAdapter {
 
     public FriendsCursorAdapter(Context context, int layout, Cursor cursor, int flags) {
         super(context, layout, cursor, flags);
+    }
+
+    /**
+     * Method to start the FriendInfoActivity with appropriate intent bundles.
+     *
+     * @param view  Context view
+     * @param uname friend username
+     * @param id    friend id
+     */
+    public static void startFriendInfoActivity(View view, String uname, Integer id, UserRecord userRecord) {
+        Intent intent = new Intent(view.getContext(), FriendInfoActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (userRecord == null) {
+            intent.putExtra(FriendInfoActivity.FOR_FRIEND, true);
+            intent.putExtra(FriendInfoActivity.USERNAME, uname);
+            intent.putExtra(FriendInfoActivity.FRIEND_ID, id);
+            view.getContext().startActivity(intent);
+        } else {
+            intent.putExtra(FriendInfoActivity.FOR_FRIEND, false);
+            intent.putExtra(FriendInfoActivity.USERNAME, userRecord.getUsername());
+            intent.putExtra(FriendInfoActivity.WON, userRecord.getTotal_won());
+            intent.putExtra(FriendInfoActivity.LOST, userRecord.getTotal_lost());
+            intent.putExtra(FriendInfoActivity.L_BOARD, userRecord.getLeaderboard());
+            view.getContext().startActivity(intent);
+        }
     }
 
     /**
@@ -93,31 +117,6 @@ public class FriendsCursorAdapter extends ResourceCursorAdapter {
         view.setTag(viewHolder);
 
         return view;
-    }
-
-    /**
-     * Method to start the FriendInfoActivity with appropriate intent bundles.
-     *
-     * @param view  Context view
-     * @param uname friend username
-     * @param id    friend id
-     */
-    public static void startFriendInfoActivity(View view, String uname, Integer id, UserRecord userRecord) {
-        Intent intent = new Intent(view.getContext(), FriendInfoActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        if (userRecord == null) {
-            intent.putExtra(FriendInfoActivity.FOR_FRIEND, true);
-            intent.putExtra(FriendInfoActivity.USERNAME, uname);
-            intent.putExtra(FriendInfoActivity.FRIEND_ID, id);
-            view.getContext().startActivity(intent);
-        } else {
-            intent.putExtra(FriendInfoActivity.FOR_FRIEND, false);
-            intent.putExtra(FriendInfoActivity.USERNAME, userRecord.getUsername());
-            intent.putExtra(FriendInfoActivity.WON, userRecord.getTotal_won());
-            intent.putExtra(FriendInfoActivity.LOST, userRecord.getTotal_lost());
-            intent.putExtra(FriendInfoActivity.L_BOARD, userRecord.getLeaderboard());
-            view.getContext().startActivity(intent);
-        }
     }
 
     private class ViewHolder {

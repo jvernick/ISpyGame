@@ -30,11 +30,29 @@ import static com.picspy.fcm.MyFirebaseInstanceIDService.sendRegistrationToServe
  */
 public class Splash_Activity extends Activity {
     private static final String CANCEL_TAG = "cancelJWTRefresh";
-    private Button btn_login, btn_signup;
-    private View buttons;
     private static final int SLEEP_TIME = 1000;
     private static final String TAG = "SplashActivity";
     ProgressBar progressSpinner;
+    private Button btn_login, btn_signup;
+    private View buttons;
+
+    /**
+     * Computes the number of days since the last login
+     *
+     * @param lastLoginDate the last login date
+     * @return number of days since last login
+     */
+    public static int daysSinceLastLogin(Long lastLoginDate) {
+        Long difference = Calendar.getInstance().getTimeInMillis() - lastLoginDate;
+        return (int) TimeUnit.MILLISECONDS.toDays(difference);
+    }
+
+    public static void verifyFCMToken(Context context) {
+        boolean tokenSent = PrefUtil.getBoolean(context, AppConstants.SENT_TOKEN_TO_SERVER, false);
+        String fcmToken = PrefUtil.getString(context, AppConstants.FCM_TOKEN, null);
+
+        if (!tokenSent && fcmToken != null) sendRegistrationToServer(fcmToken, context);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,16 +91,6 @@ public class Splash_Activity extends Activity {
     }
 
     /**
-     * Computes the number of days since the last login
-     * @param lastLoginDate the last login date
-     * @return number of days since last login
-     */
-    public static int daysSinceLastLogin(Long lastLoginDate) {
-        Long difference = Calendar.getInstance().getTimeInMillis() - lastLoginDate;
-        return (int) TimeUnit.MILLISECONDS.toDays(difference);
-    }
-
-    /**
      * enables and makes login and signup buttons visible
      */
     private void enableButtons() {
@@ -95,6 +103,7 @@ public class Splash_Activity extends Activity {
 
     /**
      * Starts the login activity
+     *
      * @param view View to be used, from button click
      */
     public void splashLogin(View view) {
@@ -104,6 +113,7 @@ public class Splash_Activity extends Activity {
 
     /**
      * Starts the register activity
+     *
      * @param view View to be used, from button click
      */
     public void splashSignUp(View view) {
@@ -120,13 +130,6 @@ public class Splash_Activity extends Activity {
         Intent intent = new Intent(Splash_Activity.this, MainActivity.class);
         startActivity(intent);
         finish();
-    }
-
-    public static void verifyFCMToken(Context context) {
-        boolean tokenSent = PrefUtil.getBoolean(context, AppConstants.SENT_TOKEN_TO_SERVER, false);
-        String fcmToken = PrefUtil.getString(context, AppConstants.FCM_TOKEN, null);
-
-        if (!tokenSent && fcmToken != null) sendRegistrationToServer(fcmToken, context);
     }
 
     /**
@@ -156,7 +159,7 @@ public class Splash_Activity extends Activity {
             public void onErrorResponse(VolleyError error) {
                 progressSpinner.setVisibility(View.GONE);
                 if (error.getMessage() != null)
-                Log.d(TAG, error.getMessage());
+                    Log.d(TAG, error.getMessage());
                 splashLogin(null);
             }
         };

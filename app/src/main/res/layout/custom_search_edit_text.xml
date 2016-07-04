@@ -1,32 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
     >
+
     <EditText
         android:id="@+id/clearable_edit"
-        android:tag="searchField"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:inputType="text"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:hint="@string/search_friend_hint"
         android:layout_gravity="start|center_vertical"
+        android:layout_margin="4dp"
+        android:background="@drawable/search_field_style"
         android:ellipsize="start"
-        android:singleLine="true"
-        android:paddingRight="20dp"
+        android:hint="@string/search_friend_hint"
+        android:inputType="text"
         android:paddingEnd="20dp"
         android:paddingLeft="16dp"
-        android:layout_margin="4dp"
-        android:background="@drawable/search_field_style"/>
+        android:paddingRight="20dp"
+        android:singleLine="true"
+        android:tag="searchField"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <Button
         android:id="@+id/clearable_button_clear"
         android:layout_width="15dp"
         android:layout_height="15dp"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:background="@drawable/ic_close"
+        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="16dp"/>
+        android:layout_marginRight="16dp"
+        android:background="@drawable/ic_close"/>
 </RelativeLayout>

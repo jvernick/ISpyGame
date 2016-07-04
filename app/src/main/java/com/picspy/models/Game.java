@@ -8,6 +8,20 @@ import android.os.Parcelable;
  * Created by BrunelAmC on 8/21/2015.
  */
 public class Game implements Parcelable {
+    /**
+     * Implemented field from parcelable
+     */
+    public static final Creator<Game> CREATOR = new Creator<Game>() {
+        @Override
+        public Game createFromParcel(Parcel in) {
+            return new Game(in);
+        }
+
+        @Override
+        public Game[] newArray(int size) {
+            return new Game[size];
+        }
+    };
     private String pictureName;
     private String selection;
     private String hint;
@@ -21,18 +35,18 @@ public class Game implements Parcelable {
     private String senderUsername;
     private int userChallengeId;
 
-
     /**
      * Constructor initializes all the challenge parameters. Hence no getter and setters.
      * The values for time, guess are set to the default values of 3 and 5 if out of bounds
-     * @param id challenge id
+     *
+     * @param id          challenge id
      * @param pictureName The picture file name
-     * @param selection A string that represents the correct area of the picture (solution)
-     * @param hint A hint for solving the challenge
-     * @param guess The number of guesses allowed (1 - 5)
-     * @param time The time limit (5 - 30 secs)
-     * @param vote whether or not the user can vote this challenge
-     * @param senderId the senderId of the challenge
+     * @param selection   A string that represents the correct area of the picture (solution)
+     * @param hint        A hint for solving the challenge
+     * @param guess       The number of guesses allowed (1 - 5)
+     * @param time        The time limit (5 - 30 secs)
+     * @param vote        whether or not the user can vote this challenge
+     * @param senderId    the senderId of the challenge
      */
     public Game(int id, String pictureName, String selection, String hint, int guess, int time,
                 boolean vote, int senderId) {
@@ -48,6 +62,7 @@ public class Game implements Parcelable {
 
     /**
      * Constructor from parcel, to be used in receiving intent
+     *
      * @param p Parcel containing game data
      */
     public Game(Parcel p) {
@@ -63,25 +78,11 @@ public class Game implements Parcelable {
         this.senderUsername = p.readString();
         this.userChallengeId = p.readInt();
     }
+
     //Default constructor
     public Game() {
         super();
     }
-
-    /**
-     * Implemented field from parcelable
-     */
-    public static final Creator<Game> CREATOR = new Creator<Game>() {
-        @Override
-        public Game createFromParcel(Parcel in) {
-            return new Game(in);
-        }
-
-        @Override
-        public Game[] newArray(int size) {
-            return new Game[size];
-        }
-    };
 
     public int getId() {
         return id;

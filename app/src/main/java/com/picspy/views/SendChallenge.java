@@ -32,7 +32,7 @@ import java.util.ArrayList;
 
 public class SendChallenge extends ActionBarActivity implements
         ConfigureChallengeFragment.F1FragmentInteractionListener,
-        ChooseFriendsFragment.F2FragmentInteractionListener{
+        ChooseFriendsFragment.F2FragmentInteractionListener {
 
     public static final String BDL_GAME_OPTIONS = "bdl_game_options";
     public static final String BDL_PICTURE_OPTIONS = "bdl_picture_options";
@@ -113,6 +113,7 @@ public class SendChallenge extends ActionBarActivity implements
 
     /**
      * Uploads the image to the server and if successful, send the game info to the server
+     *
      * @param bundle A bundle containing the game information
      */
     private void sendPicture(final Bundle bundle) {
@@ -129,8 +130,8 @@ public class SendChallenge extends ActionBarActivity implements
         Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                if (error != null ) {
-                    String err = (error.getMessage() == null)? "An error occurred": error.getMessage();
+                if (error != null) {
+                    String err = (error.getMessage() == null) ? "An error occurred" : error.getMessage();
                     error.printStackTrace();
                     Log.d(TAG, err);
                     //Show toast only if there is no server connection on refresh
@@ -153,7 +154,7 @@ public class SendChallenge extends ActionBarActivity implements
         Log.d(TAG, "filename: " + filename);
         Log.d(TAG, "filepath: " + filepath);
 
-        FileRequest createFileRequest =  FileRequest.sendPicture(this,
+        FileRequest createFileRequest = FileRequest.sendPicture(this,
                 filename, filepath, responseListener, errorListener);
         if (createFileRequest != null) createFileRequest.setTag(CANCEL_TAG);
         VolleyRequest.getInstance(getApplicationContext()).addToRequestQueue(createFileRequest);
@@ -161,6 +162,7 @@ public class SendChallenge extends ActionBarActivity implements
 
     /**
      * Sends the challenge information to the server.
+     *
      * @param bundle Bundle containing game parameters
      */
     private void sendChallengeInfo(final Bundle bundle) {
@@ -182,8 +184,8 @@ public class SendChallenge extends ActionBarActivity implements
         Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                if (error != null ) {
-                    String err = (error.getMessage() == null)? "An error occurred": error.getMessage();
+                if (error != null) {
+                    String err = (error.getMessage() == null) ? "An error occurred" : error.getMessage();
                     error.printStackTrace();
                     Log.d(TAG, err);
                     //Show toast only if there is no server connection on refresh

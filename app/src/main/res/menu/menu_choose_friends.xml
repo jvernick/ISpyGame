@@ -1,15 +1,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.picspy.views.fragments.ChooseFriendsFragment">
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="com.picspy.views.fragments.ChooseFriendsFragment">
 
     <item
         android:id="@+id/search"
+        android:actionViewClass="android.widget.SearchView"
+        android:icon="@drawable/ic_search"
         android:orderInCategory="1"
         android:title="@string/search_title"
+        app:actionViewClass="android.support.v7.widget.SearchView"
         app:queryHint="Search by Username"
-        android:icon="@drawable/ic_search"
-        app:showAsAction="collapseActionView|always"
-        android:actionViewClass="android.widget.SearchView"
-        app:actionViewClass="android.support.v7.widget.SearchView" />
+        app:showAsAction="collapseActionView|always"/>
 </menu>

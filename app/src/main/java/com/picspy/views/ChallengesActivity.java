@@ -39,22 +39,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class ChallengesActivity extends ActionBarActivity  implements LoaderCallbacks<Cursor>{
+public class ChallengesActivity extends ActionBarActivity implements LoaderCallbacks<Cursor> {
     public final static String GAME_EXTRA = "com.picspy.firstapp.GAME";
-    private static final String TAG = "ChallengesActivity";
-    private static final String CANCEL_TAG = "cancel_ChallengesActivity";
     public static final int PLAY_GAME_CODE = 60;
     public static final String GAME_RESULT_VALUE = "game_result";
     public static final String GAME_RESULT_ERROR = "game_error";
     public static final String GAME_RESULT_SENDER = "game_sender";
     public static final String GAME_RESULT_CHALLENGE = "game_ChallengeId";
     public static final String GAME_RESULT_RECORD = "game_UserChallengeId";
-
     public static final String ARG_NOTF = "challengeNotification";
-
+    private static final String TAG = "ChallengesActivity";
+    private static final String CANCEL_TAG = "cancel_ChallengesActivity";
+    private final static int LOADER_ID = 1;
     private ListView listView;
     private DatabaseHandler dbHandler;
-    private final static int LOADER_ID = 1;
     private ProgressBar progressSpinner;
     private boolean isNotf;
 
@@ -138,7 +136,7 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
             //update database
             getChallenges(true);
             return true;
-        } else if( id == android.R.id.home) {
+        } else if (id == android.R.id.home) {
             //handling back button click
             onBackPressed();
             return true;
@@ -149,6 +147,7 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
 
     /**
      * Start a new game
+     *
      * @param view View from button click
      */
     public void launchCamera(View view) {
@@ -175,8 +174,8 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
             @Override
             public void onErrorResponse(VolleyError error) {
                 progressSpinner.setVisibility(View.GONE);
-                if (error != null ) {
-                    String err = (error.getMessage() == null)? "An error occurred": error.getMessage();
+                if (error != null) {
+                    String err = (error.getMessage() == null) ? "An error occurred" : error.getMessage();
                     error.printStackTrace();
                     Log.d(TAG, err);
                     //Show toast only if there is no server connection on refresh
@@ -202,22 +201,23 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
 
     /**
      * Stores retrieved challenges in the local database
+     *
      * @param userChallengesRecord Record containing challenges to be stored
      * @return true if one or more challenge was stored, otherwise false
      */
-    private boolean storeChallenges(UserChallengesRecord userChallengesRecord){
-        if (userChallengesRecord != null &&  userChallengesRecord.getCount() != 0) {
+    private boolean storeChallenges(UserChallengesRecord userChallengesRecord) {
+        if (userChallengesRecord != null && userChallengesRecord.getCount() != 0) {
             List<Game> gameList = new ArrayList<>();
             int max_user_challenge_id = 0;
 
-            for (UserChallengeRecord record: userChallengesRecord.getResource()) {
+            for (UserChallengeRecord record : userChallengesRecord.getResource()) {
                 if (record.getId() > max_user_challenge_id) {
                     max_user_challenge_id = record.getId();
                 }
                 Game temp = record.getGame(getApplicationContext());
                 temp.setUserChallengeId(record.getId());
                 gameList.add(temp);
-                Log.d(TAG,temp.toString());
+                Log.d(TAG, temp.toString());
             }
 
             dbHandler.addGames(gameList, max_user_challenge_id);
@@ -227,9 +227,7 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
     }
 
     /***
-     *
      * Loaders callback methods
-     *
      ***/
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
@@ -239,33 +237,14 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        ((GamesCursorAdapter)listView.getAdapter()).changeCursor(cursor);
-        ((GamesCursorAdapter)listView.getAdapter()).notifyDataSetChanged();
+        ((GamesCursorAdapter) listView.getAdapter()).changeCursor(cursor);
+        ((GamesCursorAdapter) listView.getAdapter()).notifyDataSetChanged();
         listView.setEmptyView(findViewById(R.id.empty_challenge));
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        ((GamesCursorAdapter)listView.getAdapter()).changeCursor(null);
-    }
-
-    /**
-     * Cursor loader to get games from sqlite in background
-     */
-    public static class GamesCursorLoader extends AsyncTaskLoader<Cursor> {
-        private DatabaseHandler dbHandler;
-
-        //Default constructor
-        public GamesCursorLoader(Context context, DatabaseHandler dbHandler) {
-            super(context);
-            this.dbHandler = dbHandler;
-        }
-
-        @Override
-        public Cursor loadInBackground() {
-           return dbHandler.getAllGames();
-        }
-
+        ((GamesCursorAdapter) listView.getAdapter()).changeCursor(null);
     }
 
     @Override
@@ -278,7 +257,7 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
                     int recordId = data.getIntExtra(GAME_RESULT_RECORD, -1);
                     int sender = data.getIntExtra(GAME_RESULT_SENDER, -1);
                     processGameResult(value, challengeId, recordId, sender, false);
-                } else if ( resultCode == RESULT_CANCELED) {
+                } else if (resultCode == RESULT_CANCELED) {
                     //do nothing
                 }
                 break;
@@ -288,13 +267,14 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
     /**
      * Processes the result from the view game activity. Sends challenge to server and removes
      * challenge from local db if this was a friend challenge
-     * @param gameResult true if challenge was solved, false otherwise
+     *
+     * @param gameResult  true if challenge was solved, false otherwise
      * @param challengeId cchallenge id of game played
-     * @param recordId record id for game userChallenge record
-     * @param sender id of the sender
-     * @param isTopGame true if this was called from the topFragment class, false otherwise.
+     * @param recordId    record id for game userChallenge record
+     * @param sender      id of the sender
+     * @param isTopGame   true if this was called from the topFragment class, false otherwise.
      */
-    public  void processGameResult(boolean gameResult, int challengeId, int recordId, int sender, boolean isTopGame) {
+    public void processGameResult(boolean gameResult, int challengeId, int recordId, int sender, boolean isTopGame) {
         //Log.d(TAG, "value: " + gameResult + " challengeId: " + challengeId + " recordId: " + recordId + " sender: " + sender);
         if (recordId != 0) {
             HashMap<String, String> params = new HashMap<>();
@@ -313,8 +293,9 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
 
     /**
      * Submits the challenge with given parameters to the server
+     *
      * @param recordId Record id for the userChallenge record
-     * @param params Challenge result parameters
+     * @param params   Challenge result parameters
      */
     public void submitChallengeResult(int recordId, HashMap<String, String> params) {
         Response.Listener<UserChallengesRecord> responseListener = new Response.Listener<UserChallengesRecord>() {
@@ -330,8 +311,8 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
             @Override
             public void onErrorResponse(VolleyError error) {
                 // TODO handle errors
-                if (error != null ) {
-                    String err = (error.getMessage() == null)? "An error occurred": error.getMessage();
+                if (error != null) {
+                    String err = (error.getMessage() == null) ? "An error occurred" : error.getMessage();
                     error.printStackTrace();
                     Log.d(TAG, err);
                 }
@@ -353,14 +334,31 @@ public class ChallengesActivity extends ActionBarActivity  implements LoaderCall
      * onNewIntent() call which happens before onResume() and trying to
      * perform fragment operations at that point will throw IllegalStateException
      * because the fragment manager thinks the state is still saved.
-     *
-     * @param intent
      */
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         PrefUtil.putInt(this, AppConstants.FRIEND_REQUEST_COUNT, 0);
         getChallenges(true);
+    }
+
+    /**
+     * Cursor loader to get games from sqlite in background
+     */
+    public static class GamesCursorLoader extends AsyncTaskLoader<Cursor> {
+        private DatabaseHandler dbHandler;
+
+        //Default constructor
+        public GamesCursorLoader(Context context, DatabaseHandler dbHandler) {
+            super(context);
+            this.dbHandler = dbHandler;
+        }
+
+        @Override
+        public Cursor loadInBackground() {
+            return dbHandler.getAllGames();
+        }
+
     }
 
 }

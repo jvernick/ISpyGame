@@ -56,7 +56,6 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
 
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
-    private static final String TAG = "CameraActivity";
     public static final String DRAWING_VIEW_TAG = "DRAWING_VIEW";
     public static final String FINISH_BUTTON_TAG = "FINISH_BUTTON";
     //TODO remove
@@ -68,6 +67,9 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
     public static final String SELECTION = "SELECTION";
     //
     public static final int CHALLENGE_INFO_REQUEST = 2;
+    private static final String TAG = "CameraActivity";
+    private static int[] colors = new int[6];
+    private static int currColor;
     private Camera mCamera;
     private CameraPreview mPreview;
     private String flashMode = Camera.Parameters.FLASH_MODE_OFF;
@@ -87,8 +89,6 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
     private DrawingView mDrawingView;
     private RelativeLayout drawingPad;
     private boolean isPictureTaken;
-    private static int[] colors = new int[6];
-    private static int currColor;
     private File imageFile;
     private int friend_id;  //for storing friend id if passed in.
 
@@ -129,7 +129,7 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
             undoButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                      mDrawingView.undoDrawing();
+                    mDrawingView.undoDrawing();
                 }
             });
 
@@ -137,11 +137,11 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
             brushColorButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    currColor = (currColor+1) % colors.length;
+                    currColor = (currColor + 1) % colors.length;
                     int colorToUse = colors[currColor];
                     mDrawingView.setBrushColor(colorToUse);
                     // change the color of the palette button
-                    ColorFilter filter = new LightingColorFilter(colorToUse,colorToUse);
+                    ColorFilter filter = new LightingColorFilter(colorToUse, colorToUse);
                     brushColorButton.setColorFilter(filter);
                 }
             });
@@ -242,6 +242,51 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
         }
     };
 
+    /**
+     * A safe way to get an instance of the Camera object.
+     */
+    public static Camera getCameraInstance() {
+        Camera c = null;
+        try {
+            c = Camera.open(); // attempt to get a Camera instance
+        } catch (Exception e) {
+            // Camera is not available (in use or does not exist)
+            Log.d(TAG, "Camera could not be opened");
+        }
+        return c; // returns null if camera is unavailable
+    }
+
+    /**
+     * Overloaded method that opens a camera with the given id.
+     */
+    public static Camera getCameraInstance(int cameraID) {
+        Camera c = null;
+        try {
+            c = Camera.open(cameraID); // attempt to get a Camera instance
+        } catch (Exception e) {
+            // Camera is not available (in use or does not exist)
+            Log.d(TAG, "Camera could not be opened");
+        }
+        return c; // returns null if camera is unavailable
+    }
+
+    /**
+     * Converts the float array to as string
+     *
+     * @param selection User selection
+     * @return string representing selection
+     */
+    public static String selectionToString(ArrayList<float[]> selection) {
+        String s = "{Length: " + selection.size() + "\n";
+        for (float[] floatArray : selection) {
+            s += "[" + floatArray[0] + "," + floatArray[1] + "],"; // Arrays.toString(floatArray) + ", ";
+        }
+        s += "P";
+        s = s.replace(",P", "\nend}");
+
+        return s;
+    }
+
     private void testCompression(ArrayList<float[]> selection) {
         Log.d(TAG, "uncompressed");
         Log.d(TAG, "size: " + selection.size());
@@ -269,10 +314,9 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
 
     /**
      * Called when the camera finishes auto-focusing.
-     * @param focused
-     *      Boolean representing if the camera focused successfully
-     * @param camera
-     *      The camera object that performed the focusing
+     *
+     * @param focused Boolean representing if the camera focused successfully
+     * @param camera  The camera object that performed the focusing
      */
     @Override
     public void onAutoFocus(boolean focused, Camera camera) {
@@ -317,11 +361,12 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
         matrix = new Matrix();
 
         myOrientationEventListener
-                = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL){
+                = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL) {
             @Override
             public void onOrientationChanged(int arg0) {
                 deviceOrientation = arg0;
-            }};
+            }
+        };
 
         // Add a listener to the Capture button to depress the button and to take a picture when
         // it is released
@@ -412,8 +457,8 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
     }
 
     // Helper method to release the camera resources when no longer using it
-    private void releaseCamera(){
-        if (mCamera != null){
+    private void releaseCamera() {
+        if (mCamera != null) {
             flashMode = mCamera.getParameters().getFlashMode(); // save the flash mode
             mCamera.release();  // release the camera for other applications
             mCamera = null;
@@ -495,10 +540,10 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
     /**
      * This method is called whenever the user taps the screen when this activity is open.
      */
-    public boolean onTouchEvent(MotionEvent event){
+    public boolean onTouchEvent(MotionEvent event) {
         // TODO: Is the null check for mCamera ever necessary?
         // Only focus on the down press and not when the user releases their finger
-        if(event.getAction() == MotionEvent.ACTION_DOWN && mCamera != null && mCamera.getParameters().getSupportedFocusModes().contains(Camera.Parameters.FOCUS_MODE_AUTO)){
+        if (event.getAction() == MotionEvent.ACTION_DOWN && mCamera != null && mCamera.getParameters().getSupportedFocusModes().contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
             // TODO: What should focusAreaSize be?
             focusAreaSize = myFrameLayout.getWidth() / 4;
             focusOnTouch(event);
@@ -534,7 +579,7 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
 
     /**
      * Convert touch position x:y to {@link Camera.Area} position -1000:-1000 to 1000:1000.
-     * <p>
+     * <p/>
      * Rotate, scale and translate touch rectangle using matrix configured in
      */
     private Rect calculateTapArea(float x, float y, float coefficient) {
@@ -563,86 +608,58 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
     // Helper method which returns the Camera.Size object representing the largest pixel dimensions
     // for the given Camera.Parameters
     private Camera.Size getLargestPictureSize(Camera.Parameters params) {
-        Camera.Size result=null;
+        Camera.Size result = null;
 
         for (Camera.Size size : params.getSupportedPictureSizes()) {
             if (result == null) {
-                result=size;
-            }
-            else {
-                int prevArea=result.width * result.height;
-                int newArea=size.width * size.height;
+                result = size;
+            } else {
+                int prevArea = result.width * result.height;
+                int newArea = size.width * size.height;
 
                 if (newArea > prevArea) {
-                    result=size;
+                    result = size;
                 }
             }
         }
 
-        return(result);
+        return (result);
     }
 
     // Helper method which returns the smallest picture size for the given camera parameters.
     private Camera.Size getSmallestPictureSize(Camera.Parameters parameters) {
-        Camera.Size result=null;
+        Camera.Size result = null;
 
         for (Camera.Size size : parameters.getSupportedPictureSizes()) {
             if (result == null) {
-                result=size;
-            }
-            else {
-                int resultArea=result.width * result.height;
-                int newArea=size.width * size.height;
+                result = size;
+            } else {
+                int resultArea = result.width * result.height;
+                int newArea = size.width * size.height;
 
                 if (newArea < resultArea) {
-                    result=size;
+                    result = size;
                 }
             }
         }
 
-        return(result);
-    }
-
-    /** A safe way to get an instance of the Camera object. */
-    public static Camera getCameraInstance(){
-        Camera c = null;
-        try {
-            c = Camera.open(); // attempt to get a Camera instance
-        }
-        catch (Exception e){
-            // Camera is not available (in use or does not exist)
-            Log.d(TAG, "Camera could not be opened");
-        }
-        return c; // returns null if camera is unavailable
-    }
-
-    /** Overloaded method that opens a camera with the given id. */
-    public static Camera getCameraInstance(int cameraID){
-        Camera c = null;
-        try {
-            c = Camera.open(cameraID); // attempt to get a Camera instance
-        }
-        catch (Exception e){
-            // Camera is not available (in use or does not exist)
-            Log.d(TAG, "Camera could not be opened");
-        }
-        return c; // returns null if camera is unavailable
+        return (result);
     }
 
     // Helper method for creating a file Uri for saving an image or video.
-    private Uri getOutputMediaFileUri(int type){
+    private Uri getOutputMediaFileUri(int type) {
         return Uri.fromFile(getOutputMediaFile(type));
     }
 
     // Create a File for saving an image or video
-    private File getOutputMediaFile(int type){
+    private File getOutputMediaFile(int type) {
 
         // Get the internal storage directory for this app
         File mediaStorageDir = getFilesDir();
 
         // Create the storage directory if it does not exist
-        if (!mediaStorageDir.exists()){
-            if (!mediaStorageDir.mkdirs()){
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
                 Log.d(TAG, "failed to create internal storage directory");
                 return null;
             }
@@ -652,12 +669,12 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         File mediaFile;
         // TODO: change the filename to include the user ID
-        if (type == MEDIA_TYPE_IMAGE){
+        if (type == MEDIA_TYPE_IMAGE) {
             mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    "IMG_"+ timeStamp + ".jpg");
-        } else if(type == MEDIA_TYPE_VIDEO) {
+                    "IMG_" + timeStamp + ".jpg");
+        } else if (type == MEDIA_TYPE_VIDEO) {
             mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    "VID_"+ timeStamp + ".mp4");
+                    "VID_" + timeStamp + ".mp4");
         } else {
             return null;
         }
@@ -687,49 +704,35 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
     }
 
     /**
-     * Converts the float array to as string
-     * @param selection User selection
-     * @return string representing selection
-     */
-    public static String selectionToString(ArrayList<float[]> selection) {
-        String s = "{Length: " + selection.size() + "\n";
-        for (float[] floatArray: selection) {
-            s += "[" + floatArray[0] + "," + floatArray[1] + "],"; // Arrays.toString(floatArray) + ", ";
-        }
-        s += "P";
-        s = s.replace(",P","\nend}");
-
-        return s;
-    }
-
-    /**
-     ** Converts the int array to as string
+     * * Converts the int array to as string
+     *
      * @param selection User selection
      * @return string representing selection
      */
     private String selectionToString2(ArrayList<int[]> selection) {
         String s = "{Length: " + selection.size() + "\n";
-        for (int[] floatArray: selection) {
+        for (int[] floatArray : selection) {
             s += "[" + floatArray[0] + "," + floatArray[1] + "],"; // Arrays.toString(floatArray) + ", ";
         }
         s += "P";
-        s = s.replace(",P","\nend}");
-        
+        s = s.replace(",P", "\nend}");
+
         return s;
     }
 
     /**
      * Compress the selection from float to int
+     *
      * @param sel Selection form device
      * @return selection with decimals discarded
      */
     public ArrayList<int[]> compressSelection(ArrayList<float[]> sel) {
         ArrayList<int[]> newSel = new ArrayList<>();
-        int[] temp = {(int)sel.get(0)[0],(int)sel.get(0)[1]};
+        int[] temp = {(int) sel.get(0)[0], (int) sel.get(0)[1]};
         newSel.add(temp);
         for (int i = 0; i < sel.size() - 1; i++) {
             float[] curr = sel.get(i);
-            float[] next = sel.get(i+1);
+            float[] next = sel.get(i + 1);
             newSel.add(new int[]{(int) (next[0] - curr[0]), (int) (next[1] - curr[1])});
         }
         return newSel;

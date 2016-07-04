@@ -33,7 +33,7 @@ import com.picspy.views.FindFriendsActivity;
  * Activity to search for friends
  * TODO in upgrades, change camera on bottom bar to buttons for scanning  or searching QR codes
  */
-public class FriendSearchFragment extends Fragment{
+public class FriendSearchFragment extends Fragment {
     private static final String USERNAME = "username";
     private static final String USER_ID = "userID";
     private static final String TAG = "FriendSearch";
@@ -43,6 +43,18 @@ public class FriendSearchFragment extends Fragment{
     private TextView responseText;
     private ProgressBar progressSpinner;
     private boolean showKeyboard;
+
+    /**
+     * Static factory method that initializes the fragment's arguments,
+     * and returns the new fragment to the client.
+     */
+    public static FriendSearchFragment newInstance(int startFragment) {
+        Bundle args = new Bundle();
+        args.putInt(EXTRA_SHOW_KEYBOARD, startFragment);
+        FriendSearchFragment f = new FriendSearchFragment();
+        f.setArguments(args);
+        return f;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -91,19 +103,6 @@ public class FriendSearchFragment extends Fragment{
         InputMethodManager mgr = (InputMethodManager)
                 getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         mgr.hideSoftInputFromWindow(unameField.getWindowToken(), 0);
-    }
-
-    /**
-     * Static factory method that initializes the fragment's arguments,
-     * and returns the new fragment to the client.
-     * @param startFragment
-     */
-    public static FriendSearchFragment newInstance(int startFragment) {
-        Bundle args = new Bundle();
-        args.putInt(EXTRA_SHOW_KEYBOARD, startFragment);
-        FriendSearchFragment f = new FriendSearchFragment();
-        f.setArguments(args);
-        return f;
     }
 
     @Override
@@ -161,7 +160,7 @@ public class FriendSearchFragment extends Fragment{
             public void onErrorResponse(VolleyError error) {
                 progressSpinner.setVisibility(View.GONE);
                 if (error != null) {
-                    String err = (error.getMessage() == null)? "error message null": error.getMessage();
+                    String err = (error.getMessage() == null) ? "error message null" : error.getMessage();
                     error.printStackTrace();
                     Log.d(TAG, err);
                     if (err.matches(AppConstants.CONNECTION_ERROR) || err.matches(AppConstants.TIMEOUT_ERROR)) {
@@ -201,7 +200,7 @@ public class FriendSearchFragment extends Fragment{
             public void onErrorResponse(VolleyError error) {
                 progressSpinner.setVisibility(View.GONE);
                 if (error != null) {
-                    String err = (error.getMessage() == null)? "error message null": error.getMessage();
+                    String err = (error.getMessage() == null) ? "error message null" : error.getMessage();
                     error.printStackTrace();
                     Log.d(TAG, err);
                     //Show toast only if there is no server connection on refresh
@@ -223,7 +222,7 @@ public class FriendSearchFragment extends Fragment{
         };
 
         FriendsRequests sendRequest = FriendsRequests.sendFriendRequest(getActivity(), userId, responseListener, errorListener);
-        if (sendRequest != null)  sendRequest.setTag(FindFriendsActivity.CANCEL_TAG);
+        if (sendRequest != null) sendRequest.setTag(FindFriendsActivity.CANCEL_TAG);
         VolleyRequest.getInstance(getActivity().getApplicationContext()).addToRequestQueue(sendRequest);
     }
 }

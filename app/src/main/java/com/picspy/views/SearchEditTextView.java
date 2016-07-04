@@ -16,14 +16,12 @@ import com.picspy.firstapp.R;
  * Created by BrunelAmC on 12/26/2015.
  */
 public class SearchEditTextView extends RelativeLayout {
-    private LayoutInflater inflater = null;
     protected EditText searchText;
+    private LayoutInflater inflater = null;
     private Button btn_clear;
 
     private OnButtonClickListener btnListener;
-    public void setButtonClickListener (OnButtonClickListener listener) {
-        this.btnListener = listener;
-    }
+
     public SearchEditTextView(Context context) {
         super(context);
         initViews();
@@ -37,6 +35,10 @@ public class SearchEditTextView extends RelativeLayout {
     public SearchEditTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initViews();
+    }
+
+    public void setButtonClickListener(OnButtonClickListener listener) {
+        this.btnListener = listener;
     }
 
     private void initViews() {
@@ -58,10 +60,6 @@ public class SearchEditTextView extends RelativeLayout {
                 if (btnListener != null) btnListener.onEvent();
             }
         });
-    }
-
-    public interface OnButtonClickListener {
-        void onEvent();
     }
 
     private void showHideClearButton() {
@@ -87,8 +85,11 @@ public class SearchEditTextView extends RelativeLayout {
         });
     }
 
-    public Editable getText()
-    {
-        return  searchText.getText();
+    public Editable getText() {
+        return searchText.getText();
+    }
+
+    public interface OnButtonClickListener {
+        void onEvent();
     }
 }

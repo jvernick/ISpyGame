@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Created by BrunelAmC on 1/15/2016.
  */
-public abstract class RecordsResponse<T> extends  DbApiResponse{
+public abstract class RecordsResponse<T> extends DbApiResponse {
     private Metadata meta;
 
     public RecordsResponse() {
@@ -18,7 +18,7 @@ public abstract class RecordsResponse<T> extends  DbApiResponse{
     }
 
     public int getCount() {
-        return (getResource() == null)? 0 : getResource().size();
+        return (getResource() == null) ? 0 : getResource().size();
     }
 
     @Override

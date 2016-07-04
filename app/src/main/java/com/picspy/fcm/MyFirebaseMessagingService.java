@@ -101,12 +101,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
 
-
     /**
      * Creates notification based on title and body received
-     * @param title Notification title. Usually the app name
+     *
+     * @param title   Notification title. Usually the app name
      * @param message Notification message
-     * @param type Notification type used to determine Icon
+     * @param type    Notification type used to determine Icon
      */
     private void createNotification(String title, String message, String type) {
         int icon, notificationId;

@@ -30,8 +30,8 @@ import com.picspy.views.FindFriendsActivity;
 import java.util.ArrayList;
 
 public class FriendRequestsFragment extends Fragment implements FriendRequestsRecyclerAdapter.AdapterRequestListener {
-    private static final String TAG = "FriendRequestsFragment";
     public static final String ARG_NOTF = "com.picspy.friend.isNotification";
+    private static final String TAG = "FriendRequestsFragment";
     private static final String ARG_START_FRAGMENT = "com.picspy.friend.startFragment";
     private static int myUserId;
     private static boolean isStartFragment;
@@ -44,6 +44,20 @@ public class FriendRequestsFragment extends Fragment implements FriendRequestsRe
     private TextView emptyView;
 
     public FriendRequestsFragment() {
+    }
+
+    /**
+     * Static factory method that takes an int parameter,
+     * initializes the fragment's arguments, and returns the
+     * new fragment to the client.
+     */
+    public static FriendRequestsFragment newInstance(boolean isNotification, int startFragment) {
+        FriendRequestsFragment f = new FriendRequestsFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(ARG_NOTF, isNotification);
+        args.putBoolean(ARG_START_FRAGMENT, startFragment == 0);
+        f.setArguments(args);
+        return f;
     }
 
     @Override
@@ -82,20 +96,6 @@ public class FriendRequestsFragment extends Fragment implements FriendRequestsRe
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.scrollToPosition(scrollPosition);
-    }
-
-    /**
-     * Static factory method that takes an int parameter,
-     * initializes the fragment's arguments, and returns the
-     * new fragment to the client.
-     */
-    public static FriendRequestsFragment newInstance(boolean isNotification, int startFragment) {
-        FriendRequestsFragment f = new FriendRequestsFragment();
-        Bundle args = new Bundle();
-        args.putBoolean(ARG_NOTF, isNotification);
-        args.putBoolean(ARG_START_FRAGMENT, startFragment == 0);
-        f.setArguments(args);
-        return f;
     }
 
     /**

@@ -51,6 +51,7 @@ public class FriendRecord extends DbApiResponse {
 
     /**
      * Return the other user's record
+     *
      * @param myId current userID
      * @return other user id
      */
@@ -62,7 +63,7 @@ public class FriendRecord extends DbApiResponse {
         }
     }
 
-    public Friend getFriend(int myId){
+    public Friend getFriend(int myId) {
         UserRecord record = getOtherUserRecord(myId);
         if (record != null) {
             Friend friend = new Friend(record.getId(), record.getUsername());
@@ -127,17 +128,17 @@ public class FriendRecord extends DbApiResponse {
     @Override
     public String toString() {
         return "FriendRecord {" +
-                "\n" + "friend_1: "  + friend_1 +
-                "\n" + " friend_2: "  + friend_2 +
+                "\n" + "friend_1: " + friend_1 +
+                "\n" + " friend_2: " + friend_2 +
                 "\n" + " updated: " + updated +
-                "\n" + " status: "  + status +
-                "\n" + " friend_1_won: "  + friend_1_won +
-                "\n" + " friend_1_lost: "  + friend_1_lost +
-                "\n" + " friend_2_won: "  + friend_2_won +
-                "\n" + " friend_2_lost: "  + friend_2_lost +
+                "\n" + " status: " + status +
+                "\n" + " friend_1_won: " + friend_1_won +
+                "\n" + " friend_1_lost: " + friend_1_lost +
+                "\n" + " friend_2_won: " + friend_2_won +
+                "\n" + " friend_2_lost: " + friend_2_lost +
                 "\n" + " related {" +
-                "\n" + " users_by_friend_1: "  + users_by_friend_1 +
-                "\n" + " users_by_friend_2: "  + users_by_friend_2 +
+                "\n" + " users_by_friend_1: " + users_by_friend_1 +
+                "\n" + " users_by_friend_2: " + users_by_friend_2 +
                 "\n}";
     }
 }

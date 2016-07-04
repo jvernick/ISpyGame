@@ -1,104 +1,105 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.picspy.views.MainActivity"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/relativeLayout">
+<RelativeLayout android:id="@+id/relativeLayout"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="com.picspy.views.MainActivity">
 
     <com.picspy.adapters.SlidingTabLayout
         android:id="@+id/tab"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:elevation="2dp"
         android:background="@color/primary"
-    />
+        android:elevation="2dp"
+        />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@id/tab"
-        android:layout_above="@id/bar"/>
+        android:layout_above="@id/bar"
+        android:layout_below="@id/tab"/>
+
     <View
         android:id="@+id/bar"
         android:layout_width="fill_parent"
         android:layout_height="40dip"
-        android:background="@color/primary"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true">
+        android:background="@color/primary">
     </View>
 
     <ImageButton
-        android:layout_height="wrap_content"
+        android:id="@+id/cameraButton"
         android:layout_width="wrap_content"
-        android:adjustViewBounds="true"
-        android:maxWidth="48dp"
-        android:maxHeight="48dp"
-        android:padding="4dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/ic_open_camera"
-        android:background="@color/primary"
-        android:onClick="launchCamera"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/bar"
         android:layout_alignParentBottom="true"
         android:layout_alignTop="@+id/bar"
-        android:layout_alignBottom="@+id/bar"
         android:layout_centerHorizontal="true"
-        android:id="@+id/cameraButton"
-        android:contentDescription="Create Challenge" />
+        android:adjustViewBounds="true"
+        android:background="@color/primary"
+        android:contentDescription="Create Challenge"
+        android:maxHeight="48dp"
+        android:maxWidth="48dp"
+        android:onClick="launchCamera"
+        android:padding="4dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_open_camera"/>
 
     <ImageButton
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:adjustViewBounds="true"
-        android:maxWidth="48dp"
-        android:maxHeight="48dp"
-        android:scaleType="fitCenter"
-        android:padding="4dp"
-        android:src="@drawable/ic_inbox_1"
-        android:layout_alignParentBottom="true"
-        android:layout_alignTop="@+id/bar"
-        android:layout_alignBottom="@+id/bar"
-        android:layout_alignRight="@+id/bar"
-        android:layout_alignEnd="@+id/bar"
-        android:background="@color/primary"
         android:id="@+id/inboxButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/bar"
+        android:layout_alignEnd="@+id/bar"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/bar"
+        android:layout_alignTop="@+id/bar"
+        android:adjustViewBounds="true"
+        android:background="@color/primary"
+        android:contentDescription="View Challenges"
+        android:maxHeight="48dp"
+        android:maxWidth="48dp"
         android:onClick="launchChallenges"
-        android:contentDescription="View Challenges" />
+        android:padding="4dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_inbox_1"/>
 
     <TextView
         android:id="@+id/challenge_request_badge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="2dp"
-        android:textColor="#FFFFFF"
-        android:layout_alignTop="@+id/inboxButton"
-        android:layout_alignRight="@+id/inboxButton"
         android:layout_alignEnd="@+id/inboxButton"
+        android:layout_alignRight="@+id/inboxButton"
+        android:layout_alignTop="@+id/inboxButton"
+        android:layout_marginRight="6dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/notification_badge"
         android:gravity="center"
+        android:padding="2dp"
         android:singleLine="true"
+        android:textColor="#FFFFFF"
         android:textSize="8sp"
         android:textStyle="bold"
-        android:visibility="gone"
-        android:layout_marginTop="4dp"
-        android:layout_marginRight="6dp"
-        android:background="@drawable/notification_badge"/>
+        android:visibility="gone"/>
 
     <ImageButton
-        android:layout_height="wrap_content"
+        android:id="@+id/menuButton"
         android:layout_width="wrap_content"
-        android:adjustViewBounds="true"
-        android:maxWidth="48dp"
-        android:maxHeight="48dp"
-        android:padding="4dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/ic_menu"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/bar"
         android:layout_alignParentBottom="true"
         android:layout_alignTop="@+id/bar"
-        android:layout_alignBottom="@+id/bar"
+        android:adjustViewBounds="true"
         android:background="@color/primary"
-        android:id="@+id/menuButton"
+        android:contentDescription="Settings"
+        android:maxHeight="48dp"
+        android:maxWidth="48dp"
         android:onClick="launchSettings"
-        android:contentDescription="Settings" />
+        android:padding="4dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_menu"/>
 
 </RelativeLayout>

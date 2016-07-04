@@ -43,7 +43,7 @@ import java.util.ArrayList;
 /**
  * Created by Justin12 on 6/6/2015.
  */
-public class FriendsFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class FriendsFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = "FriendsFragment";
     private static final int LOADER_ID = 0;
     private FriendsCursorAdapter cursorAdapter;
@@ -72,7 +72,7 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
 
     /**
      * Called to do initial creation of a fragment.  This is called after
-     *  #onAttach(Activity)} and before
+     * #onAttach(Activity)} and before
      * {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
      * <p/>
      * <p>Note that this can be called while the fragment's activity is
@@ -138,12 +138,12 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
         cursorAdapter.setFilterQueryProvider(new FilterQueryProvider() {
             public Cursor runQuery(CharSequence constraint) {
                 // Search for friends whose names begin with the specified letters.
-                 return DatabaseHandler.getInstance(getActivity()).getMatchingFriends(
+                return DatabaseHandler.getInstance(getActivity()).getMatchingFriends(
                         (constraint != null ? constraint.toString() : null));
             }
         });
 
-        if (getView() !=  null) listHeader = getView().findViewById(R.id.friend_list_header);
+        if (getView() != null) listHeader = getView().findViewById(R.id.friend_list_header);
         if (listHeader != null) {
             View searchBox = listHeader.findViewById(R.id.search_box);
             //TODO remove. next two lines for testing
@@ -194,7 +194,7 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
         Log.d(TAG, "onListItemClick");
     }
 
-    private void setSearchFieldFilter (final EditText searchText) {
+    private void setSearchFieldFilter(final EditText searchText) {
         searchText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -266,7 +266,7 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
             ListView listView = getListView();
 
             firstQuery = false;
-            if(data.getCount() == 0) {
+            if (data.getCount() == 0) {
                 //TODO not used, verify and remove
                 noFriend = true;
                 listView.setEmptyView(noFriendView);
@@ -289,30 +289,18 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
         ((FriendsCursorAdapter) getListAdapter()).changeCursor(null);
     }
 
-    private static class FriendLoader extends AsyncTaskLoader<Cursor> {
-
-        public FriendLoader(Context context) {
-            super(context);
-        }
-
-        @Override
-        public Cursor loadInBackground() {
-           return  DatabaseHandler.getInstance(getContext()).getAllFriends();
-        }
-    }
-
     private void getFriends(int maxFriendRecordId) {
         Response.Listener<FriendsRecord> responseListener = new Response.Listener<FriendsRecord>() {
             @Override
             public void onResponse(FriendsRecord response) {
-                if (response.getCount() != 0)  storeFriends(response, getActivity());
+                if (response.getCount() != 0) storeFriends(response, getActivity());
             }
         };
 
         Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-            //TODO if there is no friend, show only connection error. Otherwise, do nothing
+                //TODO if there is no friend, show only connection error. Otherwise, do nothing
             }
         };
 
@@ -333,6 +321,18 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
         ((FriendsCursorAdapter) getListAdapter())
                 .changeCursor(DatabaseHandler.getInstance(context).getAllFriends());
         ((FriendsCursorAdapter) getListAdapter()).notifyDataSetChanged();
+    }
+
+    private static class FriendLoader extends AsyncTaskLoader<Cursor> {
+
+        public FriendLoader(Context context) {
+            super(context);
+        }
+
+        @Override
+        public Cursor loadInBackground() {
+            return DatabaseHandler.getInstance(getContext()).getAllFriends();
+        }
     }
 }
 

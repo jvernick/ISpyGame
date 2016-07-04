@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * Created by BrunelAmC on 1/17/2016.
  */
-public class ChallengesRequests  extends JsonObjectRequest{
+public class ChallengesRequests extends JsonObjectRequest {
 
     private static final int LEADERBOARD_LIMIT = 12;
     private static final String TAG = "ChallengesReq";
@@ -34,7 +34,7 @@ public class ChallengesRequests  extends JsonObjectRequest{
      * Creates a new request.
      *
      * @param method        the HTTP method to use
-     * @param path           URL to fetch the JSON from
+     * @param path          URL to fetch the JSON from
      * @param jsonRequest   A {@link JSONObject} to post with the request. Null is allowed and
      *                      indicates no parameters will be posted along with request.
      * @param listener      Listener to receive the JSON response
@@ -52,14 +52,15 @@ public class ChallengesRequests  extends JsonObjectRequest{
     /**
      * Creates game on server and stores challenge info.
      * Called after challenge picture has been successfully sent to server.
-     * @param context Context from calling activity
-     * @param listener response listener
+     *
+     * @param context       Context from calling activity
+     * @param listener      response listener
      * @param errorListener error listener
      * @return A {@link ChallengesRequests} to add to request queue
      */
     public static ChallengesRequests createGame(Context context, GameRecord gameRecord,
-                                   final Response.Listener<GameRecord> listener,
-                                   Response.ErrorListener errorListener) {
+                                                final Response.Listener<GameRecord> listener,
+                                                Response.ErrorListener errorListener) {
         Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -72,7 +73,8 @@ public class ChallengesRequests  extends JsonObjectRequest{
             RecordsRequest<GameRecord> gamesRecord = new RecordsRequest<>();
             gamesRecord.addResource(gameRecord);
             JSONObject jsonRequest;
-            jsonRequest = new JSONObject(gson.toJson(gamesRecord, new TypeToken<RecordsRequest<GameRecord>>(){}.getType()));
+            jsonRequest = new JSONObject(gson.toJson(gamesRecord, new TypeToken<RecordsRequest<GameRecord>>() {
+            }.getType()));
             HashMap<String, String> params = new HashMap<>();
             params.put("fields", "id");
             params.put("related", "*");
@@ -87,13 +89,14 @@ public class ChallengesRequests  extends JsonObjectRequest{
 
     /**
      * Gets all new available games.
-     * @param listener Response listener
+     *
+     * @param listener      Response listener
      * @param errorListener Error listener
      * @return A {@link ChallengesRequests} to add to request queue
      */
     public static ChallengesRequests getGamesInfo(Context context,
-                             final Response.Listener<UserChallengesRecord> listener,
-                             Response.ErrorListener errorListener) {
+                                                  final Response.Listener<UserChallengesRecord> listener,
+                                                  Response.ErrorListener errorListener) {
 
         Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
             @Override
@@ -106,7 +109,7 @@ public class ChallengesRequests  extends JsonObjectRequest{
         };
 
         //TODO can limit number of returns using limit and then offset
-        HashMap<String,String> params = new HashMap<>();
+        HashMap<String, String> params = new HashMap<>();
         String filter = "(user_id=" + PrefUtil.getInt(context, AppConstants.USER_ID) + ") AND (id>"
                 + PrefUtil.getInt(context, AppConstants.MAX_USER_CHALLENGE_ID, 0) + ")";
         params.put("filter", filter);
@@ -114,14 +117,15 @@ public class ChallengesRequests  extends JsonObjectRequest{
 
         String url = DspUriBuilder.buildUri(DspUriBuilder.USER_CHALLENGES_TABLE, params);
 
-        return  new ChallengesRequests(context, Method.GET, url, null, jsonObjectListener, errorListener);
+        return new ChallengesRequests(context, Method.GET, url, null, jsonObjectListener, errorListener);
     }
 
     /**
      * Gets leaderboard games from server.
      * TODO modify method to get WEEKLY/DAILY leaderboard instead of overall Leaderboard
      * //TOdO is context needed
-     * @param listener Response listener
+     *
+     * @param listener      Response listener
      * @param errorListener Error listener
      * @return A {@link ChallengesRequests} to add to request queue
      */
@@ -138,7 +142,7 @@ public class ChallengesRequests  extends JsonObjectRequest{
         };
 
         //TODO can limit number of returns using limit and then offset
-        HashMap<String,String> params = new HashMap<>();
+        HashMap<String, String> params = new HashMap<>();
         params.put("filter", "leaderboard=true");
         params.put("related", "users_by_sender");
         //TODo test order; and  add Limit
@@ -147,13 +151,13 @@ public class ChallengesRequests  extends JsonObjectRequest{
 
         String url = DspUriBuilder.buildUri(DspUriBuilder.CHALLENGES_TABLE, params);
 
-        return  new ChallengesRequests(context, Method.GET, url, null, jsonObjectListener, errorListener);
+        return new ChallengesRequests(context, Method.GET, url, null, jsonObjectListener, errorListener);
     }
 
     public static ChallengesRequests submitChallengeResult(Context context, int
-            recordId, HashMap<String,String>
-            params, final Response.Listener<UserChallengesRecord> listener, Response.ErrorListener
-            errorListener) {
+            recordId, HashMap<String, String>
+                                                                   params, final Response.Listener<UserChallengesRecord> listener, Response.ErrorListener
+                                                                   errorListener) {
 
         Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
             @Override
@@ -175,7 +179,7 @@ public class ChallengesRequests  extends JsonObjectRequest{
     }
 
     @Override
-    protected VolleyError parseNetworkError(VolleyError volleyError){
+    protected VolleyError parseNetworkError(VolleyError volleyError) {
         return VolleyRequest.parseNetworkError(volleyError);
     }
 

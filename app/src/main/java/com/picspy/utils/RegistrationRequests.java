@@ -13,7 +13,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -23,8 +22,6 @@ public class RegistrationRequests extends JsonObjectRequest {
     private static final String TAG = "RegistrationReq";
     private static final Gson gson = new Gson();
     private Context context;
-
-    public enum Type {LOGIN, REGISTER, REFRESH}
     private Type type;
 
     /**
@@ -39,8 +36,8 @@ public class RegistrationRequests extends JsonObjectRequest {
      * @param errorListener Error listener, or null to ignore errors.
      */
     private RegistrationRequests(Context context, Type type, int method, String url,
-                                JSONObject jsonRequest, Response.Listener<JSONObject> listener,
-                                Response.ErrorListener errorListener) {
+                                 JSONObject jsonRequest, Response.Listener<JSONObject> listener,
+                                 Response.ErrorListener errorListener) {
         super(method, url, jsonRequest, listener, errorListener);
         Log.d(TAG, url + "\nJson: " + jsonRequest);
         this.context = context;
@@ -50,7 +47,7 @@ public class RegistrationRequests extends JsonObjectRequest {
     public static RegistrationRequests register(Context context,
                                                 final RegisterModel request,
                                                 final Response.Listener<RegisterApiResponse> listener,
-                                                Response.ErrorListener errorListener)  {
+                                                Response.ErrorListener errorListener) {
         Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -63,19 +60,19 @@ public class RegistrationRequests extends JsonObjectRequest {
             jsonRequest = new JSONObject(gson.toJson(request, RegisterModel.class));
             //TODO change path to use BuildURI
             String path = AppConstants.DSP_URL_2 + "user/register";
-            return  new RegistrationRequests(context, Type.REGISTER, Method.POST, path,
+            return new RegistrationRequests(context, Type.REGISTER, Method.POST, path,
                     jsonRequest, jsonObjectListener, errorListener);
         } catch (JSONException e) {
             e.printStackTrace();
-            return  null;
+            return null;
         }
 
     }
 
     public static RegistrationRequests login(Context context,
-                                                final LoginModel request,
-                                                final Response.Listener<LoginApiResponse> listener,
-                                                Response.ErrorListener errorListener)  {
+                                             final LoginModel request,
+                                             final Response.Listener<LoginApiResponse> listener,
+                                             Response.ErrorListener errorListener) {
 
         Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
             @Override
@@ -88,18 +85,18 @@ public class RegistrationRequests extends JsonObjectRequest {
         try {
             jsonRequest = new JSONObject(gson.toJson(request, LoginModel.class));
             String path = AppConstants.DSP_URL_2 + "user/session";
-            return  new RegistrationRequests(context, Type.LOGIN, Method.POST, path,
+            return new RegistrationRequests(context, Type.LOGIN, Method.POST, path,
                     jsonRequest, jsonObjectListener, errorListener);
         } catch (JSONException e) {
             e.printStackTrace();
-            return  null;
+            return null;
         }
 
     }
 
-    public static RegistrationRequests refreshJwtToken (Context context,
-                                             final Response.Listener<LoginApiResponse> listener,
-                                             Response.ErrorListener errorListener)  {
+    public static RegistrationRequests refreshJwtToken(Context context,
+                                                       final Response.Listener<LoginApiResponse> listener,
+                                                       Response.ErrorListener errorListener) {
 
         Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
             @Override
@@ -109,8 +106,8 @@ public class RegistrationRequests extends JsonObjectRequest {
             }
         };
 
-        String path = AppConstants.DSP_URL_2 +"user/session";
-        return  new RegistrationRequests(context, Type.REFRESH, Method.PUT, path,
+        String path = AppConstants.DSP_URL_2 + "user/session";
+        return new RegistrationRequests(context, Type.REFRESH, Method.PUT, path,
                 null, jsonObjectListener, errorListener);
     }
 
@@ -123,16 +120,18 @@ public class RegistrationRequests extends JsonObjectRequest {
      */
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
-        return  AppConstants.dspHeaders(context);
+        return AppConstants.dspHeaders(context);
     }
 
-
     @Override
-    protected VolleyError parseNetworkError(VolleyError volleyError){
+    protected VolleyError parseNetworkError(VolleyError volleyError) {
         return VolleyRequest.parseNetworkError(volleyError);
     }
 
-    public static class RegisterModel{
+
+    public enum Type {LOGIN, REGISTER, REFRESH}
+
+    public static class RegisterModel {
         private String email;
         private String new_password;
         private String name;

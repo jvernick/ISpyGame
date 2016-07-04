@@ -10,7 +10,6 @@ import android.util.Log;
 import com.picspy.models.Friend;
 import com.picspy.models.Game;
 import com.picspy.utils.AppConstants;
-import com.picspy.utils.ChallengesRequests;
 import com.picspy.utils.DbContract.FriendEntry;
 import com.picspy.utils.DbContract.GameEntry;
 import com.picspy.utils.PrefUtil;
@@ -23,7 +22,7 @@ import java.util.List;
  * Created by BrunelAmC on 8/5/2015.
  * TODO make sender_id related to id from friends table?
  */
-public class DatabaseHandler extends SQLiteOpenHelper{
+public class DatabaseHandler extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "dbManager.db";
     private static final String SQL_CREATE_FRIENDS_TABLE = "CREATE TABLE " + FriendEntry.TABLE_NAME
@@ -49,10 +48,9 @@ public class DatabaseHandler extends SQLiteOpenHelper{
             "DROP TABLE IF EXISTS " + FriendEntry.TABLE_NAME;
     private static final String SQL_DELETE_GAMES_TABLE =
             "DROP TABLE IF EXISTS " + GameEntry.TABLE_NAME;
-
-    private Context context;
     // Database helper instance
     private static DatabaseHandler _instance;
+    private Context context;
 
     // If you change the database schema, you must increment the database version.
     //Default constructor
@@ -63,6 +61,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
     /**
      * Public method to get DatabaseHandler Object
+     *
      * @param context Caller context
      * @return DatabaseHandler Object
      */
@@ -99,8 +98,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
                 + FriendEntry.TABLE_NAME + ")", null);
         if (cursor != null) {
             cursor.moveToFirst();                       // Always one row returned.
-            isEmpty =  cursor.getInt (0) == 0;          // Zero count means empty table.
-            Log.d("DbHandler_isEmpty", cursor.getInt(0)+ "");
+            isEmpty = cursor.getInt(0) == 0;          // Zero count means empty table.
+            Log.d("DbHandler_isEmpty", cursor.getInt(0) + "");
             cursor.close();
         }
 
@@ -111,7 +110,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     /**
      * Clear all database for new user
      */
-    public void  clearDatabase() {
+    public void clearDatabase() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(FriendEntry.TABLE_NAME, null, null);
         db.delete(GameEntry.TABLE_NAME, null, null);
@@ -120,7 +119,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
     /**
      * Adds a new friend to the database
-     * @param friend Friend to be added
+     *
+     * @param friend  Friend to be added
      * @param updated The updated field of the record from the server.
      *                Used to avoid duplicate entries
      */
@@ -140,6 +140,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
     /**
      * Gets a friend from the database by friend id
+     *
      * @param friend_id id of the Friend whose record is to be retrieved
      * @return the friend record for specified id
      */
@@ -168,6 +169,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
     /**
      * Gets a friend from the database by friend username
+     *
      * @param username id of the Friend whose record is to be retrieved
      * @return the friend record for specified username
      */
@@ -195,6 +197,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
     /**
      * Gets a list of all friends in the database
+     *
      * @return A list of all friend records
      */
     //TODO test
@@ -228,6 +231,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
     /**
      * Gets the total number of friends in the database
+     *
      * @return total number of friends
      */
     public int getFriendCount() {
@@ -243,6 +247,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
     /**
      * Updates the username of a friend
+     *
      * @param friend Friend to be modified
      * @return 1 if update was successful otherwise 0
      */
@@ -252,7 +257,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         ContentValues values = new ContentValues();
         values.put(FriendEntry.COLUMN_NAME_USERNAME, friend.getUsername());
         String whereClause = FriendEntry._ID + " = ?";
-        String[] whereArgs  = {String.valueOf(friend.getId())};
+        String[] whereArgs = {String.valueOf(friend.getId())};
 
         // updating row
         return db.update(FriendEntry.TABLE_NAME,
@@ -263,12 +268,13 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
     /**
      * Deletes a friend from the database
+     *
      * @param friend friend to be deleted
      */
     public void deleteFriend(Friend friend) {
         SQLiteDatabase db = this.getWritableDatabase();
         String selection = FriendEntry._ID + " = ?";
-        String[] selectionArgs = { String.valueOf(friend.getId()) };
+        String[] selectionArgs = {String.valueOf(friend.getId())};
         db.delete(
                 FriendEntry.TABLE_NAME,
                 selection,
@@ -280,7 +286,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         SQLiteDatabase db = this.getWritableDatabase();
         int maxFriendId = PrefUtil.getInt(context, AppConstants.MAX_FRIEND_RECORD_ID);
 
-        for(Friend friend: friends) {
+        for (Friend friend : friends) {
             if (addFriendHelper(friend, db) != -1) {
                 if (maxFriendId < friend.getRecordId()) maxFriendId = friend.getRecordId();
             }
@@ -298,15 +304,16 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
     /**
      * Adds  <b>multiple</b> new games to the database
-     * @param games List of games to be added
+     *
+     * @param games                 List of games to be added
      * @param max_user_challenge_id The max id of the record in the server. Used to limit
      *                              downloaded content, and to avoid inserting duplicates
      */
     public void addGames(List<Game> games, int max_user_challenge_id) {
         SQLiteDatabase db = this.getWritableDatabase();
         int errorCheck = 0;
-        for(Game game: games) {
-           if (addGameHelper(game, db) == -1) errorCheck = -1;
+        for (Game game : games) {
+            if (addGameHelper(game, db) == -1) errorCheck = -1;
         }
 
         if (errorCheck != -1) {
@@ -317,8 +324,9 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
     /**
      * Helper function to add a single game record
+     *
      * @param game game to be added
-     * @param db current handler
+     * @param db   current handler
      */
     private long addGameHelper(Game game, SQLiteDatabase db) {
         ContentValues values = new ContentValues();
@@ -339,23 +347,25 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
     /**
      * Gets a cursor from which all games in the database can be obtained
+     *
      * @return A Cursor for retrieving game records
      */
     public Cursor getAllGames() {
         // Select All Query. Also gets username from Friends table
         String selectQuery = "SELECT * FROM " + GameEntry.TABLE_NAME;
         SQLiteDatabase db = this.getWritableDatabase();
-       return db.rawQuery(selectQuery, null);
+        return db.rawQuery(selectQuery, null);
     }
 
     /**
      * Deletes a game from the database
+     *
      * @param game game to be deleted
      */
     public void deleteGame(Game game) {
         SQLiteDatabase db = this.getWritableDatabase();
         String selection = GameEntry._ID + " = ?";
-        String[] selectionArgs = { String.valueOf(game.getId()) };
+        String[] selectionArgs = {String.valueOf(game.getId())};
         db.delete(
                 GameEntry.TABLE_NAME,
                 selection,
@@ -365,12 +375,13 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
     /**
      * Deletes a game with the given Id from the database
+     *
      * @param gameId id of game to be deleted
      */
     public void deleteGame(int gameId) {
         SQLiteDatabase db = this.getWritableDatabase();
         String selection = GameEntry._ID + " = ?";
-        String[] selectionArgs = { String.valueOf(gameId) };
+        String[] selectionArgs = {String.valueOf(gameId)};
         db.delete(
                 GameEntry.TABLE_NAME,
                 selection,

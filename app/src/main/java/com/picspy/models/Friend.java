@@ -7,6 +7,7 @@ package com.picspy.models;
 public class Friend {
     private int id;
     private String _username;
+    private int recordId;
 
     public Friend(int id, String _username, int recordId) {
         this.id = id;
@@ -14,15 +15,15 @@ public class Friend {
         this.recordId = recordId;
     }
 
-    private int recordId;
-
-    public Friend(){
+    public Friend() {
         super();
     }
+
     public Friend(int id, String username) {
         this.id = id;
         _username = username;
     }
+
     public int getId() {
         return id;
     }

@@ -14,11 +14,11 @@ import com.android.volley.toolbox.Volley;
  */
 public class ImageDownloader {
     private static ImageDownloader mInstance;
+    private static Context mCtx;
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
-    private static Context mCtx;
 
-    private ImageDownloader (Context context) {
+    private ImageDownloader(Context context) {
         mCtx = context;
         mRequestQueue = getRequestQueue();
 
@@ -41,7 +41,7 @@ public class ImageDownloader {
 
     public static synchronized ImageDownloader getInstance(Context context) {
         if (mInstance == null) {
-            mInstance = new ImageDownloader (context);
+            mInstance = new ImageDownloader(context);
         }
         return mInstance;
     }

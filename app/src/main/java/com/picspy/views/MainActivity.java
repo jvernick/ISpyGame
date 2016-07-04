@@ -13,14 +13,14 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.TextView;
 
+import com.picspy.adapters.SlidingTabLayout;
+import com.picspy.adapters.TabsViewPagerAdapter;
 import com.picspy.firstapp.R;
 import com.picspy.utils.AppConstants;
 import com.picspy.utils.PrefUtil;
 import com.picspy.utils.VolleyRequest;
 import com.picspy.views.fragments.FriendsFragment;
-import com.picspy.adapters.TabsViewPagerAdapter;
 import com.picspy.views.fragments.TopFragment;
-import com.picspy.adapters.SlidingTabLayout;
 
 import java.util.ArrayList;
 
@@ -28,9 +28,9 @@ import java.util.ArrayList;
  * Main page activity
  */
 public class MainActivity extends FragmentActivity {
-    private ViewPager viewPager;
     public static final String CANCEL_TAG = "cancel_main_request";
     private static final int SELECT_PICTURE = 1;
+    private ViewPager viewPager;
     private String selectedImagePath;
     private TextView challengeBadge;
 
@@ -118,11 +118,12 @@ public class MainActivity extends FragmentActivity {
 
     /**
      * Starts camera activity
+     *
      * @param view View from button click
      */
     public void launchCamera(View view) {
         // TODO: Make the AlertDialog UI nicer
-        final CharSequence choices[] = new CharSequence[] {"Take a picture", "Use a saved picture"};
+        final CharSequence choices[] = new CharSequence[]{"Take a picture", "Use a saved picture"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setItems(choices, new DialogInterface.OnClickListener() {
@@ -168,15 +169,15 @@ public class MainActivity extends FragmentActivity {
      */
     public String getPath(Uri uri) {
         // just some safety built in
-        if( uri == null ) {
+        if (uri == null) {
             // TODO perform some logging or show user feedback
             return null;
         }
         // try to retrieve the image from the media store first
         // this will only work for images selected from gallery
-        String[] projection = { MediaStore.Images.Media.DATA };
+        String[] projection = {MediaStore.Images.Media.DATA};
         Cursor cursor = managedQuery(uri, projection, null, null, null);
-        if( cursor != null ){
+        if (cursor != null) {
             int column_index = cursor
                     .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             cursor.moveToFirst();
@@ -188,6 +189,7 @@ public class MainActivity extends FragmentActivity {
 
     /**
      * Starts challenges/updates activity
+     *
      * @param view View from button click
      */
     public void launchChallenges(View view) {

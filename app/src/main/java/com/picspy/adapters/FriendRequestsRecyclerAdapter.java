@@ -19,9 +19,10 @@ import java.util.ArrayList;
 
 /**
  * RecyclerAdapter for the FriendRequests fragment
+ *
  * @author BrunelAmC
  */
-public class FriendRequestsRecyclerAdapter extends RecyclerView.Adapter<FriendRequestsRecyclerAdapter.ViewHolder>{
+public class FriendRequestsRecyclerAdapter extends RecyclerView.Adapter<FriendRequestsRecyclerAdapter.ViewHolder> {
     ArrayList<UserRecord> mDataset;
     private AdapterRequestListener adapterRequestListener;
 
@@ -77,7 +78,7 @@ public class FriendRequestsRecyclerAdapter extends RecyclerView.Adapter<FriendRe
         });
 
         Drawable background = viewHolder.friendIcon.getBackground();
-        ((GradientDrawable)background).setColor(AppConstants.COLOR_ARRAY_LIST[requestor.getId() %
+        ((GradientDrawable) background).setColor(AppConstants.COLOR_ARRAY_LIST[requestor.getId() %
                 AppConstants.COLOR_ARRAY_LIST.length]);
         viewHolder.friendIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,6 +116,12 @@ public class FriendRequestsRecyclerAdapter extends RecyclerView.Adapter<FriendRe
         notifyItemRemoved(position);
     }
 
+    public interface AdapterRequestListener {
+        void acceptRequest(int friend_id, int position);
+
+        void declineRequest(int friend_id, int position);
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView friendIcon;
         public TextView friendUsername;
@@ -130,10 +137,5 @@ public class FriendRequestsRecyclerAdapter extends RecyclerView.Adapter<FriendRe
             declineFriend = (Button) itemView.findViewById(R.id.decline_friend);
             iconAndName = (ViewGroup) itemView.findViewById(R.id.icon_and_name);
         }
-    }
-
-    public interface AdapterRequestListener {
-        void acceptRequest(int friend_id, int position);
-        void declineRequest(int friend_id, int position);
     }
 }

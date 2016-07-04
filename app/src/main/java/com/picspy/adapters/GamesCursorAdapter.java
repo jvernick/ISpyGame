@@ -15,17 +15,18 @@ import com.picspy.utils.DbContract;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
-/**TODO Document
+/**
+ * TODO Document
  * Implements a custom adapter for binding database entries to
  * list elements
  * Created by BrunelAmC on 8/21/2015.
  */
 public class GamesCursorAdapter extends ResourceCursorAdapter {
-    private static final String TAG = "GamesCursorAdapter";
     //possible challenge icons. Add as necessary.
     public static final int[] ICONS = {R.drawable.ic_challenge_purple, R.drawable.ic_challenge_lime,
             R.drawable.ic_challenge_orange, R.drawable.ic_challenge_yellow,
             R.drawable.ic_challenge_blue, R.drawable.ic_challenge_red};
+    private static final String TAG = "GamesCursorAdapter";
 
     //Default inherited constructor
     public GamesCursorAdapter(Context context, int layout, Cursor cursor, int flags) {
@@ -44,11 +45,53 @@ public class GamesCursorAdapter extends ResourceCursorAdapter {
      */
 
     /**
+     * Sets the view to a random color
+     *
+     * @param view View to be set
+     */
+    public static void setIcon(ImageView view, int senderId) {
+        view.setImageResource(ICONS[senderId % ICONS.length]);
+    }
+
+    /**
+     * Finds time difference and returns a string to display
+     *
+     * @param created creation timestamp from server
+     * @return String that represents time duration
+     */
+    public static String processTime(String created) {
+        Long createdTime = java.sql.Timestamp.valueOf(created).getTime();
+        Calendar rightnow = Calendar.getInstance();
+        Long currentTime = rightnow.getTimeInMillis();
+
+        Long duration = currentTime - createdTime;
+        long diffInSeconds = TimeUnit.MILLISECONDS.toSeconds(duration);
+        long diffInMinutes = TimeUnit.MILLISECONDS.toMinutes(duration);
+        long diffInHours = TimeUnit.MILLISECONDS.toHours(duration);
+        long diffInDays = TimeUnit.MILLISECONDS.toDays(duration);
+
+        if (diffInDays > 30) {
+            return "30+ days ago";
+        } else if (diffInDays < 30 && diffInDays > 0) {
+            return diffInDays + " day" + ((diffInDays == 1) ? "" : "s") + " ago";
+        } else if (diffInHours > 0) {
+            return diffInHours + " hour" + ((diffInHours == 1) ? "" : "s") + " ago";
+        } else if (diffInMinutes > 0) {
+            return diffInMinutes + " minute" + ((diffInMinutes == 1) ? "" : "s") + " ago";
+        } else {
+            //TODO secsonds/moments ago
+            return "moments ago";
+            //return diffInSeconds + " seconds ago";
+        }
+    }
+
+    /**
      * Binds challenge data to elements of the view
      * such as setting the text on a TextView.
-     * @param view The view to be populated
+     *
+     * @param view    The view to be populated
      * @param context The calling application context
-     * @param c Cursor containing result of database query
+     * @param c       Cursor containing result of database query
      */
     @Override
     public void bindView(View view, Context context, Cursor c) {
@@ -84,47 +127,8 @@ public class GamesCursorAdapter extends ResourceCursorAdapter {
         return view;
     }
 
-    /**
-     * Sets the view to a random color
-     * @param view View to be set
-     */
-    public static void setIcon(ImageView view, int senderId) {
-        view.setImageResource(ICONS[senderId % ICONS.length]);
-    }
-
-    /**
-     * Finds time difference and returns a string to display
-     * @param created creation timestamp from server
-     * @return String that represents time duration
-     */
-    public static String processTime(String created) {
-        Long createdTime = java.sql.Timestamp.valueOf(created).getTime();
-        Calendar rightnow = Calendar.getInstance();
-        Long currentTime = rightnow.getTimeInMillis();
-
-        Long duration = currentTime - createdTime;
-        long diffInSeconds = TimeUnit.MILLISECONDS.toSeconds(duration);
-        long diffInMinutes = TimeUnit.MILLISECONDS.toMinutes(duration);
-        long diffInHours = TimeUnit.MILLISECONDS.toHours(duration);
-        long diffInDays = TimeUnit.MILLISECONDS.toDays(duration);
-
-        if (diffInDays > 30) {
-            return "30+ days ago";
-        } else if (diffInDays < 30 && diffInDays > 0) {
-            return diffInDays + " day" + ((diffInDays == 1)? "":"s") + " ago";
-        } else if (diffInHours > 0) {
-            return diffInHours + " hour" + ((diffInHours == 1)? "":"s") + " ago";
-        } else if (diffInMinutes > 0) {
-            return diffInMinutes + " minute" + ((diffInMinutes == 1)? "":"s") + " ago";
-        } else {
-            //TODO secsonds/moments ago
-            return "moments ago";
-            //return diffInSeconds + " seconds ago";
-        }
-    }
-
     @Override
-    protected void onContentChanged(){
+    protected void onContentChanged() {
         Log.d(TAG, "content changes");
         super.onContentChanged();
         notifyDataSetChanged();

@@ -5,7 +5,6 @@ import android.content.Context;
 import com.picspy.adapters.DatabaseHandler;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Model for receiving data from server
@@ -26,7 +25,8 @@ public class GameRecord {
     private UserRecord users_by_sender;
 
 
-    public GameRecord() {}
+    public GameRecord() {
+    }
 
 
     public static Game getGame(GameRecord gameRecord, Context applicationContext) {
@@ -73,7 +73,7 @@ public class GameRecord {
     }
 
     public void setSelection(String selection) {
-        this.selection=  selection;
+        this.selection = selection;
     }
 
     public String getHint() {
@@ -81,7 +81,7 @@ public class GameRecord {
     }
 
     public void setHint(String hint) {
-        this.hint=  hint;
+        this.hint = hint;
     }
 
     public int getGuess() {
@@ -89,7 +89,7 @@ public class GameRecord {
     }
 
     public void setGuess(int guess) {
-        this.guess=  guess;
+        this.guess = guess;
     }
 
     public int getTime() {
@@ -97,7 +97,7 @@ public class GameRecord {
     }
 
     public void setTime(int time) {
-        this.time=  time;
+        this.time = time;
     }
 
     public boolean isLeaderboard() {
@@ -113,7 +113,7 @@ public class GameRecord {
     }
 
     public void setSender(int sender) {
-        this.sender=  sender;
+        this.sender = sender;
     }
 
     public int getId() {
@@ -121,7 +121,7 @@ public class GameRecord {
     }
 
     public void setId(int id) {
-        this.id=  id;
+        this.id = id;
     }
 
     public String getCreated() {
@@ -144,7 +144,7 @@ public class GameRecord {
     @Override
     public String toString() {
         return "GameRecord {" +
-                "\n" +  "picture_name: " + picture_name +
+                "\n" + "picture_name: " + picture_name +
                 "\n" + " selection: " + selection +
                 "\n" + " hint: " + hint +
                 "\n" + " guess: " + guess +

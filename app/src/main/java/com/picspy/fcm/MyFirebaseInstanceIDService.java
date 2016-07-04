@@ -21,25 +21,8 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
     private static final String TAG = "MyFirebaseIIDService";
 
     /**
-     * Called if InstanceID token is updated. This may occur if the security of
-     * the previous token had been compromised. Note that this is also called
-     * when the InstanceID token is initially generated, so this is where
-     * you retrieve the token.
-     */
-    // [START refresh_token]
-    @Override
-    public void onTokenRefresh() {
-        // Get updated InstanceID token.
-        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        Log.d(TAG, "Refreshed token: " + refreshedToken);
-        PrefUtil.putString(this, AppConstants.FCM_TOKEN, refreshedToken);
-        sendRegistrationToServer(refreshedToken, this);
-    }
-    // [END refresh_token]
-
-
-    /**
      * Sends the token to the server for persistent storage and use
+     *
      * @param token The new token.
      */
     public static void sendRegistrationToServer(String token, final Context context) {
@@ -64,7 +47,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
             public void onErrorResponse(VolleyError error) {
                 if (error != null) {
                     PrefUtil.putBoolean(context, AppConstants.SENT_TOKEN_TO_SERVER, false);
-                    String err = (error.getMessage() == null)? "error message null" : error.getMessage();
+                    String err = (error.getMessage() == null) ? "error message null" : error.getMessage();
                     Log.d(TAG, err);
                 }
             }
@@ -73,6 +56,23 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         UserRequests addUserRequest = UserRequests.updateGcmReg(context,
                 addUserModel, responseListener, errorListener);
         VolleyRequest.getInstance(context.getApplicationContext()).addToRequestQueue(addUserRequest);
+    }
+    // [END refresh_token]
+
+    /**
+     * Called if InstanceID token is updated. This may occur if the security of
+     * the previous token had been compromised. Note that this is also called
+     * when the InstanceID token is initially generated, so this is where
+     * you retrieve the token.
+     */
+    // [START refresh_token]
+    @Override
+    public void onTokenRefresh() {
+        // Get updated InstanceID token.
+        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+        Log.d(TAG, "Refreshed token: " + refreshedToken);
+        PrefUtil.putString(this, AppConstants.FCM_TOKEN, refreshedToken);
+        sendRegistrationToServer(refreshedToken, this);
     }
 
 }

@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.picspy.views.fragments.ChooseFriendsFragment">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="com.picspy.views.fragments.ChooseFriendsFragment">
 
     <ListView
         android:id="@android:id/list"
-        android:layout_marginLeft="16dp"
-        android:layout_marginBottom="16dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
         android:divider="@drawable/list_divider_inset"
         android:dividerHeight="1px"/>
 
@@ -17,11 +18,11 @@
         android:id="@+id/search_empty"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:layout_margin="4dp"
-        android:padding="4dp"
-        android:maxLines="1"
         android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:padding="4dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/secondary_text"
         android:visibility="gone"/>
@@ -30,42 +31,43 @@
         android:id="@+id/empty_friends"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:layout_margin="4dp"
-        android:padding="4dp"
-        android:maxLines="1"
         android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:padding="4dp"
+        android:text="@string/no_friends"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/secondary_text"
-        android:text="@string/no_friends"
         android:visibility="gone"/>
 
     <RelativeLayout
         android:id="@+id/next_view"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:minHeight="48dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:minHeight="48dp"
         android:visibility="gone">
+
         <View
             android:id="@+id/bar"
             android:layout_width="fill_parent"
             android:layout_height="48dp"
-            android:background="@drawable/bg_send_challenge"
-            android:layout_alignParentBottom="true">
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/bg_send_challenge">
         </View>
 
         <Button
             android:id="@+id/send_button"
             android:layout_width="48dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_send"
-            android:layout_marginRight="8dp"
             android:layout_alignBottom="@id/bar"
-            android:layout_alignTop="@id/bar"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"/>
+            android:layout_alignTop="@id/bar"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/ic_send"/>
     </RelativeLayout>
 </RelativeLayout>

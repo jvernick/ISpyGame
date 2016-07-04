@@ -26,9 +26,9 @@ import com.picspy.models.UserRecord;
 import com.picspy.utils.Accounts;
 import com.picspy.utils.AppConstants;
 import com.picspy.utils.PrefUtil;
-import com.picspy.utils.RegistrationRequests.RegisterModel;
-import com.picspy.utils.RegistrationRequests.RegisterApiResponse;
 import com.picspy.utils.RegistrationRequests;
+import com.picspy.utils.RegistrationRequests.RegisterApiResponse;
+import com.picspy.utils.RegistrationRequests.RegisterModel;
 import com.picspy.utils.UserRequests;
 import com.picspy.utils.VolleyRequest;
 
@@ -48,6 +48,21 @@ public class RegisterActivity extends Activity {
     private EditText edtPaswd;
     private Button btnRegister;
     private ProgressDialog progressDialog;
+    //Validates the input To disable button if any field is empty
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            checkFieldsForEmptyValues();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +77,7 @@ public class RegisterActivity extends Activity {
         edtDisplayName = (EditText) findViewById(R.id.edit_display_name);
         edtEmail = (EditText) findViewById(R.id.edit_email);
         edtPaswd = (EditText) findViewById(R.id.edit_password);
-        btnRegister =(Button) findViewById(R.id.btn_signup);
+        btnRegister = (Button) findViewById(R.id.btn_signup);
 
         edtPaswd.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
@@ -83,24 +98,10 @@ public class RegisterActivity extends Activity {
         checkFieldsForEmptyValues();
     }
 
-    //Validates the input To disable button if any field is empty
-    private TextWatcher textWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3){}
-
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3)  {}
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-            checkFieldsForEmptyValues();
-        }
-    };
-
     @Override
     protected void onResume() {
         super.onResume();
-        if (!edtEmail.getText().toString().matches("") &&  !edtPaswd.getText().toString().matches("")) {
+        if (!edtEmail.getText().toString().matches("") && !edtPaswd.getText().toString().matches("")) {
             InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(btnRegister.getWindowToken(), 0);
         }
@@ -110,7 +111,7 @@ public class RegisterActivity extends Activity {
      * Checks fields for empty values. Enables and dislpays login button when all fields
      * are not empty. Otherwise disables and hides login button
      */
-    private void checkFieldsForEmptyValues(){
+    private void checkFieldsForEmptyValues() {
         String s1 = edtEmail.getText().toString();
         String s2 = edtDisplayName.getText().toString();
         String s3 = edtPaswd.getText().toString();
@@ -124,16 +125,18 @@ public class RegisterActivity extends Activity {
         }
     }
 
-	 //TODO: Limit password characters with regex?
+    //TODO: Limit password characters with regex?
+
     /**
      * Validates password to have: min length of 6 and
      * verifies that both entered passwords match.
+     *
      * @return "valid" if email is valid otherwise error message depending on problem
      */
     public String isValidPassword() {
         String pass1 = edtPaswd.getText().toString();
 
-        if (pass1.length() >= 6){
+        if (pass1.length() >= 6) {
             return "valid";
         } else {
             return "invalid_length";
@@ -142,18 +145,20 @@ public class RegisterActivity extends Activity {
 
     /**
      * Validates email with regex
+     *
      * @return true if email is valid otherwise false
      */
     private boolean isValidEmail() {
         String emailPattern = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                 + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-		String email = edtEmail.getText().toString();
-		return email.matches(emailPattern);
+        String email = edtEmail.getText().toString();
+        return email.matches(emailPattern);
     }
 
 
     /**
      * Validates entered fields and starts the Sign Up process
+     *
      * @param view Button view
      */
     public void signUp(View view) {
@@ -161,18 +166,18 @@ public class RegisterActivity extends Activity {
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
         //TODO store strings below in @strings
-		//TODO add filter for valid characters?
+        //TODO add filter for valid characters?
         if (edtDisplayName.getText().toString().matches("")) {
-			edtDisplayName.setError("Must enter Username");
+            edtDisplayName.setError("Must enter Username");
             edtDisplayName.requestFocus();
-		} else if (!isValidEmail()) {
+        } else if (!isValidEmail()) {
             edtEmail.setError("Invalid Email");
             edtEmail.requestFocus();
         } else if (isValidPassword().equals("invalid_length")) {
             edtPaswd.setError("Must be at least 6 characters");
             edtPaswd.requestFocus();
         } else {
-           register();
+            register();
         }
     }
 
@@ -180,7 +185,7 @@ public class RegisterActivity extends Activity {
      * 1st step of registration process. Registers the user, and attempts login.
      */
     private void register() {
-        RegisterModel registerModel = new  RegisterModel(edtEmail.getText().toString(),
+        RegisterModel registerModel = new RegisterModel(edtEmail.getText().toString(),
                 edtPaswd.getText().toString(),
                 edtDisplayName.getText().toString());
 
@@ -197,7 +202,7 @@ public class RegisterActivity extends Activity {
                 progressDialog.cancel();
                 if (error != null) {
                     String errorMsg = "An error occurred";
-                    String err = (error.getMessage() == null)? errorMsg : error.getMessage();
+                    String err = (error.getMessage() == null) ? errorMsg : error.getMessage();
                     Log.d(TAG, err);
                     error.printStackTrace();
 
@@ -214,7 +219,7 @@ public class RegisterActivity extends Activity {
                     } else if (err.matches(".*Duplicate entry .* for key 'name_UNIQUE'.*")) {
                         edtDisplayName.setError("username taken");
                         edtDisplayName.requestFocus();
-                    } else if ( err.matches(".*The email has already been taken.*")) {
+                    } else if (err.matches(".*The email has already been taken.*")) {
                         edtEmail.setError("email taken");
                         edtEmail.requestFocus();
                     } else {
@@ -269,7 +274,7 @@ public class RegisterActivity extends Activity {
             public void onErrorResponse(VolleyError error) {
                 progressDialog.cancel();
                 if (error != null) {
-                    String err = (error.getMessage() == null)? "error message null": error.getMessage();
+                    String err = (error.getMessage() == null) ? "error message null" : error.getMessage();
                     Log.d(TAG, err);
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(RegisterActivity.this);
                     alertDialog.setMessage("An error occurred. No connection to server").setCancelable(false)
@@ -286,14 +291,15 @@ public class RegisterActivity extends Activity {
         progressDialog.setMessage("Logging in..");
         RegistrationRequests loginRequest =
                 RegistrationRequests.login(this, loginModel, responseListener, errorListener);
-         if (loginRequest != null) loginRequest.setTag(CANCEL_TAG);
+        if (loginRequest != null) loginRequest.setTag(CANCEL_TAG);
         VolleyRequest.getInstance(this.getApplicationContext()).addToRequestQueue(loginRequest);
     }
 
     /**
      * Third and final step of user creation. Stores the user username in the users table.
-     * @param id The current user's id
-     * @param username  The current user's username synonymous with display_name
+     *
+     * @param id       The current user's id
+     * @param username The current user's username synonymous with display_name
      */
     private void addToUsers(final int id, String username) {
         UserRequests.AddUserModel addUserModel = new UserRequests.AddUserModel(id, username);
@@ -315,17 +321,17 @@ public class RegisterActivity extends Activity {
             public void onErrorResponse(VolleyError error) {
                 progressDialog.cancel();
                 if (error != null) {
-                String err = (error.getMessage() == null)? "error message null" : error.getMessage();
-                Log.d(TAG, err);
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(RegisterActivity.this);
-                alertDialog.setMessage("An error occurred. No connection to server").setCancelable(false)
-                        .setPositiveButton("Try again", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });
-            }
+                    String err = (error.getMessage() == null) ? "error message null" : error.getMessage();
+                    Log.d(TAG, err);
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(RegisterActivity.this);
+                    alertDialog.setMessage("An error occurred. No connection to server").setCancelable(false)
+                            .setPositiveButton("Try again", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            });
+                }
             }
         };
 

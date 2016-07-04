@@ -1,8 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.picspy.views.fragments.ConfigureChallengeFragment"
-    android:layout_height="wrap_content" android:layout_width="wrap_content">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:context="com.picspy.views.fragments.ConfigureChallengeFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,12 +13,14 @@
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardUseCompatPadding="true"
-            android:layout_margin="4dp">
+            android:layout_margin="4dp"
+            app:cardUseCompatPadding="true">
+
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="8dp">
+
                 <CheckBox
                     android:id="@+id/checkbox"
                     android:layout_width="wrap_content"
@@ -25,12 +28,12 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:gravity="center"
-                    android:button="@drawable/selector_checkbox" />
+                    android:button="@drawable/selector_checkbox"
+                    android:gravity="center"/>
 
                 <TextView
-                    style="@style/configure_challenge_textViews"
                     android:id="@+id/leaderboard_title"
+                    style="@style/configure_challenge_textViews"
                     android:layout_toLeftOf="@id/checkbox"
                     android:layout_toStartOf="@id/checkbox"
                     android:text="@string/leaderboard_title"/>
@@ -40,36 +43,39 @@
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardUseCompatPadding="true"
-            android:layout_margin="4dp">
+            android:layout_margin="4dp"
+            app:cardUseCompatPadding="true">
+
             <RelativeLayout
                 android:id="@+id/guess"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="8dp">
+
                 <TextView
-                    style="@style/configure_challenge_textViews"
                     android:id="@+id/guesses_title"
+                    style="@style/configure_challenge_textViews"
                     android:text="@string/guess_title"/>
 
                 <HorizontalScrollView
                     android:id="@+id/guess_picker"
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
-                    android:layout_below="@id/guesses_title"
-                    android:orientation="horizontal"
                     android:layout_alignParentRight="true"
+                    android:layout_below="@id/guesses_title"
                     android:layout_centerHorizontal="true"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:fillViewport="false"
-                    android:scrollbars="none" >
+                    android:orientation="horizontal"
+                    android:scrollbars="none">
+
                     <RadioGroup
                         android:id="@+id/guesses_radio_group"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
                         android:divider="@drawable/radio_group_divider"
+                        android:orientation="horizontal"
                         android:showDividers="middle">
                     </RadioGroup>
                 </HorizontalScrollView>
@@ -79,35 +85,38 @@
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardUseCompatPadding="true"
-            android:layout_margin="4dp">
+            android:layout_margin="4dp"
+            app:cardUseCompatPadding="true">
+
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="8dp">
+
                 <TextView
-                    style="@style/configure_challenge_textViews"
                     android:id="@+id/time_title"
+                    style="@style/configure_challenge_textViews"
                     android:text="@string/time_title"/>
 
                 <HorizontalScrollView
+                    android:id="@+id/time_picker"
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
-                    android:id="@+id/time_picker"
-                    android:layout_below="@id/time_title"
-                    android:orientation="horizontal"
                     android:layout_alignParentRight="true"
+                    android:layout_below="@id/time_title"
                     android:layout_centerHorizontal="true"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:fillViewport="false"
-                    android:scrollbars="none" >
+                    android:orientation="horizontal"
+                    android:scrollbars="none">
+
                     <RadioGroup
                         android:id="@+id/time_radio_group"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
                         android:divider="@drawable/radio_group_divider"
+                        android:orientation="horizontal"
                         android:showDividers="middle">
                     </RadioGroup>
                 </HorizontalScrollView>
@@ -117,36 +126,38 @@
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardUseCompatPadding="true"
-            android:layout_margin="4dp">
+            android:layout_margin="4dp"
+            app:cardUseCompatPadding="true">
+
             <RelativeLayout
                 android:id="@+id/hint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="8dp">
+
                 <TextView
-                    style="@style/configure_challenge_textViews"
                     android:id="@+id/hint_title"
-                    android:text="@string/hint_title" />
+                    style="@style/configure_challenge_textViews"
+                    android:text="@string/hint_title"/>
 
                 <EditText
                     android:id="@+id/hint_input"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginBottom="2dp"
                     android:layout_below="@id/hint_title"
                     android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="2dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
                     android:background="@drawable/search_field_style"
-                    android:maxLength="50"
-                    android:inputType="text"
-                    android:maxLines="3"
                     android:ellipsize="end"
-                    android:padding="8dp"
                     android:hint="@string/hint_input_hint"
-                    android:textColor="@color/secondary_text"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:inputType="text"
+                    android:maxLength="50"
+                    android:maxLines="3"
+                    android:padding="8dp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/secondary_text"/>
             </RelativeLayout>
         </android.support.v7.widget.CardView>
     </LinearLayout>
@@ -154,27 +165,28 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:minHeight="48dp"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true">
+        android:minHeight="48dp">
+
         <View
             android:id="@+id/bar"
             android:layout_width="fill_parent"
             android:layout_height="48dp"
-            android:background="@drawable/bg_send_challenge"
-            android:layout_alignParentBottom="true">
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/bg_send_challenge">
         </View>
 
         <Button
             android:id="@+id/next_button"
             android:layout_width="48dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_next"
             android:layout_alignBottom="@id/bar"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:layout_alignTop="@id/bar"
             android:layout_marginRight="8dp"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"/>
+            android:background="@drawable/ic_next"/>
     </RelativeLayout>
 </RelativeLayout>

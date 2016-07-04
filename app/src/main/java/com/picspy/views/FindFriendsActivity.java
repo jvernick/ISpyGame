@@ -1,15 +1,13 @@
 package com.picspy.views;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -24,6 +22,8 @@ import com.picspy.utils.PrefUtil;
 import com.picspy.utils.VolleyRequest;
 import com.picspy.views.fragments.FriendRequestsFragment;
 import com.picspy.views.fragments.FriendSearchFragment;
+
+import java.util.ArrayList;
 
 public class FindFriendsActivity extends ActionBarActivity {
     public static final String CANCEL_TAG = "cancelFindRequests";
@@ -52,8 +52,8 @@ public class FindFriendsActivity extends ActionBarActivity {
 
         // get intent
         int startFragment = getIntent().getIntExtra(EXTRA_START_FRAGMENT, 0);
-        startFragment = (startFragment != 1 && startFragment != 0)? 0: startFragment;
-        Log.d(TAG, "startFragment: " +  startFragment);
+        startFragment = (startFragment != 1 && startFragment != 0) ? 0 : startFragment;
+        Log.d(TAG, "startFragment: " + startFragment);
 
         // reset notification counter
         PrefUtil.putInt(this, AppConstants.FRIEND_REQUEST_COUNT, 0);
@@ -77,10 +77,10 @@ public class FindFriendsActivity extends ActionBarActivity {
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setCurrentItem(startFragment);
-        if (startFragment == 1){
+        if (startFragment == 1) {
             Log.d(TAG, "startFragment == 0");
 
-            InputMethodManager imgr = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             //imgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
         }
 
@@ -142,7 +142,7 @@ public class FindFriendsActivity extends ActionBarActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         PrefUtil.putInt(this, AppConstants.FRIEND_REQUEST_COUNT, 0);
-        FriendRequestsFragment  requestsFragment = (FriendRequestsFragment)
+        FriendRequestsFragment requestsFragment = (FriendRequestsFragment)
                 getSupportFragmentManager().findFragmentByTag(
                         mSectionsPagerAdapter.fragments.get(0).getTag());
         if (requestsFragment != null) {
@@ -173,17 +173,34 @@ public class FindFriendsActivity extends ActionBarActivity {
     }
 
     /**
+     * Start a new game
+     *
+     * @param view View from button click
+     */
+    public void launchCamera(View view) {
+        Intent intent = new Intent(this, CameraActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        //cancel all pending register/login/addUser tasks
+        if (VolleyRequest.getInstance(this.getApplicationContext()) != null) {
+            VolleyRequest.getInstance(this.getApplication()).getRequestQueue().cancelAll(CANCEL_TAG);
+        }
+    }
+
+    /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
-        private ArrayList<Fragment> fragments;
-
         public static final int REQUESTS = 0;
         public static final int SEARCH = 1;
-
         public static final String UI_TAB_REQUESTS = "REQUESTS";
         public static final String UI_TAB_SEARCH = "SEARCH";
+        private ArrayList<Fragment> fragments;
 
         public SectionsPagerAdapter(FragmentManager fm, ArrayList<Fragment> fragments) {
             super(fm);
@@ -211,25 +228,6 @@ public class FindFriendsActivity extends ActionBarActivity {
                     break;
             }
             return null;
-        }
-    }
-
-
-    /**
-     * Start a new game
-     * @param view View from button click
-     */
-    public void launchCamera(View view) {
-        Intent intent = new Intent(this, CameraActivity.class);
-        startActivity(intent);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        //cancel all pending register/login/addUser tasks
-        if (VolleyRequest.getInstance(this.getApplicationContext()) != null) {
-            VolleyRequest.getInstance(this.getApplication()).getRequestQueue().cancelAll(CANCEL_TAG);
         }
     }
 }

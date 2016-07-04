@@ -28,6 +28,7 @@ import com.picspy.firstapp.R;
  */
 public class CreateChallengeActivity extends Activity {
 
+    public final static int DEFAULT_GUESSES = 3;
     // TODO: add time part of the challenge
     // TODO: fix lagginess of this activity when using the style defined in the manifest
     private Button cancelButton;
@@ -41,7 +42,6 @@ public class CreateChallengeActivity extends Activity {
     private TextView time;
     private TextView leaderboards;
     private CheckBox checkBox;
-    public final static int DEFAULT_GUESSES = 3;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -150,7 +150,7 @@ public class CreateChallengeActivity extends Activity {
     }
 
     private void hideKeyboard(View view) {
-        InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

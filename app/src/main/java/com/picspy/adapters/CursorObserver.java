@@ -6,7 +6,8 @@ import android.database.Cursor;
 import android.os.Handler;
 import android.util.Log;
 
-/**TODO document
+/**
+ * TODO document
  * TODO delete, not used
  * Created by BrunelAmC on 8/22/2015.
  */
@@ -14,7 +15,7 @@ public class CursorObserver extends ContentObserver {
     private static String TAG = "CursorObserver";
     private Loader<Cursor> loader;
 
-    public CursorObserver(Handler handler,  Loader<Cursor> loader) {
+    public CursorObserver(Handler handler, Loader<Cursor> loader) {
         super(handler);
         Log.e(TAG, ":::: CursorObserver");
 

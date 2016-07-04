@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RadioButton xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/radio_button"
-    android:text="30"
-    android:id="@+id/radioButton" />
+<RadioButton android:id="@+id/radioButton"
+             style="@style/radio_button"
+             xmlns:android="http://schemas.android.com/apk/res/android"
+             android:text="30"/>

@@ -10,7 +10,8 @@ import android.provider.BaseColumns;
 public class DbContract {
     // To prevent someone from accidentally instantiating the contract class,
     // give it an empty constructor.
-    public DbContract() {}
+    public DbContract() {
+    }
 
     /* Inner class that defines the friends table contents */
     public static abstract class FriendEntry implements BaseColumns {
@@ -18,19 +19,19 @@ public class DbContract {
         public static final String COLUMN_NAME_USERNAME = "username";
     }
 
-     /* Inner class that defines the friends table contents */
+    /* Inner class that defines the friends table contents */
     public static abstract class GameEntry implements BaseColumns {
-         public static final String TABLE_NAME = "games";
-         public static final String COLUMN_NAME_SEL = "selection";
-         public static final String COLUMN_NAME_HINT = "hint";
-         public static final String COLUMN_NAME_TIME = "time";
-         public static final String COLUMN_NAME_GUESS = "guess";
-         public static final String COLUMN_NAME_VOTE = "vote";
-         public static final String COLUMN_NAME_PICTURE = "picture_name";
-         public static final String COLUMN_NAME_SENDER_ID = "sender";
-         public static final String COLUMN_NAME_SENDER_NAME = "sender_name";
-         public static final String COLUMN_NAME_USERCHALLENGE_ID = "userChallengeId";
-         public static final String COLUMN_NAME_CREATED = "created";
-     }
+        public static final String TABLE_NAME = "games";
+        public static final String COLUMN_NAME_SEL = "selection";
+        public static final String COLUMN_NAME_HINT = "hint";
+        public static final String COLUMN_NAME_TIME = "time";
+        public static final String COLUMN_NAME_GUESS = "guess";
+        public static final String COLUMN_NAME_VOTE = "vote";
+        public static final String COLUMN_NAME_PICTURE = "picture_name";
+        public static final String COLUMN_NAME_SENDER_ID = "sender";
+        public static final String COLUMN_NAME_SENDER_NAME = "sender_name";
+        public static final String COLUMN_NAME_USERCHALLENGE_ID = "userChallengeId";
+        public static final String COLUMN_NAME_CREATED = "created";
+    }
 
 }

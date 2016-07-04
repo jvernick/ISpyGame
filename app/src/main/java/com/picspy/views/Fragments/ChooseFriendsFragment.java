@@ -50,8 +50,8 @@ public class ChooseFriendsFragment extends ListFragment implements
     private static final String BDL_IS_SEARCH = "isSearch?";
     private static final String BDL_SEARCH_STRING = "searchString";
     private static final String TAG = "ChooseFriends";
-    private static  LoaderManager.LoaderCallbacks<Cursor> callback;
     private static final int LOADER_ID = 0;
+    private static LoaderManager.LoaderCallbacks<Cursor> callback;
     private SearchView mSearchView;
     private TextView emptySearchView;
     private TextView noFriendView;
@@ -75,6 +75,13 @@ public class ChooseFriendsFragment extends ListFragment implements
     private ViewGroup nextView;
     private MenuItem mSearchItem;
 
+    /**
+     * Mandatory empty constructor for the fragment manager to instantiate the
+     * fragment (e.g. upon screen orientation changes).
+     */
+    public ChooseFriendsFragment() {
+    }
+
     public static ChooseFriendsFragment newInstance(Bundle gameOptionsBundle,
                                                     Bundle pictureOptionsBundle) {
         ChooseFriendsFragment fragment = new ChooseFriendsFragment();
@@ -84,13 +91,6 @@ public class ChooseFriendsFragment extends ListFragment implements
 
         fragment.setArguments(args);
         return fragment;
-    }
-
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
-    public ChooseFriendsFragment() {
     }
 
     @Override
@@ -103,7 +103,7 @@ public class ChooseFriendsFragment extends ListFragment implements
         }
 
         cursorAdapter = new ChooseFriendsCursorAdapter(getActivity(),
-              R.layout.item_choose_friend, null, 0, this);
+                R.layout.item_choose_friend, null, 0, this);
     }
 
     @Override
@@ -184,7 +184,7 @@ public class ChooseFriendsFragment extends ListFragment implements
         int[] friendIds = new int[cursorAdapter.getCheckedFriends().size()];
         int i = 0;
 
-        for (Integer friend_id: cursorAdapter.getCheckedFriends()) {
+        for (Integer friend_id : cursorAdapter.getCheckedFriends()) {
             friendIds[i] = friend_id;
             i++;
         }
@@ -195,6 +195,7 @@ public class ChooseFriendsFragment extends ListFragment implements
 
         mListener.startGame(finalBundle);
     }
+
     private void setupSearchView() {
         SearchManager searchManager = (SearchManager)
                 getActivity().getSystemService(Context.SEARCH_SERVICE);
@@ -266,7 +267,7 @@ public class ChooseFriendsFragment extends ListFragment implements
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         //TODO add spinner?
-        return new FriendLoader(getActivity(), 
+        return new FriendLoader(getActivity(),
                 args.getBoolean(ChooseFriendsFragment.BDL_IS_SEARCH),
                 args.getString(ChooseFriendsFragment.BDL_SEARCH_STRING, null));
     }
@@ -306,7 +307,7 @@ public class ChooseFriendsFragment extends ListFragment implements
     @Override
     public boolean onQueryTextChange(String s) {
         if (!noFriends) {
-            emptySearchView.setText( "\"" +s + "\" not found");
+            emptySearchView.setText("\"" + s + "\" not found");
         }
         Bundle data = new Bundle();
         data.putBoolean(ChooseFriendsFragment.BDL_IS_SEARCH, true);
@@ -327,6 +328,7 @@ public class ChooseFriendsFragment extends ListFragment implements
 
     /**
      * Called when the set of selected friends changes size from 0 to one
+     *
      * @param isEmpty true if Set of selected friends is empty, otherwise false
      */
     @Override
@@ -353,6 +355,7 @@ public class ChooseFriendsFragment extends ListFragment implements
      */
     public interface F2FragmentInteractionListener {
         void setToolbarTitle(String title);
+
         void startGame(Bundle finalBundle);
     }
 

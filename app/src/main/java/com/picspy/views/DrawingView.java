@@ -34,35 +34,33 @@ import java.util.Stack;
  * A custom view which allows for drawing on a device's screen.
  */
 class DrawingView extends View {
+    public static final int MAX_NUM_LINE_SEGMENTS = 300;
+    // TODO: are these constants adequate for different sized devices?
+    private static final float TOUCH_TOLERANCE = 4;
+    private static final int MIN_NUM_OF_POINTS = 30;
+    private static final int LINE_SEG_TOLERANCE = 7;
+    private static final int TOLERANCE_RATIO = 20;
+    private static final int colorChanger = 0xffffff;
+    private static final double EPSILON = 0.000001;
+    DisplayMetrics metrics = getResources().getDisplayMetrics();
+    int width;
+    int height;
+    int averageDim;
     private Paint mPaint;
     private Bitmap mBitmap;
     private Canvas mCanvas;
     private Path mPath;
     private Paint mBitmapPaint;
     private float mX, mY;
-    // TODO: are these constants adequate for different sized devices?
-    private static final float TOUCH_TOLERANCE = 4;
-    private static final int MIN_NUM_OF_POINTS = 30;
-    private static final int LINE_SEG_TOLERANCE = 7;
-    public static final int MAX_NUM_LINE_SEGMENTS = 300;
     private ArrayList<float[]> coordsOfPrevDraw;
     private Stack<ArrayList<float[]>> coordsOfPastDrawings;
     private float[] startCoordinates;
     private boolean isShapeDrawn;
     private boolean invalidShapeDrawn;
-    private static final int TOLERANCE_RATIO = 20;
     private Animation mAnimation;
     private int counter = 0;
     private int currColor;
-    private static final int colorChanger = 0xffffff;
-    DisplayMetrics metrics = getResources().getDisplayMetrics();
-    int width;
-    int height;
-    int averageDim;
-
     private HashSet<LineSegment> lineSegments = new HashSet<>();
-
-    private static final double EPSILON = 0.000001;
 
     // Constructor for this class which instantiates the Paint object for drawing, along with
     // other essential objects.
@@ -88,6 +86,7 @@ class DrawingView extends View {
 
     /**
      * Calculate the cross product of two points.
+     *
      * @param a first point
      * @param b second point
      * @return the value of the cross product
@@ -99,10 +98,11 @@ class DrawingView extends View {
     /**
      * Check if bounding boxes do intersect. If one bounding box
      * touches the other, they do intersect.
+     *
      * @param a first bounding box
      * @param b second bounding box
      * @return <code>true</code> if they intersect,
-     *         <code>false</code> otherwise.
+     * <code>false</code> otherwise.
      */
     public static boolean doBoundingBoxesIntersect(Point[] a, Point[] b) {
         return a[0].x <= b[1].x && a[1].x >= b[0].x && a[0].y <= b[1].y
@@ -111,11 +111,12 @@ class DrawingView extends View {
 
     /**
      * Checks if a Point is on a line
+     *
      * @param a line (interpreted as line, although given as line
-     *                segment)
+     *          segment)
      * @param b point
      * @return <code>true</code> if point is on line, otherwise
-     *         <code>false</code>
+     * <code>false</code>
      */
     public static boolean isPointOnLine(LineSegment a, Point b) {
         // Move the image, so that a.first is on (0|0)
@@ -129,10 +130,11 @@ class DrawingView extends View {
     /**
      * Checks if a point is right of a line. If the point is on the
      * line, it is not right of the line.
+     *
      * @param a line segment interpreted as a line
      * @param b the point
      * @return <code>true</code> if the point is right of the line,
-     *         <code>false</code> otherwise
+     * <code>false</code> otherwise
      */
     public static boolean isPointRightOfLine(LineSegment a, Point b) {
         // Move the image, so that a.first is on (0|0)
@@ -149,8 +151,8 @@ class DrawingView extends View {
      * @param a line segment interpreted as line
      * @param b line segment
      * @return <code>true</code> if line segment first touches or
-     *                           crosses line second,
-     *         <code>false</code> otherwise.
+     * crosses line second,
+     * <code>false</code> otherwise.
      */
     public static boolean lineSegmentTouchesOrCrossesLine(LineSegment a,
                                                           LineSegment b) {
@@ -162,10 +164,11 @@ class DrawingView extends View {
 
     /**
      * Check if line segments intersect
+     *
      * @param a first line segment
      * @param b second line segment
      * @return <code>true</code> if lines do intersect,
-     *         <code>false</code> otherwise
+     * <code>false</code> otherwise
      */
     public static boolean doLinesIntersect(LineSegment a, LineSegment b) {
         Point[] box1 = a.getBoundingBox();
@@ -177,10 +180,6 @@ class DrawingView extends View {
 
     /**
      * This is called when the view is first assigned a size and every time the size of the view changes
-     * @param w
-     * @param h
-     * @param oldw
-     * @param oldh
      */
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -190,7 +189,7 @@ class DrawingView extends View {
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         width = metrics.widthPixels;
         height = metrics.heightPixels;
-        averageDim = width+height/2;
+        averageDim = width + height / 2;
     }
 
     // This is called immediately after invalidate() is called and it draws the current path, mPath
@@ -235,12 +234,12 @@ class DrawingView extends View {
         float dx = Math.abs(x - mX);
         float dy = Math.abs(y - mY);
         // construct a line segment from the new x and y coordinates
-        LineSegment lineSeg = new LineSegment(new Point((int)mX,(int)mY), new Point((int)x, (int)y), counter);
+        LineSegment lineSeg = new LineSegment(new Point((int) mX, (int) mY), new Point((int) x, (int) y), counter);
         // Check if any line segments drawn already intersect with the current line segment drawn
         for (LineSegment lin : lineSegments) {
             int numSegmentsInBetween = Math.abs(lin.id - lineSeg.id);
             if (numSegmentsInBetween >= LINE_SEG_TOLERANCE && doLinesIntersect(lin, lineSeg)) {
-                Log.d("LINE", String.format("Intersection between seg (%d,%d), (%d,%d) and (%d,%d), (%d,%d)", (int)mX, (int)mY, (int)x, (int)y, lin.first.x, lin.first.y, lin.second.x, lin.second.y));
+                Log.d("LINE", String.format("Intersection between seg (%d,%d), (%d,%d) and (%d,%d), (%d,%d)", (int) mX, (int) mY, (int) x, (int) y, lin.first.x, lin.first.y, lin.second.x, lin.second.y));
 
                 // Set the text for the toast to alert the user
                 String text;
@@ -259,7 +258,7 @@ class DrawingView extends View {
         counter++;  // increment the line segment counter, which uniquely identifies each segment
         // Only draw the path if the new coordinates are a distance greater than the touch tolerance
         if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
-            mPath.lineTo(x,y);
+            mPath.lineTo(x, y);
             mX = x;
             mY = y;
         }
@@ -276,7 +275,7 @@ class DrawingView extends View {
 
         try {
             Thread.sleep(300);                 // wait for .3 seconds
-        } catch(InterruptedException ex) {
+        } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
         }
         undoDrawing();  // erase the invalid shape
@@ -304,7 +303,7 @@ class DrawingView extends View {
             invalidShapeDrawn = false;
         }
         // Only handle touch events if a shape and an invalid shape have not been drawn
-         else if (!isShapeDrawn && !invalidShapeDrawn) {
+        else if (!isShapeDrawn && !invalidShapeDrawn) {
             float x = event.getX();
             float y = event.getY();
 
@@ -331,7 +330,7 @@ class DrawingView extends View {
                     Log.d("MOVE", "X coord is " + x + " Y coord is " + y + "  distance is " + radiusFromCenter);
                     // Consider a shape to be drawn if the user drew close to the where they
                     // started and if they drew at least a certain number of points.
-                    if (radiusFromCenter <= averageDim/TOLERANCE_RATIO && coordsOfPrevDraw.size() > MIN_NUM_OF_POINTS) {
+                    if (radiusFromCenter <= averageDim / TOLERANCE_RATIO && coordsOfPrevDraw.size() > MIN_NUM_OF_POINTS) {
                         isShapeDrawn = true;
                         // restore the visibility of the siblings because the drawing has finished
                         changeVisibilityOfSiblings(View.VISIBLE);
@@ -384,13 +383,13 @@ class DrawingView extends View {
                     invalidate();
                     try {
                         Thread.sleep(300);                 // pause for .3 seconds before undoing drawing
-                    } catch(InterruptedException ex) {
+                    } catch (InterruptedException ex) {
                         Thread.currentThread().interrupt();
                     }
                     undoDrawing();
                     break;
             }
-         }
+        }
         return true;
     }
 
@@ -423,7 +422,7 @@ class DrawingView extends View {
             touch_start(coordPair[0], coordPair[1]);
             for (int i = 1; i < previousCoords.size(); i++) {
                 coordPair = previousCoords.get(i);
-                mPath.lineTo(coordPair[0],coordPair[1]);
+                mPath.lineTo(coordPair[0], coordPair[1]);
                 mX = coordPair[0];
                 mY = coordPair[1];
             }
@@ -452,7 +451,7 @@ class DrawingView extends View {
         // iterate through each coordinate and repeat the starting point to close the shape
         for (int i = 1; i <= size; i++) {
             coordPair = selection.get(i % size);
-            mPath.lineTo(coordPair[0],coordPair[1]);
+            mPath.lineTo(coordPair[0], coordPair[1]);
             mX = coordPair[0];
             mY = coordPair[1];
         }

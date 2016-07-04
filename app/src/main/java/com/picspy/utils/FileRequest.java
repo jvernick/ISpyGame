@@ -32,10 +32,9 @@ import java.util.Map;
 public class FileRequest extends Request<String> {
 
     private static final String TAG = "FileReq";
+    private final Response.Listener<String> mListener;
     MultipartEntityBuilder entity = MultipartEntityBuilder.create();
     HttpEntity httpentity;
-
-    private final Response.Listener<String> mListener;
     private Context context;
 
     private FileRequest(Context context, String url, Response.ErrorListener errorListener,
@@ -61,7 +60,7 @@ public class FileRequest extends Request<String> {
                                           Response.Listener<String> responseListener,
                                           Response.ErrorListener errorListener) {
         String url = DspUriBuilder.buildFileUploadUri(DspUriBuilder.FILE_URI, imageFileName);
-        return  new FileRequest(context, url, errorListener, responseListener, new File(imageAbsolutePath));
+        return new FileRequest(context, url, errorListener, responseListener, new File(imageAbsolutePath));
     }
 
     @Override
@@ -118,7 +117,7 @@ public class FileRequest extends Request<String> {
     }
 
     @Override
-    protected VolleyError parseNetworkError(VolleyError volleyError){
+    protected VolleyError parseNetworkError(VolleyError volleyError) {
         return VolleyRequest.parseNetworkError(volleyError);
     }
 

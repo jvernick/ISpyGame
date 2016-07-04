@@ -1,7 +1,5 @@
 package com.picspy.models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
  * Class to model a user record from the users database. This is used as a model when
  * returning related related records.
@@ -22,6 +20,7 @@ public class UserRecord extends DbApiResponse {
     public Friend getRecordToFriend() {
         return new Friend(id, username);
     }
+
     public int getTotal_won() {
         return total_won;
     }
@@ -66,11 +65,11 @@ public class UserRecord extends DbApiResponse {
     @Override
     public String toString() {
         return "UserRecord {" +
-                "\n" + "id: "  + id +
-                "\n" + " username: "  + username +
-                "\n" + " won: " + total_won  +
-                "\n" + " lost: "  + total_lost +
-                "\n" + " leaderboard: "  + leaderboard +
+                "\n" + "id: " + id +
+                "\n" + " username: " + username +
+                "\n" + " won: " + total_won +
+                "\n" + " lost: " + total_lost +
+                "\n" + " leaderboard: " + leaderboard +
                 "\n}";
     }
 }

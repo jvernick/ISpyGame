@@ -41,6 +41,21 @@ public class LoginActivity extends FragmentActivity {
     private EditText edtEmail, edtPaswd;
     private Button btnLogin;
     private ProgressDialog progressDialog;
+    //Validates the input To disable button if any field is empty
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            checkFieldsForEmptyValues();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,24 +86,10 @@ public class LoginActivity extends FragmentActivity {
         checkFieldsForEmptyValues();
     }
 
-    //Validates the input To disable button if any field is empty
-    private TextWatcher textWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3){}
-
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3)  {}
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-            checkFieldsForEmptyValues();
-        }
-    };
-
     @Override
     protected void onResume() {
         super.onResume();
-        if (!edtEmail.getText().toString().matches("") &&  !edtPaswd.getText().toString().matches("")) {
+        if (!edtEmail.getText().toString().matches("") && !edtPaswd.getText().toString().matches("")) {
             InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(btnLogin.getWindowToken(), 0);
         }
@@ -98,7 +99,7 @@ public class LoginActivity extends FragmentActivity {
      * Checks fields for empty values. Enables and dislpays login button when all fields
      * are not empty. Otherwise disables and hides login button
      */
-    private void checkFieldsForEmptyValues(){
+    private void checkFieldsForEmptyValues() {
         String s1 = edtEmail.getText().toString();
         String s2 = edtPaswd.getText().toString();
 
@@ -115,6 +116,7 @@ public class LoginActivity extends FragmentActivity {
 
     /**
      * Validates password length
+     *
      * @return true if the length is appropriate, otherwise false
      */
     public boolean isValidPassword() {
@@ -125,6 +127,7 @@ public class LoginActivity extends FragmentActivity {
 
     /**
      * Validates email with regex
+     *
      * @return true if email is valid, otherwise false
      */
     private boolean isValidEmail() {
@@ -134,8 +137,10 @@ public class LoginActivity extends FragmentActivity {
         return email.matches(EMAIL_PATTERN);
     }
 
-    /**TODO change error messages to string resources
+    /**
+     * TODO change error messages to string resources
      * Validates fields and peforms login
+     *
      * @param view View from button click
      */
     public void login(View view) {
@@ -162,6 +167,7 @@ public class LoginActivity extends FragmentActivity {
 
     /**
      * Starts activity to reset password
+     *
      * @param view View from button click
      */
     public void forgotPassword(View view) {
@@ -210,7 +216,7 @@ public class LoginActivity extends FragmentActivity {
             public void onErrorResponse(VolleyError error) {
                 progressDialog.cancel();
                 if (error != null) {
-                    String err = (error.getMessage() == null)? "An error occurred": error.getMessage();
+                    String err = (error.getMessage() == null) ? "An error occurred" : error.getMessage();
                     Log.d(TAG, err);
                     String errorMsg = "An error occurred";
 

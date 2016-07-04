@@ -24,9 +24,10 @@ public class ChooseFriendsCursorAdapter extends ResourceCursorAdapter {
     private final EmptyCheckedListener emptyCheckedListener;
     private HashSet<Integer> checkedFriends;
     private Context context;
+
     public ChooseFriendsCursorAdapter(Context context, int layout, Cursor cursor, int flags,
                                       EmptyCheckedListener emptyCheckedListener) {
-        super(context,layout, cursor, flags);
+        super(context, layout, cursor, flags);
         this.emptyCheckedListener = emptyCheckedListener;
         checkedFriends = new HashSet<>();
         this.context = context;
@@ -34,9 +35,10 @@ public class ChooseFriendsCursorAdapter extends ResourceCursorAdapter {
 
     /**
      * Binds username and user_id to the list element
-     * @param view The view to be populated
+     *
+     * @param view    The view to be populated
      * @param context The calling application context
-     * @param c Cursor containing result of database query
+     * @param c       Cursor containing result of database query
      */
     @Override
     public void bindView(View view, final Context context, Cursor c) {
@@ -82,14 +84,9 @@ public class ChooseFriendsCursorAdapter extends ResourceCursorAdapter {
         return view;
     }
 
-    private class ViewHolder {
-        public TextView username;//username
-        public CheckBox checkBox; // new game TODO add this button
-        public ImageView friendIcon;
-    }
-
     /**
      * Gets a set of selected friends
+     *
      * @return Set of selected friend IDs
      */
     public HashSet<Integer> getCheckedFriends() {
@@ -98,28 +95,30 @@ public class ChooseFriendsCursorAdapter extends ResourceCursorAdapter {
 
     /**
      * Toggles whether or not a friend has been selected
+     *
      * @param userId The id of the friend to be toggled
-     * @param view friend item view
+     * @param view   friend item view
      */
-    public void toggleSelected(int userId, View view){
-        if(checkedFriends.contains(userId)){
+    public void toggleSelected(int userId, View view) {
+        if (checkedFriends.contains(userId)) {
             checkedFriends.remove(userId);
-            if(checkedFriends.isEmpty()) emptyCheckedListener.isEmpty(true);
+            if (checkedFriends.isEmpty()) emptyCheckedListener.isEmpty(true);
             view.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
-        }else{
+        } else {
             checkedFriends.add(userId);
-            if(checkedFriends.size()== 1) emptyCheckedListener.isEmpty(false);
+            if (checkedFriends.size() == 1) emptyCheckedListener.isEmpty(false);
             view.setBackgroundColor(context.getResources().getColor(R.color.grey_300));
         }
     }
 
     /**
      * binds the view with the checkbox
-     * @param userId friend user id
-     * @param view friend item view
+     *
+     * @param userId   friend user id
+     * @param view     friend item view
      * @param checkBox checkbox to be toggled
      */
-    public void setView (int userId, View view, CheckBox checkBox) {
+    public void setView(int userId, View view, CheckBox checkBox) {
         if (checkedFriends.contains((userId))) {
             checkBox.setChecked(true);
             view.setBackgroundColor(context.getResources()
@@ -133,8 +132,15 @@ public class ChooseFriendsCursorAdapter extends ResourceCursorAdapter {
     public interface EmptyCheckedListener {
         /**
          * Called when the set of selected friends changes size from 0 to one
+         *
          * @param isEmpty true if Set of selected friends is empty, otherwise false
          */
         void isEmpty(Boolean isEmpty);
+    }
+
+    private class ViewHolder {
+        public TextView username;//username
+        public CheckBox checkBox; // new game TODO add this button
+        public ImageView friendIcon;
     }
 }

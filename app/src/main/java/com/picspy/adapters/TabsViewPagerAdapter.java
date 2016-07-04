@@ -3,7 +3,6 @@ package com.picspy.adapters;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -11,24 +10,22 @@ import java.util.ArrayList;
  * Created by BrunelAmC on 6/21/2015.
  */
 public class TabsViewPagerAdapter extends FragmentPagerAdapter {
-    private ArrayList<Fragment> fragments;
-
     public static final int FRIENDS = 0;
     public static final int TOP = 1;
-
     public static final String UI_TAB_FRIENDS = "FRIENDS";
     public static final String UI_TAB_TOP = "TOP";
+    private ArrayList<Fragment> fragments;
 
-    public TabsViewPagerAdapter(FragmentManager fm, ArrayList<Fragment> fragments){
+    public TabsViewPagerAdapter(FragmentManager fm, ArrayList<Fragment> fragments) {
         super(fm);
         this.fragments = fragments;
     }
 
-    public Fragment getItem(int pos){
+    public Fragment getItem(int pos) {
         return fragments.get(pos);
     }
 
-    public int getCount(){
+    public int getCount() {
         return fragments.size();
     }
 

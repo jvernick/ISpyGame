@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:id="@+id/camera_activity_layout"
+<RelativeLayout android:id="@+id/camera_activity_layout"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
     >
+
     <FrameLayout
         android:id="@+id/camera_preview"
         android:layout_width="fill_parent"
@@ -14,33 +15,33 @@
         android:id="@+id/button_capture"
         android:layout_width="55dp"
         android:layout_height="55dp"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
-        android:background="@drawable/capture_picture_button_press"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:adjustViewBounds="true"
+        android:background="@drawable/capture_picture_button_press"
+        android:scaleType="fitCenter"
         />
 
     <ImageButton
         android:id="@+id/button_camera_switch"
-        android:src="@drawable/rotate_camera"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
         android:layout_alignParentBottom="true"
-        android:background="@android:color/transparent"
         android:layout_alignRight="@+id/camera_preview"
+        android:adjustViewBounds="true"
+        android:background="@android:color/transparent"
+        android:scaleType="fitCenter"
+        android:src="@drawable/rotate_camera"
         />
 
     <ImageButton
         android:id="@+id/button_change_flash"
         android:layout_width="70dp"
         android:layout_height="60dp"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
-        android:background="@drawable/flash_button_press"
         android:layout_alignParentBottom="true"
+        android:adjustViewBounds="true"
+        android:background="@drawable/flash_button_press"
+        android:scaleType="fitCenter"
         />
 
 </RelativeLayout>

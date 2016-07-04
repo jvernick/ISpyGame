@@ -1,60 +1,61 @@
 <RelativeLayout
+    android:id="@+id/friends_fragment"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.picspy.views.fragments.FriendsFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:id="@+id/friends_fragment">
+    tools:context="com.picspy.views.fragments.FriendsFragment">
 
     <!--TODO Should the following divider be added after header?
         android:background="@drawable/horizontal_divider"-->
     <RelativeLayout
-        android:orientation="vertical" android:layout_width="match_parent"
+        android:id="@+id/friend_list_header"
+        android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:paddingRight="8dp"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:id="@+id/friend_list_header">
+        android:orientation="vertical"
+        android:paddingRight="8dp">
 
         <ImageView
             android:id="@+id/find_friend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:src="@drawable/ic_add_friend"
+            android:layout_alignParentTop="true"
             android:layout_margin="4dp"
-            android:padding="8dp"
+            android:background="@drawable/selector_find_friend_btn"
             android:contentDescription="@string/find_button_description"
-            android:background="@drawable/selector_find_friend_btn"/>
+            android:padding="8dp"
+            android:src="@drawable/ic_add_friend"/>
 
         <com.picspy.views.SearchEditTextView
             android:id="@+id/search_box"
-            android:tag="searchBox"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_toLeftOf="@id/find_friend"
-            android:layout_toStartOf="@id/find_friend"/>
+            android:layout_toStartOf="@id/find_friend"
+            android:tag="searchBox"/>
 
         <TextView
             android:id="@+id/friend_request_badge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="2dp"
-            android:textColor="#FFFFFF"
-            android:layout_alignTop="@id/find_friend"
-            android:layout_alignRight="@id/find_friend"
             android:layout_alignEnd="@id/find_friend"
+            android:layout_alignRight="@id/find_friend"
+            android:layout_alignTop="@id/find_friend"
+            android:background="@drawable/notification_badge"
             android:gravity="center"
+            android:padding="2dp"
             android:singleLine="true"
+            android:textColor="#FFFFFF"
             android:textSize="8sp"
             android:textStyle="bold"
-            android:visibility="gone"
-            android:background="@drawable/notification_badge"/>
+            android:visibility="gone"/>
 
     </RelativeLayout>
 
@@ -63,26 +64,26 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/friend_list_header"
-        android:layout_marginLeft="16dp"
         android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
         android:divider="@drawable/list_divider_inset"
         android:dividerHeight="1px"/>
 
     <TextView
         android:id="@+id/search_empty"
-        android:tag="friends_fragment_empty_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/friend_list_header"
-        android:minHeight="48dp"
-        android:layout_marginLeft="16dp"
         android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
+        android:gravity="center"
+        android:minHeight="48dp"
         android:padding="4dp"
+        android:tag="friends_fragment_empty_list"
+        android:text="@string/friends_fragment_empty_search"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/secondary_text"
-        android:gravity="center"
-        android:text="@string/friends_fragment_empty_search"
         android:visibility="gone"/>
 
     <TextView
@@ -90,15 +91,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/friend_list_header"
-        android:minHeight="48dp"
-        android:layout_marginLeft="16dp"
         android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
+        android:gravity="center"
+        android:minHeight="48dp"
         android:padding="4dp"
+        android:text="@string/friends_fragment_no_friends"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/secondary_text"
-        android:gravity="center"
-        android:text="@string/friends_fragment_no_friends"
         android:visibility="gone"/>
 
     <LinearLayout
@@ -106,29 +107,31 @@
         style="@style/empty_views"
         android:orientation="vertical"
         android:visibility="gone">
+
         <TextView
             style="@style/empty_friend_view"
-            android:minHeight="48dp"
-            android:textColor="@color/secondary_text"
             android:gravity="center"
-            android:text="@string/friends_fragment_no_friends"/>
+            android:minHeight="48dp"
+            android:text="@string/friends_fragment_no_friends"
+            android:textColor="@color/secondary_text"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingRight="16dp"
-            android:paddingLeft="16dp"
-            android:paddingTop="8dp"
+            android:clickable="true"
+            android:onClick="findFriends"
             android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp"
             android:text="@string/find_friend_link"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/accent"
-            android:clickable="true"
-            android:onClick="findFriends"/>
+            android:textColor="@color/accent"/>
     </LinearLayout>
 
     <ProgressBar
-        style="@style/progressSpinner"
         android:id="@+id/progressBar"
-        android:visibility="visible"
-        android:layout_below="@id/android:list" />
+        style="@style/progressSpinner"
+        android:layout_below="@id/android:list"
+        android:visibility="visible"/>
 </RelativeLayout>

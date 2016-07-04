@@ -2,7 +2,6 @@ package com.picspy.models;
 
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by BrunelAmC on 12/30/2015.

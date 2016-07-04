@@ -1,6 +1,5 @@
 package com.picspy.views.custom;
 
-import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 

@@ -15,8 +15,8 @@ import com.android.volley.toolbox.Volley;
 public class VolleyRequest {
     private static final String TAG = "VolleyRequest";
     public static VolleyRequest mInstance;
-    private RequestQueue mRequestQueue;
     private static Context context;
+    private RequestQueue mRequestQueue;
 
     private VolleyRequest(Context context) {
         VolleyRequest.context = context;
@@ -30,6 +30,19 @@ public class VolleyRequest {
         return mInstance;
     }
 
+    public static VolleyError parseNetworkError(VolleyError volleyError) {
+        if (volleyError instanceof TimeoutError) {
+            volleyError = new VolleyError(AppConstants.TIMEOUT_ERROR);
+        }
+        if (volleyError.networkResponse != null && volleyError.networkResponse.data != null) {
+            Log.d(TAG, "error converted: " + volleyError.networkResponse.data);
+            volleyError = new VolleyError(new String(volleyError.networkResponse.data));
+        }
+
+        //TODO check for session errors and refresh JWT
+        return volleyError;
+    }
+
     public RequestQueue getRequestQueue() {
         if (mRequestQueue == null) {
             // getApplicationContext() is key, it keeps you from leaking the
@@ -41,19 +54,5 @@ public class VolleyRequest {
 
     public <T> void addToRequestQueue(Request<T> req) {
         getRequestQueue().add(req);
-    }
-
-
-    public static VolleyError parseNetworkError(VolleyError volleyError) {
-        if (volleyError instanceof TimeoutError) {
-            volleyError = new VolleyError(AppConstants.TIMEOUT_ERROR);
-        }
-        if(volleyError.networkResponse != null && volleyError.networkResponse.data != null){
-            Log.d(TAG, "error converted: " + volleyError.networkResponse.data);
-            volleyError = new VolleyError(new String(volleyError.networkResponse.data));
-        }
-
-        //TODO check for session errors and refresh JWT
-        return volleyError;
     }
 }

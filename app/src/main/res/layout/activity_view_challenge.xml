@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <android.support.v4.widget.DrawerLayout
-xmlns:android="http://schemas.android.com/apk/res/android"
-android:id="@+id/drawer_layout"
-android:layout_width="match_parent"
-android:layout_height="match_parent">
+    android:id="@+id/drawer_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <!-- The main content view -->
     <RelativeLayout
         android:id="@+id/content_layout"
@@ -15,47 +15,47 @@ android:layout_height="match_parent">
             android:id="@+id/initial_hint_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:layout_gravity="start"
+            android:background="@color/white"
             android:gravity="center"
-            android:weightSum="12"
-            android:background="@color/white" >
+            android:orientation="vertical"
+            android:weightSum="12">
 
             <TextView
                 android:id="@+id/hint_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="30sp"
-                android:text="@string/title_challenge_hint"
+                android:layout_weight="2"
                 android:gravity="bottom"
-                android:layout_weight="2"/>
+                android:text="@string/title_challenge_hint"
+                android:textSize="30sp"/>
 
             <TextView
                 android:id="@+id/hint_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="30sp"
-                android:text="afa\nafa"
+                android:layout_weight="6"
                 android:gravity="center"
-                android:layout_weight="6"/>
+                android:text="afa\nafa"
+                android:textSize="30sp"/>
 
             <ProgressBar
-                style="?android:attr/progressBarStyleSmall"
                 android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minHeight="24dp"
-                android:minWidth="24dp"
-                android:indeterminateOnly="true"
                 android:indeterminateBehavior="repeat"
-                android:indeterminateDrawable="@drawable/circular_progress_bar"/>
-            
+                android:indeterminateDrawable="@drawable/circular_progress_bar"
+                android:indeterminateOnly="true"
+                android:minHeight="24dp"
+                android:minWidth="24dp"/>
+
             <TextView
                 android:id="@+id/loadingText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/download_progress"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:text="@string/download_progress"/>
         </LinearLayout>
 
         <LinearLayout
@@ -67,17 +67,17 @@ android:layout_height="match_parent">
             android:weightSum="3">
 
             <TextView
-                style="@style/game_info_text"
                 android:id="@+id/swipe_text"
+                style="@style/game_info_text"
                 android:text="@string/swipe_hint"/>
 
             <TextView
-                style="@style/game_info_text"
-                android:id="@+id/guesses_remaining"/>
+                android:id="@+id/guesses_remaining"
+                style="@style/game_info_text"/>
 
             <TextView
-                style="@style/game_info_text"
-                android:id="@+id/timer"/>
+                android:id="@+id/timer"
+                style="@style/game_info_text"/>
         </LinearLayout>
 
         <ImageView
@@ -90,56 +90,58 @@ android:layout_height="match_parent">
             android:visibility="invisible"/>
 
         <RelativeLayout
+            android:id="@+id/selection_layout"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:id="@+id/selection_layout"
-            android:visibility="invisible"
-            android:layout_below="@id/game_info" />
+            android:layout_below="@id/game_info"
+            android:visibility="invisible"/>
 
         <RelativeLayout
             android:id="@+id/x_mark_holder"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="invisible"
-            android:layout_below="@id/game_info">
+            android:layout_below="@id/game_info"
+            android:visibility="invisible">
 
             <ImageView
+                android:id="@+id/x_mark"
                 android:layout_width="150dp"
                 android:layout_height="100dp"
-                android:id="@+id/x_mark"
                 android:adjustViewBounds="true"
                 android:scaleType="fitXY"
-                android:src="@drawable/x_mark" />
+                android:src="@drawable/x_mark"/>
         </RelativeLayout>
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/hint_layout"
         android:layout_width="240dp"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:id="@+id/hint_layout"
         android:layout_gravity="start"
-        android:gravity="center"
         android:choiceMode="singleChoice"
         android:divider="@android:color/transparent"
-        android:dividerHeight="0dp">
+        android:dividerHeight="0dp"
+        android:gravity="center"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/bg_rounded_corners"
             android:orientation="vertical"
-            android:padding="4dp"
-            android:background="@drawable/bg_rounded_corners">
-        <TextView
-            style="@style/drawer_text"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:drawableTop="@drawable/drawer_border"
-            android:text="@string/title_game_hint"/>
-        <TextView
-            style="@style/drawer_text"
-            android:id="@+id/hint_provided"
-            android:drawableBottom="@drawable/drawer_border"
-            android:textAppearance="?android:attr/textAppearanceMedium"/>
+            android:padding="4dp">
+
+            <TextView
+                style="@style/drawer_text"
+                android:drawableTop="@drawable/drawer_border"
+                android:text="@string/title_game_hint"
+                android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+            <TextView
+                android:id="@+id/hint_provided"
+                style="@style/drawer_text"
+                android:drawableBottom="@drawable/drawer_border"
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
         </LinearLayout>
-     </RelativeLayout>
+    </RelativeLayout>
 </android.support.v4.widget.DrawerLayout>

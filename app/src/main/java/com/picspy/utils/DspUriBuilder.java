@@ -15,18 +15,18 @@ public class DspUriBuilder {
     public static final String USER_CHALLENGES_TABLE = "mysql/_table/user_challenges";
     public static final String FILE_URI = "files/images/";
 
-    public static String buildUri(String path, HashMap<String,String> parmas) {
+    public static String buildUri(String path, HashMap<String, String> parmas) {
         String baseUrl = AppConstants.DSP_URL_2 + path + '?';
         Uri builtUri;
 
         if (parmas == null) return baseUrl;
 
         builtUri = Uri.parse(baseUrl);
-        for (HashMap.Entry<String, String> entry: parmas.entrySet()) {
+        for (HashMap.Entry<String, String> entry : parmas.entrySet()) {
             builtUri = builtUri.buildUpon().appendQueryParameter(entry.getKey(), entry.getValue()).build();
         }
 
-        return  builtUri.toString();
+        return builtUri.toString();
     }
 
     //TODO Rename method?
@@ -37,7 +37,7 @@ public class DspUriBuilder {
         builtUri = Uri.parse(baseUrl);
         builtUri.buildUpon().appendPath(filename).build();
 
-        return  builtUri.toString();
+        return builtUri.toString();
     }
 
     public static String buildDeleteByIdUri(String path, int id, HashMap<String, String> parmas) {
@@ -47,10 +47,10 @@ public class DspUriBuilder {
         if (parmas == null) return baseUrl;
 
         builtUri = Uri.parse(baseUrl);
-        for (HashMap.Entry<String, String> entry: parmas.entrySet()) {
+        for (HashMap.Entry<String, String> entry : parmas.entrySet()) {
             builtUri = builtUri.buildUpon().appendQueryParameter(entry.getKey(), entry.getValue()).build();
         }
 
-        return  builtUri.toString();
+        return builtUri.toString();
     }
 }

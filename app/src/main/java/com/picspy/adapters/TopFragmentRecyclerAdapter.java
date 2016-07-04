@@ -1,7 +1,6 @@
 package com.picspy.adapters;
 
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,15 +28,18 @@ public class TopFragmentRecyclerAdapter extends RecyclerView.Adapter<TopFragment
     public void setAdapterRequestListener(AdapterRequestListener adapterRequestListener) {
         this.adapterRequestListener = adapterRequestListener;
     }
+
     /**
      * Add multiple mGames to the adapter
+     *
      * @param gameList list of mGames to be added
      */
     public void addGames(ArrayList<Game> gameList) {
         mGames.addAll(gameList);
     }
 
-    /** replaces  mGames with the new game list
+    /**
+     * replaces  mGames with the new game list
      *
      * @param data new game list
      */
@@ -47,10 +49,10 @@ public class TopFragmentRecyclerAdapter extends RecyclerView.Adapter<TopFragment
     }
 
     /**
-    * Returns the total number of items in the data set hold by the adapter.
-    *
-    * @return The total number of items in this adapter.
-    */
+     * Returns the total number of items in the data set hold by the adapter.
+     *
+     * @return The total number of items in this adapter.
+     */
     @Override
     public int getItemCount() {
         return mGames.size();
@@ -93,7 +95,11 @@ public class TopFragmentRecyclerAdapter extends RecyclerView.Adapter<TopFragment
         GamesCursorAdapter.setIcon(viewHolder.list_icon, senderId);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public interface AdapterRequestListener {
+        void onListItemClick(int position);
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView username;
         private TextView timeLength;
         private TextView challenge_time;
@@ -110,9 +116,5 @@ public class TopFragmentRecyclerAdapter extends RecyclerView.Adapter<TopFragment
             list_icon = (ImageView) itemView.findViewById(R.id.list_icon);
             rootview = (View) itemView.findViewById(R.id.challenge_root_view);
         }
-    }
-
-    public interface AdapterRequestListener {
-        void onListItemClick(int position);
     }
 }

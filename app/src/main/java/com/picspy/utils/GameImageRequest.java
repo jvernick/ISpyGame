@@ -4,10 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.toolbox.ImageRequest;
 
@@ -40,7 +38,7 @@ public class GameImageRequest extends ImageRequest {
      */
     private GameImageRequest(Context context, String url, Response.Listener<Bitmap> listener,
                              int maxWidth, int maxHeight, ImageView.ScaleType scaleType,
-                            Bitmap.Config decodeConfig, Response.ErrorListener errorListener) {
+                             Bitmap.Config decodeConfig, Response.ErrorListener errorListener) {
         super(url, listener, maxWidth, maxHeight, scaleType, decodeConfig, errorListener);
         Log.d(TAG, url);
         this.context = context;
@@ -52,7 +50,7 @@ public class GameImageRequest extends ImageRequest {
                                             Bitmap.Config decodeConfig,
                                             Response.ErrorListener errorListener) {
         String url = DspUriBuilder.buildFileUploadUri(DspUriBuilder.FILE_URI, filename);
-        return  new GameImageRequest(context, url, listener, maxWidth, maxHeight, scaleType,
+        return new GameImageRequest(context, url, listener, maxWidth, maxHeight, scaleType,
                 decodeConfig, errorListener);
     }
 
@@ -65,7 +63,7 @@ public class GameImageRequest extends ImageRequest {
      */
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
-        return  AppConstants.dspHeaders(context);
+        return AppConstants.dspHeaders(context);
     }
 
     @Override

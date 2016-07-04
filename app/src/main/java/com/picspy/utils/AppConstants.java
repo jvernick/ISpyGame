@@ -49,6 +49,14 @@ public class AppConstants {
             0xFFE6EE9C, //lime_200
             0xFFCE93D8  //purple_200
     };
+    // V2 info
+    public static final String DSP_URL_2 = "http://192.168.2.17:8081/api/v2/";
+    public static final String SESSION_TOKEN = "session_token";
+    public static final String USER_NAME = "username";
+    public static final int SESSION_TTL = 30;
+    // Error regex
+    public static final String CONNECTION_ERROR = ".*failed to connect to.*";
+    public static final String TIMEOUT_ERROR = "timeoutError";
 
     // To prevent someone from accidentally instantiating the AppConstants class,
     // give it an empty constructor.
@@ -65,14 +73,4 @@ public class AppConstants {
 
         return headers;
     }
-
-    // V2 info
-    public static final String DSP_URL_2 = "http://192.168.2.17:8081/api/v2/";
-    public static final String SESSION_TOKEN = "session_token";
-    public static final String USER_NAME = "username";
-    public static final int SESSION_TTL = 30;
-
-    // Error regex
-    public static final String CONNECTION_ERROR = ".*failed to connect to.*";
-    public static final String TIMEOUT_ERROR = "timeoutError";
 }

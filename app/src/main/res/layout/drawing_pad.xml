@@ -1,38 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:id="@+id/view_drawing_pad"
+<RelativeLayout android:id="@+id/view_drawing_pad"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
     >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
         <ImageButton
             android:id="@+id/brush_colors"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
             android:maxHeight="50dp"
             android:maxWidth="50dp"
-            android:src="@drawable/color_palette"
-            android:scaleType="fitCenter"
             android:padding="0dp"
-            android:background="@android:color/transparent"
-            android:adjustViewBounds="true"/>
+            android:scaleType="fitCenter"
+            android:src="@drawable/color_palette"/>
 
         <ImageButton
-            android:contentDescription="Click this button to enter details about the challenge"
             android:id="@+id/undo_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="Click this button to enter details about the challenge"
             android:maxHeight="80dp"
             android:maxWidth="80dp"
-            android:src="@drawable/back_arrow"
-            android:scaleType="fitCenter"
             android:padding="0dp"
-            android:background="@android:color/transparent"
-            android:adjustViewBounds="true" />
+            android:scaleType="fitCenter"
+            android:src="@drawable/back_arrow"/>
 
     </LinearLayout>
 
@@ -40,12 +42,12 @@
         android:id="@+id/finish_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minHeight="48dp"
-        android:minWidth="48dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_margin="4dp"
         android:background="@drawable/ic_next_blue"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
+        android:minHeight="48dp"
+        android:minWidth="48dp"
         android:visibility="gone"/>
 </RelativeLayout>

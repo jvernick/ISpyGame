@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * Created by BrunelAmC on 1/19/2016.
  */
-public class FriendsRequests extends JsonObjectRequest{
+public class FriendsRequests extends JsonObjectRequest {
 
     private static final String TAG = "FriendsReq";
     private static Gson gson = new Gson();
@@ -36,7 +36,7 @@ public class FriendsRequests extends JsonObjectRequest{
      * @param method        the HTTP method to use
      * @param url           URL to fetch the JSON from
      * @param jsonRequest   A {@link JSONObject} to post with the request. Null is allowed and
-*                      indicates no parameters will be posted along with request.
+     *                      indicates no parameters will be posted along with request.
      * @param listener      Listener to receive the JSON response
      * @param errorListener Error listener, or null to ignore errors.
      */
@@ -47,7 +47,7 @@ public class FriendsRequests extends JsonObjectRequest{
         this.isPatchTunnel = isPatchTunnel;
     }
 
-    public static FriendsRequests getFriends(Context context,int maxFriendRecordId, final Response.Listener<FriendsRecord> listener, Response.ErrorListener errorListener) {
+    public static FriendsRequests getFriends(Context context, int maxFriendRecordId, final Response.Listener<FriendsRecord> listener, Response.ErrorListener errorListener) {
         Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -58,8 +58,8 @@ public class FriendsRequests extends JsonObjectRequest{
         };
 
         //TODO and server-side limit to only friends
-        HashMap<String,String> params = new HashMap<>();
-        String filter ="(status=" + 0 + ") AND (id> " + maxFriendRecordId  +")";
+        HashMap<String, String> params = new HashMap<>();
+        String filter = "(status=" + 0 + ") AND (id> " + maxFriendRecordId + ")";
         params.put("filter", filter);
         params.put("related", "*");
         String url = DspUriBuilder.buildUri(DspUriBuilder.FRIENDS_TABLE, params);
@@ -67,7 +67,7 @@ public class FriendsRequests extends JsonObjectRequest{
         return new FriendsRequests(context, false, Method.GET, url, null, jsonObjectListener, errorListener);
     }
 
-    public static FriendsRequests sendFriendRequest(Context context,int friend_2_id, final Response.Listener<FriendRecord> listener, Response.ErrorListener errorListener) {
+    public static FriendsRequests sendFriendRequest(Context context, int friend_2_id, final Response.Listener<FriendRecord> listener, Response.ErrorListener errorListener) {
         Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -83,7 +83,8 @@ public class FriendsRequests extends JsonObjectRequest{
 
         JSONObject jsonRequest;
         try {
-            jsonRequest = new JSONObject(gson.toJson(request, new TypeToken<RecordsRequest<FriendModel>>(){}.getType()));
+            jsonRequest = new JSONObject(gson.toJson(request, new TypeToken<RecordsRequest<FriendModel>>() {
+            }.getType()));
             HashMap<String, String> params = new HashMap<>();
             // TODO may not be needed. Username obtained from display_name
             params.put("uname", PrefUtil.getString(context, AppConstants.USER_NAME));
@@ -110,11 +111,11 @@ public class FriendsRequests extends JsonObjectRequest{
         RecordsRequest<FriendModel> request = new RecordsRequest<>();
         request.addResource(new FriendModel(friend_2_id, userId, null));
 
-        HashMap<String,String> params = new HashMap<>();
+        HashMap<String, String> params = new HashMap<>();
         String filter;
         if (friend_2_id < userId) {
             filter = "(friend_1=" + friend_2_id + ") AND (friend_2=" + userId + ")";
-        } else  {
+        } else {
             filter = "(friend_1=" + userId + ") AND (friend_2=" + friend_2_id + ")";
         }
         params.put("filter", filter);
@@ -123,7 +124,7 @@ public class FriendsRequests extends JsonObjectRequest{
         return new FriendsRequests(context, false, Method.DELETE, url, null, jsonObjectListener, errorListener);
     }
 
-    public static FriendsRequests getFriendRequests ( Context context, final Response.Listener<FriendsRecord> listener, Response.ErrorListener errorListener) {
+    public static FriendsRequests getFriendRequests(Context context, final Response.Listener<FriendsRecord> listener, Response.ErrorListener errorListener) {
         Log.d(TAG, "getFriendRequests");
         Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
             @Override
@@ -133,8 +134,8 @@ public class FriendsRequests extends JsonObjectRequest{
             }
         };
 
-        HashMap<String,String> params = new HashMap<>();
-        String filter ="(status!=" + PrefUtil.getInt(context, AppConstants.USER_ID, 8) + ") AND (status!=" + 0 + ")" ;
+        HashMap<String, String> params = new HashMap<>();
+        String filter = "(status!=" + PrefUtil.getInt(context, AppConstants.USER_ID, 8) + ") AND (status!=" + 0 + ")";
         params.put("filter", filter);
         params.put("related", "*");
         String url = DspUriBuilder.buildUri(DspUriBuilder.FRIENDS_TABLE, params);
@@ -142,7 +143,9 @@ public class FriendsRequests extends JsonObjectRequest{
         return new FriendsRequests(context, false, Method.GET, url, null, jsonObjectListener, errorListener);
     }
 
-    /** ToDO combine sendRequest, acceptRequest and removeFriend into one method)*/
+    /**
+     * ToDO combine sendRequest, acceptRequest and removeFriend into one method)
+     */
     public static FriendsRequests acceptFriendRequest(Context context, int friend_id, final Response.Listener<FriendRecord> listener, Response.ErrorListener errorListener) {
         Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
             @Override
@@ -159,7 +162,8 @@ public class FriendsRequests extends JsonObjectRequest{
 
         JSONObject jsonRequest;
         try {
-            jsonRequest = new JSONObject(gson.toJson(request, new TypeToken<RecordsRequest<FriendModel>>(){}.getType()));
+            jsonRequest = new JSONObject(gson.toJson(request, new TypeToken<RecordsRequest<FriendModel>>() {
+            }.getType()));
             String url = DspUriBuilder.buildUri(DspUriBuilder.FRIENDS_TABLE, null);
 
             return new FriendsRequests(context, true, Method.POST, url, jsonRequest, jsonObjectListener, errorListener);
@@ -196,7 +200,7 @@ public class FriendsRequests extends JsonObjectRequest{
             filter = "(friend_1=" + friend_id + ") AND (friend_2=" + user_id + ")";
         }
 
-        HashMap<String,String> params = new HashMap<>();
+        HashMap<String, String> params = new HashMap<>();
         params.put("filter", filter);
         params.put("related", related);
         String url = DspUriBuilder.buildUri(DspUriBuilder.FRIENDS_TABLE, params);
@@ -212,7 +216,7 @@ public class FriendsRequests extends JsonObjectRequest{
     }
 
     @Override
-    protected VolleyError parseNetworkError(VolleyError volleyError){
+    protected VolleyError parseNetworkError(VolleyError volleyError) {
         return VolleyRequest.parseNetworkError(volleyError);
     }
 
@@ -227,9 +231,10 @@ public class FriendsRequests extends JsonObjectRequest{
 
         /**
          * Creates a new record in the table and that represents a friend request
+         *
          * @param friend_1 Current userID
          * @param friend_2 Friend_2 id
-         * @param status  The current user's user_id
+         * @param status   The current user's user_id
          */
         public FriendModel(int friend_1, int friend_2, Integer status) {
             if (friend_1 < friend_2) {

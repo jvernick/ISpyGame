@@ -21,13 +21,13 @@ import java.util.List;
 /**
  * Created by BrunelAmC on 12/28/2015.
  */
-public class FriendRequestsArrayAdapter extends ArrayAdapter<UserRecord>{
+public class FriendRequestsArrayAdapter extends ArrayAdapter<UserRecord> {
     private final LayoutInflater inflater;
     private AdapterRequestListener adapterRequestListener;
 
     public FriendRequestsArrayAdapter(Context context, int item_friend_request, List<UserRecord> userRecord) {
         super(context, item_friend_request, userRecord);
-        inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     public void setAdapterRequestListener(AdapterRequestListener adapterRequestListener) {
@@ -89,7 +89,7 @@ public class FriendRequestsArrayAdapter extends ArrayAdapter<UserRecord>{
         });
 
         Drawable background = viewHolder.friendIcon.getBackground();
-        ((GradientDrawable)background).setColor(AppConstants.COLOR_ARRAY_LIST[requestor.getId() %
+        ((GradientDrawable) background).setColor(AppConstants.COLOR_ARRAY_LIST[requestor.getId() %
                 AppConstants.COLOR_ARRAY_LIST.length]);
         viewHolder.friendIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,16 +114,17 @@ public class FriendRequestsArrayAdapter extends ArrayAdapter<UserRecord>{
         notifyDataSetChanged();
     }
 
+    public interface AdapterRequestListener {
+        void acceptRequest(int friend_id, int position);
+
+        void declineRequest(int friend_id, int position);
+    }
+
     private class ViewHolder {
         public ImageView friendIcon;
         public TextView friendUsername;
         public Button acceptFriend;
         public Button declineFriend;
 
-    }
-
-    public interface AdapterRequestListener {
-        void acceptRequest(int friend_id, int position);
-        void declineRequest(int friend_id, int position);
     }
 }

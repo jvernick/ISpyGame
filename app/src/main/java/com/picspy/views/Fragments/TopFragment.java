@@ -37,8 +37,8 @@ import java.util.ArrayList;
 //TODO reorganize listadapter init and use
 public class TopFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
         TopFragmentRecyclerAdapter.AdapterRequestListener {
-    private TopFragmentArrayAdapter arrayAdapter;
     private static final String TAG = "TopFragment";
+    private TopFragmentArrayAdapter arrayAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TopFragmentRecyclerAdapter mAdapter;
     private RecyclerView mRecyclerView;
@@ -50,16 +50,16 @@ public class TopFragment extends Fragment implements SwipeRefreshLayout.OnRefres
                              Bundle savedInstanceState) {
 
         // Create the list fragment's content view by calling the super method
-       // final View listFragmentView = super.onCreateView(inflater, container, savedInstanceState);
+        // final View listFragmentView = super.onCreateView(inflater, container, savedInstanceState);
 
         View rootView = inflater.inflate(R.layout.fragment_top, container, false);
         emptyChallengeView = (TextView) rootView.findViewById(R.id.empty_challenge);
 
         // [ start Setup recycler view ]
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
-        mLayoutManager =  new LinearLayoutManager(getActivity());
+        mLayoutManager = new LinearLayoutManager(getActivity());
         setRecyclerViewLayoutManager();
-        mAdapter =  new TopFragmentRecyclerAdapter(new ArrayList<Game>());
+        mAdapter = new TopFragmentRecyclerAdapter(new ArrayList<Game>());
         mAdapter.setAdapterRequestListener(this);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -73,7 +73,6 @@ public class TopFragment extends Fragment implements SwipeRefreshLayout.OnRefres
         mSwipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.accent),
                 getResources().getColor(R.color.primary));
         mSwipeRefreshLayout.setOnRefreshListener(this);
-
 
 
         // [ End swipe refresh layout setup ]
@@ -126,8 +125,8 @@ public class TopFragment extends Fragment implements SwipeRefreshLayout.OnRefres
         Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                if(isRefresh) mSwipeRefreshLayout.setRefreshing(false);
-                if (error != null ) {
+                if (isRefresh) mSwipeRefreshLayout.setRefreshing(false);
+                if (error != null) {
                     String err = (error.getMessage() == null) ? "An error occurred" : error.getMessage();
                     error.printStackTrace();
                     Log.d(TAG, err);
@@ -146,7 +145,7 @@ public class TopFragment extends Fragment implements SwipeRefreshLayout.OnRefres
             }
         };
 
-        if (isRefresh ) mSwipeRefreshLayout.setRefreshing(true);
+        if (isRefresh) mSwipeRefreshLayout.setRefreshing(true);
         ChallengesRequests leaderboardRequest = ChallengesRequests.getleaderboard(getActivity(), responseListener, errorListener);
         leaderboardRequest.setTag(MainActivity.CANCEL_TAG);
         VolleyRequest.getInstance(getActivity().getApplicationContext()).addToRequestQueue(leaderboardRequest);
@@ -199,7 +198,7 @@ public class TopFragment extends Fragment implements SwipeRefreshLayout.OnRefres
                     int recordId = data.getIntExtra(ChallengesActivity.GAME_RESULT_RECORD, -1);
                     int sender = data.getIntExtra(ChallengesActivity.GAME_RESULT_SENDER, -1);
                     (new ChallengesActivity()).processGameResult(value, challengeId, recordId, sender, true);
-                } else if ( resultCode == Activity.RESULT_CANCELED) {
+                } else if (resultCode == Activity.RESULT_CANCELED) {
                     //do nothing
                 }
                 break;

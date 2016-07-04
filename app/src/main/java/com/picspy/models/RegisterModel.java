@@ -5,7 +5,9 @@ package com.picspy.models;
  */
  /*TODO remove class: This is just for demosntration*/
 /*TODO Set default vaues for un-set values in model*/
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class RegisterModel {
     @JsonProperty("email")
     private String email = null;
@@ -43,6 +45,7 @@ public class RegisterModel {
     public void setNew_password(String new_password) {
         this.new_password = new_password;
     }
+
     /*
     public String getFirst_name() {
          return first_name;
