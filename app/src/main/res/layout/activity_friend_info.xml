@@ -1,26 +1,268 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.picspy.views.FriendInfoActivity">
-    <!--
-    TODO remove floating action button or replace with camera
-    is border in second listview necessary?
-    -->
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="com.picspy.views.FriendInfoActivity">
 
     <include
         android:id="@+id/friend_info_toolbar"
         layout="@layout/custom_tool_bar"/>
 
+    <ScrollView
+        android:id="@+id/page"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/friend_info_toolbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/user_profile_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                app:cardUseCompatPadding="true">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:minHeight="60dp"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="8dp">
+
+                    <ImageView
+                        android:id="@+id/friend_icon"
+                        style="@style/friend_icon"
+                        android:contentDescription="@string/cd_user_icon"/>
+
+                    <TextView
+                        android:id="@+id/friend_username"
+                        style="@style/friend_name"
+                        android:layout_height="match_parent"
+                        android:layout_alignBottom="@id/friend_icon"
+                        android:layout_alignTop="@id/friend_icon"
+                        android:layout_toEndOf="@id/friend_icon"
+                        android:layout_toRightOf="@id/friend_icon"
+                        android:padding="8dp"/>
+                </RelativeLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/user_stats_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                app:cardUseCompatPadding="true">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="16dp">
+
+                    <TextView
+                        android:id="@+id/stats_title"
+                        style="@style/score_headings"
+                        android:layout_alignParentTop="true"
+                        android:text="@string/total_stats_title"/>
+
+                    <TextView
+                        android:id="@+id/total_won"
+                        style="@style/total_score_number"
+                        android:layout_below="@id/stats_title"
+                        android:textColor="@color/primary"/>
+
+                    <TextView
+                        android:id="@+id/total_lost"
+                        style="@style/total_score_number"
+                        android:layout_below="@id/total_won"
+                        android:textColor="@color/red_500"/>
+
+                    <TextView
+                        android:id="@+id/leaderboard"
+                        style="@style/total_score_number"
+                        android:layout_below="@id/total_lost"
+                        android:textColor="@color/secondary_text"/>
+
+                    <TextView
+                        android:id="@+id/total_won_text"
+                        style="@style/total_score_text"
+                        android:layout_alignBottom="@id/total_won"
+                        android:layout_alignTop="@id/total_won"
+                        android:layout_toLeftOf="@id/total_won"
+                        android:layout_toStartOf="@id/total_won"
+                        android:text="@string/total_won_description"/>
+
+                    <TextView
+                        android:id="@+id/total_lost_text"
+                        style="@style/total_score_text"
+                        android:layout_alignBottom="@id/total_lost"
+                        android:layout_alignTop="@id/total_lost"
+                        android:layout_toLeftOf="@+id/total_lost"
+                        android:layout_toStartOf="@+id/total_lost"
+                        android:text="@string/total_lost_description"/>
+
+                    <TextView
+                        android:id="@+id/leaderboard_text"
+                        style="@style/total_score_text"
+                        android:layout_alignBottom="@+id/leaderboard"
+                        android:layout_alignTop="@id/leaderboard"
+                        android:layout_toLeftOf="@+id/leaderboard"
+                        android:layout_toStartOf="@+id/leaderboard"
+                        android:text="@string/leaderboard_description"/>
+                </RelativeLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/to_friend_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:visibility="gone"
+                app:cardUseCompatPadding="true">
+
+                <RelativeLayout
+                    android:id="@+id/joint_stats"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="16dp">
+
+                    <TextView
+                        android:id="@+id/sent_description"
+                        style="@style/score_headings"
+                        android:layout_alignParentTop="true"
+                        android:text="@string/games_sent_description"/>
+
+                    <com.picspy.views.custom.Circle
+                        android:id="@+id/sent_circle"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_below="@id/sent_description"
+                        android:layout_centerHorizontal="true"
+                        android:layout_margin="4dp"
+                        android:padding="8dp"
+                        app:lostColor="@color/red_500"
+                        app:wonColor="@color/primary"/>
+
+                    <TextView
+                        android:id="@+id/sent_won"
+                        style="@style/total_score_number"
+                        android:layout_alignBottom="@id/sent_circle"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentRight="false"
+                        android:layout_alignTop="@id/sent_circle"
+                        android:textColor="@color/primary"/>
+
+                    <TextView
+                        android:id="@+id/sent_lost"
+                        style="@style/total_score_number"
+                        android:layout_alignBottom="@id/sent_circle"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignTop="@id/sent_circle"
+                        android:textColor="@color/red_500"/>
+
+                    <TextView
+                        android:id="@+id/sent_summary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/sent_circle"
+                        android:ellipsize="end"
+                        android:gravity="left|center_vertical"
+                        android:padding="8dp"
+                        android:text="@string/sent_summary"/>
+                </RelativeLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/from_friend_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:visibility="gone"
+                app:cardUseCompatPadding="true">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="16dp">
+
+                    <TextView
+                        android:id="@+id/received_description"
+                        style="@style/score_headings"
+                        android:layout_alignParentTop="true"
+                        android:text="@string/games_received_description"/>
+
+                    <com.picspy.views.custom.Circle
+                        android:id="@+id/received_circle"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_below="@id/received_description"
+                        android:layout_centerHorizontal="true"
+                        android:layout_margin="4dp"
+                        android:padding="8dp"
+                        app:lostColor="@color/red_500"
+                        app:wonColor="@color/primary"/>
+
+                    <TextView
+                        android:id="@+id/received_won"
+                        style="@style/total_score_number"
+                        android:layout_alignBottom="@id/received_circle"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentRight="false"
+                        android:layout_alignTop="@id/received_circle"
+                        android:textColor="@color/primary"/>
+
+                    <TextView
+                        android:id="@+id/received_lost"
+                        style="@style/total_score_number"
+                        android:layout_alignBottom="@id/received_circle"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignTop="@id/received_circle"
+                        android:textColor="@color/red_500"/>
+
+                    <TextView
+                        android:id="@+id/received_summary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/received_circle"
+                        android:gravity="left|center_vertical"
+                        android:padding="8dp"
+                        android:text="@string/received_summary"/>
+                </RelativeLayout>
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
+
     <ProgressBar
         android:id="@+id/myProgressBar"
-        android:indeterminate="true"
         style="?android:attr/progressBarStyleSmall"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:indeterminate="true"
         android:indeterminateDrawable="@drawable/circular_progress_bar"
+        android:visibility="gone"/>
+
+    <ImageButton
+        android:id="@+id/new_game_fab"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="center"
+        android:layout_margin="2.5dp"
+        android:background="@drawable/floating_circle"
+        android:contentDescription="@string/cd_start_game"
+        android:onClick="startGame"
+        android:src="@drawable/ic_open_camera"
         android:visibility="gone"/>
 
     <TextView
@@ -28,204 +270,24 @@
         style="@style/empty_views"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:drawableTop="@drawable/ic_warning_dark"
+        android:padding="4dp"
+        android:text="@string/friend_info_no_connection"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/secondary_text"
-        android:text="@string/friend_info_no_connection"
-        android:drawableTop="@drawable/ic_warning_dark"
-        android:layout_margin="4dp"
-        android:padding="4dp"
         android:visibility="gone"/>
 
-    <!--
-        View set to be invisible so as to display empty page if there is no network connection.
-    -->
-    <RelativeLayout
+    <TextView
+        android:id="@+id/no_friend_stats_title"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/friend_info_toolbar"
-        android:id="@+id/page"
-        android:visibility="gone">
-
-        <RelativeLayout
-            android:id="@+id/user_stats"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <TextView
-                style="@style/score_headings"
-                android:textStyle="bold"
-                android:id="@+id/stats_title"
-                android:layout_alignParentTop="true"/>
-
-            <LinearLayout
-                android:divider="?android:listDivider"
-                android:dividerPadding="2.5dp"
-                android:showDividers="middle"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_margin="5dp"
-                android:layout_height="100dp"
-                android:layout_below="@id/stats_title"
-                android:layout_centerHorizontal="true"
-                android:weightSum="3"
-                android:id="@+id/stats">
-
-                <TextView
-                    style="@style/total_score_number"
-                    android:id="@+id/total_won"
-                    android:textColor="@color/primary"/>
-                <TextView
-                    style="@style/total_score_number"
-                    android:id="@+id/total_lost"
-                    android:textColor="@color/red_500"/>
-                <TextView
-                    style="@style/total_score_number"
-                    android:id="@+id/leaderboard"
-                    android:textColor="@color/primary_text"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/stats"
-                android:layout_centerHorizontal="true"
-                android:weightSum="3"
-                android:padding="5dp"
-                android:background="@drawable/border"
-                android:id="@+id/stats_texts">
-
-                <TextView
-                    style="@style/total_score_text"
-                    android:text="@string/total_won_description"
-                    android:id="@+id/total_won_text"/>
-                <TextView
-                    style="@style/total_score_text"
-                    android:text="@string/total_lost_description"
-                    android:id="@+id/total_lost_text"/>
-                <TextView
-                    style="@style/total_score_text"
-                    android:text="@string/leaderboard_descriptiton"
-                    android:id="@+id/leaderboard_text"/>
-            </LinearLayout>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/joint_stats"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/user_stats"
-            android:visibility="gone">
-            <TextView
-                style="@style/score_headings"
-                android:textStyle="bold"
-                android:text="@string/games_sent_description"
-                android:id="@+id/sent_description"
-                android:layout_alignParentTop="true"/>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="30dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="30dp"
-                android:layout_alignTop="@id/sent_description"
-                android:id="@+id/game_stats">
-
-                <TextView
-                    android:layout_width="40dp"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:id="@+id/sent_lost"
-                    android:layout_marginTop="50dp"
-                    android:textColor="@color/red_500"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"
-                    android:text="@string/score"/>
-
-                <TextView
-                    android:layout_width="40dp"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:id="@+id/recieved_lost"
-                    android:layout_marginBottom="50dp"
-                    android:layout_alignParentBottom="true"
-                    android:textColor="@color/red_500"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:layout_alignLeft="@id/sent_lost"
-                    android:layout_alignStart="@id/sent_lost"
-                    android:text="@string/score"/>
-
-                <TextView
-                    android:layout_width="40dp"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:id="@+id/sent_won"
-                    android:layout_marginTop="50dp"
-                    android:textColor="@color/primary"
-                    android:singleLine="true"
-                    android:gravity="center"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:text="@string/score"/>
-
-                <SurfaceView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/surfaceView"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginBottom="7.5dp"
-                    android:layout_marginTop="2.5dp"
-                    android:padding="5dp"
-                    android:layout_gravity="start|top"
-                    android:layout_alignParentBottom="true"
-                    android:layout_toLeftOf="@id/sent_lost"
-                    android:layout_toStartOf="@id/sent_lost"
-                    android:layout_toRightOf="@id/sent_won"
-                    android:layout_toEndOf="@id/sent_won" />
-
-                <TextView
-                    android:layout_width="40dp"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:id="@+id/recieved_won"
-                    android:layout_marginBottom="50dp"
-                    android:layout_alignParentBottom="true"
-                    android:textColor="@color/primary"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:layout_alignLeft="@id/sent_won"
-                    android:layout_alignStart="@id/sent_won"
-                    android:text="@string/score"/>
-            </RelativeLayout>
-
-            <TextView
-                style="@style/score_headings"
-                android:text="@string/games_received_description"
-                android:id="@+id/received_description"
-                android:textStyle="bold"
-                android:layout_alignParentBottom="true" />
-
-            <ImageButton
-                android:layout_margin="2.5dp"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_action"
-                android:background="@drawable/floating_circle"
-                android:id="@+id/imageButton"
-                android:contentDescription="@string/cd_start_game"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:onClick="startGame"/>
-        </RelativeLayout>
-    </RelativeLayout>
-
+        android:layout_height="wrap_content"
+        android:layout_below="@id/page"
+        android:layout_margin="4dp"
+        android:gravity="center"
+        android:padding="4dp"
+        android:text="@string/no_friend_stats_title"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/secondary_text"
+        android:visibility="gone"/>
 </RelativeLayout>

@@ -52,11 +52,12 @@ public class AppConstants {
 
     // To prevent someone from accidentally instantiating the AppConstants class,
     // give it an empty constructor.
-    private AppConstants() {}
+    private AppConstants() {
+    }
 
     ///////////////////////////////////NEW FOR Version 2.0////////////////////////////////////////
     public static Map<String, String> dspHeaders(Context context) {
-        Map<String,String> headers = new HashMap<>();
+        Map<String, String> headers = new HashMap<>();
         headers.put("X-DreamFactory-API-Key", PrefUtil.getString(context, API_KEY, PICSPY_API_KEY));
         headers.put("X-DreamFactory-Session-Token", PrefUtil.getString(context, SESSION_TOKEN));
         headers.put("Content-Type", "application/json");
@@ -67,7 +68,7 @@ public class AppConstants {
 
     // V2 info
     public static final String DSP_URL_2 = "http://192.168.2.17:8081/api/v2/";
-    public static final String SESSION_TOKEN= "session_token";
+    public static final String SESSION_TOKEN = "session_token";
     public static final String USER_NAME = "username";
     public static final int SESSION_TTL = 30;
 

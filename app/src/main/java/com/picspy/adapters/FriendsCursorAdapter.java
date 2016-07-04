@@ -27,14 +27,15 @@ public class FriendsCursorAdapter extends ResourceCursorAdapter {
 
 
     public FriendsCursorAdapter(Context context, int layout, Cursor cursor, int flags) {
-        super(context,layout, cursor, flags);
+        super(context, layout, cursor, flags);
     }
 
     /**
      * Binds username and user_id to the list element
-     * @param view The view to be populated
+     *
+     * @param view    The view to be populated
      * @param context The calling application context
-     * @param c Cursor containing result of database query
+     * @param c       Cursor containing result of database query
      */
     @Override
     public void bindView(View view, final Context context, Cursor c) {
@@ -46,12 +47,10 @@ public class FriendsCursorAdapter extends ResourceCursorAdapter {
             final int userId = c.getInt(c.getColumnIndex(DbContract.FriendEntry._ID));
 
             viewHolder.unameTextView.setText(friendUsername);
-            Log.d("CursorAdapter", "binding: uname:" + friendUsername);
             //Start friendInfoActivity when friend username clicked
             viewHolder.unameTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Log.d("CursorAdapter", "clicked");
                     startFriendInfoActivity(view, friendUsername, userId, null);
                 }
             });
@@ -98,9 +97,10 @@ public class FriendsCursorAdapter extends ResourceCursorAdapter {
 
     /**
      * Method to start the FriendInfoActivity with appropriate intent bundles.
-     * @param view Context view
+     *
+     * @param view  Context view
      * @param uname friend username
-     * @param id friend id
+     * @param id    friend id
      */
     public static void startFriendInfoActivity(View view, String uname, Integer id, UserRecord userRecord) {
         Intent intent = new Intent(view.getContext(), FriendInfoActivity.class);

@@ -35,16 +35,22 @@
 
     <!-- activity_friend_info.xml-->
     <string name="score"> 0 </string>
-    <string name="leaderboard_descriptiton">Leaderboard</string>
+    <string name="leaderboard_description">Games on Leaderboard</string>
     <string name="total_won_description">Won</string>
     <string name="total_lost_description">Lost</string>
     <string name="stats_title">All Time</string>
-    <string name="games_sent_description">Challenges sent to me</string>
+    <string name="games_sent_description">Challenges I received</string>
     <string name="games_received_description">Challenges I sent</string>
     <string name="friend_info_no_connection">No connection</string>
+    <string name="sent_summary">You won %1$d%% of challenges &lt;u>%2$s&lt;/u> sent</string>
+    <string name="received_summary">&lt;u>%1$s&lt;/u> won %2$d%% of challenges you sent</string>
+    <string name="total_stats_title">Total games played</string>
+    <string name="empty_sent_challenges">No challenges sent</string>
+    <string name="empty_received_challenges">No challenges received</string>
+    <string name="no_friend_stats_title">No game stats. You are not friends.</string>
 
     <!-- item_challenge.xml-->
-    <string name="gueses_text">Guess</string>
+    <string name="guesses_text">Guess</string>
     <string name="challenge_time_text">Time</string>
 
     <!-- no_connection_dialog.xml-->

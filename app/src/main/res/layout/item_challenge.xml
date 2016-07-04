@@ -77,7 +77,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:textColor="@color/accent"
-                android:text="@string/gueses_text"/>
+                android:text="@string/guesses_text"/>
             <TextView
                 android:id="@+id/guesses_title"
                 android:textAppearance="?android:attr/textAppearanceSmall"
