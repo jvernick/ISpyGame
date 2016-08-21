@@ -70,7 +70,6 @@ public class FriendSearchFragment extends Fragment {
         super.onResume();
         if (showKeyboard) {
             //showKeyboard();
-
             InputMethodManager imgr = (InputMethodManager)
                     getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imgr.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_IMPLICIT_ONLY);
@@ -84,8 +83,6 @@ public class FriendSearchFragment extends Fragment {
         btnFindFriend = (Button) rootView.findViewById(R.id.btn_add_friend);
         unameField = (EditText) rootView.findViewById(R.id.username_field);
         unameField.requestFocus();
-        //showKeyboard();
-
         responseText = (TextView) rootView.findViewById(R.id.message);
 
         progressSpinner = (ProgressBar) rootView.findViewById(R.id.challenges_progressBar);
@@ -112,12 +109,9 @@ public class FriendSearchFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (unameField.getText().length() != 0) {
-                    responseText.requestFocus();
+                    //responseText.requestFocus();
                     responseText.setText("");
-                    InputMethodManager mgr = (InputMethodManager)
-                            getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    mgr.hideSoftInputFromWindow(unameField.getWindowToken(), 0);
-
+                    hideKeyboard();
                     String query = unameField.getText().toString();
                     if (isValidRequest(query)) {
                         addUser(unameField.getText().toString());
@@ -130,11 +124,11 @@ public class FriendSearchFragment extends Fragment {
 
     private boolean isValidRequest(String username) {
         if (username.equals(PrefUtil.getString(getActivity(), AppConstants.USER_NAME))) {
-            responseText.setText("Can't Add Yourself");
+            responseText.setText(getString(R.string.message_cannot_add_self));
             unameField.setText("");
             return false;
         } else if (DatabaseHandler.getInstance(getActivity()).getFriend(username) != null) {
-            responseText.setText("Already Friends");
+            responseText.setText(getString(R.string.message_already_friends));
             unameField.setText("");
             return false;
         } else {
@@ -150,7 +144,7 @@ public class FriendSearchFragment extends Fragment {
                 if (response != null && response.getId() != 0) {
                     sendFriendRequest(response.getId());
                 } else {
-                    responseText.setText("User Doesn't Exist");
+                    responseText.setText(getString(R.string.message_user_not_found));
                 }
             }
         };
@@ -188,7 +182,7 @@ public class FriendSearchFragment extends Fragment {
             public void onResponse(FriendRecord response) {
                 progressSpinner.setVisibility(View.GONE);
                 if (response != null && response.getFriend_1() != 0) {
-                    responseText.setText("Friend Request Sent");
+                    responseText.setText(getString(R.string.message_request_sent));
                     unameField.setText("");
                     Log.d(TAG, response.toString());
                 }
@@ -215,7 +209,7 @@ public class FriendSearchFragment extends Fragment {
                         toast.show();
                     } else {
                         //Set if user already sent or was already sent a request
-                        responseText.setText("Friend Request Sent");
+                        responseText.setText(getString(R.string.message_request_sent));
                     }
                 }
             }

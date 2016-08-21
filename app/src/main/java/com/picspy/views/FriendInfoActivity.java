@@ -222,8 +222,6 @@ public class FriendInfoActivity extends ActionBarActivity {
                                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                        @Override
                                        public void onClick(DialogInterface dialog, int which) {
-                                           //TODO ensure that on return to parent, friends list is reloaded in on resume
-                                           //one way will be to return boolean to parent or always refresh
                                            deleteFriend(userId);
                                        }
                                    }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -269,7 +267,7 @@ public class FriendInfoActivity extends ActionBarActivity {
     }
 
     /**
-     * Calls the setFriendsStats method with the apprpriate friends mapped
+     * Calls the setFriendsStats method with the appropriate friends mapped
      *
      * @param friendRecord record containing friend information
      */
@@ -373,7 +371,6 @@ public class FriendInfoActivity extends ActionBarActivity {
                 emptyView.setVisibility(View.VISIBLE);
                 if (error != null) {
                     String err = (error.getMessage() == null) ? "An error occurred" : error.getMessage();
-                    error.printStackTrace();
                     Log.d(TAG, err);
                     //Show toast only if there is no server connection on refresh
                     if (err.matches(AppConstants.CONNECTION_ERROR) || err.matches(AppConstants.TIMEOUT_ERROR)) {

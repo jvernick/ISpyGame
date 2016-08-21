@@ -91,6 +91,10 @@
     <string name="tx_empty_list">No new requests!\nSwipe right to search users</string>
     <string name="err_friend_notif">"No connection to server, unable to get friend request"</string>
     <string name="title_list_header">FRIEND REQUESTS</string>
+    <string name="message_user_not_found">No user with given username</string>
+    <string name="message_cannot_add_self">You cannot add yourself</string>
+    <string name="message_request_sent">Friend request sent</string>
+    <string name="message_already_friends">You are already friends</string>
 
     <!-- list_item_friend_request -->
     <string name="btn_accept">Accept</string>

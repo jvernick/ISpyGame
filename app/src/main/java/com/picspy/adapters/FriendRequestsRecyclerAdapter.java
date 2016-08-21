@@ -3,7 +3,6 @@ package com.picspy.adapters;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +19,6 @@ import java.util.ArrayList;
 
 /**
  * RecyclerAdapter for the FriendRequests fragment
- *
- * @author BrunelAmC
  */
 public class FriendRequestsRecyclerAdapter extends RecyclerView.Adapter<FriendRequestsRecyclerAdapter.ViewHolder> {
     ArrayList<UserRecord> mDataset;
@@ -60,7 +57,6 @@ public class FriendRequestsRecyclerAdapter extends RecyclerView.Adapter<FriendRe
         viewHolder.declineFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("RequestArrayAdapter", "decline");
                 try {//delay for state animation
                     Thread.sleep(100);
                 } catch (InterruptedException e) {

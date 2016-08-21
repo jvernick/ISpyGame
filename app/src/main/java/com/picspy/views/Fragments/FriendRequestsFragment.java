@@ -126,17 +126,12 @@ public class FriendRequestsFragment extends Fragment implements FriendRequestsRe
     }
 
     private void getFriendRequests() {
-        Log.d(TAG, "getting friend requests");
         Response.Listener<FriendsRecord> response = new Response.Listener<FriendsRecord>() {
             @Override
             public void onResponse(FriendsRecord response) {
                 Log.d(TAG, response.toString());
                 progressSpinner.setVisibility(View.GONE);
-                if (response.getCount() != 0) {
-                    processFriendRequests(response);
-                } else {
-                    emptyListView.setVisibility(View.VISIBLE);
-                }
+                processFriendRequests(response);
             }
         };
 
@@ -196,6 +191,7 @@ public class FriendRequestsFragment extends Fragment implements FriendRequestsRe
             public void onResponse(FriendRecord response) {
                 if (response != null) {
                     mAdapter.removeItem(position);
+                    checkAdapterEmpty();
                 }
             }
         };
@@ -215,8 +211,6 @@ public class FriendRequestsFragment extends Fragment implements FriendRequestsRe
                         toast.setDuration(Toast.LENGTH_LONG);
                         toast.setView(layout);
                         toast.show();
-                    } else { //TODO for debugging, remove
-                        Toast.makeText(getActivity(), "An error occurred", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -233,11 +227,11 @@ public class FriendRequestsFragment extends Fragment implements FriendRequestsRe
             @Override
             public void onResponse(FriendRecord response) {
                 if (response != null) {
-                    Log.d(TAG, response.toString());
                     DatabaseHandler.getInstance(getActivity()).addFriends(Collections
                             .singletonList(new Friend(userRecord.getId(), userRecord.getUsername())));
                     PrefUtil.putBoolean(getActivity(), AppConstants.UPDATE_FRIEND_LIST, true);
                     mAdapter.removeItem(position);
+                    checkAdapterEmpty();
                 }
             }
         };
@@ -248,7 +242,6 @@ public class FriendRequestsFragment extends Fragment implements FriendRequestsRe
                 if (error != null) {
                     String err = (error.getMessage() == null) ? "error message null" : error.getMessage();
                     error.printStackTrace();
-                    Log.d(TAG, err);
                     //Show toast only if there is no server connection on refresh
                     if (err.matches(AppConstants.CONNECTION_ERROR) || err.matches(AppConstants.TIMEOUT_ERROR)) {
                         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -272,6 +265,5 @@ public class FriendRequestsFragment extends Fragment implements FriendRequestsRe
     public void refresh() {
         fromNotf = true;
         getFriendRequests();
-        Log.d(TAG, "refreshing");
     }
 }
