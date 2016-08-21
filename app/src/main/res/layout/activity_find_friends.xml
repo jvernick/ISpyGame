@@ -7,7 +7,7 @@
 
     <include
         android:id="@+id/find_friend_toolbar"
-        layout="@layout/custom_tool_bar"/>
+        layout="@layout/toolbar_dark"/>
 
     <com.picspy.adapters.SlidingTabLayout
         android:id="@+id/find_friends_tab"

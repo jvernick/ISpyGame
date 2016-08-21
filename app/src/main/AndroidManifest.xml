@@ -1,66 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.picspy.firstapp" >
+<manifest package="com.picspy.firstapp"
+          xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-sdk
         android:maxSdkVersion="21"
         android:minSdkVersion="14"
-        android:targetSdkVersion="21" />
+        android:targetSdkVersion="21"/>
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA" />
-
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-
-
-    <uses-feature android:name="android.hardware.camera" />
-
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="18" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+        android:maxSdkVersion="18"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="18" />
+        android:maxSdkVersion="18"/>
+    <uses-feature android:name="android.hardware.camera"/>
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppBaseTheme" >
+        android:theme="@style/AppBaseTheme">
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
+            android:value="@string/facebook_app_id"/>
 
         <!-- TODO veriy that you can change adjustPan to adjustResize -->
         <activity
             android:name="com.picspy.views.RegisterActivity"
-            android:fitsSystemWindows="true"
             android:configChanges="orientation"
+            android:fitsSystemWindows="true"
             android:label="@string/title_activity_register"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateVisible">
+            android:windowSoftInputMode="adjustResize|stateHidden">
         </activity>
 
         <activity
-        android:name="com.picspy.views.LoginActivity"
-        android:configChanges="orientation"
-        android:label="@string/title_activity_login"
-        android:screenOrientation="portrait"
-        android:windowSoftInputMode="adjustResize" >
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
+            android:name="com.picspy.views.LoginActivity"
+            android:configChanges="orientation"
+            android:label="@string/title_activity_login"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateHidden">
+            <meta-data
+                android:name="com.facebook.sdk.ApplicationId"
+                android:value="@string/facebook_app_id"/>
         </activity>
 
         <activity
             android:name="com.picspy.views.MainActivity"
             android:configChanges="orientation"
             android:exported="true"
-            android:launchMode="singleTop"
             android:label="@string/title_activity_main"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustNothing" >
+            android:windowSoftInputMode="adjustNothing">
         </activity>
 
         <activity
@@ -68,10 +64,10 @@
             android:configChanges="orientation"
             android:label="@string/title_activity_splash_"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Light.NoTitleBar" >
+            android:theme="@android:style/Theme.Light.NoTitleBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
@@ -79,12 +75,12 @@
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <activity
             android:name="com.picspy.views.CameraActivity"
             android:configChanges="orientation"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
 
             <!-- configure these activity to use portrait orientation -->
         </activity>
@@ -93,17 +89,20 @@
             android:name="com.picspy.views.CreateChallengeActivity"
             android:label="@string/app_name"
             android:parentActivityName="com.picspy.views.CameraActivity"
-            android:theme="@style/create_challenge" >
+            android:theme="@style/create_challenge">
         </activity>
-        <activity android:name="com.picspy.views.ViewChallenge"
+
+        <activity
+            android:name="com.picspy.views.ViewChallenge"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait">
+        </activity>
 
         <activity
             android:name="com.picspy.views.FriendInfoActivity"
             android:configChanges="orientation"
             android:label="@string/title_activity_friend_info"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
         </activity>
 
         <activity
@@ -115,38 +114,38 @@
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.picspy.views.MainActivity" />
+                android:value="com.picspy.views.MainActivity"/>
         </activity>
 
         <activity
             android:name="com.picspy.views.SettingsActivity"
-            android:label="title_activity_settings" >
+            android:label="title_activity_settings">
         </activity>
 
         <activity
             android:name="com.picspy.views.FindFriendsActivity"
             android:label="@string/title_activity_find_friends"
-            android:parentActivityName="com.picspy.views.MainActivity"
             android:launchMode="singleTop"
+            android:parentActivityName="com.picspy.views.MainActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustNothing|stateUnchanged" >
+            android:windowSoftInputMode="adjustNothing|stateUnchanged">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.picspy.views.MainActivity" />
+                android:value="com.picspy.views.MainActivity"/>
         </activity>
 
         <activity
             android:name="com.picspy.views.SendChallenge"
             android:label="@string/title_activity_send_challenge"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            android:theme="@style/create_challenge"
-            android:launchMode="singleTop">
+            android:theme="@style/create_challenge">
             <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
+                <action android:name="android.intent.action.SEARCH"/>
             </intent-filter>
             <meta-data
                 android:name="android.app.searchable"
-                android:resource="@xml/searchable" />
+                android:resource="@xml/searchable"/>
         </activity>
 
         <!-- [START firebase_iid_service] -->
@@ -165,12 +164,9 @@
             android:exported="false">
 
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
         <!-- [END firebase_service] -->
-
-
     </application>
-
 </manifest>

@@ -20,18 +20,28 @@
 
     <string name="tx_login">Log In</string>
     <string name="tx_signup">Sign Up</string>
+    <string name="tx_login_title">Resume PicSpy</string>
+    <string name="tx_signup_title">Join PicSpy</string>
     <string name="pass_hint1">Password</string>
-    <string name="email_hint">Email</string>
+    <string name="email_hint">name@example.com</string>
     <string name="forgot_password_prompt">Forgot Password?</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_register">register</string>
     <string name="pass_hint2">Re-type Password</string>
     <string name="hint_username">Username</string>
     <string name="title_activity_post_registration">PostRegistrationActivity</string>
-    <string name="loading_message">Please Wait…</string>
+    <string name="login_loading">Logging In…</string>
     <string name="title_activity_splash_">Splash_Activity</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="facebook_app_id">567017063440429</string>
+
+    <string name="login_error_title">"Log In Failed"</string>
+    <string name="signup_error_title">"Sign Up Failed"</string>
+
+    <!--Login / Register error strings-->
+    <string name="password_too_short">Passwords must be at least 6 characters.</string>
+    <string name="email_invalid">Invalid email address</string>
+    <string name="required_field">Required</string>
 
     <!-- activity_friend_info.xml-->
     <string name="score"> 0 </string>
@@ -128,4 +138,8 @@
 
     <!--activity_challenges-->
     <string name="challenges_activity_empty_text">No new challenges. Challenges sent to you will appear here</string>
+
+    <string name="network_error_message">Unable to reach network. Check your connection and try again.</string>
+    <string name="invalid_login_message">Invalid username or password</string>
+    <string name="dialog_ok">OK</string>
 </resources>

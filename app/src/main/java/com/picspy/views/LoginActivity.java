@@ -5,16 +5,16 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -35,34 +35,21 @@ import static com.picspy.views.Splash_Activity.verifyFCMToken;
 /**
  * Activity for user login
  */
-public class LoginActivity extends FragmentActivity {
+public class LoginActivity extends ActionBarActivity {
     private static final String CANCEL_TAG = "loginUser";
     private static final String TAG = "LoginActivity";
     private EditText edtEmail, edtPaswd;
     private Button btnLogin;
     private ProgressDialog progressDialog;
-    //Validates the input To disable button if any field is empty
-    private TextWatcher textWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-        }
 
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-        }
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-            checkFieldsForEmptyValues();
-        }
-    };
+    public enum FIELD_STATUS {EMPTY, TOO_SHORT, INVALID, VALID}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         progressDialog = new ProgressDialog(LoginActivity.this);
-        progressDialog.setMessage(getText(R.string.loading_message));
+        progressDialog.setMessage(getText(R.string.login_loading));
 
         edtEmail = (EditText) findViewById(R.id.user_email);
         edtPaswd = (EditText) findViewById(R.id.user_password);
@@ -79,101 +66,180 @@ public class LoginActivity extends FragmentActivity {
             }
         });
 
-        edtEmail.addTextChangedListener(textWatcher);
-        edtPaswd.addTextChangedListener(textWatcher);
+        edtEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-        //check if fields are empty
-        checkFieldsForEmptyValues();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                checkFieldsForEmptyValues();
+                edtEmail.setError(null);
+            }
+        });
+        edtPaswd.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                checkFieldsForEmptyValues();
+                edtPaswd.setError(null);
+            }
+        });
+
+        // Setting toolbar as the ActionBar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.myToolbar);
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getString(R.string.tx_login));
+        //toolbar.setTitleTextColor(getResources().getColor(R.color.primary_dark));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationIcon(R.drawable.ic_chevron_left_black);
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        if (!edtEmail.getText().toString().matches("") && !edtPaswd.getText().toString().matches("")) {
-            InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(btnLogin.getWindowToken(), 0);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+            return true;
+        } else if (id == android.R.id.home) {
+            //handling back button click
+            onBackPressed();
+            return true;
         }
+
+        return super.onOptionsItemSelected(item);
     }
 
     /**
-     * Checks fields for empty values. Enables and dislpays login button when all fields
+     * Checks fields for empty values. Enables and displays login button when all fields
      * are not empty. Otherwise disables and hides login button
      */
     private void checkFieldsForEmptyValues() {
         String s1 = edtEmail.getText().toString();
         String s2 = edtPaswd.getText().toString();
 
-        if (s1.equals("") || s2.equals("")) {   //disables and greys out the button
+        if (s1.equals("") || s2.equals("")) {
             btnLogin.setEnabled(false);
-            btnLogin.setVisibility(View.INVISIBLE);
-            btnLogin.getBackground().setColorFilter(0xff888888, PorterDuff.Mode.MULTIPLY);
-        } else {                                //enables and un-greys out the button
+        } else {
             btnLogin.setEnabled(true);
-            btnLogin.setVisibility(View.VISIBLE);
-            btnLogin.getBackground().clearColorFilter();
         }
     }
 
     /**
      * Validates password length
      *
-     * @return true if the length is appropriate, otherwise false
+     * @return appropriate field status
      */
-    public boolean isValidPassword() {
-        String pass = edtPaswd.getText().toString();
-        return pass.length() >= 6;
-    }
+    public static FIELD_STATUS validatePassword(String password) {
+        if (password.length() == 0) {
+            return FIELD_STATUS.EMPTY;
+        } else if (password.length() < 6) {
+            return FIELD_STATUS.TOO_SHORT;
+        }
 
-
-    /**
-     * Validates email with regex
-     *
-     * @return true if email is valid, otherwise false
-     */
-    private boolean isValidEmail() {
-        String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-                + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-        String email = edtEmail.getText().toString();
-        return email.matches(EMAIL_PATTERN);
+        return FIELD_STATUS.VALID;
     }
 
     /**
-     * TODO change error messages to string resources
-     * Validates fields and peforms login
+     * Displays the appropriate error on the password field if the password is invalid
      *
-     * @param view View from button click
+     * @param edtPaswd Field to be modified
+     * @return true if password field is valid, otherwise false
      */
-    public void login(View view) {
-        InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    private boolean isValidPassword(EditText edtPaswd) {
+        FIELD_STATUS status = validatePassword(edtPaswd.getText().toString());
 
-        Boolean email_state = isValidEmail();
-        Boolean pass_state = isValidPassword();
-
-        if (email_state && pass_state) {
-            progressDialog.show();
-            apiLogin();
-        } else {
-            if (!email_state) {
-                edtEmail.setError("Invalid Email");
-                edtEmail.requestFocus();
-            }
-            if (!pass_state) {
-                edtPaswd.setError("Invalid Password");
-                edtPaswd.requestFocus();
-            }
+        switch (status) {
+            case EMPTY:
+                edtPaswd.setError(getString(R.string.required_field));
+                return false;
+            case TOO_SHORT:
+                edtPaswd.setError(getString(R.string.password_too_short));
+                return false;
+            case VALID:
+                return true;
+            default:
+                return false;
         }
     }
 
     /**
-     * Starts activity to reset password
+     * Validates email with regex
+     *
+     * @return appropriate field status
+     */
+    public static FIELD_STATUS validateEmail(String email) {
+        String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+                + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+
+        if (email.length() == 0) {
+            return FIELD_STATUS.EMPTY;
+        } else if (email.matches(EMAIL_PATTERN)) {
+            return FIELD_STATUS.VALID;
+        }
+
+        return FIELD_STATUS.INVALID;
+    }
+
+    /**
+     * Displays the appropriate error on the email field if the email is invalid
+     *
+     * @param edtEmail Field to be modified
+     * @return true if email field is valid, otherwise false
+     */
+    private boolean isValidEmail(EditText edtEmail) {
+        FIELD_STATUS status = validateEmail(edtEmail.getText().toString());
+
+        switch (status) {
+            case EMPTY:
+                edtEmail.setError(getString(R.string.required_field));
+                return false;
+            case INVALID:
+                edtEmail.setError(getString(R.string.email_invalid));
+                return false;
+            case VALID:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * TODO change error messages to string resources
+     * Validates fields and performs login
      *
      * @param view View from button click
      */
-    public void forgotPassword(View view) {
-        //TODO change to password reset activity after it has been implemented
-        Intent intent = new Intent(this, RegisterActivity.class);
-        startActivity(intent);
+    public void login(View view) {
+        boolean emailValid = isValidEmail(edtEmail);
+        boolean pwdValid = isValidPassword(edtPaswd);
+
+        if (!emailValid) {
+            edtEmail.requestFocus();
+        } else if (!pwdValid) {
+            edtPaswd.requestFocus();
+        }
+
+        if (emailValid && pwdValid) {
+            progressDialog.show();
+            apiLogin();
+        }
     }
 
     /**
@@ -218,21 +284,23 @@ public class LoginActivity extends FragmentActivity {
                 if (error != null) {
                     String err = (error.getMessage() == null) ? "An error occurred" : error.getMessage();
                     Log.d(TAG, err);
-                    String errorMsg = "An error occurred";
+                    String errorMsg = err;
 
                     if (err.matches(AppConstants.CONNECTION_ERROR) || err.matches(AppConstants.TIMEOUT_ERROR)) {
-                        errorMsg = "No connection to server";
+                        errorMsg = getString(R.string.network_error_message);
                     } else if (err.matches(".*Received authentication challenge is null.*")) {
-                        errorMsg = "Invalid credentials";
+                        errorMsg = getString(R.string.invalid_login_message);
                     }
 
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(LoginActivity.this);
-                    alertDialog.setMessage(errorMsg).setCancelable(false).setPositiveButton("Try again", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
+                    alertDialog.setTitle(getString(R.string.login_error_title));
+                    alertDialog.setMessage(errorMsg).setCancelable(false)
+                               .setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
+                                   @Override
+                                   public void onClick(DialogInterface dialog, int which) {
+                                       dialog.cancel();
+                                   }
+                               });
                     alertDialog.show();
                 }
             }

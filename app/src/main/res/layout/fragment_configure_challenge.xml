@@ -57,28 +57,28 @@
                     style="@style/configure_challenge_textViews"
                     android:text="@string/guess_title"/>
 
-                <HorizontalScrollView
-                    android:id="@+id/guess_picker"
+                <TextView
+                    style="@style/total_score_number"
+                    android:id="@+id/num_guesses"
                     android:layout_width="wrap_content"
-                    android:layout_height="48dp"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:layout_below="@id/guesses_title"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:fillViewport="false"
-                    android:orientation="horizontal"
-                    android:scrollbars="none">
+                    android:layout_toLeftOf="@id/guesses_title"
+                    android:gravity="center"
+                    android:minHeight="32dp"
+                    android:minWidth="32dp"
+                    android:text="3"/>
 
-                    <RadioGroup
-                        android:id="@+id/guesses_radio_group"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:divider="@drawable/radio_group_divider"
-                        android:orientation="horizontal"
-                        android:showDividers="middle">
-                    </RadioGroup>
-                </HorizontalScrollView>
+                <SeekBar
+                    android:id="@+id/seek_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/guesses_title"
+                    android:progress="3"
+                    android:max="30"
+                    />
+
+
             </RelativeLayout>
         </android.support.v7.widget.CardView>
 

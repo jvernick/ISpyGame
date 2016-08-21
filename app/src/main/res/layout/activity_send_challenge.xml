@@ -6,8 +6,8 @@
     android:orientation="vertical">
 
     <include
-        android:id="@+id/challenges_toolbar"
-        layout="@layout/custom_tool_bar"/>
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_dark"/>
 
     <FrameLayout
         android:id="@+id/fragment_container"

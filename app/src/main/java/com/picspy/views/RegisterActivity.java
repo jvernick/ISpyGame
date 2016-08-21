@@ -1,19 +1,20 @@
 package com.picspy.views;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -34,13 +35,16 @@ import com.picspy.utils.VolleyRequest;
 
 import java.util.Calendar;
 
+import static com.picspy.views.LoginActivity.FIELD_STATUS;
+import static com.picspy.views.LoginActivity.validateEmail;
+import static com.picspy.views.LoginActivity.validatePassword;
 import static com.picspy.views.Splash_Activity.verifyFCMToken;
 
 
 /**
  * User registration activity
  */
-public class RegisterActivity extends Activity {
+public class RegisterActivity extends ActionBarActivity {
     private static final String TAG = "RegisterActivity";
     private static final Object CANCEL_TAG = "registerUser";
     private EditText edtDisplayName;
@@ -48,21 +52,6 @@ public class RegisterActivity extends Activity {
     private EditText edtPaswd;
     private Button btnRegister;
     private ProgressDialog progressDialog;
-    //Validates the input To disable button if any field is empty
-    private TextWatcher textWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-        }
-
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-        }
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-            checkFieldsForEmptyValues();
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,8 +60,7 @@ public class RegisterActivity extends Activity {
 
         //Create progress box for use during API connection
         progressDialog = new ProgressDialog(RegisterActivity.this);
-        progressDialog.setMessage(getText(R.string.loading_message));
-
+        progressDialog.setMessage(getText(R.string.login_loading));
 
         edtDisplayName = (EditText) findViewById(R.id.edit_display_name);
         edtEmail = (EditText) findViewById(R.id.edit_email);
@@ -90,25 +78,83 @@ public class RegisterActivity extends Activity {
             }
         });
 
-        edtDisplayName.addTextChangedListener(textWatcher);
-        edtEmail.addTextChangedListener(textWatcher);
-        edtPaswd.addTextChangedListener(textWatcher);
+        // Setting toolbar as the ActionBar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.myToolbar);
 
-        //check if fields are empty
-        checkFieldsForEmptyValues();
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getString(R.string.tx_signup));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationIcon(R.drawable.ic_chevron_left_black);
+
+        edtDisplayName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                checkFieldsForEmptyValues();
+            }
+        });
+        edtEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                checkFieldsForEmptyValues();
+                edtEmail.setError(null);
+            }
+        });
+        edtPaswd.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                checkFieldsForEmptyValues();
+                edtPaswd.setError(null);
+            }
+        });
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        if (!edtEmail.getText().toString().matches("") && !edtPaswd.getText().toString().matches("")) {
-            InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(btnRegister.getWindowToken(), 0);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+            return true;
+        } else if (id == android.R.id.home) {
+            //handling back button click
+            onBackPressed();
+            return true;
         }
+
+        return super.onOptionsItemSelected(item);
     }
 
     /**
-     * Checks fields for empty values. Enables and dislpays login button when all fields
+     * Checks fields for empty values. Enables and displays login button when all fields
      * are not empty. Otherwise disables and hides login button
      */
     private void checkFieldsForEmptyValues() {
@@ -118,43 +164,72 @@ public class RegisterActivity extends Activity {
 
         if (s1.equals("") || s2.equals("") || s3.equals("")) {   //disables the button
             btnRegister.setEnabled(false);
-            btnRegister.setVisibility(View.INVISIBLE);
         } else {                                //enables the button
             btnRegister.setEnabled(true);
-            btnRegister.setVisibility(View.VISIBLE);
-        }
-    }
-
-    //TODO: Limit password characters with regex?
-
-    /**
-     * Validates password to have: min length of 6 and
-     * verifies that both entered passwords match.
-     *
-     * @return "valid" if email is valid otherwise error message depending on problem
-     */
-    public String isValidPassword() {
-        String pass1 = edtPaswd.getText().toString();
-
-        if (pass1.length() >= 6) {
-            return "valid";
-        } else {
-            return "invalid_length";
         }
     }
 
     /**
-     * Validates email with regex
+     * Displays the appropriate error on the password field if the password is valid
      *
-     * @return true if email is valid otherwise false
+     * @param edtPaswd Field to be modified
+     * @return true if password field is valid, otherwise false
      */
-    private boolean isValidEmail() {
-        String emailPattern = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-                + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-        String email = edtEmail.getText().toString();
-        return email.matches(emailPattern);
+    public boolean isValidPassword(EditText edtPaswd) {
+        FIELD_STATUS status = validatePassword(edtPaswd.getText().toString());
+
+        switch (status) {
+            case EMPTY:
+                edtPaswd.setError(getString(R.string.required_field));
+                return false;
+            case TOO_SHORT:
+                edtPaswd.setError(getString(R.string.password_too_short));
+                return false;
+            case VALID:
+                return true;
+            default:
+                return false;
+        }
     }
 
+    /**
+     * Displays the appropriate error on the email field if the email is invalid
+     *
+     * @param edtEmail Field to be modified
+     * @return true if email field is valid, false otherwise
+     */
+    private boolean isValidEmail(EditText edtEmail) {
+        FIELD_STATUS status = validateEmail(edtEmail.getText().toString());
+
+        switch (status) {
+            case EMPTY:
+                edtEmail.setError(getString(R.string.required_field));
+                return false;
+            case INVALID:
+                edtEmail.setError(getString(R.string.email_invalid));
+                return false;
+            case VALID:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * Displays the appropriate error on the username field if the username is invalid
+     *
+     * @param edtDisplayName UsernameField
+     * @return true if username is valid, false otherwise
+     */
+    private boolean isValidUsername(EditText edtDisplayName) {
+        boolean isValid = edtDisplayName.getText().length() != 0;
+
+        if (!isValid) {
+            edtDisplayName.setError(getString(R.string.required_field));
+        }
+
+        return isValid;
+    }
 
     /**
      * Validates entered fields and starts the Sign Up process
@@ -162,21 +237,19 @@ public class RegisterActivity extends Activity {
      * @param view Button view
      */
     public void signUp(View view) {
-        InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        boolean emailValid = isValidEmail(edtEmail);
+        boolean pwdValid = isValidPassword(edtPaswd);
+        boolean unameValid = isValidUsername(edtDisplayName);
 
-        //TODO store strings below in @strings
-        //TODO add filter for valid characters?
-        if (edtDisplayName.getText().toString().matches("")) {
-            edtDisplayName.setError("Must enter Username");
+        if (!unameValid) {
             edtDisplayName.requestFocus();
-        } else if (!isValidEmail()) {
-            edtEmail.setError("Invalid Email");
+        } else if (!emailValid) {
             edtEmail.requestFocus();
-        } else if (isValidPassword().equals("invalid_length")) {
-            edtPaswd.setError("Must be at least 6 characters");
+        } else if (!pwdValid) {
             edtPaswd.requestFocus();
-        } else {
+        }
+
+        if (emailValid && pwdValid) {
             register();
         }
     }
@@ -208,13 +281,14 @@ public class RegisterActivity extends Activity {
 
                     if (err.matches(AppConstants.CONNECTION_ERROR) || err.matches(AppConstants.TIMEOUT_ERROR)) {
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(RegisterActivity.this);
-                        alertDialog.setMessage("No connection to server").setCancelable(false)
-                                .setPositiveButton("Try again", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.cancel();
-                                    }
-                                });
+                        alertDialog.setTitle(getString(R.string.signup_error_title));
+                        alertDialog.setMessage(getString(R.string.network_error_message)).setCancelable(false)
+                                   .setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
+                                       @Override
+                                       public void onClick(DialogInterface dialog, int which) {
+                                           dialog.cancel();
+                                       }
+                                   });
                         alertDialog.show();
                     } else if (err.matches(".*Duplicate entry .* for key 'name_UNIQUE'.*")) {
                         edtDisplayName.setError("username taken");
@@ -224,13 +298,14 @@ public class RegisterActivity extends Activity {
                         edtEmail.requestFocus();
                     } else {
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(RegisterActivity.this);
-                        alertDialog.setMessage("An error occurred").setCancelable(false)
-                                .setPositiveButton("Try again", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.cancel();
-                                    }
-                                });
+                        alertDialog.setTitle(getString(R.string.signup_error_title));
+                        alertDialog.setMessage(getString(R.string.network_error_message)).setCancelable(false)
+                                   .setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
+                                       @Override
+                                       public void onClick(DialogInterface dialog, int which) {
+                                           dialog.cancel();
+                                       }
+                                   });
                         alertDialog.show();
                     }
                 }
@@ -277,13 +352,15 @@ public class RegisterActivity extends Activity {
                     String err = (error.getMessage() == null) ? "error message null" : error.getMessage();
                     Log.d(TAG, err);
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(RegisterActivity.this);
-                    alertDialog.setMessage("An error occurred. No connection to server").setCancelable(false)
-                            .setPositiveButton("Try again", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.cancel();
-                                }
-                            });
+                    alertDialog.setTitle(getString(R.string.signup_error_title));
+                    alertDialog.setMessage(getString(R.string.network_error_message)).setCancelable(false)
+                               .setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
+                                   @Override
+                                   public void onClick(DialogInterface dialog, int which) {
+                                       dialog.cancel();
+                                   }
+                               });
+                    alertDialog.show();
                 }
             }
         };
@@ -324,13 +401,15 @@ public class RegisterActivity extends Activity {
                     String err = (error.getMessage() == null) ? "error message null" : error.getMessage();
                     Log.d(TAG, err);
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(RegisterActivity.this);
-                    alertDialog.setMessage("An error occurred. No connection to server").setCancelable(false)
-                            .setPositiveButton("Try again", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.cancel();
-                                }
-                            });
+                    alertDialog.setTitle(getString(R.string.signup_error_title));
+                    alertDialog.setMessage(getString(R.string.network_error_message)).setCancelable(false)
+                               .setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
+                                   @Override
+                                   public void onClick(DialogInterface dialog, int which) {
+                                       dialog.cancel();
+                                   }
+                               });
+                    alertDialog.show();
                 }
             }
         };

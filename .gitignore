@@ -28,7 +28,8 @@ local.properties
 .idea/vcs.xml
 .idea/dictionaries
 *.iml
-
+.idea/codeStyleSettings.xml
+.idea/gradle.xml
 # OS-specific files
 .DS_Store
 .DS_Store?

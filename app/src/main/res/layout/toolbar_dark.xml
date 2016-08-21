@@ -8,7 +8,7 @@
                                    android:background="@color/primary"
                                    android:minHeight="48dp"
                                    android:theme="@style/ActionBarTheme"
-                                   app:navigationIcon="@drawable/ic_chevron_left"
+                                   app:navigationIcon="@drawable/ic_chevron_left_white"
                                    app:theme="@style/ActionBarTheme"
                                    app:titleTextAppearance="?android:attr/textAppearanceLarge">
 

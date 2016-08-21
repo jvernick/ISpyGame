@@ -1,54 +1,78 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:actionBarNavMode="standard"
+              tools:context="com.picspy.views.LoginActivity">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_light"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:weightSum="9">
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:context="com.picspy.views.LoginActivity">
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:layout_weight="3"
+                android:gravity="center">
 
-    <TextView
-        android:id="@+id/login_title"
-        style="@style/login_and_register_titles"
-        android:text="@string/tx_login"/>
+                <TextView
+                    android:id="@+id/login_title"
+                    style="@style/login_and_register_titles"
+                    android:text="@string/tx_login_title"/>
 
-    <EditText
-        android:id="@+id/user_email"
-        style="@style/login_text_style"
-        android:layout_below="@id/login_title"
-        android:layout_gravity="center"
-        android:hint="@string/email_hint"
-        android:imeOptions="actionNext"
-        android:inputType="textEmailAddress"/>
+            </LinearLayout>
 
-    <EditText
-        android:id="@+id/user_password"
-        style="@style/login_text_style"
-        android:layout_below="@id/user_email"
-        android:hint="@string/pass_hint1"
-        android:imeOptions="actionDone"
-        android:inputType="textPassword"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:layout_weight="3"
+                android:focusableInTouchMode="true"
+                android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/password_link"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/user_password"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:clickable="true"
-        android:onClick="forgotPassword"
-        android:text="@string/forgot_password_prompt"
-        android:textColor="@color/accent_light"/>
+                <EditText
+                    android:id="@+id/user_email"
+                    style="@style/login_text_style"
+                    android:layout_gravity="center"
+                    android:hint="@string/email_hint"
+                    android:imeOptions="actionNext"
+                    android:inputType="textEmailAddress"/>
 
-    <Button
-        android:id="@+id/button_login"
-        style="?android:attr/buttonBarButtonStyle"
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom"
-        android:background="@color/primary"
-        android:onClick="login"
-        android:text="@string/tx_login"
-        android:textColor="@color/primary_text_default_material_dark"
-        android:textStyle="bold"
-        android:visibility="gone"/>
-</RelativeLayout>
+                <EditText
+                    android:id="@+id/user_password"
+                    style="@style/login_text_style"
+                    android:hint="@string/pass_hint1"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPassword"/>
+
+                <Button
+                    android:id="@+id/button_login"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/selector_login_btn"
+                    android:enabled="false"
+                    android:onClick="login"
+                    android:text="@string/tx_login"
+                    android:textColor="@color/color_list_login_btn"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

@@ -91,7 +91,7 @@ public class FriendInfoActivity extends ActionBarActivity {
         // Setting toolbar as the ActionBar
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationIcon(R.drawable.ic_chevron_left);
+        toolbar.setNavigationIcon(R.drawable.ic_chevron_left_white);
 
         if (userUsername != null) {
             getSupportActionBar().setTitle("Profile"); //TODO change to resource

@@ -103,13 +103,13 @@ public class ChallengesActivity extends ActionBarActivity implements LoaderCallb
 
         //update database
         getChallenges(false);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.challenges_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         // Setting toolbar as the ActionBar
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Challenges");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationIcon(R.drawable.ic_chevron_left);
+        toolbar.setNavigationIcon(R.drawable.ic_chevron_left_white);
 
         //Initializing loader
         getLoaderManager().initLoader(LOADER_ID, null, this).forceLoad();

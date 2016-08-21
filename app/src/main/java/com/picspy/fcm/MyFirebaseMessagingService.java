@@ -56,15 +56,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Map<String, String> map = remoteMessage.getData();
         String data = remoteMessage.getData().get(TAG_MESSAGE);
 
-        //String notification = remoteMessage.getNotification().getBody();
-        //  Log.d(TAG, remoteMessage.)
         Log.d(TAG, map.get(TAG_MESSAGE));
 
         JSONObject message;
         String type = null;
         String sender = null;
         String notificationMessage = "";
-        int senderId = 0, count = 0;
+        int senderId = 0, count;
 
         try {
             message = new JSONObject(data);
@@ -97,7 +95,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
 
         createNotification(TAG_TITLE, notificationMessage, type);
-
     }
 
 

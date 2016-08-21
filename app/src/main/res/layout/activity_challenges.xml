@@ -5,15 +5,15 @@
                 tools:context="com.picspy.views.ChallengesActivity">
 
     <include
-        android:id="@+id/challenges_toolbar"
-        layout="@layout/custom_tool_bar"/>
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_dark"/>
 
     <ListView
         android:id="@+id/challenge_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/bar"
-        android:layout_below="@id/challenges_toolbar">
+        android:layout_below="@id/toolbar">
     </ListView>
 
     <TextView

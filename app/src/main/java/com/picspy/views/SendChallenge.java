@@ -63,14 +63,14 @@ public class SendChallenge extends ActionBarActivity implements
                     getIntent().getIntExtra(SendChallenge.ARG_FRIEND_ID, -1)
             );
 
-            Toolbar toolbar = (Toolbar) findViewById(R.id.challenges_toolbar);
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
             // Setting toolbar as the ActionBar
             //TODO back button stopped working. temp solution in onOptionsItemSelected
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            toolbar.setNavigationIcon(R.drawable.ic_chevron_left);
+            toolbar.setNavigationIcon(R.drawable.ic_chevron_left_white);
 
             // Add the fragment to the 'fragment_container' FrameLayout
             getSupportFragmentManager().beginTransaction()
@@ -230,7 +230,7 @@ public class SendChallenge extends ActionBarActivity implements
     @Override
     protected void onStop() {
         super.onStop();
-        //cancel all pending register/login/addUser tasks
+        //cancel all pending volley requests
         if (VolleyRequest.getInstance(this.getApplicationContext()) != null) {
             VolleyRequest.getInstance(this.getApplication()).getRequestQueue().cancelAll(CANCEL_TAG);
         }
