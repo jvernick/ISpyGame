@@ -40,17 +40,9 @@ public class FriendsCursorAdapter extends ResourceCursorAdapter {
         Intent intent = new Intent(view.getContext(), FriendInfoActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         if (userRecord == null) {
-            intent.putExtra(FriendInfoActivity.FOR_FRIEND, true);
-            intent.putExtra(FriendInfoActivity.USERNAME, uname);
-            intent.putExtra(FriendInfoActivity.FRIEND_ID, id);
-            view.getContext().startActivity(intent);
+            FriendInfoActivity.startActivityForFriend(uname, id, view.getContext());
         } else {
-            intent.putExtra(FriendInfoActivity.FOR_FRIEND, false);
-            intent.putExtra(FriendInfoActivity.USERNAME, userRecord.getUsername());
-            intent.putExtra(FriendInfoActivity.WON, userRecord.getTotal_won());
-            intent.putExtra(FriendInfoActivity.LOST, userRecord.getTotal_lost());
-            intent.putExtra(FriendInfoActivity.L_BOARD, userRecord.getLeaderboard());
-            view.getContext().startActivity(intent);
+            FriendInfoActivity.startActivityForUser(userRecord, view.getContext());
         }
     }
 

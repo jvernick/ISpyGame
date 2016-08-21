@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.picspy.firstapp.R;
 import com.picspy.models.UserRecord;
 import com.picspy.utils.AppConstants;
+import com.picspy.views.FriendInfoActivity;
 
 import java.util.ArrayList;
 
@@ -52,7 +53,7 @@ public class FriendRequestsRecyclerAdapter extends RecyclerView.Adapter<FriendRe
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                adapterRequestListener.acceptRequest(requestor.getId(), position);
+                adapterRequestListener.acceptRequest(requestor, position);
             }
         });
 
@@ -66,14 +67,14 @@ public class FriendRequestsRecyclerAdapter extends RecyclerView.Adapter<FriendRe
                     e.printStackTrace();
                 }
 
-                adapterRequestListener.declineRequest(requestor.getId(), position);
+                adapterRequestListener.declineRequest(requestor, position);
             }
         });
 
         viewHolder.friendUsername.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FriendsCursorAdapter.startFriendInfoActivity(view, null, null, requestor);
+                FriendInfoActivity.startActivityForUser(requestor, view.getContext());
             }
         });
 
@@ -83,7 +84,7 @@ public class FriendRequestsRecyclerAdapter extends RecyclerView.Adapter<FriendRe
         viewHolder.friendIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FriendsCursorAdapter.startFriendInfoActivity(view, null, null, requestor);
+                FriendInfoActivity.startActivityForUser(requestor, view.getContext());
             }
         });
 
@@ -117,9 +118,9 @@ public class FriendRequestsRecyclerAdapter extends RecyclerView.Adapter<FriendRe
     }
 
     public interface AdapterRequestListener {
-        void acceptRequest(int friend_id, int position);
+        void acceptRequest(UserRecord userRecord, int position);
 
-        void declineRequest(int friend_id, int position);
+        void declineRequest(UserRecord userRecord, int position);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

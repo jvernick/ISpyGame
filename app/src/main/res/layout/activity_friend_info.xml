@@ -172,7 +172,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/sent_circle"
                         android:ellipsize="end"
-                        android:gravity="left|center_vertical"
+                        android:gravity="center"
                         android:padding="8dp"
                         android:text="@string/sent_summary"/>
                 </RelativeLayout>
@@ -231,7 +231,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/received_circle"
-                        android:gravity="left|center_vertical"
+                        android:gravity="center"
                         android:padding="8dp"
                         android:text="@string/received_summary"/>
                 </RelativeLayout>
@@ -254,15 +254,17 @@
         android:id="@+id/new_game_fab"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_gravity="center"
-        android:layout_margin="2.5dp"
         android:background="@drawable/floating_circle"
         android:contentDescription="@string/cd_start_game"
         android:onClick="startGame"
-        android:src="@drawable/ic_open_camera"
+        android:src="@drawable/ic_camera_white_small"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="16dp"
         android:visibility="gone"/>
 
     <TextView

@@ -55,9 +55,13 @@
     <string name="sent_summary">You won %1$d%% of challenges &lt;u>%2$s&lt;/u> sent</string>
     <string name="received_summary">&lt;u>%1$s&lt;/u> won %2$d%% of challenges you sent</string>
     <string name="total_stats_title">Total games played</string>
-    <string name="empty_sent_challenges">No challenges sent</string>
-    <string name="empty_received_challenges">No challenges received</string>
+    <string name="empty_sent_challenges">No challenges sent to &lt;u>%1$s&lt;/u></string>
+    <string name="empty_received_challenges">No challenges received from &lt;u>%1$s&lt;/u></string>
     <string name="no_friend_stats_title">No game stats. You are not friends.</string>
+    <string name="info_page_title">Profile</string>
+    <string name="dialog_remove_friend_title">Remove Friend</string>
+    <string name="dialog_remove_friend_message">Are you sure you want to remove this user?</string>
+    <string name="toast_friend_removed">Friend successfully removed</string>
 
     <!-- list_item_challenge.xmle.xml-->
     <string name="guesses_text">Guess</string>

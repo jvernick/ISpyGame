@@ -16,8 +16,10 @@ import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.picspy.adapters.DatabaseHandler;
 import com.picspy.adapters.FriendRequestsRecyclerAdapter;
 import com.picspy.firstapp.R;
+import com.picspy.models.Friend;
 import com.picspy.models.FriendRecord;
 import com.picspy.models.FriendsRecord;
 import com.picspy.models.UserRecord;
@@ -28,6 +30,7 @@ import com.picspy.utils.VolleyRequest;
 import com.picspy.views.FindFriendsActivity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class FriendRequestsFragment extends Fragment implements FriendRequestsRecyclerAdapter.AdapterRequestListener {
     public static final String ARG_NOTF = "com.picspy.friend.isNotification";
@@ -187,7 +190,7 @@ public class FriendRequestsFragment extends Fragment implements FriendRequestsRe
     }
 
     @Override
-    public void declineRequest(int friend_id, final int position) {
+    public void declineRequest(UserRecord userRecord, final int position) {
         Response.Listener<FriendRecord> responseListener = new Response.Listener<FriendRecord>() {
             @Override
             public void onResponse(FriendRecord response) {
@@ -219,18 +222,21 @@ public class FriendRequestsFragment extends Fragment implements FriendRequestsRe
             }
         };
 
-        FriendsRequests deleteFriedRequest = FriendsRequests.removeFriend(getActivity(), friend_id, responseListener, errorListener);
+        FriendsRequests deleteFriedRequest = FriendsRequests.removeFriend(getActivity(), userRecord.getId(), responseListener, errorListener);
         if (deleteFriedRequest != null) deleteFriedRequest.setTag(FindFriendsActivity.CANCEL_TAG);
         VolleyRequest.getInstance(getActivity().getApplicationContext()).addToRequestQueue(deleteFriedRequest);
     }
 
     @Override
-    public void acceptRequest(int friend_id, final int position) {
+    public void acceptRequest(final UserRecord userRecord, final int position) {
         Response.Listener<FriendRecord> responseListener = new Response.Listener<FriendRecord>() {
             @Override
             public void onResponse(FriendRecord response) {
                 if (response != null) {
                     Log.d(TAG, response.toString());
+                    DatabaseHandler.getInstance(getActivity()).addFriends(Collections
+                            .singletonList(new Friend(userRecord.getId(), userRecord.getUsername())));
+                    PrefUtil.putBoolean(getActivity(), AppConstants.UPDATE_FRIEND_LIST, true);
                     mAdapter.removeItem(position);
                 }
             }
@@ -253,14 +259,12 @@ public class FriendRequestsFragment extends Fragment implements FriendRequestsRe
                         toast.setDuration(Toast.LENGTH_LONG);
                         toast.setView(layout);
                         toast.show();
-                    } else {//TODO for debugging, remove
-                        Toast.makeText(getActivity(), "An error occurred", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
         };
 
-        FriendsRequests deleteFriedRequest = FriendsRequests.acceptFriendRequest(getActivity(), friend_id, responseListener, errorListener);
+        FriendsRequests deleteFriedRequest = FriendsRequests.acceptFriendRequest(getActivity(), userRecord.getId(), responseListener, errorListener);
         if (deleteFriedRequest != null) deleteFriedRequest.setTag(FindFriendsActivity.CANCEL_TAG);
         VolleyRequest.getInstance(getActivity().getApplicationContext()).addToRequestQueue(deleteFriedRequest);
     }

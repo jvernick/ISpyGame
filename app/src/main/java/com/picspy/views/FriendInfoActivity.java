@@ -1,6 +1,7 @@
 package com.picspy.views;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -36,26 +37,27 @@ import java.util.ArrayList;
 
 /**
  * Activity that displays friend information
- * TODo revise this documentation
- * When starting activity, pass the following information to the intent:
- * FRIEND_ID && FRIEND_USERNAME : if this is for a friend
- * FOR_FRIEND : if this for a friend request
- * Nothing : if this is for self.
+ * Start activity only through one of the following methods:
+ * {@link #startActivityForFriend(String, Integer, Context)}
+ * {@link #startActivityForUser(UserRecord, Context)}
+ * This ensures that the appropriate attributes are set.
  */
 public class FriendInfoActivity extends ActionBarActivity {
-    public static final String USERNAME = "username";
-    public static final String WON = "won";
-    public static final String LOST = "lost";
-    public static final String L_BOARD = "l_board";
-    public static final String FRIEND_ID = "com.picspy.FRIEND_ID";
-    public static final String FOR_FRIEND = "com.picspy.FRIEND_REQUEST";
-
+    private static final String USERNAME = "username";
+    private static final String WON = "won";
+    private static final String LOST = "lost";
+    private static final String L_BOARD = "l_board";
+    private static final String FRIEND_ID = "com.picspy.FRIEND_ID";
+    private static final String FOR_FRIEND = "com.picspy.FRIEND_REQUEST";
     private static final String TAG = "FriendsInfoActivity";
     private static final String CANCEL_TAG = "deleteFriend";
     private static final int MENU_DELETE_ID = 1;
+    public static final int ANIMATION_DURATION = 750;
     // stat views
     private TextView fromFriendWon, fromFriendLost, toFriendWon, toFriendLost;
-    private TextView userTotalWon, userTotalLost, userLeaderboard, userStatsTitle;
+    private TextView userTotalWon;
+    private TextView userTotalLost;
+    private TextView userLeaderboard;
     private TextView sentSummary, receivedSummary, friendUsername;
     // Parent cards
     private View fromFriendCard, toFriendCard, userStatsCard, userProfileCard;
@@ -93,9 +95,40 @@ public class FriendInfoActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationIcon(R.drawable.ic_chevron_left_white);
 
-        if (userUsername != null) {
-            getSupportActionBar().setTitle("Profile"); //TODO change to resource
-        }
+        getSupportActionBar().setTitle(getString(R.string.info_page_title));
+    }
+
+    /**
+     * Configures the appropriate intents and starts this activity for friends
+     *
+     * @param userName friend's username
+     * @param id       friend's userId
+     * @param context  Callee context
+     */
+    public static void startActivityForFriend(String userName, Integer id, Context context) {
+        Intent intent = new Intent(context, FriendInfoActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(FriendInfoActivity.FOR_FRIEND, true);
+        intent.putExtra(FriendInfoActivity.USERNAME, userName);
+        intent.putExtra(FriendInfoActivity.FRIEND_ID, id);
+        context.startActivity(intent);
+    }
+
+    /**
+     * Configures the appropriate intents and starts this activity for non-friends
+     *
+     * @param userRecord UserRecord containing user info
+     * @param context    Callee context
+     */
+    public static void startActivityForUser(UserRecord userRecord, Context context) {
+        Intent intent = new Intent(context, FriendInfoActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(FriendInfoActivity.FOR_FRIEND, false);
+        intent.putExtra(FriendInfoActivity.USERNAME, userRecord.getUsername());
+        intent.putExtra(FriendInfoActivity.WON, userRecord.getTotal_won());
+        intent.putExtra(FriendInfoActivity.LOST, userRecord.getTotal_lost());
+        intent.putExtra(FriendInfoActivity.L_BOARD, userRecord.getLeaderboard());
+        context.startActivity(intent);
     }
 
     /**
@@ -119,7 +152,7 @@ public class FriendInfoActivity extends ActionBarActivity {
     }
 
     /**
-     * Initializes all the views in this activity and hides the friends start depending
+     * Initializes all the views in this activity and hides the friends stat depending
      * on whether the user to be displayed is a friend
      */
     private void initializeViews() {
@@ -130,7 +163,6 @@ public class FriendInfoActivity extends ActionBarActivity {
         userTotalWon = (TextView) findViewById(R.id.total_won);
         userTotalLost = (TextView) findViewById(R.id.total_lost);
         userLeaderboard = (TextView) findViewById(R.id.leaderboard);
-        userStatsTitle = (TextView) findViewById(R.id.stats_title);
 
         // Summary views
         sentSummary = (TextView) findViewById(R.id.sent_summary);
@@ -148,7 +180,7 @@ public class FriendInfoActivity extends ActionBarActivity {
 
         // Empty views
         emptyView = (TextView) findViewById(R.id.empty_view);
-        noFriendStatsTitle = (TextView) findViewById(R.id.no_friend_stats_title);
+        noFriendStatsTitle = findViewById(R.id.no_friend_stats_title);
 
         if (forFriend) {
             // init drawing
@@ -160,9 +192,6 @@ public class FriendInfoActivity extends ActionBarActivity {
             if (requestSuccessful) findViewById(R.id.joint_stats).setVisibility(View.GONE);
         }
 
-        //TODO move to xml
-        fromFriendCard.setVisibility(View.GONE);
-        toFriendCard.setVisibility(View.GONE);
         userStatsCard.setVisibility(View.GONE);
         userProfileCard.setVisibility(View.GONE);
     }
@@ -177,9 +206,6 @@ public class FriendInfoActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         switch (id) {
             case (android.R.id.home):
@@ -191,23 +217,23 @@ public class FriendInfoActivity extends ActionBarActivity {
                 }
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(FriendInfoActivity.this);
                 alertDialogs.add(
-                        alertDialog.setTitle("Remove Friend")
-                                .setMessage("Are you sure you want to remove this" + " user?")
-                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        //TODO ensure that on return to parent, friends list is reloaded in on resume
-                                        //one way will be to return boolean to parent or always refresh
-                                        deleteFriend(userId);
-                                    }
-                                }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        alertDialog.setTitle(getString(R.string.dialog_remove_friend_title))
+                                   .setMessage(getString(R.string.dialog_remove_friend_message))
+                                   .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                       @Override
+                                       public void onClick(DialogInterface dialog, int which) {
+                                           //TODO ensure that on return to parent, friends list is reloaded in on resume
+                                           //one way will be to return boolean to parent or always refresh
+                                           deleteFriend(userId);
+                                       }
+                                   }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.cancel();
                                 dialog.dismiss();
                             }
                         })
-                                .setIcon(android.R.drawable.ic_dialog_alert) //TODO change alert color to red?
-                                .show()
+                                   .setIcon(android.R.drawable.ic_dialog_alert)
+                                   .show()
                 );
 
                 return true;
@@ -221,8 +247,10 @@ public class FriendInfoActivity extends ActionBarActivity {
      * @param v view from button click
      */
     public void startGame(View v) {
-        //TODO Start activity to create new game
-        Toast.makeText(FriendInfoActivity.this, "Game started", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, CameraActivity.class);
+        intent.putExtra(SendChallenge.ARG_FRIEND_ID, userId);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     /**
@@ -235,7 +263,7 @@ public class FriendInfoActivity extends ActionBarActivity {
         userTotalWon.setText(String.valueOf(userRecord.getTotal_won()));
         userTotalLost.setText(String.valueOf(userRecord.getTotal_lost()));
         userLeaderboard.setText(String.valueOf(userRecord.getLeaderboard()));
-        //findViewById(R.id.page).setVisibility(View.VISIBLE); //TODO cleanup
+
         userProfileCard.setVisibility(View.VISIBLE);
         userStatsCard.setVisibility(View.VISIBLE);
     }
@@ -286,23 +314,24 @@ public class FriendInfoActivity extends ActionBarActivity {
             bottomPercentage = friend2Lost / totalBottom;
         }
 
-        Log.d(TAG, "  " + topPercentage + " " + bottomPercentage);
-        CharSequence text1 = Html.fromHtml(String.format(getString(R.string.sent_summary),
+        CharSequence sentText = Html.fromHtml(String.format(getString(R.string.sent_summary),
                 (int) ((1 - topPercentage) * 100), userUsername));
-        CharSequence text2 = Html.fromHtml(String.format(getString(R.string.received_summary),
+        CharSequence receivedText = Html.fromHtml(String.format(getString(R.string.received_summary),
                 userUsername, (int) ((1 - bottomPercentage) * 100)));
-        text1 = totalTop == 0 ? getString(R.string.empty_received_challenges) : text1;
-        sentSummary.setText(text1);
-        text2 = (totalBottom == 0) ? getString(R.string.empty_sent_challenges) : text2;
-        receivedSummary.setText(text2);
+        CharSequence emptyReceivedText = Html.fromHtml(String.format(getString(R.string.empty_received_challenges),
+                userUsername));
+        CharSequence emptySentText = Html.fromHtml(String.format(getString(R.string.empty_sent_challenges),
+                userUsername));
 
-        sentSummary.setText(text1);
-        receivedSummary.setText(text2);
+        sentText = totalTop == 0 ? emptyReceivedText : sentText;
+        receivedText = (totalBottom == 0) ? emptySentText : receivedText;
+        sentSummary.setText(sentText);
+        receivedSummary.setText(receivedText);
 
         CircleAngleAnimation animation1 = new CircleAngleAnimation(sentCircle, topPercentage * 360);
         CircleAngleAnimation animation2 = new CircleAngleAnimation(receivedCircle, bottomPercentage * 360);
-        animation1.setDuration(750);
-        animation2.setDuration(750);
+        animation1.setDuration(ANIMATION_DURATION);
+        animation2.setDuration(ANIMATION_DURATION);
 
         sentCircle.startAnimation(animation1);
         receivedCircle.startAnimation(animation2);
@@ -324,8 +353,8 @@ public class FriendInfoActivity extends ActionBarActivity {
                 progressSpinner.setVisibility(View.GONE);
                 if (response != null) {
                     menu.add(Menu.NONE, MENU_DELETE_ID, Menu.NONE, R.string.friend_delete_menu)
-                            .setIcon(R.drawable.ic_delete)
-                            .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+                        .setIcon(R.drawable.ic_delete)
+                        .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
                     setUserStats(response.getOtherUserRecord(myId));
                     setFriendStats(response);
                     findViewById(R.id.page).setVisibility(View.VISIBLE);
@@ -381,10 +410,11 @@ public class FriendInfoActivity extends ActionBarActivity {
                     DatabaseHandler dbHandler = DatabaseHandler.getInstance((getApplicationContext()));
                     if (dbHandler.getFriend(friend_id) != null) {
                         dbHandler.deleteFriend(new Friend(friend_id, null));
+                        PrefUtil.putBoolean(getApplicationContext(), AppConstants.UPDATE_FRIEND_LIST, true);
                     }
 
                     onBackPressed();
-                    Toast.makeText(FriendInfoActivity.this, "Friend successfully removed",
+                    Toast.makeText(FriendInfoActivity.this, getString(R.string.toast_friend_removed),
                             Toast.LENGTH_SHORT).show();
                 }
             }
@@ -396,7 +426,6 @@ public class FriendInfoActivity extends ActionBarActivity {
                 progressSpinner.setVisibility(View.GONE);
                 if (error != null) {
                     String err = (error.getMessage() == null) ? "An error occurred" : error.getMessage();
-                    error.printStackTrace();
                     Log.d(TAG, err);
                     //Show toast only if there is no server connection on refresh
                     if (err.matches(AppConstants.CONNECTION_ERROR) || err.matches(AppConstants.TIMEOUT_ERROR)) {
@@ -408,8 +437,6 @@ public class FriendInfoActivity extends ActionBarActivity {
                         toast.setDuration(Toast.LENGTH_LONG);
                         toast.setView(layout);
                         toast.show();
-                    } else { //TODO for debugging, remove
-                        Toast.makeText(FriendInfoActivity.this, "An error occurred", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -427,7 +454,7 @@ public class FriendInfoActivity extends ActionBarActivity {
         for (AlertDialog d : alertDialogs) {
             if (d.isShowing()) d.dismiss();
         }
-        //cancel all pending register/login/addUser tasks
+        //cancel all pending volley requests
         VolleyRequest.getInstance(this.getApplication()).getRequestQueue().cancelAll(CANCEL_TAG);
     }
 }

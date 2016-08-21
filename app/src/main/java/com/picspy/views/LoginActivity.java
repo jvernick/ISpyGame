@@ -15,6 +15,7 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -227,6 +228,8 @@ public class LoginActivity extends ActionBarActivity {
      * @param view View from button click
      */
     public void login(View view) {
+        InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         boolean emailValid = isValidEmail(edtEmail);
         boolean pwdValid = isValidPassword(edtPaswd);
 

@@ -238,6 +238,11 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
             friendReqBadge.setVisibility(View.VISIBLE);
             friendReqBadge.setText(" " + notificationCount + " ");
         }
+        // update friend list
+        boolean shouldUpdateFriendList = PrefUtil.getBoolean(getActivity(), AppConstants.UPDATE_FRIEND_LIST, false);
+        if (shouldUpdateFriendList) {
+            cursorAdapter.notifyDataSetChanged();
+        }
     }
 
     /**

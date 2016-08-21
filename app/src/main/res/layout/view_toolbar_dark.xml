@@ -4,12 +4,11 @@
                                    xmlns:android="http://schemas.android.com/apk/res/android"
                                    xmlns:app="http://schemas.android.com/apk/res-auto"
                                    android:layout_width="match_parent"
-                                   android:layout_height="48dp"
+                                   android:layout_height="?android:actionBarSize"
                                    android:background="@color/primary"
-                                   android:minHeight="48dp"
-                                   android:theme="@style/ActionBarTheme"
+                                   android:theme="@style/ActionBarThemeDark"
                                    app:navigationIcon="@drawable/ic_chevron_left_white"
-                                   app:theme="@style/ActionBarTheme"
+                                   app:theme="@style/ActionBarThemeDark"
                                    app:titleTextAppearance="?android:attr/textAppearanceLarge">
 
     <TextView

@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.picspy.firstapp.R;
 import com.picspy.models.UserRecord;
 import com.picspy.utils.AppConstants;
+import com.picspy.views.FriendInfoActivity;
 
 import java.util.List;
 
@@ -84,7 +85,7 @@ public class FriendRequestsArrayAdapter extends ArrayAdapter<UserRecord> {
         viewHolder.friendUsername.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FriendsCursorAdapter.startFriendInfoActivity(view, null, null, requestor);
+                FriendInfoActivity.startActivityForUser(requestor, view.getContext());
             }
         });
 
@@ -94,7 +95,7 @@ public class FriendRequestsArrayAdapter extends ArrayAdapter<UserRecord> {
         viewHolder.friendIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FriendsCursorAdapter.startFriendInfoActivity(view, null, null, requestor);
+                FriendInfoActivity.startActivityForUser(requestor, view.getContext());
             }
         });
 

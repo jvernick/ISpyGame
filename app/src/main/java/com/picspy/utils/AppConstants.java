@@ -16,6 +16,7 @@ public class AppConstants {
     public static final String USER_ID = "user_id";
     public static final String APP_NAME = "picspy";
     public static final String API_KEY = "api_key";
+    public static final String UPDATE_FRIEND_LIST = "update_friend";
     public static final String PICSPY_API_KEY =
             "6eba9ba30d039fe36e4eb9f85531078a0d79a8be684df57685c0af59058318dd";
     //TODO change following constants as required (specifically just change the IP during testing)
@@ -50,7 +51,7 @@ public class AppConstants {
             0xFFCE93D8  //purple_200
     };
     // V2 info
-    public static final String DSP_URL_2 = "http://192.168.2.17:8081/api/v2/";
+    public static final String DSP_URL_2 = "http://192.168.0.14:8081/api/v2/";
     public static final String SESSION_TOKEN = "session_token";
     public static final String USER_NAME = "username";
     public static final int SESSION_TTL = 30;
@@ -58,8 +59,7 @@ public class AppConstants {
     public static final String CONNECTION_ERROR = ".*failed to connect to.*";
     public static final String TIMEOUT_ERROR = "timeoutError";
 
-    // To prevent someone from accidentally instantiating the AppConstants class,
-    // give it an empty constructor.
+    // To prevent someone from accidentally instantiating the AppConstants class
     private AppConstants() {
     }
 

@@ -16,9 +16,9 @@
     </style>
 
     <!-- Dark Toolbar theme-->
-    <style name="ActionBarTheme" parent="Theme.AppCompat">
+    <style name="ActionBarThemeDark" parent="Theme.AppCompat">
         <item name="android:textCursorDrawable">?android:attr/hint</item>
-        <item name="android:textColorPrimary">@color/secondary_text_default_material_dark</item>
+        <item name="android:textColorPrimary">@color/primary_text_default_material_dark</item>
         <item name="actionButtonStyle">@style/ActionButtonStyle</item>
         <item name="maxButtonHeight">8dp</item>
         <item name="homeAsUpIndicator">@drawable/ic_chevron_left_white</item>
@@ -28,7 +28,7 @@
 
     <!-- Light Toolbar theme-->
     <style name="ActionBarThemeLight" parent="Theme.AppCompat.Light">
-        <item name="android:textColorPrimary">@color/secondary_text_default_material_light</item>
+        <item name="android:textColorPrimary">@color/primary_text_default_material_light</item>
         <item name="actionButtonStyle">@style/ActionButtonStyle</item>
         <item name="maxButtonHeight">8dp</item>
         <item name="homeAsUpIndicator">@drawable/ic_chevron_left_white</item>
@@ -80,6 +80,7 @@
         <item name="android:textStyle">bold</item>
         <item name="android:gravity">center</item>
         <item name="android:text">@string/score</item>
+        <item name="android:singleLine">true</item>
         <item name="android:padding">2dp</item>
         <item name="android:textSize">20sp</item>
         <item name="android:layout_alignParentRight">true</item>

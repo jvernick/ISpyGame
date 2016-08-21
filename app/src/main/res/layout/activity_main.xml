@@ -46,7 +46,7 @@
         android:onClick="launchCamera"
         android:padding="4dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/ic_open_camera"/>
+        android:src="@drawable/ic_camera_white_medium"/>
 
     <ImageButton
         android:id="@+id/inboxButton"
