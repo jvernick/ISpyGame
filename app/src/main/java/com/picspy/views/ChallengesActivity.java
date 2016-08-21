@@ -73,7 +73,7 @@ public class ChallengesActivity extends ActionBarActivity implements LoaderCallb
 
         dbHandler = DatabaseHandler.getInstance(this);
         GamesCursorAdapter cursorAdapter = new GamesCursorAdapter(getApplicationContext(),
-                R.layout.item_challenge,
+                R.layout.list_item_challenge,
                 null, 0);
         listView.setAdapter(cursorAdapter);
 
@@ -181,7 +181,7 @@ public class ChallengesActivity extends ActionBarActivity implements LoaderCallb
                     //Show toast only if there is no server connection on refresh
                     if ((err.matches(AppConstants.CONNECTION_ERROR) || err.matches(AppConstants.TIMEOUT_ERROR)) && (isRefresh || isNotf)) {
                         LayoutInflater inflater = getLayoutInflater();
-                        View layout = inflater.inflate(R.layout.custom_toast,
+                        View layout = inflater.inflate(R.layout.view_network_error_toast,
                                 (ViewGroup) findViewById(R.id.toast_layout_root));
                         Toast toast = new Toast(getApplicationContext());
                         toast.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);

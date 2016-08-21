@@ -130,7 +130,7 @@ public class FriendRequestsFragment extends Fragment implements FriendRequestsRe
                 Log.d(TAG, response.toString());
                 progressSpinner.setVisibility(View.GONE);
                 if (response.getCount() != 0) {
-                    processResponse(response);
+                    processFriendRequests(response);
                 } else {
                     emptyListView.setVisibility(View.VISIBLE);
                 }
@@ -149,7 +149,7 @@ public class FriendRequestsFragment extends Fragment implements FriendRequestsRe
                     //Show toast only if there is no server connection this is from a notification
                     if ((err.matches(AppConstants.CONNECTION_ERROR) || err.matches(AppConstants.TIMEOUT_ERROR)) && (isStartFragment)/*&& fromNotf*/) {
                         LayoutInflater inflater = getActivity().getLayoutInflater();
-                        View layout = inflater.inflate(R.layout.custom_toast,
+                        View layout = inflater.inflate(R.layout.view_network_error_toast,
                                 (ViewGroup) getActivity().findViewById(R.id.toast_layout_root));
                         Toast toast = new Toast(getActivity());
                         toast.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
@@ -166,7 +166,7 @@ public class FriendRequestsFragment extends Fragment implements FriendRequestsRe
         VolleyRequest.getInstance(getActivity().getApplicationContext()).addToRequestQueue(getRequests);
     }
 
-    private void processResponse(FriendsRecord response) {
+    private void processFriendRequests(FriendsRecord response) {
         ArrayList<UserRecord> requestList = new ArrayList<>();
         ArrayList<FriendRecord> requestRecords = response.getResource();
         Log.d(TAG, response.toString());
@@ -205,7 +205,7 @@ public class FriendRequestsFragment extends Fragment implements FriendRequestsRe
                     //Show toast only if there is no server connection on refresh
                     if (err.matches(AppConstants.CONNECTION_ERROR) || err.matches(AppConstants.TIMEOUT_ERROR)) {
                         LayoutInflater inflater = getActivity().getLayoutInflater();
-                        View layout = inflater.inflate(R.layout.custom_toast,
+                        View layout = inflater.inflate(R.layout.view_network_error_toast,
                                 (ViewGroup) getActivity().findViewById(R.id.toast_layout_root));
                         Toast toast = new Toast(getActivity());
                         toast.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
@@ -246,7 +246,7 @@ public class FriendRequestsFragment extends Fragment implements FriendRequestsRe
                     //Show toast only if there is no server connection on refresh
                     if (err.matches(AppConstants.CONNECTION_ERROR) || err.matches(AppConstants.TIMEOUT_ERROR)) {
                         LayoutInflater inflater = getActivity().getLayoutInflater();
-                        View layout = inflater.inflate(R.layout.custom_toast,
+                        View layout = inflater.inflate(R.layout.view_network_error_toast,
                                 (ViewGroup) getActivity().findViewById(R.id.toast_layout_root));
                         Toast toast = new Toast(getActivity());
                         toast.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);

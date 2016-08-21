@@ -103,7 +103,7 @@ public class ChooseFriendsFragment extends ListFragment implements
         }
 
         cursorAdapter = new ChooseFriendsCursorAdapter(getActivity(),
-                R.layout.item_choose_friend, null, 0, this);
+                R.layout.list_item_choose_friend, null, 0, this);
     }
 
     @Override

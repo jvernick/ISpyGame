@@ -175,7 +175,7 @@ public class ConfigureChallengeFragment extends Fragment {
     }
 
     private AttributeSet getButtonAttributes() {
-        XmlPullParser parser = getResources().getLayout(R.layout.custom_radio_btn);
+        XmlPullParser parser = getResources().getLayout(R.layout.view_radio_btn);
         AttributeSet attributes = Xml.asAttributeSet(parser);
         int state = 0;
         do {

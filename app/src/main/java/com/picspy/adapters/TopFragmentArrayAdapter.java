@@ -55,7 +55,7 @@ public class TopFragmentArrayAdapter extends ArrayAdapter<Game> {
 
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(this.context);
-            convertView = inflater.inflate(R.layout.item_challenge, parent, false);
+            convertView = inflater.inflate(R.layout.list_item_challenge, parent, false);
             viewHolder = new ViewHolder();
 
             viewHolder.username = (TextView) convertView.findViewById(R.id.sender_username);

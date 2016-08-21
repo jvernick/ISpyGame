@@ -87,7 +87,7 @@ public class FriendsFragment extends ListFragment implements LoaderManager.Loade
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        cursorAdapter = new FriendsCursorAdapter(getActivity(), R.layout.item_friend, null, 0);
+        cursorAdapter = new FriendsCursorAdapter(getActivity(), R.layout.list_item_friend, null, 0);
         setListAdapter(cursorAdapter);
         getFriends(PrefUtil.getInt(getActivity(), AppConstants.MAX_FRIEND_RECORD_ID, 0));
     }

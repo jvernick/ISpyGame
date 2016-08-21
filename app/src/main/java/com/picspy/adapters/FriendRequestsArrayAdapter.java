@@ -39,7 +39,7 @@ public class FriendRequestsArrayAdapter extends ArrayAdapter<UserRecord> {
         ViewHolder viewHolder;
 
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.item_friend_request, parent, false);
+            convertView = inflater.inflate(R.layout.list_item_friend_request, parent, false);
             viewHolder = new ViewHolder();
 
             viewHolder.friendIcon = (ImageView) convertView.findViewById(R.id.request_icon);

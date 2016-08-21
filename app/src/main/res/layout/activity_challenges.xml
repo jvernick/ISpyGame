@@ -6,7 +6,7 @@
 
     <include
         android:id="@+id/toolbar"
-        layout="@layout/toolbar_dark"/>
+        layout="@layout/view_toolbar_dark"/>
 
     <ListView
         android:id="@+id/challenge_list"

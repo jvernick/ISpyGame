@@ -59,14 +59,10 @@
     <string name="empty_received_challenges">No challenges received</string>
     <string name="no_friend_stats_title">No game stats. You are not friends.</string>
 
-    <!-- item_challenge.xml-->
+    <!-- list_item_challenge.xmle.xml-->
     <string name="guesses_text">Guess</string>
     <string name="challenge_time_text">Time</string>
 
-    <!-- no_connection_dialog.xml-->
-    <string name="connectivity_dialog_text">No internet connectivity</string>
-    <string name="connectivity_dialog_button"> OK </string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="home_fragment">Home</string>
     <string name="friends_fragment">Friends</string>
     <string name="menu_fragment">Menu</string>
@@ -92,7 +88,7 @@
     <string name="err_friend_notif">"No connection to server, unable to get friend request"</string>
     <string name="title_list_header">FRIEND REQUESTS</string>
 
-    <!-- item_friend_request -->
+    <!-- list_item_friend_request -->
     <string name="btn_accept">Accept</string>
     <string name="btn_decline">Decline</string>
 
@@ -124,7 +120,7 @@
     <string name="search_hint">Search</string>
     <string name="search_title">Search Friends</string>
 
-    <!-- custom_toast network error text-->
+    <!-- view_network_error_toast network error text-->
     <string name="networkErrorText">No connection to server.</string>
 
     <!--ViewChallenge-->

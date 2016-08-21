@@ -43,7 +43,7 @@ public class SearchEditTextView extends RelativeLayout {
 
     private void initViews() {
         inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(R.layout.custom_search_edit_text, this, true);
+        inflater.inflate(R.layout.view_search_edit_text, this, true);
         searchText = (EditText) findViewById(R.id.clearable_edit);
         searchText.clearFocus();
         btn_clear = (Button) findViewById(R.id.clearable_button_clear);

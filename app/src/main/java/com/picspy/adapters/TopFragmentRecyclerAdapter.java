@@ -64,7 +64,7 @@ public class TopFragmentRecyclerAdapter extends RecyclerView.Adapter<TopFragment
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int i) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_challenge, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_challenge, parent, false);
         return new ViewHolder(v);
     }
 

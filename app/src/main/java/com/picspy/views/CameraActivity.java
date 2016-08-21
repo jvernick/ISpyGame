@@ -114,9 +114,9 @@ public class CameraActivity extends Activity implements Camera.AutoFocusCallback
             flashButton.setVisibility(View.GONE);
             switchButton.setVisibility(View.GONE);
 
-            // Inflate the layout defined in drawing_pad.xml
+            // Inflate the layout defined in view_drawing_pad.xmld.xml
             LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            drawingPad = (RelativeLayout) inflater.inflate(R.layout.drawing_pad, null, false);
+            drawingPad = (RelativeLayout) inflater.inflate(R.layout.view_drawing_pad, null, false);
             // Instantiate the custom DrawingView which will allow for drawing on the screen
             mDrawingView = new DrawingView(getApplicationContext());
             // Distinguish the DrawingView from its relatives by setting a tag on it

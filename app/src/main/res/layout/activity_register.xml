@@ -8,7 +8,7 @@
 
     <include
         android:id="@+id/toolbar"
-        layout="@layout/toolbar_light"/>
+        layout="@layout/view_toolbar_light"/>
 
     <ScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
