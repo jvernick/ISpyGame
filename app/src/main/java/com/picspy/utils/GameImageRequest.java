@@ -12,7 +12,7 @@ import com.android.volley.toolbox.ImageRequest;
 import java.util.Map;
 
 /**
- * Created by BrunelAmC on 4/2/2016.
+ * Provides API for sending challenge image
  */
 public class GameImageRequest extends ImageRequest {
     private static final String TAG = "GameImageReq";
@@ -44,6 +44,7 @@ public class GameImageRequest extends ImageRequest {
         this.context = context;
     }
 
+    /*Gets and returns image from server */
     public static GameImageRequest getImage(Context context, String filename,
                                             Response.Listener<Bitmap> listener, int maxWidth,
                                             int maxHeight, ImageView.ScaleType scaleType,

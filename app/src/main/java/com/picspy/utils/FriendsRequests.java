@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by BrunelAmC on 1/19/2016.
+ * Provides API for making friend requests
  */
 public class FriendsRequests extends JsonObjectRequest {
 
@@ -51,8 +51,8 @@ public class FriendsRequests extends JsonObjectRequest {
         Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                Log.d(TAG, "JSONResponse: " + response.toString());
                 FriendsRecord result = gson.fromJson(response.toString(), FriendsRecord.class);
-                Log.d(TAG, "RecordsResponse" + result.toString());
                 listener.onResponse(result);
             }
         };
@@ -71,8 +71,8 @@ public class FriendsRequests extends JsonObjectRequest {
         Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                Log.d(TAG, "JSONResponse: " + response.toString());
                 FriendsRecord result = gson.fromJson(response.toString(), FriendsRecord.class);
-                Log.d(TAG, "RecordsResponse" + result.toString());
                 listener.onResponse(result.getOnlyResource());
             }
         };
@@ -102,6 +102,7 @@ public class FriendsRequests extends JsonObjectRequest {
         Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                Log.d(TAG, "JSONResponse: " + response.toString());
                 FriendsRecord result = gson.fromJson(response.toString(), FriendsRecord.class);
                 listener.onResponse(result.getOnlyResource());
             }
@@ -125,10 +126,10 @@ public class FriendsRequests extends JsonObjectRequest {
     }
 
     public static FriendsRequests getFriendRequests(Context context, final Response.Listener<FriendsRecord> listener, Response.ErrorListener errorListener) {
-        Log.d(TAG, "getFriendRequests");
         Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                Log.d(TAG, "JSONResponse: " + response.toString());
                 FriendsRecord result = gson.fromJson(response.toString(), FriendsRecord.class);
                 listener.onResponse(result);
             }
@@ -150,6 +151,7 @@ public class FriendsRequests extends JsonObjectRequest {
         Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                Log.d(TAG, "JSONResponse: " + response.toString());
                 FriendsRecord result = gson.fromJson(response.toString(), FriendsRecord.class);
                 listener.onResponse(result.getOnlyResource());
             }
@@ -158,7 +160,6 @@ public class FriendsRequests extends JsonObjectRequest {
         int userId = PrefUtil.getInt(context, AppConstants.USER_ID);
         RecordsRequest<FriendModel> request = new RecordsRequest<>();
         request.addResource(new FriendModel(friend_id, userId, 0));
-
 
         JSONObject jsonRequest;
         try {
@@ -179,7 +180,7 @@ public class FriendsRequests extends JsonObjectRequest {
         Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-
+                Log.d(TAG, "JSONResponse: " + response.toString());
                 FriendsRecord result = gson.fromJson(response.toString(), FriendsRecord.class);
                 listener.onResponse(result.getOnlyResource());
             }
@@ -219,7 +220,6 @@ public class FriendsRequests extends JsonObjectRequest {
     protected VolleyError parseNetworkError(VolleyError volleyError) {
         return VolleyRequest.parseNetworkError(volleyError);
     }
-
 
     /**
      * Model for posting data to server. Used for sending friend requests and removing friends.

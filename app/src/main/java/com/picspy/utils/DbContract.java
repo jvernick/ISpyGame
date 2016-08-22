@@ -3,7 +3,6 @@ package com.picspy.utils;
 import android.provider.BaseColumns;
 
 /**
- * Created by BrunelAmC on 8/5/2015.
  * This class stores public constants for accessing the sqlite database. Each inner class defines
  * constants for a database table
  */

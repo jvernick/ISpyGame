@@ -6,10 +6,9 @@ import android.util.Log;
 import com.picspy.adapters.DatabaseHandler;
 
 /**
- * Created by BrunelAmC on 1/16/2016.
+ * Api for clearing app data (sqlite)
  */
 public class Accounts {
-
     public static void checkNewAccount(Context context, int id) {
         int currentId = PrefUtil.getInt(context, AppConstants.USER_ID);
         //-1 means empty == first user

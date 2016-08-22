@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by BrunelAmC on 1/17/2016.
+ * Provides API for game challenge requests
  */
 public class ChallengesRequests extends JsonObjectRequest {
 
@@ -64,6 +64,7 @@ public class ChallengesRequests extends JsonObjectRequest {
         Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                Log.d(TAG, "JSONResponse: " + response.toString());
                 GamesRecord result = gson.fromJson(response.toString(), GamesRecord.class);
                 listener.onResponse(result.getOnlyResource());
             }
@@ -101,9 +102,8 @@ public class ChallengesRequests extends JsonObjectRequest {
         Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.d(TAG, "JSONresponse: " + response.toString());
+                Log.d(TAG, "JSONResponse: " + response.toString());
                 UserChallengesRecord result = gson.fromJson(response.toString(), UserChallengesRecord.class);
-                Log.d(TAG, "RecordsResponse" + result.toString());
                 listener.onResponse(result);
             }
         };
@@ -129,14 +129,14 @@ public class ChallengesRequests extends JsonObjectRequest {
      * @param errorListener Error listener
      * @return A {@link ChallengesRequests} to add to request queue
      */
-    public static ChallengesRequests getleaderboard(Context context, final Response.Listener<GamesRecord> listener,
+    public static ChallengesRequests getLeaderboard(Context context, final Response.Listener<GamesRecord> listener,
                                                     Response.ErrorListener errorListener) {
 
         Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                Log.d(TAG, "JSONResponse: " + response.toString());
                 GamesRecord result = gson.fromJson(response.toString(), GamesRecord.class);
-                Log.d(TAG, "RecordsResponse" + result.toString());
                 listener.onResponse(result);
             }
         };
@@ -154,16 +154,16 @@ public class ChallengesRequests extends JsonObjectRequest {
         return new ChallengesRequests(context, Method.GET, url, null, jsonObjectListener, errorListener);
     }
 
-    public static ChallengesRequests submitChallengeResult(Context context, int
-            recordId, HashMap<String, String>
-                                                                   params, final Response.Listener<UserChallengesRecord> listener, Response.ErrorListener
-                                                                   errorListener) {
+    public static ChallengesRequests submitChallengeResult(Context context, int recordId,
+                                                           HashMap<String, String> params,
+                                                           final Response.Listener<UserChallengesRecord> listener,
+                                                           Response.ErrorListener errorListener) {
 
         Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                Log.d(TAG, "JSONResponse: " + response.toString());
                 UserChallengesRecord result = gson.fromJson(response.toString(), UserChallengesRecord.class);
-                Log.d(TAG, "RecordResponse: " + result.toString());
                 listener.onResponse(result);
             }
         };
@@ -187,7 +187,7 @@ public class ChallengesRequests extends JsonObjectRequest {
      * Class representing and storing server Table column names
      * STATIC, do not change
      */
-    public static class GAME_LABEL {
+    public static final class GAME_LABEL {
         public static final String HINT = "hint";
         public static final String SELECTION = "selection";
         public static final String GUESSES = "guess";

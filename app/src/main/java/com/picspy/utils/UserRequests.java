@@ -20,13 +20,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by BrunelAmC on 1/15/2016.
+ * Provides API for requesting User information
  */
 public class UserRequests extends JsonObjectRequest {
     private static final String TAG = "UserReq";
     private static final Gson gson = new Gson();
     private Context context;
     private Type type;
+
+    public enum Type {
+        ADD, FIND, UPDATE
+    }
 
     /**
      * Creates a new request.
@@ -38,7 +42,7 @@ public class UserRequests extends JsonObjectRequest {
      * @param jsonObjectListener Listener to receive the JSON response
      * @param errorListener      Error listener, or null to ignore errors.
      */
-    public UserRequests(Context context, Type type, int method, String path, JSONObject jsonRequest, Response.Listener<JSONObject> jsonObjectListener, Response.ErrorListener errorListener) {
+    private UserRequests(Context context, Type type, int method, String path, JSONObject jsonRequest, Response.Listener<JSONObject> jsonObjectListener, Response.ErrorListener errorListener) {
         super(method, path, jsonRequest, jsonObjectListener, errorListener);
         Log.d(TAG, path + "\njson: " + jsonRequest);
         this.context = context;
@@ -48,10 +52,10 @@ public class UserRequests extends JsonObjectRequest {
     /**
      * Adds the user to the user table on the server
      *
-     * @param context       Calling activiyt context
+     * @param context       Calling activity context
      * @param userModel     Model containing data to post
      * @param listener      Response listener
-     * @param errorListener Errror listener
+     * @param errorListener Error listener
      * @return Returns an instance of a Request that is added to the request queue
      */
     public static UserRequests addUser(Context context, AddUserModel userModel,
@@ -60,9 +64,8 @@ public class UserRequests extends JsonObjectRequest {
         Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.d(TAG, "JSONresponse: " + response.toString());
+                Log.d(TAG, "JSONResponse: " + response.toString());
                 UsersRecord temp = gson.fromJson(response.toString(), UsersRecord.class);
-                Log.d(TAG, "RecordsResponse" + temp.toString());
                 listener.onResponse(temp.getOnlyResource());
             }
         };
@@ -90,7 +93,7 @@ public class UserRequests extends JsonObjectRequest {
      * @param context       Calling activiyt context
      * @param userModel     Model containing data to post
      * @param listener      Response listener
-     * @param errorListener Errror listener
+     * @param errorListener Error listener
      * @return Returns an instance of a Request that is added to the request queue
      */
     public static UserRequests updateGcmReg(Context context, AddUserModel userModel,
@@ -99,9 +102,8 @@ public class UserRequests extends JsonObjectRequest {
         Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.d(TAG, "JSONresponse: " + response.toString());
+                Log.d(TAG, "JSONResponse: " + response.toString());
                 UsersRecord temp = gson.fromJson(response.toString(), UsersRecord.class);
-                Log.d(TAG, "RecordsResponse" + temp.toString());
                 listener.onResponse(temp.getOnlyResource());
             }
         };
@@ -138,8 +140,8 @@ public class UserRequests extends JsonObjectRequest {
         Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                Log.d(TAG, "JSONResponse: " + response.toString());
                 UsersRecord result = gson.fromJson(response.toString(), UsersRecord.class);
-                Log.d(TAG, "RecordsResponse" + result.toString());
                 listener.onResponse(result.getOnlyResource());
             }
         };
@@ -167,13 +169,8 @@ public class UserRequests extends JsonObjectRequest {
         return VolleyRequest.parseNetworkError(volleyError);
     }
 
-    //TODO may not need, verify and remove if not needed
-    public enum Type {
-        ADD, FIND, UPDATE
-    }
-
     /**
-     * Model to store user data that will be posted to server
+     * Model to store user data that will be sent to and received from server
      */
     public static class AddUserModel {
         private Integer id;

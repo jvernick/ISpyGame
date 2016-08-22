@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 /**
  * Class for working with Shared Preferences. Provides methods to access, create and update
  * Shared Preferences
- * Created by BrunelAmC on 6/9/2015.
  */
 public class PrefUtil {
     public static final String PREF_NAME = "_picspy_pref";

@@ -26,7 +26,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 /**
- * Created by BrunelAmC on 1/18/2016.
+ * Provides API for sending challenge image to server
  */
 
 public class FileRequest extends Request<String> {

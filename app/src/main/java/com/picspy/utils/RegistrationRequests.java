@@ -16,7 +16,7 @@ import org.json.JSONObject;
 import java.util.Map;
 
 /**
- * Created by BrunelAmC on 1/13/2016.
+ * Provides API for Registration, Login and Token refresh
  */
 public class RegistrationRequests extends JsonObjectRequest {
     private static final String TAG = "RegistrationReq";
@@ -58,9 +58,8 @@ public class RegistrationRequests extends JsonObjectRequest {
         JSONObject jsonRequest;
         try {
             jsonRequest = new JSONObject(gson.toJson(request, RegisterModel.class));
-            //TODO change path to use BuildURI
-            String path = AppConstants.DSP_URL_2 + "user/register";
-            return new RegistrationRequests(context, Type.REGISTER, Method.POST, path,
+            return new RegistrationRequests(context, Type.REGISTER, Method.POST,
+                    DspUriBuilder.buildUri(DspUriBuilder.REGISTRATION_URI, null),
                     jsonRequest, jsonObjectListener, errorListener);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -77,6 +76,7 @@ public class RegistrationRequests extends JsonObjectRequest {
         Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                Log.d(TAG, "JSONResponse: " + response.toString());
                 listener.onResponse(gson.fromJson(response.toString(), LoginApiResponse.class));
             }
         };
@@ -84,8 +84,8 @@ public class RegistrationRequests extends JsonObjectRequest {
         JSONObject jsonRequest;
         try {
             jsonRequest = new JSONObject(gson.toJson(request, LoginModel.class));
-            String path = AppConstants.DSP_URL_2 + "user/session";
-            return new RegistrationRequests(context, Type.LOGIN, Method.POST, path,
+            return new RegistrationRequests(context, Type.LOGIN, Method.POST,
+                    DspUriBuilder.buildUri(DspUriBuilder.LOGIN_URI, null),
                     jsonRequest, jsonObjectListener, errorListener);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -101,13 +101,13 @@ public class RegistrationRequests extends JsonObjectRequest {
         Response.Listener<JSONObject> jsonObjectListener = new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.d(TAG, response.toString());
+                Log.d(TAG, "JSONResponse: " + response.toString());
                 listener.onResponse(gson.fromJson(response.toString(), LoginApiResponse.class));
             }
         };
 
-        String path = AppConstants.DSP_URL_2 + "user/session";
-        return new RegistrationRequests(context, Type.REFRESH, Method.PUT, path,
+        return new RegistrationRequests(context, Type.REFRESH, Method.PUT,
+                DspUriBuilder.buildUri(DspUriBuilder.LOGIN_URI, null),
                 null, jsonObjectListener, errorListener);
     }
 
@@ -156,7 +156,7 @@ public class RegistrationRequests extends JsonObjectRequest {
         }
     }
 
-    public static class RegisterApiResponse implements ApiResponse {
+    public static class RegisterApiResponse {
         private boolean success;
 
         public RegisterApiResponse() {
@@ -166,7 +166,6 @@ public class RegistrationRequests extends JsonObjectRequest {
             return success;
         }
 
-        @Override
         public String toString() {
             return "RegisterApiResponse{" +
                     "success=" + success +
@@ -174,7 +173,9 @@ public class RegistrationRequests extends JsonObjectRequest {
         }
     }
 
-
+    /**
+     * Model for sending login request
+     */
     public static class LoginModel {
         private String email;
         private String password;
@@ -199,6 +200,9 @@ public class RegistrationRequests extends JsonObjectRequest {
         }
     }
 
+    /**
+     * Model for receiving login response
+     */
     public static class LoginApiResponse {
         private Integer id;
         private String name;

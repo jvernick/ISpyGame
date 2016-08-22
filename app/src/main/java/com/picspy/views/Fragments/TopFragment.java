@@ -146,7 +146,7 @@ public class TopFragment extends Fragment implements SwipeRefreshLayout.OnRefres
         };
 
         if (isRefresh) mSwipeRefreshLayout.setRefreshing(true);
-        ChallengesRequests leaderboardRequest = ChallengesRequests.getleaderboard(getActivity(), responseListener, errorListener);
+        ChallengesRequests leaderboardRequest = ChallengesRequests.getLeaderboard(getActivity(), responseListener, errorListener);
         leaderboardRequest.setTag(MainActivity.CANCEL_TAG);
         VolleyRequest.getInstance(getActivity().getApplicationContext()).addToRequestQueue(leaderboardRequest);
     }
