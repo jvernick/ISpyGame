@@ -290,13 +290,13 @@ public class LoginActivity extends ActionBarActivity {
                     String errorMsg = err;
 
                     if (err.matches(AppConstants.CONNECTION_ERROR) || err.matches(AppConstants.TIMEOUT_ERROR)) {
-                        errorMsg = getString(R.string.network_error_message);
+                        errorMsg = getString(R.string.error_message_network);
                     } else if (err.matches(".*Received authentication challenge is null.*")) {
-                        errorMsg = getString(R.string.invalid_login_message);
+                        errorMsg = getString(R.string.error_message_invalid_login);
                     }
 
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(LoginActivity.this);
-                    alertDialog.setTitle(getString(R.string.login_error_title));
+                    alertDialog.setTitle(getString(R.string.error_title_login));
                     alertDialog.setMessage(errorMsg).setCancelable(false)
                                .setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
                                    @Override

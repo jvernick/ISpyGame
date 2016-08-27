@@ -17,6 +17,7 @@
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="18"/>
+
     <uses-feature android:name="android.hardware.camera"/>
 
     <application
@@ -36,6 +37,9 @@
             android:label="@string/title_activity_register"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateHidden">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.picspy.views.Splash_Activity"/>
         </activity>
 
         <activity
@@ -47,6 +51,9 @@
             <meta-data
                 android:name="com.facebook.sdk.ApplicationId"
                 android:value="@string/facebook_app_id"/>
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.picspy.views.Splash_Activity"/>
         </activity>
 
         <activity
@@ -62,8 +69,9 @@
         <activity
             android:name="com.picspy.views.Splash_Activity"
             android:configChanges="orientation"
-            android:label="@string/title_activity_splash_"
+            android:label="@string/title_activity_splash"
             android:screenOrientation="portrait"
+            android:launchMode="singleTop"
             android:theme="@android:style/Theme.Light.NoTitleBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -139,7 +147,8 @@
             android:label="@string/title_activity_send_challenge"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            android:theme="@style/create_challenge">
+            android:theme="@style/create_challenge"
+            android:windowSoftInputMode="adjustResize|stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH"/>
             </intent-filter>

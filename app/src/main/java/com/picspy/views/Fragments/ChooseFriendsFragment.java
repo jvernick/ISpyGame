@@ -132,7 +132,7 @@ public class ChooseFriendsFragment extends ListFragment implements
         Bundle data = new Bundle();
         data.putBoolean(ChooseFriendsFragment.BDL_IS_SEARCH, false);
         getLoaderManager().restartLoader(LOADER_ID, data, callback).forceLoad();
-        mListener.setToolbarTitle("Send to..");
+        mListener.setToolbarTitle(getString(R.string.title_fragment_configure_challenge));
         return rootView;
     }
 
@@ -173,7 +173,7 @@ public class ChooseFriendsFragment extends ListFragment implements
             case (android.R.id.home):
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 fm.popBackStack();
-                return false;
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

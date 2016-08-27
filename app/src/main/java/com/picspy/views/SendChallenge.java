@@ -1,16 +1,15 @@
 package com.picspy.views;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.android.volley.Response;
@@ -40,6 +39,7 @@ public class SendChallenge extends ActionBarActivity implements
     private static final String TAG = "SendChallenge";
     private static final String CANCEL_TAG = "cancel_sendChallenge";
     private int friend_id;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +62,7 @@ public class SendChallenge extends ActionBarActivity implements
                     getIntent().getBundleExtra(SendChallenge.BDL_PICTURE_OPTIONS),
                     getIntent().getIntExtra(SendChallenge.ARG_FRIEND_ID, -1)
             );
+            progressDialog = new ProgressDialog(SendChallenge.this);
 
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -74,7 +75,7 @@ public class SendChallenge extends ActionBarActivity implements
 
             // Add the fragment to the 'fragment_container' FrameLayout
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, configureFragment).commit();
+                                       .add(R.id.fragment_container, configureFragment).commit();
         }
     }
 
@@ -95,6 +96,11 @@ public class SendChallenge extends ActionBarActivity implements
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == android.R.id.home) {
+            //handling back button click
+            Log.d(TAG, "sendChallenge back button");
+            onBackPressed();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -102,7 +108,9 @@ public class SendChallenge extends ActionBarActivity implements
 
     @Override
     public void setToolbarTitle(String title) {
-        getSupportActionBar().setTitle(title);
+        if (getSupportActionBar() != null) { //TODO verify why this becomes null
+            getSupportActionBar().setTitle(title);
+        }
     }
 
     @Override
@@ -130,34 +138,38 @@ public class SendChallenge extends ActionBarActivity implements
         Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                progressDialog.cancel();
                 if (error != null) {
                     String err = (error.getMessage() == null) ? "An error occurred" : error.getMessage();
                     error.printStackTrace();
                     Log.d(TAG, err);
                     //Show toast only if there is no server connection on refresh
                     if (err.matches(AppConstants.CONNECTION_ERROR) || err.matches(AppConstants.TIMEOUT_ERROR)) {
-                        LayoutInflater inflater = getLayoutInflater();
-                        View layout = inflater.inflate(R.layout.view_network_error_toast,
-                                (ViewGroup) findViewById(R.id.toast_layout_root));
-                        Toast toast = new Toast(getApplicationContext());
-                        toast.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
-                        toast.setDuration(Toast.LENGTH_LONG);
-                        toast.setView(layout);
-                        toast.show();
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(SendChallenge.this);
+                        alertDialog.setTitle(getString(R.string.error_title_send_game));
+                        alertDialog.setMessage(getString(R.string.error_message_network)).setCancelable(false)
+                                   .setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
+                                       @Override
+                                       public void onClick(DialogInterface dialog, int which) {
+                                           dialog.cancel();
+                                       }
+                                   });
+                        alertDialog.show();
                     }
                 }
             }
         };
 
+        progressDialog.setMessage(getString(R.string.progress_dialog_message_send_game));
         String filename = bundle.getString(GAME_LABEL.FILE_NAME);
         String filepath = bundle.getString(GAME_LABEL.FILE_NAME_PATH);
         Log.d(TAG, "filename: " + filename);
-        Log.d(TAG, "filepath: " + filepath);
 
         FileRequest createFileRequest = FileRequest.sendPicture(this,
                 filename, filepath, responseListener, errorListener);
         if (createFileRequest != null) createFileRequest.setTag(CANCEL_TAG);
         VolleyRequest.getInstance(getApplicationContext()).addToRequestQueue(createFileRequest);
+        progressDialog.show();
     }
 
     /**
@@ -169,13 +181,14 @@ public class SendChallenge extends ActionBarActivity implements
         Response.Listener<GameRecord> responseListener = new Response.Listener<GameRecord>() {
             @Override
             public void onResponse(GameRecord response) {
+                progressDialog.cancel();
                 if (response != null && response.getId() != 0) {
-                    Toast.makeText(getApplicationContext(), "Games successfully sent", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.toast_game_sent), Toast.LENGTH_SHORT).show();
                     File file = new File(bundle.getString(GAME_LABEL.FILE_NAME_PATH));
                     if (file.delete()) Log.d(TAG, "picture deleted");
 
                     Intent intent = new Intent(SendChallenge.this, MainActivity.class);
-                    //TODO use? intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                 }
             }
@@ -184,20 +197,23 @@ public class SendChallenge extends ActionBarActivity implements
         Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                progressDialog.cancel();
                 if (error != null) {
                     String err = (error.getMessage() == null) ? "An error occurred" : error.getMessage();
                     error.printStackTrace();
                     Log.d(TAG, err);
                     //Show toast only if there is no server connection on refresh
                     if (err.matches(AppConstants.CONNECTION_ERROR) || err.matches(AppConstants.TIMEOUT_ERROR)) {
-                        LayoutInflater inflater = getLayoutInflater();
-                        View layout = inflater.inflate(R.layout.view_network_error_toast,
-                                (ViewGroup) findViewById(R.id.toast_layout_root));
-                        Toast toast = new Toast(getApplicationContext());
-                        toast.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
-                        toast.setDuration(Toast.LENGTH_LONG);
-                        toast.setView(layout);
-                        toast.show();
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(SendChallenge.this);
+                        alertDialog.setTitle(getString(R.string.error_title_send_game));
+                        alertDialog.setMessage(getString(R.string.error_message_network)).setCancelable(false)
+                                   .setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
+                                       @Override
+                                       public void onClick(DialogInterface dialog, int which) {
+                                           dialog.cancel();
+                                       }
+                                   });
+                        alertDialog.show();
                     }
                 }
             }

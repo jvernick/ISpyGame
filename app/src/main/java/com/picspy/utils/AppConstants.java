@@ -51,7 +51,7 @@ public class AppConstants {
             0xFFCE93D8  //purple_200
     };
     // V2 info
-    public static final String DSP_URL_2 = "http://192.168.0.14:8081/api/v2/";
+    public static final String DSP_URL_2 = "http://192.168.0.18:8081/api/v2/";
     public static final String SESSION_TOKEN = "session_token";
     public static final String USER_NAME = "username";
     public static final int SESSION_TTL = 30;

@@ -101,14 +101,6 @@ public class FileRequest extends Request<String> {
             e.printStackTrace();
             return Response.error(new ParseError(e));
         }
-        /*try {
-            System.out.println("Network Response " + new String(response.data, "UTF-8"));
-            return Response.success(new String(response.data, "UTF-8"),
-                    getCacheEntry());
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            return Response.success(new String(response.data), getCacheEntry());
-        }*/
     }
 
     @Override

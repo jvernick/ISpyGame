@@ -7,19 +7,18 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.util.AttributeSet;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
-import android.util.Xml;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -27,26 +26,21 @@ import com.picspy.firstapp.R;
 import com.picspy.utils.ChallengesRequests;
 import com.picspy.views.SendChallenge;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
-
 /**
  * A placeholder fragment containing a simple view.
  */
 public class ConfigureChallengeFragment extends Fragment {
     private static final String TAG = "ConfigureChallenge";
-    private final int defaultTime = 5, defaultGuesses = 3;
-    private int currTime, currGuesses;
-    private TextView numGuessesView;
+    public static final int MIN_TIME = 3;
+    public static final int MIN_GUESSES = 1;
+    private final int DEFAULT_TIME = 10, DEFAULT_GUESSES = 3;
+    private TextView numGuessesView, numTimeView, characterCountView;
     private F1FragmentInteractionListener mListener;
     // the fragment initialization parameters
     //bundles from camera activity
     //contains: selection and filename
     private Bundle pictureOptionsBundle;
     private int friend_id;
-    private SeekBar seekBar;
 
     public ConfigureChallengeFragment() {
     }
@@ -93,10 +87,14 @@ public class ConfigureChallengeFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_configure_challenge, container, false);
         final CheckBox checkBox = (CheckBox) rootView.findViewById(R.id.checkbox);
         final EditText hintBox = (EditText) rootView.findViewById(R.id.hint_input);
-        final RadioGroup timeBox = (RadioGroup) rootView.findViewById(R.id.time_radio_group);
-        //final RadioGroup guessBox = (RadioGroup) rootView.findViewById(R.id.guesses_radio_group);
-        seekBar = (SeekBar) rootView.findViewById(R.id.seek_bar);
+        final SeekBar guessSeekBar = (SeekBar) rootView.findViewById(R.id.guess_seek_bar);
+        final SeekBar timeSeekBar = (SeekBar) rootView.findViewById(R.id.time_seek_bar);
+
         numGuessesView = (TextView) rootView.findViewById(R.id.num_guesses);
+        numTimeView = (TextView) rootView.findViewById(R.id.num_time);
+        characterCountView = (TextView) rootView.findViewById(R.id.character_count);
+        numGuessesView.setText(String.valueOf(DEFAULT_GUESSES));
+        numTimeView.setText(String.valueOf(DEFAULT_TIME));
 
         Button nextButton = (Button) rootView.findViewById(R.id.next_button);
         if (friend_id != -1)
@@ -106,8 +104,8 @@ public class ConfigureChallengeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Bundle gameOptions = new Bundle();
-                //gameOptions.putInt(ChallengesRequests.GAME_LABEL.GUESSES, guessBox.getCheckedRadioButtonId());
-                gameOptions.putInt(ChallengesRequests.GAME_LABEL.TIME, timeBox.getCheckedRadioButtonId());
+                gameOptions.putInt(ChallengesRequests.GAME_LABEL.GUESSES, guessSeekBar.getProgress() + MIN_GUESSES);
+                gameOptions.putInt(ChallengesRequests.GAME_LABEL.TIME, timeSeekBar.getProgress() + MIN_TIME);
                 gameOptions.putString(ChallengesRequests.GAME_LABEL.HINT, hintBox.getText().toString());
                 gameOptions.putBoolean(ChallengesRequests.GAME_LABEL.LEADERBOARD, checkBox.isChecked());
 
@@ -120,11 +118,34 @@ public class ConfigureChallengeFragment extends Fragment {
             }
         });
 
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        hintBox.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                int len = editable.length();
+
+                characterCountView.setText(getString(R.string.character_count_value, len));
+                if (len > 40) {
+                    characterCountView.setTextColor(getResources().getColor(R.color.primary_red));
+                } else {
+                    characterCountView.setTextColor(getResources().getColor(R.color.secondary_text_default_material_light));
+                }
+            }
+        });
+
+        guessSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progressValue, boolean b) {
-                currGuesses = progressValue;
-                numGuessesView.setText(String.valueOf(currGuesses));
+                numGuessesView.setText(String.valueOf(progressValue + MIN_GUESSES));
             }
 
             @Override
@@ -137,15 +158,22 @@ public class ConfigureChallengeFragment extends Fragment {
             }
         });
 
-        final int checked_color_selected = getResources().getColor(R.color.primary_text);
-        final int checked_color_unselected = getResources().getColor(R.color.grey_400);
+        timeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progressValue, boolean b) {
+                numTimeView.setText(String.valueOf(progressValue + MIN_TIME));
+            }
 
-        AttributeSet attributeSet = getButtonAttributes();
-        setupTimeButtons(rootView, checked_color_selected, checked_color_unselected, attributeSet);
-        //setupGuessButtons(rootView, checked_color_selected, checked_color_unselected, attributeSet);
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
 
+            }
 
-        mListener.setToolbarTitle("Game options..");
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
         return rootView;
     }
 
@@ -174,113 +202,6 @@ public class ConfigureChallengeFragment extends Fragment {
         transaction.commit();
     }
 
-    private AttributeSet getButtonAttributes() {
-        XmlPullParser parser = getResources().getLayout(R.layout.view_radio_btn);
-        AttributeSet attributes = Xml.asAttributeSet(parser);
-        int state = 0;
-        do {
-            try {
-                state = parser.next();
-            } catch (XmlPullParserException | IOException e1) {
-                e1.printStackTrace();
-            }
-            if (state == XmlPullParser.START_TAG) {
-                if (parser.getName().equals("RadioButton")) {
-                    attributes = Xml.asAttributeSet(parser);
-                    break;
-                }
-            }
-        } while (state != XmlPullParser.END_DOCUMENT);
-
-        return attributes;
-    }
-
-    /**
-     * Sets up the options for the game time
-     *
-     * @param rootView                 The root view
-     * @param checked_color_selected   Text color when number is selected
-     * @param checked_color_unselected Default text color
-     * @param attributes               RadioButton attributes used to inflate each number's radio button
-     */
-    private void setupTimeButtons(View rootView, final int checked_color_selected,
-                                  final int checked_color_unselected, AttributeSet attributes) {
-        ViewGroup horScrollLayout = (ViewGroup) rootView.findViewById(R.id.time_radio_group);
-
-        for (int i = 5; i <= 30; i += 5) {
-            RadioButton currButton = new RadioButton(getActivity().getApplicationContext(),
-                    attributes, R.style.radio_button);
-            currButton.setId(i);
-            currButton.setText(Integer.toString(i));
-            if (i == defaultTime) currButton.setTextColor(checked_color_selected);
-            currButton.setChecked(i == defaultTime); // default time
-            horScrollLayout.addView(currButton);
-
-            currButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    ((RadioGroup) view.getParent()).check(view.getId());
-                }
-            });
-
-            currButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    if (b) {
-                        compoundButton.setTextColor(checked_color_selected);
-                    } else {
-                        compoundButton.setTextColor(checked_color_unselected);
-                    }
-                }
-            });
-        }
-    }
-
-    /**
-     * Sets up the options for number of guesses
-     *
-     * @param rootView                 The root view
-     * @param checked_color_selected   Text color when number is selected
-     * @param checked_color_unselected Default text color
-     * @param attributes               RadioButton attributes used to inflate each number's radio button
-     */
-/*
-    private void setupGuessButtons(View rootView, final int checked_color_selected,
-                                   final int checked_color_unselected, AttributeSet attributes) {
-        ViewGroup horScrollLayout = (ViewGroup) rootView.findViewById(R.id.guesses_radio_group);
-
-        for (int i = 1; i <= 5; i++) {
-            RadioButton currButton = new RadioButton(getActivity().getApplicationContext(),
-                    attributes, R.style.radio_button);
-            currButton.setId(i);
-            currButton.setText(Integer.toString(i));
-            if (i == defaultGuesses) {
-                currButton.setTextColor(checked_color_selected);
-            }
-            currButton.setChecked(i == defaultGuesses);
-            horScrollLayout.addView(currButton);
-
-            currButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    ((RadioGroup) view.getParent()).check(view.getId());
-                }
-            });
-
-            currButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    if (b) {
-                        compoundButton.setTextColor(checked_color_selected);
-                    } else {
-                        compoundButton.setTextColor(checked_color_unselected);
-                    }
-                }
-            });
-        }
-    }
-*/
-
     //Added on implement back button click
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -293,10 +214,16 @@ public class ConfigureChallengeFragment extends Fragment {
             case (android.R.id.home):
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 fm.popBackStack();
-                return false;
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mListener.setToolbarTitle(getString(R.string.title_fragment_configure_challenge));
     }
 
     /**

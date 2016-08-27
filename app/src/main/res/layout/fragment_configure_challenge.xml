@@ -1,9 +1,10 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:context="com.picspy.views.fragments.ConfigureChallengeFragment">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            tools:context="com.picspy.views.fragments.ConfigureChallengeFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,7 +20,7 @@
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp">
+                android:padding="4dp">
 
                 <CheckBox
                     android:id="@+id/checkbox"
@@ -33,52 +34,15 @@
 
                 <TextView
                     android:id="@+id/leaderboard_title"
-                    style="@style/configure_challenge_textViews"
+                    style="@style/challengeCardTitle"
                     android:layout_toLeftOf="@id/checkbox"
                     android:layout_toStartOf="@id/checkbox"
                     android:text="@string/leaderboard_title"/>
-            </RelativeLayout>
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            app:cardUseCompatPadding="true">
-
-            <RelativeLayout
-                android:id="@+id/guess"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="8dp">
 
                 <TextView
-                    android:id="@+id/guesses_title"
-                    style="@style/configure_challenge_textViews"
-                    android:text="@string/guess_title"/>
-
-                <TextView
-                    style="@style/total_score_number"
-                    android:id="@+id/num_guesses"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_toLeftOf="@id/guesses_title"
-                    android:gravity="center"
-                    android:minHeight="32dp"
-                    android:minWidth="32dp"
-                    android:text="3"/>
-
-                <SeekBar
-                    android:id="@+id/seek_bar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/guesses_title"
-                    android:progress="3"
-                    android:max="30"
-                    />
-
-
+                    style="@style/challengeOptionDescription"
+                    android:layout_below="@id/leaderboard_title"
+                    android:text="@string/leaderboard_option_description"/>
             </RelativeLayout>
         </android.support.v7.widget.CardView>
 
@@ -91,35 +55,37 @@
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp">
+                android:padding="4dp">
 
                 <TextView
                     android:id="@+id/time_title"
-                    style="@style/configure_challenge_textViews"
+                    style="@style/challengeCardTitle"
                     android:text="@string/time_title"/>
 
-                <HorizontalScrollView
-                    android:id="@+id/time_picker"
-                    android:layout_width="wrap_content"
-                    android:layout_height="48dp"
-                    android:layout_alignParentRight="true"
+                <TextView
+                    android:id="@+id/time_option_description"
+                    style="@style/challengeOptionDescription"
                     android:layout_below="@id/time_title"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:fillViewport="false"
-                    android:orientation="horizontal"
-                    android:scrollbars="none">
+                    android:text="@string/time_option_description"/>
 
-                    <RadioGroup
-                        android:id="@+id/time_radio_group"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:divider="@drawable/radio_group_divider"
-                        android:orientation="horizontal"
-                        android:showDividers="middle">
-                    </RadioGroup>
-                </HorizontalScrollView>
+                <TextView
+                    android:id="@+id/num_time"
+                    style="@style/total_score_number"
+                    android:layout_alignBottom="@id/time_title"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignTop="@id/time_title"
+                    android:layout_toLeftOf="@id/time_title"
+                    tools:text="10"/>
+
+                <SeekBar
+                    android:id="@+id/time_seek_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/time_option_description"
+                    android:layout_marginTop="8dp"
+                    android:max="27"
+                    android:progress="7"/>
+
             </RelativeLayout>
         </android.support.v7.widget.CardView>
 
@@ -130,63 +96,112 @@
             app:cardUseCompatPadding="true">
 
             <RelativeLayout
-                android:id="@+id/hint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp">
+                android:padding="4dp">
+
+                <TextView
+                    android:id="@+id/guesses_title"
+                    style="@style/challengeCardTitle"
+                    android:text="@string/guess_title"/>
+
+                <TextView
+                    android:id="@+id/guess_option_description"
+                    style="@style/challengeOptionDescription"
+                    android:layout_below="@id/guesses_title"
+                    android:text="@string/guess_option_description"/>
+
+                <TextView
+                    android:id="@+id/num_guesses"
+                    style="@style/total_score_number"
+                    android:layout_alignBottom="@id/guesses_title"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignTop="@id/guesses_title"
+                    android:layout_toLeftOf="@id/guesses_title"
+                    tools:text="3"/>
+
+                <SeekBar
+                    android:id="@+id/guess_seek_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/guess_option_description"
+                    android:layout_marginTop="8dp"
+                    android:max="4"
+                    android:progress="2"/>
+
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            app:cardUseCompatPadding="true">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="4dp">
 
                 <TextView
                     android:id="@+id/hint_title"
-                    style="@style/configure_challenge_textViews"
+                    style="@style/challengeCardTitle"
                     android:text="@string/hint_title"/>
+
+                <TextView
+                    android:id="@+id/character_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/hint_input"
+                    android:layout_alignEnd="@+id/hint_input"
+                    android:layout_alignRight="@+id/hint_input"
+                    tools:text="0/50"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/secondary_text_default_material_light"/>
 
                 <EditText
                     android:id="@+id/hint_input"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:minHeight="56dp"
                     android:layout_below="@id/hint_title"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="2dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
+                    android:layout_margin="8dp"
                     android:background="@drawable/search_field_style"
-                    android:ellipsize="end"
                     android:hint="@string/hint_input_hint"
                     android:inputType="text"
                     android:maxLength="50"
-                    android:maxLines="3"
                     android:padding="8dp"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/secondary_text"/>
+                    android:textColor="@color/secondary_text_default_material_light"/>
             </RelativeLayout>
         </android.support.v7.widget.CardView>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp">
+
+            <View
+                android:id="@+id/bar"
+                android:layout_width="fill_parent"
+                android:layout_height="48dp"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/bg_send_challenge">
+            </View>
+
+            <Button
+                android:id="@+id/next_button"
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/bar"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@id/bar"
+                android:layout_marginRight="8dp"
+                android:background="@drawable/ic_next"/>
+        </RelativeLayout>
     </LinearLayout>
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:minHeight="48dp">
 
-        <View
-            android:id="@+id/bar"
-            android:layout_width="fill_parent"
-            android:layout_height="48dp"
-            android:layout_alignParentBottom="true"
-            android:background="@drawable/bg_send_challenge">
-        </View>
-
-        <Button
-            android:id="@+id/next_button"
-            android:layout_width="48dp"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/bar"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignTop="@id/bar"
-            android:layout_marginRight="8dp"
-            android:background="@drawable/ic_next"/>
-    </RelativeLayout>
-</RelativeLayout>
+</ScrollView>

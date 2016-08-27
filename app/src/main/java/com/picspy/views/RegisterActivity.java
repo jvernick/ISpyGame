@@ -284,8 +284,8 @@ public class RegisterActivity extends ActionBarActivity {
 
                     if (err.matches(AppConstants.CONNECTION_ERROR) || err.matches(AppConstants.TIMEOUT_ERROR)) {
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(RegisterActivity.this);
-                        alertDialog.setTitle(getString(R.string.signup_error_title));
-                        alertDialog.setMessage(getString(R.string.network_error_message)).setCancelable(false)
+                        alertDialog.setTitle(getString(R.string.error_title_signup));
+                        alertDialog.setMessage(getString(R.string.error_message_network)).setCancelable(false)
                                    .setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
                                        @Override
                                        public void onClick(DialogInterface dialog, int which) {
@@ -301,8 +301,8 @@ public class RegisterActivity extends ActionBarActivity {
                         edtEmail.requestFocus();
                     } else {
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(RegisterActivity.this);
-                        alertDialog.setTitle(getString(R.string.signup_error_title));
-                        alertDialog.setMessage(getString(R.string.network_error_message)).setCancelable(false)
+                        alertDialog.setTitle(getString(R.string.error_title_signup));
+                        alertDialog.setMessage(getString(R.string.error_message_network)).setCancelable(false)
                                    .setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
                                        @Override
                                        public void onClick(DialogInterface dialog, int which) {
@@ -316,7 +316,7 @@ public class RegisterActivity extends ActionBarActivity {
         };
 
 
-        progressDialog.setMessage("Registering..");
+        progressDialog.setMessage(getString(R.string.progress_dialog_message_login));
         RegistrationRequests registerRequest =
                 RegistrationRequests.register(this, registerModel, responseListener, errorListener);
         VolleyRequest.getInstance(this.getApplicationContext()).addToRequestQueue(registerRequest);
@@ -355,8 +355,8 @@ public class RegisterActivity extends ActionBarActivity {
                     String err = (error.getMessage() == null) ? "error message null" : error.getMessage();
                     Log.d(TAG, err);
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(RegisterActivity.this);
-                    alertDialog.setTitle(getString(R.string.signup_error_title));
-                    alertDialog.setMessage(getString(R.string.network_error_message)).setCancelable(false)
+                    alertDialog.setTitle(getString(R.string.error_title_signup));
+                    alertDialog.setMessage(getString(R.string.error_message_network)).setCancelable(false)
                                .setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
                                    @Override
                                    public void onClick(DialogInterface dialog, int which) {
@@ -368,7 +368,7 @@ public class RegisterActivity extends ActionBarActivity {
             }
         };
 
-        progressDialog.setMessage("Logging in..");
+        progressDialog.setMessage(getString(R.string.progress_dialog_message_login));
         RegistrationRequests loginRequest =
                 RegistrationRequests.login(this, loginModel, responseListener, errorListener);
         if (loginRequest != null) loginRequest.setTag(CANCEL_TAG);
@@ -404,8 +404,8 @@ public class RegisterActivity extends ActionBarActivity {
                     String err = (error.getMessage() == null) ? "error message null" : error.getMessage();
                     Log.d(TAG, err);
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(RegisterActivity.this);
-                    alertDialog.setTitle(getString(R.string.signup_error_title));
-                    alertDialog.setMessage(getString(R.string.network_error_message)).setCancelable(false)
+                    alertDialog.setTitle(getString(R.string.error_title_signup));
+                    alertDialog.setMessage(getString(R.string.error_message_network)).setCancelable(false)
                                .setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
                                    @Override
                                    public void onClick(DialogInterface dialog, int which) {
@@ -417,7 +417,7 @@ public class RegisterActivity extends ActionBarActivity {
             }
         };
 
-        progressDialog.setMessage("Adding user..");
+        progressDialog.setMessage(getString(R.string.progress_dialog_message_add_user));
         UserRequests addUserRequest = UserRequests.addUser(this,
                 addUserModel, responseListener, errorListener);
         if (addUserRequest != null) addUserRequest.setTag(CANCEL_TAG);

@@ -31,12 +31,12 @@
     <string name="hint_username">Username</string>
     <string name="title_activity_post_registration">PostRegistrationActivity</string>
     <string name="login_loading">Logging In…</string>
-    <string name="title_activity_splash_">Splash_Activity</string>
+    <string name="title_activity_splash">Splash_Activity</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="facebook_app_id">567017063440429</string>
 
-    <string name="login_error_title">"Log In Failed"</string>
-    <string name="signup_error_title">"Sign Up Failed"</string>
+    <string name="error_title_login">"Log In failed"</string>
+    <string name="error_title_signup">"Sign Up failed"</string>
 
     <!--Login / Register error strings-->
     <string name="password_too_short">Passwords must be at least 6 characters.</string>
@@ -116,6 +116,13 @@
     <string name="time_title">Time</string>
     <string name="leaderboard_title">Leaderboard</string>
     <string name="hint_input_hint">Max 50 characters</string>
+    <string name="title_fragment_configure_challenge">Game options</string>
+    <string name="leaderboard_option_description">Feature on leaderboard?</string>
+    <string name="time_option_description">3 – 30  Seconds</string>
+    <string name="guess_option_description">1 – 5  Guesses</string>
+    <string name="menu_item_send">Send</string>
+    <string name="menu_item_next">Next</string>
+    <string name="character_count_value">%1$d/50</string>
 
     <!-- multiple -->
     <string name="cd_start_game">Start new game</string>
@@ -143,7 +150,14 @@
     <!--activity_challenges-->
     <string name="challenges_activity_empty_text">No new challenges. Challenges sent to you will appear here</string>
 
-    <string name="network_error_message">Unable to reach network. Check your connection and try again.</string>
-    <string name="invalid_login_message">Invalid username or password</string>
+    <string name="error_message_network">Unable to reach network. Check your connection and try again.</string>
+    <string name="error_message_invalid_login">Invalid username or password</string>
+    <string name="error_title_send_game">Error sending challenge</string>
+    <string name="title_fragment_choose_friends">Send to…</string>
+    <string name="progress_dialog_message_login">Login in…</string>
+    <string name="progress_dialog_message_register">Registering…</string>
+    <string name="progress_dialog_message_add_user">Adding user…</string>
+    <string name="progress_dialog_message_send_game">Sending challenge…</string>
+    <string name="toast_game_sent">Games successfully sent</string>
     <string name="dialog_ok">OK</string>
 </resources>
